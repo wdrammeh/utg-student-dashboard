@@ -1,0 +1,3 @@
+>> Dashboard must be, at all costs, platform-independent.
+>> But all platform specific issues, where there is any, must be spelled-out here.
+

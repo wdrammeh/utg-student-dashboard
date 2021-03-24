@@ -1,0 +1,5 @@
+- Replace Dashboard with .dashboard as ROOT_DIR
+    { while testing, the path should remain Dashboard to avoid confliction }
+- Make sure Dashboard.VERSION := Bundle-Version in MANIFEST.MF := <version> in pom.xml
+- Be more specific in deployment, i.e Package := UTG-Student Dashboard
+-

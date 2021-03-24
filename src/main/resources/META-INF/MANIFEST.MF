@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Main-Class: utg.Dashboard
+Built-By: Muhammed W. Drammeh <md21712494@utg.edu.gm>
+Build-JDK: 15.0.2
+Bundle-Version: 0.0.1
+Bundle-Description: A flexible and elegant student management system for the University of The Gambia
+Implementation-Vendor: CypeFinland
+Implementation-Vendor-Id: utg.gm.student-dashboard

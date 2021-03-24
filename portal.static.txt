@@ -1,0 +1,18 @@
+Dashboard, to a certain extent, relies on the content of the portal.
+Any API modification may result to a reading problem, unless otherwise resolved immediately.
+
+# The Navigation tabs at the contents page are indexed as follows
+{
+0="", 1="", 2="RUNNING COURSES", 3="ALL REGISTERED COURSES", 4="PROGRAM COURSES"
+    5="GRADES", 6="TRANSCRIPT", 7="PAYMENTS", 8="REFUNDS"
+}
+- This, as of 2021-03-22 12:46 AM UTC.
+- The indexing is dynamic.
+- It's recommended therefore to use the text-content of such elements.
+- For this, use `Portal.getTabElement(textOfTab, tabs)`
+
+
+# Course Codes on the Portal have whitespace between the Program Code and the Number
+- E.g. MTH101 => 'MTH 101'
+
+#
