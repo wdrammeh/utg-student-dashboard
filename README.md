@@ -1,29 +1,32 @@
 # UTG-Student Dashboard
-`v1.6.3`
+`v0.0.1`
 
-A flexible and elegant student management system for the University of The Gambia.
+### "A flexible and elegant student management system for the University of The Gambia"
+
 _Dashboard is built by the students for the students._
 
-Dashboard uses the Portal system of UTG as a center of verification for users.
-The same portal is therefore used as the main source of users-data for,
- but not limited to, verification, analysis, and presentation.
- 
-As of version 1.6.2, the "Try Dashboard" feature is implemented.
-This allows non-UTG students to temporarily use Dashboard,
-or students who wish to explore Dashboard before signing in.
+#### ERP System
 
-To be familiar with the general execution flow of the program, read the logic.txt file.
+Dashboard uses the **UTG's ERP System (Portal)** as a center of verification for users.
+The Portal is Dashboard's sole source of data. The data collected are used for,
+but not limited to, **verification**, **analysis**, and **presentation**.
 
-This project does not use any frameworks. However, several third-party libraries were deployed.
-Please see the overview.txt file for more information.
+#### Try Dashboard
 
-### "A journey of thousand miles begins with a single step"
-Dashboard is an ambitious project aimed at relating to the students fundamentals of desktop development.
-Thus, allowing independent developers to easily integrate whatever they're building for the students of the UTG.
+Dashboard has a **Try Dashboard** Functionality by the means of which non-UTG students
+can get to temporarily use it, exploring the vast features therein.
+Maximum functionality is only provided when user is logged in as a **UTG Student**.
 
-Dashboard is available for download as a JAR file via the following link:
-https://drive.google.com/file/d/1OxusV7ttVR6ntQZvlXjYohA2PuQ9fYCN/view?usp=sharing
+#### "A journey of thousand miles begins with a single step"
+Dashboard is an ambitious project, and this is only the beginning.
+Also, we wish to integrate the following features in a future release:
 
-This project is made available by the Developer Student Clubs (UTG-DSC).
+- Course Registration
+- Student Forum
+- Student Voting System
+
+
+#### License
+This project is made available by the UTG Developer Student Club.
 Its LICENCE, or Terms of Use will comply unconditionally with the restrictions placed,
 if any, by this community.
