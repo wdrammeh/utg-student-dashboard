@@ -3,7 +3,7 @@ The following improvements will be made
 - Hide the Dashboard resources path => rename it to .dashboard
 - The directory shall use a completely new layout structure
 - Maven to organize the project; generating jar files on the go
-- Package oriented directory tree
+- Package orntieed directory tree
 - Upgrade dependencies to LTS
 - Research for possible better alternatives
 - Research on the Selenium Driver as there's a need for flexibility regarding driver choices in a future release

@@ -1,3 +1,5 @@
+# Dashboard Logic
+
 The life process of Dashboard includes important series of sets of calls called 'Sequences'. These are:
 Verification, Launch, Build, and Collapse Sequences. The sequences are logical, and can have serious
 consequences on the succeeding sequence. They involve an intensive interaction of classes,
