@@ -1,12 +1,10 @@
 The following improvements will be made
 
-- Hide the Dashboard resources path => rename it to .dashboard
-- The directory shall use a completely new layout structure
-- Maven to organize the project; generating jar files on the go
-- Package orntieed directory tree
-- Upgrade dependencies to LTS
+- The storage directory shall use a completely new layout structure
+- Package orientieed directory tree
 - Research for possible better alternatives
-- Research on the Selenium Driver as there's a need for flexibility regarding driver choices in a future release
+- Research on the Selenium Driver
+    There's a need for flexibility regarding driver choices in a future release
 - Minimize Portal wait time - remove unnecessary waitings
 - Standardize serialization, deserialization by using JSON, XML instead of Java core classes
 - JPackage:
