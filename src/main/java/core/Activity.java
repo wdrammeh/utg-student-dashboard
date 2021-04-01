@@ -4,7 +4,7 @@ package core;
 /**
  * All classes that answer activity of the body by representing it must implement this interface.
  */
-interface Activity {
+public interface Activity {
 
     /**
      * Whenever this method is invoked, the calling-class should own the bodyLayer in its own way,

@@ -1,8 +1,8 @@
 package proto;
 
-import core.Globals;
-import core.MComponent;
-import core.MDate;
+import core.utils.Globals;
+import core.utils.MComponent;
+import core.utils.MDate;
 
 import javax.swing.*;
 import java.awt.*;

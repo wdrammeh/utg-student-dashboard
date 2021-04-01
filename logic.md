@@ -41,4 +41,4 @@ afterwards. Finally, the root folder is, entirely, overridden. Notice, Dashboard
 directory within runtime. The VM is terminated to relief the native system of any potential pending
 charges. This saves memory and battery-life. To forestall an unexpected shutdown,
 Dashboard also adds the Collapse Sequence in the system's shutdown-hook. This can minimize loss of
-data due to abnormal termination of the VM. See main.Board, main.Serializer.
+data due to abnormal termination of the VM. See main.Board, main.Serial.

@@ -1,0 +1,93 @@
+package core.utils;
+
+import core.News;
+import core.Portal;
+import core.alert.Notification;
+import core.module.ModuleHandler;
+import core.module.RunningCourseActivity;
+import core.setting.Settings;
+import core.task.TaskSelf;
+import core.user.Student;
+import org.apache.commons.io.FileUtils;
+import utg.Dashboard;
+
+import java.io.*;
+
+import static core.utils.Globals.joinPaths;
+
+public class Serializer {
+    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), "Dashboard");
+
+
+    /**
+     * Serializes the given object to the SERIALS_DIR with the given path.
+     * Classes that perform serialization data eventually invoke this to do the ultimate writing.
+     * This method is self-silent.
+     */
+    public static void toDisk(Object obj, String fullPath){
+        try {
+            final File file = new File(fullPath);
+            final File parentFile = file.getParentFile();
+            if (parentFile.exists() || parentFile.mkdirs()) {
+                final FileOutputStream fileOutputStream = new FileOutputStream(fullPath);
+                final ObjectOutputStream objOutputStream = new ObjectOutputStream(fileOutputStream);
+                objOutputStream.writeObject(obj);
+                objOutputStream.close();
+            } else {
+                App.silenceException("Failed to mount parent directories to serialize file '" + fullPath + "'.");
+            }
+        } catch (IOException e) {
+            App.silenceException(e);
+        }
+    }
+
+    /**
+     * reads the object, from the SERIALS_DIR, that was serialized
+     * with the given path.
+     * Classes that perform de-serialization eventually invoke this to do the ultimate reading.
+     * This method is self-silent.
+     * Therefore, callers must check nullity of the returned object
+     */
+    public static Object fromDisk(String fullPath) {
+        Object serObject = null;
+        try {
+            final FileInputStream fileInputStream = new FileInputStream(fullPath);
+            final ObjectInputStream objInputStream = new ObjectInputStream(fileInputStream);
+            serObject = objInputStream.readObject();
+            objInputStream.close();
+            fileInputStream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            App.silenceException(e);
+        }
+        return serObject;
+    }
+
+    public static String inPath(String... paths){
+        return String.join(File.separator, ROOT_DIR, joinPaths(paths));
+    }
+
+    public static void mountUserData(){
+        Dashboard.storeConfigs();
+        Settings.serialize();
+        if (!Student.isTrial()) {
+            Portal.serialize();
+            RunningCourseActivity.serialize();
+            ModuleHandler.serialize();
+        }
+        Student.serialize();
+        TaskSelf.serialize();
+        Notification.serialize();
+        News.serialize();
+    }
+
+    public static boolean unMountUserData(){
+        try {
+            FileUtils.deleteDirectory(new File(ROOT_DIR));
+            return true;
+        } catch (IOException ioe) {
+            final File configFile = new File(inPath("config.ser"));
+            return !configFile.exists() || configFile.delete();
+        }
+    }
+
+}

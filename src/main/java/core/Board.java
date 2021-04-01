@@ -1,5 +1,20 @@
 package core;
 
+import core.alert.NotificationActivity;
+import core.driver.MDriver;
+import core.first.FirstLaunch;
+import core.module.ModuleActivity;
+import core.module.ModuleHandler;
+import core.module.RunningCourseActivity;
+import core.other.About;
+import core.other.Tips;
+import core.setting.Settings;
+import core.setting.SettingsUI;
+import core.task.TaskActivity;
+import core.transcript.TranscriptActivity;
+import core.user.Analysis;
+import core.user.Student;
+import core.utils.*;
 import proto.*;
 import utg.Dashboard;
 
@@ -78,7 +93,7 @@ public final class Board extends KFrame {
      * The shut-down-thread ensures content of the user are written to the disk
      * in case of unexpected shut-down.
      */
-    public static final Thread SHUT_DOWN_THREAD = new Thread(Serializer::mountUserData);
+    public static final Thread SHUT_DOWN_THREAD = new Thread(()-> Serializer.mountUserData());
 //    Collaborators declaration. The order in which these will be initialized does matter!
     private RunningCourseActivity runningCourseActivity;
     private ModuleActivity moduleActivity;

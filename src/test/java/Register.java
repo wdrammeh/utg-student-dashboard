@@ -1,6 +1,6 @@
-import core.MDriver;
 import core.Portal;
-import core.RunningCourse;
+import core.driver.MDriver;
+import core.module.RunningCourse;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;

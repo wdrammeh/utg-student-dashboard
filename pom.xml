@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>UTG Student Dashboard</name>
-    <groupId>utg.gm</groupId>
+    <name>UTG-Student Dashboard</name>
+    <groupId>utg.edu.gm</groupId>
     <artifactId>Dashboard</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -45,12 +45,6 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.12.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream-core</artifactId>
-            <version>1.4.16</version>
-            <scope>test</scope> <!-- until the serialization is standardized -->
         </dependency>
     </dependencies>
 

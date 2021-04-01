@@ -1,5 +1,6 @@
 package core;
 
+import core.utils.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +104,7 @@ public class News implements Activity {
                     }
                 }
             }
-            accessTime = "Last accessed: "+MDate.now();
+            accessTime = "Last accessed: "+ MDate.now();
             accessLabel.setText(accessTime);
             if (userRequest) {
                 App.reportInfo("News", "News refreshed successfully.");
@@ -136,7 +136,7 @@ public class News implements Activity {
         final KButton extendedReader = new KButton();
         extendedReader.setFont(KFontFactory.createPlainFont(15));
         extendedReader.setCursor(MComponent.HAND_CURSOR);
-        if (allContent == null) {
+        if (Globals.hasNoText(allContent)) {
             extendedReader.setText("Get full news...");
             extendedReader.addActionListener(e-> newsDialog.primaryClick(extendedReader));
         } else {
@@ -230,7 +230,7 @@ public class News implements Activity {
                     setVisible(true);
                 } catch (IOException ioe) {
                     App.reportError("Error",
-                            "Error occurred while getting the contents of the news \"" + keyContent + "\"\n" +
+                            "Failed to retrieve the contents of the news \"" + keyContent + "\"\n" +
                             "Please check back later.");
                 } catch (Exception e) {
                     App.silenceException(e);
@@ -242,7 +242,10 @@ public class News implements Activity {
     }
 
 
-    private static final class NewsSavior implements Serializable {
+    // Todo remove this type...?
+    // Any class implementing Serializable
+    // will either be removed, or stop implementing it.
+    private static final class NewsSavior {
         private String heading;
         private String body;
         private String link;
@@ -255,32 +258,54 @@ public class News implements Activity {
             this.content = content;
         }
 
-        public boolean equals(NewsSavior s) {
+        private boolean equals(NewsSavior s) {
             return this.heading.equals(s.heading);
         }
     }
 
 
     public static void serialize() {
-        Serializer.toDisk(NEWS_DATA, "news.ser");
-        Serializer.toDisk(accessTime, "news-time.ser");
+        final int length = NEWS_DATA.size();
+        final String[] heads = new String[length];
+        final String[] bodies = new String[length];
+        final String[] links = new String[length];
+        final String[] contents = new String[length];
+        for (int i = 0; i < length; i++){
+            final NewsSavior savior = NEWS_DATA.get(0);
+            heads[i] = savior.heading;
+            bodies[i] = savior.body;
+            links[i] = savior.link;
+            contents[i] = savior.content;
+        }
+        Serializer.toDisk(heads, Serializer.inPath("news", "heads.ser"));
+        Serializer.toDisk(bodies, Serializer.inPath("news", "bodies"));
+        Serializer.toDisk(links, Serializer.inPath("news", "links"));
+        Serializer.toDisk(contents, Serializer.inPath("news", "contents"));
+        Serializer.toDisk(accessTime, Serializer.inPath("news", "accessTime.ser"));
     }
 
     private void deserialize() {
-        final ArrayList<NewsSavior> savedNews = (ArrayList<NewsSavior>) Serializer.fromDisk("news.ser");
-        if (savedNews == null) {
-            return;
-        }
-        NEWS_DATA.addAll(savedNews);
-        if (!NEWS_DATA.isEmpty()) {
+        final Object headsObj = Serializer.fromDisk(Serializer.inPath("news", "heads.ser"));
+        final Object bodiesObj = Serializer.fromDisk(Serializer.inPath("news", "bodies.ser"));
+        final Object linksObj = Serializer.fromDisk(Serializer.inPath("news", "links.ser"));
+        final Object contentsObj = Serializer.fromDisk(Serializer.inPath("news", "contents.ser"));
+        if (headsObj == null || bodiesObj == null || linksObj == null || contentsObj == null) {
+            App.silenceException("Failed to read News.");
+        } else {
+            final String[] heads = (String[]) headsObj;
+            final String[] bodies = (String[]) bodiesObj;
+            final String[] links = (String[]) linksObj;
+            final String[] contents = (String[]) contentsObj;
+            final int length = heads.length;
+            for (int i = 0; i < length; i++){
+                final NewsSavior savior = new NewsSavior(heads[i], bodies[i], links[i], contents[i]);
+                NEWS_DATA.add(savior);
+            }
             for (NewsSavior news : NEWS_DATA) {
                 present.addPenultimate(packNews(news.heading, news.body, news.link, news.content));
             }
             MComponent.ready(present);
-        }
-
-        final Object accessObj = Serializer.fromDisk("news-time.ser");
-        if (accessObj != null) {
+            final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "accessTime.ser"));
             accessTime = (String) accessObj;
             accessLabel.setText(accessTime);
         }

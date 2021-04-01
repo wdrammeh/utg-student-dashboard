@@ -2,4 +2,6 @@
     { while testing, the path should remain Dashboard to avoid confliction }
 - Make sure Dashboard.VERSION := Bundle-Version in MANIFEST.MF := <version> in pom.xml
 - Be more specific in deployment, i.e Package := UTG-Student Dashboard
--
+- Cross-check for TODOs
+- Be sure to have dealt with all test-cases
+- Make sure the documentataion are in full-sync. Documentation in classes := *.static.txt files

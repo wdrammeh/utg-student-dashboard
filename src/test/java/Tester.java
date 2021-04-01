@@ -1,10 +1,13 @@
-import core.ModuleHandler;
-import core.Student;
+import core.News;
+import core.Portal;
+import core.alert.Notification;
+import core.module.ModuleHandler;
+import core.module.RunningCourseActivity;
+import core.setting.Settings;
+import core.task.TaskSelf;
+import core.user.Student;
 
 import java.util.Date;
-import java.util.Scanner;
-import java.util.StringJoiner;
-import java.util.regex.Pattern;
 
 /**
  * This type is intended for testing a specific component / functionality of the project.
@@ -19,12 +22,20 @@ public class Tester {
 
     public static void main(String[] args) {
         System.out.println(new Date());
+//        loadContent();
+
 
     }
 
     public static void loadContent(){
         Student.initialize();
         new ModuleHandler();
+        Settings.deserialize();
+        Portal.deSerialize();
+        RunningCourseActivity.deserializeModules();
+        TaskSelf.deSerializeAll();
+        Notification.deSerialize();
+        new News();
     }
 
 }

@@ -1,14 +1,12 @@
-The following improvements will be made
+>> The following improvements will be made
 
-- Hide the Dashboard resources path => rename it to .dashboard
-- The directory shall use a completely new layout structure
-- Maven to organize the project; generating jar files on the go
-- Package orntieed directory tree
-- Upgrade dependencies to LTS
-- Research for possible better alternatives
+- Auto outdate feature: to either specify a term limit, or consult a webpage.
+- Custom user password; as defaults to the mat. no.
+- Lock Dashboard at startup
+- separate the task type, clearly
 - Research on the Selenium Driver as there's a need for flexibility regarding driver choices in a future release
 - Minimize Portal wait time - remove unnecessary waitings
-- Standardize serialization, deserialization by using JSON, XML instead of Java core classes
+- Standardize serialization
 - JPackage:
     Early deployment, linux (.deb / Debian) packages only
     Propose. interested? License and fund for extensive feature addition

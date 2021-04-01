@@ -1,6 +1,6 @@
 package proto;
 
-import core.App;
+import core.utils.App;
 
 import javax.swing.*;
 import java.awt.*;

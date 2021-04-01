@@ -1,5 +1,9 @@
 package core;
 
+import core.driver.MDriver;
+import core.module.RunningCourseActivity;
+import core.user.Student;
+import core.utils.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -8,7 +12,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.*;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -266,28 +269,28 @@ public class Portal {
     }
 
     public static void serialize(){
-        final HashMap<String, Object> portalHash = new HashMap<>();
-        portalHash.put("rNotice", registrationNotice);
-        portalHash.put("aNotice", admissionNotice);
-        portalHash.put("autoSync", autoSync);
-        portalHash.put("lastAdmissionNoticeUpdate", lastAdmissionNoticeUpdate);
-        portalHash.put("lastRegistrationNoticeUpdate", lastRegistrationNoticeUpdate);
-        portalHash.put("lastLogin", lastLogin);
-        Serializer.toDisk(portalHash, "portal.ser");
+        final String data = Globals.joinLines(registrationNotice,
+                MDate.format(lastRegistrationNoticeUpdate),
+                admissionNotice,
+                MDate.format(lastAdmissionNoticeUpdate),
+                autoSync,
+                MDate.format(lastLogin));
+        Serializer.toDisk(data, Serializer.inPath("portal.ser"));
     }
 
     public static void deSerialize(){
-        final HashMap<String, Object> savedState = (HashMap<String, Object>) Serializer.fromDisk("portal.ser");
-        if (savedState == null) {
-            App.silenceException("Error reading Portal Data.");
-            return;
+        final Object obj = Serializer.fromDisk(Serializer.inPath("portal.ser"));
+        if (obj == null) {
+            App.silenceException("Failed to read Portal Data.");
+        } else {
+            final String[] data = Globals.splitLines((String) obj);
+            registrationNotice = data[0];
+            lastRegistrationNoticeUpdate = MDate.parse(data[1]);
+            admissionNotice = data[2];
+            lastAdmissionNoticeUpdate = MDate.parse(data[3]);
+            autoSync = Boolean.parseBoolean(data[4]);
+            lastLogin = MDate.parse(data[5]);
         }
-        registrationNotice = savedState.get("rNotice").toString();
-        admissionNotice = savedState.get("aNotice").toString();
-        autoSync = Boolean.parseBoolean(savedState.get("autoSync").toString());
-        lastAdmissionNoticeUpdate = (Date) savedState.get("lastAdmissionNoticeUpdate");
-        lastRegistrationNoticeUpdate = (Date) savedState.get("lastRegistrationNoticeUpdate");
-        lastLogin = (Date) savedState.get("lastLogin");
     }
 
 }

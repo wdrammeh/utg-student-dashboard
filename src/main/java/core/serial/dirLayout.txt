@@ -1,0 +1,30 @@
+>> The storage directory shall use a completely new layout structure...
+
+config.ser - as stored, it contains the configuration info.
+    of the last instance at collapse: version, userName,
+settings.ser -
+portal.ser -
+alerts.ser -
+user:
+    core.ser -
+    about.ser -
+    extra.keys.ser -
+    extra.values.ser -
+modules:
+    running.ser -
+    registered.ser -
+    modules.ser -
+tasks:
+    todo.ser -
+    projects.ser -
+    assignments.ser -
+    events.ser -
+news:
+    heads.ser -
+    bodies.ser -
+    links.ser -
+    contents.ser -
+    accessTime.ser -
+status.ser -
+
+
