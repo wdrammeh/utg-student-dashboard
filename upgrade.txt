@@ -1,5 +1,7 @@
 >> The following improvements will be made
 
+- label of first-semester not appearing on performance-sketch
+- remove static-orientation of task types
 - Auto outdate feature: to either specify a term limit, or consult a webpage.
 - Custom user password; as defaults to the mat. no.
 - Lock Dashboard at startup
