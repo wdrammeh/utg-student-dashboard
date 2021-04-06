@@ -1,0 +1,266 @@
+package core.task.self;
+
+import core.alert.Notification;
+import core.task.exhibition.ProjectExhibition;
+import core.task.handler.ProjectHandler;
+import core.user.Student;
+import core.utils.Globals;
+import core.utils.MComponent;
+import core.utils.MDate;
+import proto.KButton;
+import proto.KFontFactory;
+import proto.KLabel;
+import proto.KPanel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Date;
+import java.util.Objects;
+
+public class ProjectSelf {
+    private String projectName;
+    private String type;
+    private String startDate;
+    private int specifiedDuration;
+    private int totalTimeConsumed;
+    private boolean isLive;
+    private Timer timer;
+    private String dateExpectedToComplete;
+    private String dateCompleted;
+    public boolean eveIsAlerted;
+    public boolean completionIsAlerted;
+    private transient ProjectExhibition exhibition;
+    private transient KButton terminationButton, completionButton, moreOptions;
+    private transient JProgressBar projectProgression;
+    private transient KLabel progressLabelPercentage;
+    private transient KPanel projectLayer;
+
+    public ProjectSelf(String name, String type, int duration){
+        this(name, type, MDate.now(), duration, true);
+        initializeTimer(Globals.DAY);
+        initializeUI();
+    }
+
+    public ProjectSelf(String name, String type, String startTime, int duration, boolean live){
+        projectName = name;
+        this.type = type;
+        startDate = startTime;
+        specifiedDuration = duration;
+        dateExpectedToComplete = MDate.daysAfter(new Date(), duration);
+        isLive = live;
+    }
+
+    private void initializeTimer(int firstDelay){
+        timer = new Timer(Globals.DAY,null);
+        timer.setInitialDelay(firstDelay);
+        timer.addActionListener(e -> {
+            projectProgression.setValue(this.getDaysTaken());
+            if (getDaysLeft() == 1) {
+                signalEveNotice();
+            } else if (getDaysLeft() <= 0) {
+                if (exhibition != null && exhibition.isShowing()) {
+                    exhibition.dispose();
+                }
+                ProjectHandler.performIComplete(this,true);
+                signalCompletionNotice();
+            }
+        });
+        timer.start();
+    }
+
+    public void initializeUI(){
+        final KPanel namePanel = new KPanel(new BorderLayout());
+        namePanel.add(new KLabel(projectName, KFontFactory.createPlainFont(17), Color.BLUE),
+                BorderLayout.CENTER);
+
+        final Dimension optionsDim = new Dimension(30, 30);//the small-buttons actually
+
+        progressLabelPercentage = new KLabel("", KFontFactory.createPlainFont(18), Color.BLUE);
+        progressLabelPercentage.setOpaque(false);
+
+        projectProgression = new JProgressBar(0, specifiedDuration){
+            @Override
+            public void setValue(int n) {
+                super.setValue(n);
+                progressLabelPercentage.setText(projectProgression.getString());
+            }
+        };
+        projectProgression.setValue(getDaysTaken());
+        projectProgression.setPreferredSize(new Dimension(150, 20));
+        projectProgression.setForeground(Color.BLUE);
+
+        terminationButton = KButton.createIconifiedButton("terminate.png", 20, 20);
+        terminationButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        terminationButton.setPreferredSize(optionsDim);
+        terminationButton.setToolTipText("Remove this Project");
+        terminationButton.addActionListener(ProjectHandler.removalListener(this));
+
+        completionButton = KButton.createIconifiedButton("mark.png", 20, 20);
+        completionButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        completionButton.setPreferredSize(optionsDim);
+        completionButton.setToolTipText("Mark as Complete");
+        completionButton.addActionListener(e-> ProjectHandler.performIComplete(this, false));
+
+        moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
+        moreOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        moreOptions.setToolTipText("About this Project");
+        moreOptions.addActionListener(e -> exhibition = new ProjectExhibition(this));
+
+        final KPanel quanterLayer = new KPanel(new FlowLayout(FlowLayout.RIGHT));
+        quanterLayer.addAll(new KLabel(getType()+" Project", KFontFactory.createPlainFont(16)),
+                Box.createHorizontalStrut(15), projectProgression, progressLabelPercentage, terminationButton,
+                completionButton, Box.createHorizontalStrut(15), moreOptions);
+
+        projectLayer = new KPanel(1_000, 35);
+        projectLayer.setLayout(new BoxLayout(projectLayer, BoxLayout.X_AXIS));
+        projectLayer.addAll(namePanel, quanterLayer);
+    }
+
+    public void setUpDoneUI(){
+        final KPanel namePanel = new KPanel(new BorderLayout());
+        namePanel.add(new KLabel(this.projectName, KFontFactory.createBoldFont(16), Color.BLUE),
+                BorderLayout.CENTER);
+
+        projectProgression = new JProgressBar(0, specifiedDuration);
+        projectProgression.setValue(specifiedDuration);
+        projectProgression.setPreferredSize(new Dimension(150, 20));
+        projectProgression.setForeground(Color.BLUE);
+
+        progressLabelPercentage = new KLabel(projectProgression.getString(),
+                KFontFactory.createPlainFont(18), Color.BLUE);
+        progressLabelPercentage.setOpaque(false);
+
+        terminationButton = KButton.createIconifiedButton("trash.png", 20, 20);
+        terminationButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        terminationButton.setPreferredSize(new Dimension(30, 30));
+        terminationButton.setToolTipText("Remove this Project");
+        terminationButton.addActionListener(ProjectHandler.removalListener(this));
+
+        moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
+        moreOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        moreOptions.setToolTipText("About this Project");
+        moreOptions.addActionListener(e -> exhibition = new ProjectExhibition(this));
+
+        final KPanel quantaLayer = new KPanel(new FlowLayout(FlowLayout.RIGHT));
+        quantaLayer.addAll(new KLabel(getType()+" Project", KFontFactory.createPlainFont(16)),
+                Box.createHorizontalStrut(15), projectProgression, progressLabelPercentage, terminationButton,
+                Box.createRigidArea(new Dimension(10, 10)), moreOptions);
+
+        if (projectLayer == null) {
+            projectLayer = new KPanel(1_000, 35);
+            projectLayer.setLayout(new BoxLayout(projectLayer, BoxLayout.X_AXIS));
+        } else {
+            MComponent.empty(projectLayer);
+        }
+        projectLayer.addAll(namePanel, quantaLayer);
+        MComponent.ready(projectLayer);
+    }
+
+    private void signalEveNotice(){
+        if (!eveIsAlerted) {
+            final String text = "Dear "+ Student.getLastName()+", the "+getSpecifiedDuration()+" days "+
+                    getType()+" Project you created, "+getProjectName()+", since "+getStartDate()+" is to be completed by tomorrow.";
+            Notification.create("Project Reminder","Specified duration for the "+getType()+" Project "+
+                    getProjectName()+" is running out",text);
+            eveIsAlerted = true;
+        }
+    }
+
+    private void signalCompletionNotice(){
+        if (!completionIsAlerted) {
+            final String text = "Dear "+Student.getLastName()+", the specified period of the "+
+                    getType()+" Project you created, "+getProjectName()+", since "+getStartDate()+" is now attained.";
+            Notification.create("Project Completed","Specified duration for the "+getType()+" Project "+
+                    getProjectName()+" is reached",text);
+            completionIsAlerted = true;
+        }
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public int getSpecifiedDuration() {
+        return specifiedDuration;
+    }
+
+    public boolean isLive() {
+        return isLive;
+    }
+
+    public void setLive(boolean live) {
+        isLive = live;
+        if (!live) {
+            timer.stop();
+        }
+    }
+
+    public String getDateCompleted() {
+        return dateCompleted;
+    }
+
+    public void setDateCompleted(String dateCompleted) {
+        this.dateCompleted = dateCompleted;
+    }
+
+    public int getDaysLeft() {
+        return specifiedDuration - getDaysTaken();
+    }
+
+    public int getDaysTaken() {
+        return (int) MDate.actualDayDifference(Objects.requireNonNull(MDate.parse(startDate)), new Date());
+    }
+
+    public int getTotalTimeConsumed() {
+        return totalTimeConsumed;
+    }
+
+    public void setTotalTimeConsumed(int totalTimeConsumed) {
+        this.totalTimeConsumed = totalTimeConsumed;
+    }
+
+    public String getDateExpectedToComplete() {
+        return dateExpectedToComplete;
+    }
+
+    public KPanel getLayer(){
+        return projectLayer;
+    }
+
+    public void wakeLive(){
+        if (getDaysLeft() == 1) {
+            signalEveNotice();
+        }
+        int residue = MDate.getTimeValue(MDate.parse(dateExpectedToComplete)) - MDate.getTimeValue(new Date());
+        if (residue < 0) {
+            residue = Globals.DAY - Math.abs(residue);
+        }
+        initializeTimer(residue);
+    }
+
+    public void wakeDead(){
+        dateCompleted = dateExpectedToComplete;
+        isLive = false;
+        signalCompletionNotice();
+    }
+
+    public String export() {
+        return Globals.joinLines(projectName,
+                type,
+                startDate,
+                specifiedDuration,
+                totalTimeConsumed,
+                isLive,
+                dateCompleted,
+                eveIsAlerted,
+                completionIsAlerted);
+    }
+}
