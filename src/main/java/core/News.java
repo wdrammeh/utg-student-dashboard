@@ -1,5 +1,6 @@
 package core;
 
+import core.serial.Serializer;
 import core.utils.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,11 +22,11 @@ public class News implements Activity {
     private static String accessTime;
     private KLabel accessLabel;
     private boolean isFirstView;
-    private static final ArrayList<NewsSavior> NEWS_DATA = new ArrayList<NewsSavior>() {
+    private static final ArrayList<NewsSavior> NEWS_DATA = new ArrayList<>() {
         @Override
         public boolean contains(Object o) {
             for (NewsSavior savior : NEWS_DATA) {
-                if (savior.equals((NewsSavior) o)) {
+                if (savior.equals(o)) {
                     return true;
                 }
             }
@@ -258,9 +259,17 @@ public class News implements Activity {
             this.content = content;
         }
 
-        private boolean equals(NewsSavior s) {
-            return this.heading.equals(s.heading);
+        @Override
+        public boolean equals(Object o) {
+            if (this == o){
+                return true;
+            } else if (o instanceof NewsSavior) {
+                return this.heading.equals(((NewsSavior) o).heading);
+            } else {
+                return false;
+            }
         }
+
     }
 
 
@@ -271,16 +280,16 @@ public class News implements Activity {
         final String[] links = new String[length];
         final String[] contents = new String[length];
         for (int i = 0; i < length; i++){
-            final NewsSavior savior = NEWS_DATA.get(0);
+            final NewsSavior savior = NEWS_DATA.get(i);
             heads[i] = savior.heading;
             bodies[i] = savior.body;
             links[i] = savior.link;
             contents[i] = savior.content;
         }
         Serializer.toDisk(heads, Serializer.inPath("news", "heads.ser"));
-        Serializer.toDisk(bodies, Serializer.inPath("news", "bodies"));
-        Serializer.toDisk(links, Serializer.inPath("news", "links"));
-        Serializer.toDisk(contents, Serializer.inPath("news", "contents"));
+        Serializer.toDisk(bodies, Serializer.inPath("news", "bodies.ser"));
+        Serializer.toDisk(links, Serializer.inPath("news", "links.ser"));
+        Serializer.toDisk(contents, Serializer.inPath("news", "contents.ser"));
         Serializer.toDisk(accessTime, Serializer.inPath("news", "accessTime.ser"));
     }
 

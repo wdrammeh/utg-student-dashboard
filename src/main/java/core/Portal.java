@@ -2,8 +2,12 @@ package core;
 
 import core.driver.MDriver;
 import core.module.RunningCourseActivity;
+import core.serial.Serializer;
 import core.user.Student;
-import core.utils.*;
+import core.utils.App;
+import core.utils.Globals;
+import core.utils.Internet;
+import core.utils.MDate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -212,7 +216,7 @@ public class Portal {
         return lastLogin;
     }
 
-    private static void setLastLogin(Date lastLogin) {
+    public static void setLastLogin(Date lastLogin) {
         Portal.lastLogin = lastLogin;
     }
 

@@ -12,13 +12,16 @@ public class MDate {
      */
     public static final String VAL_SEP = "/";
     /**
+     * The format-pattern. This is in the full-state.
+     */
+    private static final String pattern = String.join(VAL_SEP, "dd", "MM", "yyyy H:m:s");
+    /**
      * The standard date format.
      * Changing this format has great consequences since some functions
      * of this class rely on an anticipated output format; and thus,
      * when changed, such functions must conform accordingly.
      */
-    private static final SimpleDateFormat standardFormat =
-            new SimpleDateFormat("dd"+ VAL_SEP + "MM"+ VAL_SEP + "yyyy H:m:s");
+    private static final SimpleDateFormat standardFormat = new SimpleDateFormat(pattern);
 
 
     /**
@@ -53,12 +56,12 @@ public class MDate {
         return formatDateOnly(new Date());
     }
 
-    public static int getMonth(){
-        return Calendar.getInstance().get(Calendar.MONTH) + 1;
+    public static int currentYear(){
+        return Calendar.getInstance().get(Calendar.YEAR);
     }
 
-    public static int getYear(){
-        return Calendar.getInstance().get(Calendar.YEAR);
+    public static int currentMonth(){
+        return Calendar.getInstance().get(Calendar.MONTH) + 1;
     }
 
     /**

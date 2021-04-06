@@ -16,6 +16,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -358,6 +359,7 @@ public class PrePortal {
         }
 
         new Thread(()-> driver.quit()).start();
+        Portal.setLastLogin(new Date());
         Login.appendToStatus("#####");
         Login.notifyCompletion();
     }

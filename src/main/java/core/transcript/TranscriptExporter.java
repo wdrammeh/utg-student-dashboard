@@ -10,6 +10,7 @@ import core.module.Course;
 import core.module.Memory;
 import core.user.Student;
 import core.utils.App;
+import core.utils.Globals;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +29,8 @@ import java.util.Random;
  * 3. Single table-header - the official has headers per-page
  * 4. Variation in foreground and background colours of the headers
  * 5. Layout - the official uses more pages
+ *
+ * Transcript naming convention:= md.transcript.yyyy.MM.dd.H.m
  */
 public class TranscriptExporter {
     private Document document;
@@ -48,22 +51,24 @@ public class TranscriptExporter {
     public void exportNow() throws IOException, DocumentException {
         String savePath;
         final String homeDir = System.getProperty("user.home");
-        final String documentsDir = homeDir+File.separator+"Documents";
+        final String documentsDir = Globals.joinPaths(homeDir, "Documents");
         final JFileChooser fileChooser = new JFileChooser(new File(documentsDir).exists() ? documentsDir : homeDir);
         fileChooser.setDialogTitle("Select Destination");
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if (fileChooser.showOpenDialog(Board.getRoot()) == JFileChooser.APPROVE_OPTION) {
-            savePath = fileChooser.getSelectedFile().getPath();
+            savePath = fileChooser.getSelectedFile().getAbsolutePath();
         } else {
             return;
         }
 
-        final File outputFile = new File(savePath+File.separator+"transcript-"+ Student.getAcronym()+".pdf");
+        final String timeFormat = String.join(".", "yyyy", "MM", "dd", "H", "mm");
+        final String outputName = String.join("-", Student.getAcronym(),
+                "transcript", new SimpleDateFormat(timeFormat).format(new Date()));
+        final File outputFile = new File(Globals.joinPaths(savePath, outputName)+".pdf");
         final FileOutputStream outputStream = new FileOutputStream(outputFile);
         final PdfWriter pdfWriter = PdfWriter.getInstance(document, outputStream);
         pdfWriter.setPageEvent(new WatermarkEvent());
-
         document.open();
         addMetaData();
         addUTGLabels();

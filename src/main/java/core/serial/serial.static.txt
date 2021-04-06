@@ -162,20 +162,26 @@ each in a separate file therein. Every file is an array of String.
         An array of all the assignments.
         Every entry is such that a line-separated value, excluding the members field.
             0: courseName <String>
-            1: question <String>
-            2: isGroup,
-            3: isOn,
-            4: modeOfSubmission <String>
-            5: startDate <String> | a value returned by MDate.formatDateOnly()
-            6: deadLine <String> | a value of MDate.formatDateOnly()
-            7: dateSubmitted <String> | a value of MDate.formatDateOnly()
-            8: memberCount <int>
-            9: eveIsAlerted <boolean>
-            10: submissionIsAlerted <boolean>
+            1: deadLine <String> | a value of MDate.formatDateOnly()
+            2: isGroup
+            3: modeOfSubmission <String>
+            4: startDate <String> | a value returned by MDate.formatDateOnly()
+            5: isOn
+            6: dateSubmitted <String> | a value of MDate.formatDateOnly()
+            7: eveIsAlerted <boolean>
+            8: submissionIsAlerted <boolean>
+
+        --> @Questions (questions.ser)
+        An array of all the questions.
+        A question may span multiple lines, hence this separation is a must.
+        The size of this array := the size of the assignments (as above).
 
         --> @Members (groups.members.ser)
-        An array of all the members of all the groups.
+        An array of all the members of all the group-assignments.
         Every entry is such that a line-separated value.
+        The size of this array is equals the number of group assignments.
+
+
 
     @Event type (events.ser)
         0:title <String>

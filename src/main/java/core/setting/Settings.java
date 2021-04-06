@@ -1,8 +1,8 @@
 package core.setting;
 
+import core.serial.Serializer;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.Serializer;
 
 import javax.swing.*;
 import java.awt.*;

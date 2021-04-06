@@ -53,7 +53,7 @@ public class Globals {
      * Returns true if the given string has text.
      * This, instead of throwing a {@link NullPointerException},
      * will simply return false, if t null.
-     * This is a negation of hasNoText(String).
+     * This is direct a negation of {@link #hasNoText(String)}.
      * @see #hasNoText(String)
      */
     public static boolean hasText(String t){
@@ -62,19 +62,13 @@ public class Globals {
 
     /**
      * Returns true if the given string is null, or otherwise blank.
-     * Todo update this with...
-     * <code>return t.strip().length() == 0</code>
      */
     public static boolean hasNoText(String t){
         if (t == null) {
             return true;
+        } else {
+            return t.strip().length() == 0;
         }
-        for (char c : t.toCharArray()) {
-            if (!Character.isWhitespace(c)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

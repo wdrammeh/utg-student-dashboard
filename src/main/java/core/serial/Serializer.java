@@ -1,4 +1,4 @@
-package core.utils;
+package core.serial;
 
 import core.News;
 import core.Portal;
@@ -6,8 +6,9 @@ import core.alert.Notification;
 import core.module.ModuleHandler;
 import core.module.RunningCourseActivity;
 import core.setting.Settings;
-import core.task.TaskSelf;
+import core.task.TaskCentral;
 import core.user.Student;
+import core.utils.App;
 import org.apache.commons.io.FileUtils;
 import utg.Dashboard;
 
@@ -75,7 +76,7 @@ public class Serializer {
             ModuleHandler.serialize();
         }
         Student.serialize();
-        TaskSelf.serialize();
+        TaskCentral.serializeAll();
         Notification.serialize();
         News.serialize();
     }

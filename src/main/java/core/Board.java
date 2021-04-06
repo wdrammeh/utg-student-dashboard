@@ -8,13 +8,17 @@ import core.module.ModuleHandler;
 import core.module.RunningCourseActivity;
 import core.other.About;
 import core.other.Tips;
+import core.serial.Serializer;
 import core.setting.Settings;
 import core.setting.SettingsUI;
 import core.task.TaskActivity;
 import core.transcript.TranscriptActivity;
 import core.user.Analysis;
 import core.user.Student;
-import core.utils.*;
+import core.utils.App;
+import core.utils.Globals;
+import core.utils.Internet;
+import core.utils.MComponent;
 import proto.*;
 import utg.Dashboard;
 
@@ -156,9 +160,9 @@ public final class Board extends KFrame {
         helpActivity = new Tips();
         about = new About();
 //        outlined / big buttons
+        alertActivity = new NotificationActivity();
         taskActivity = new TaskActivity();
         newsPresent = new News();
-        alertActivity = new NotificationActivity();
 
         pack();
         setMinimumSize(getPreferredSize());
@@ -176,13 +180,11 @@ public final class Board extends KFrame {
      * detailsPart = 375
      */
     private void setUpThorax() {
-        final KMenuItem resetOption = new KMenuItem("Reset", e-> Student.fireIconReset());
-        final KMenuItem shooterOption = new KMenuItem("Set Default", e-> Student.fireIconDefaultSet());
+        final KMenuItem resetOption = new KMenuItem("Reset Default", e-> Student.fireIconReset());
 
         final JPopupMenu imageOptionsPop = new JPopupMenu();
-        imageOptionsPop.add(new KMenuItem("Change", e-> Student.startSettingImage()));
+        imageOptionsPop.add(new KMenuItem("Select New", e-> Student.startSettingImage()));
         imageOptionsPop.add(resetOption);
-        imageOptionsPop.add(shooterOption);
 
         imageLabel = new KLabel(Student.getIcon());
         final KPanel imagePart = new KPanel(new BorderLayout(), new Dimension(275,200));
@@ -190,15 +192,14 @@ public final class Board extends KFrame {
         imagePart.addMouseListener(new MouseAdapter(){
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {//For unix-based systems
+                if (e.isPopupTrigger()) { // For unix-based systems
                     resetOption.setEnabled(!Student.isDefaultIconSet());
-                    shooterOption.setEnabled(!Student.isShooterIconSet());
                     imageOptionsPop.show(imagePart, e.getX(), e.getY());
                 }
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {//Windows systems
+            public void mouseReleased(MouseEvent e) { // Windows systems
                 mousePressed(e);
             }
         });

@@ -2,12 +2,12 @@ package core.first;
 
 import core.Board;
 import core.alert.Notification;
+import core.serial.Serializer;
 import core.setting.SettingsUI;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
 import core.utils.MComponent;
-import core.utils.Serializer;
 import proto.*;
 
 import javax.swing.*;
@@ -191,7 +191,7 @@ public class FirstLaunch extends KDialog {
             }
 
             Student.setStudentMail(emailField.getText());
-            SettingsUI.studentMailField.setText(emailField.getText());
+            SettingsUI.studentMailField.setText(Student.getVisibleStudentMail());
             Student.setStudentPassword(psswdField.getText());
             SettingsUI.studentPsswdField.setText(psswdField.getText());
             layout.show(contentPanel, "Image icon");

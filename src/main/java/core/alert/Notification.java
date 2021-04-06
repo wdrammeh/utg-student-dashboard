@@ -1,7 +1,11 @@
 package core.alert;
 
 import core.Board;
-import core.utils.*;
+import core.serial.Serializer;
+import core.utils.App;
+import core.utils.Globals;
+import core.utils.MComponent;
+import core.utils.MDate;
 import proto.*;
 
 import javax.swing.*;

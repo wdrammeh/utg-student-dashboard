@@ -104,7 +104,7 @@ public class KTextField extends JTextField implements Preference {
     public static KTextField yearField(){
         final KTextField yearField = digitRangeControlField(4);
         yearField.setPreferredSize(new Dimension(75, 30));
-        yearField.setText(String.valueOf(MDate.getYear()));
+        yearField.setText(String.valueOf(MDate.currentYear()));
         return yearField;
     }
 

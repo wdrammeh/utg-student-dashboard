@@ -129,4 +129,8 @@ public class MComponent {
         return outerPanel;
     }
 
+    public static Component createRigidArea(int w, int h){
+        return Box.createRigidArea(new Dimension(w, h));
+    }
+
 }

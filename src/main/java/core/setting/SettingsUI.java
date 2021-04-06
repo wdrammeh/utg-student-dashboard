@@ -4,11 +4,11 @@ import core.Activity;
 import core.Board;
 import core.Portal;
 import core.first.Login;
+import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
 import core.utils.MComponent;
-import core.utils.Serializer;
 import proto.*;
 
 import javax.swing.*;
@@ -38,7 +38,7 @@ public class SettingsUI implements Activity {
     public static final KLabel minorLabel = new KLabel(Student.getMinor(), V_FONT);
     public static final KTextField majorCodeField = KTextField.rangeControlField(3);
     public static final KTextField minorCodeField = KTextField.rangeControlField(3);
-    public static final KTextField studentMailField = new KTextField(Student.getStudentMail());
+    public static final KTextField studentMailField = new KTextField(Student.getVisibleStudentMail());
     public static final JPasswordField studentPsswdField = new JPasswordField(Student.getStudentPassword());
     public static final KTextArea descriptionArea = KTextArea.getLimitedEntryArea(1_000);
 
@@ -445,7 +445,7 @@ public class SettingsUI implements Activity {
                 final int vInt = App.verifyUser(changeHint);
                 if (vInt == App.VERIFICATION_TRUE) {
                     Student.setStudentMail(newStudentMail);
-                    studentMailField.setText(newStudentMail);
+                    studentMailField.setText(Student.getVisibleStudentMail());
                     if (Globals.hasNoText(newStudentMail)) {
                         Student.setStudentPassword("");
                         studentPsswdField.setText("");

@@ -3,10 +3,10 @@ package utg;
 import core.Board;
 import core.first.Welcome;
 import core.other.Preview;
+import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.Serializer;
 
 import javax.swing.*;
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.HashMap;
  * In a nutshell, it reads from a serializable state if existed,
  * or triggers a new instance if not - or otherwise found inconsistent.
  * This class defines the normal process-flow of the Dashboard.
- * Please read the logic.md file.
+ * Please read the logic file.
  */
 public class Dashboard {
     private static final Preview PREVIEW = new Preview(null);
@@ -65,28 +65,31 @@ public class Dashboard {
         }
     }
 
+//    Todo implement this
     private static boolean isRunning(){
-        final File statusFile = new File(Serializer.inPath("status.ser"));
-        if (statusFile.exists()) {
-            String status = (String) Serializer.fromDisk(Serializer.inPath("status.ser"));
-            return status.equals("Running");
-        }
+//        final File statusFile = new File(Serializer.inPath("status.ser"));
+//        if (statusFile.exists()) {
+//            String status = (String) Serializer.fromDisk(Serializer.inPath("status.ser"));
+//            return status.equals("Running");
+//        }
         return false;
     }
 
+    //    Todo implement this
     public static void lockAccess(){
-        Serializer.toDisk("Running", Serializer.inPath("status.ser"));
+//        Serializer.toDisk("Running", Serializer.inPath("status.ser"));
     }
 
+    //    Todo implement this
     public static void unlockAccess(){
-        Serializer.toDisk("Closed", Serializer.inPath("status.ser"));
+//        Serializer.toDisk("Closed", Serializer.inPath("status.ser"));
     }
 
     /**
      * Serializes the configurations at this point.
      */
     public static void storeConfigs(){
-        final String configs = Globals.joinLines(Globals.userName(), VERSION);
+        final String configs = Globals.joinLines(VERSION, Globals.userName());
         Serializer.toDisk(configs, Serializer.inPath("configs.ser"));
     }
 
