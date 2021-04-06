@@ -4,8 +4,12 @@ import core.Board;
 import core.first.Login;
 import core.first.PrePortal;
 import core.module.ModuleHandler;
+import core.serial.Serializer;
 import core.setting.SettingsUI;
-import core.utils.*;
+import core.utils.App;
+import core.utils.Globals;
+import core.utils.MComponent;
+import core.utils.MDate;
 import utg.Dashboard;
 
 import javax.swing.*;
@@ -78,8 +82,7 @@ public class Student {
     private static final int ICON_HEIGHT = 200;
     private static final ImageIcon DEFAULT_ICON = MComponent.scaleIcon(App.getIconURL("default-icon.png"),
             ICON_WIDTH, ICON_HEIGHT);
-    private static final ImageIcon SHOOTER_ICON = MComponent.scaleIcon(App.getIconURL("shooter.png"),
-            ICON_WIDTH, ICON_HEIGHT);
+    private static final String IMAGE_PATH = Serializer.inPath("user", "imageIcon");
     public static final String FIRST_SEMESTER = "First Semester";
     public static final String SECOND_SEMESTER = "Second Semester";
     public static final String SUMMER_SEMESTER = "Summer Semester";
@@ -203,10 +206,23 @@ public class Student {
     }
 
     public static String getVisiblePortalMail(){
-        final String[] mailParts = portalMail.split("@");
-        final int l = mailParts[0].length();
-        String mask = "*".repeat(l - 2);
-        return portalMail.substring(0, 2) + mask + "@utg.edu.gm";
+        return Globals.hasText(portalMail) ? getVisibleMail(portalMail) : "";
+    }
+
+    private static String getVisibleMail(String mail){
+        try {
+            final String[] mailParts = mail.split("@");
+            final int l = mailParts[0].length();
+            String mask = "*".repeat(l - 2);
+            return mail.substring(0, 2) + mask + "@utg.edu.gm";
+        } catch (Exception e) { // indexOutOfBounds,
+            App.silenceException(String.format("Bad mail format '%s'", mail));
+            return "";
+        }
+    }
+
+    public static String getVisibleStudentMail(){
+        return Globals.hasText(studentMail) ? getVisibleMail(studentMail) : "";
     }
 
     public static void setPortalMail(String portalMail) {
@@ -486,7 +502,7 @@ public class Student {
     }
 
     public static String getAcronym(){
-        return (""+lastName.charAt(0)+firstName.charAt(0)).toLowerCase();
+        return (lastName.charAt(0)+""+firstName.charAt(0)).toLowerCase();
     }
 
     public static String predictedStudentMailAddress(){
@@ -636,19 +652,26 @@ public class Student {
      * imagePanel at main.Board
      * If the parsing-file is null, nothing is done.
      */
-    private static void fireIconChange(File imageFile, Component c){
-        if (imageFile != null) {
+    private static void fireIconChange(File file, Component c){
+        if (file != null) {
             try {
-                final ImageIcon newIcon = MComponent.scaleIcon(imageFile.toURI().toURL(), ICON_WIDTH, ICON_HEIGHT);
+                final ImageIcon newIcon = MComponent.scaleIcon(file.toURI().toURL(), ICON_WIDTH, ICON_HEIGHT);
                 if (newIcon == null) {
-                    App.reportError(c, "Error", "Could not set the image icon to '" + imageFile.getAbsolutePath() + "'.\n" +
+                    App.reportError(c, "Error", "Could not set the image icon to '" + file.getAbsolutePath() + "'.\n" +
                             "Is that an image file? If it's not, try again with a valid image file, otherwise it is of an unsupported type.");
                     return;
                 }
                 userIcon = newIcon;
                 effectIconChanges();
-                Files.copy(imageFile.toPath(), new File(Serializer.inPath("user")).toPath().resolve("imageIcon"),
-                        StandardCopyOption.REPLACE_EXISTING);
+
+                final File imageFile = new File(IMAGE_PATH);
+                final File parent = imageFile.getParentFile();
+                if (parent.exists() || parent.mkdirs()) {
+                    Files.copy(file.toPath(), parent.toPath().resolve("imageIcon"),
+                            StandardCopyOption.REPLACE_EXISTING);
+                } else {
+                    App.silenceException("Failed to copy image icon. Could not mount parent directory.");
+                }
             } catch (MalformedURLException e) {
                 App.reportError(c, "Error", "An error occurred while attempting to set the image icon.\n" +
                         "Please try again, preferably, with a different choice.");
@@ -659,22 +682,25 @@ public class Student {
     }
 
     /**
-     * Effects visual changes on the containers holding the icon.
+     * Effects visual changes on the containers holding the icon, globally.
      */
     private static void effectIconChanges() {
         Board.effectIconChanges();
     }
 
     public static void fireIconReset(){
-        if (App.showYesNoCancelDialog("Confirm Reset","This action will remove your image icon. Continue?")) {
-            userIcon = DEFAULT_ICON;
-            effectIconChanges();
+        if (!isDefaultIconSet()) {
+            if (App.showYesNoCancelDialog("Confirm Reset",
+                    "This action will remove your image icon. Continue?")) {
+                userIcon = DEFAULT_ICON;
+                effectIconChanges();
+                try {
+                    Files.delete(new File(IMAGE_PATH).toPath());
+                } catch (IOException e) {
+                    App.silenceException(e);
+                }
+            }
         }
-    }
-
-    public static void fireIconDefaultSet(){
-        userIcon = SHOOTER_ICON;
-        effectIconChanges();
     }
 
     /**
@@ -684,11 +710,6 @@ public class Student {
     public static boolean isDefaultIconSet(){
         return getIcon() == DEFAULT_ICON;
     }
-
-    public static boolean isShooterIconSet(){
-        return getIcon() == SHOOTER_ICON;
-    }
-
 
     public static void serialize() {
         String core = Globals.joinLines(firstName,
@@ -795,22 +816,22 @@ public class Student {
             App.silenceException(e);
         }
 
-        final File imageFile = new File(Serializer.inPath("user", "imageIcon"));
+        final File imageFile = new File(IMAGE_PATH);
         if (imageFile.exists()) {
             try {
                 final ImageIcon icon = MComponent.scaleIcon(imageFile.toURI().toURL(), ICON_WIDTH, ICON_HEIGHT);
                 if (icon == null) {
-                    App.silenceException("Failed to read the image icon.");
-                    Board.POST_PROCESSES.add(Student::fireIconDefaultSet);
+                    App.silenceException("Failed to read/load the image icon.'");
+                    Board.POST_PROCESSES.add(Student::fireIconReset);
                 } else {
                     userIcon = icon;
                 }
             } catch (MalformedURLException e) {
                 App.silenceException(e);
-                Board.POST_PROCESSES.add(Student::fireIconDefaultSet);
+                Board.POST_PROCESSES.add(Student::fireIconReset);
             }
         } else {
-            Board.POST_PROCESSES.add(Student::fireIconDefaultSet);
+            Board.POST_PROCESSES.add(Student::fireIconReset);
         }
     }
 
