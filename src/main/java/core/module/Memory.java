@@ -2,7 +2,6 @@ package core.module;
 
 import core.transcript.TranscriptActivity;
 import core.transcript.TranscriptExporter;
-import core.user.Analysis;
 import core.user.Student;
 import core.utils.Globals;
 
