@@ -1,6 +1,6 @@
 package proto;
 
-import core.Settings;
+import core.setting.Settings;
 
 import javax.swing.*;
 import java.awt.*;

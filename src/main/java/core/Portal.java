@@ -1,5 +1,13 @@
 package core;
 
+import core.driver.MDriver;
+import core.module.RunningCourseActivity;
+import core.serial.Serializer;
+import core.user.Student;
+import core.utils.App;
+import core.utils.Globals;
+import core.utils.Internet;
+import core.utils.MDate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -8,13 +16,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.*;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * The Dashboard's abstract Portal representative.
  * The functionality of this class come to life after the student is verified.
- * Never forget to use it on a different thread.
+ * Never forget to use them on a different thread.
  */
 public class Portal {
     public static final String LOGIN_PAGE = "https://utg.gm/login";
@@ -48,7 +55,7 @@ public class Portal {
             }
         } else {
             if (Internet.isInternetAvailable()) {
-                final int vInt = App.verifyUser("To access your portal, kindly enter your Matriculation Number below:");
+                final int vInt = App.verifyUser("To access your portal, please enter your Matriculation Number:");
                 if (vInt == App.VERIFICATION_TRUE) {
                     launchPortal();
                 } else if (vInt == App.VERIFICATION_FALSE) {
@@ -111,7 +118,6 @@ public class Portal {
             WebElement registrationElement = new WebDriverWait(noticeDriver,59).until(
                     ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             Portal.setRegistrationNotice(registrationElement.getText());
-//            Board.POST_PROCESSES.add(()-> RunningCourseActivity.noticeLabel.setText(getRegistrationNotice()));
             return true;
         } catch (Exception e) {
             if (userRequested) {
@@ -169,7 +175,6 @@ public class Portal {
     public static void setRegistrationNotice(String registrationNotice){
         Portal.registrationNotice = registrationNotice;
         lastRegistrationNoticeUpdate = new Date();
-//        RunningCourseActivity.effectNoticeUpdate();
     }
 
     /**
@@ -209,7 +214,7 @@ public class Portal {
         return lastLogin;
     }
 
-    private static void setLastLogin(Date lastLogin) {
+    public static void setLastLogin(Date lastLogin) {
         Portal.lastLogin = lastLogin;
     }
 
@@ -225,7 +230,7 @@ public class Portal {
             Student.setStatus(iGroup.get(3).getText().split("\n")[1]);
 
             final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
-            final String ongoingSemester = findingSemester[0]+" "+findingSemester[1]+" "+findingSemester[2];
+            final String ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
             Student.setSemester(ongoingSemester);
         }
         setLastLogin(new Date());
@@ -247,14 +252,13 @@ public class Portal {
 
     /**
      * Reports that the Portal is requesting course evaluations.
-     * This report is as a consequence of the
-     * This report is made on the given parent component [or Board.getRoot() if null].
+     * This report is as a consequence of {@link #isEvaluationNeeded(FirefoxDriver)}.
      */
     public static void reportEvaluationNeeded(Component parent){
-        final Component actualParent = parent == null ? Board.getRoot() : parent;
-        App.reportWarning(actualParent, "Course Evaluation",
+        App.reportWarning(parent, "Course Evaluation",
                 "Your portal is currently requesting \"Course Evaluations\".\n" +
-                        "Please visit your portal to perform the evaluation first.");
+                        "Please visit your portal to perform the evaluation first.\n" +
+                        "Until you're done, Dashboard won't be able to access your Portal.");
     }
 
     /**
@@ -262,32 +266,32 @@ public class Portal {
      * @see #reportEvaluationNeeded(Component)
      */
     public static void reportEvaluationNeeded(){
-        reportEvaluationNeeded(null);
+        reportEvaluationNeeded(Board.getRoot());
     }
 
     public static void serialize(){
-        final HashMap<String, Object> portalHash = new HashMap<>();
-        portalHash.put("rNotice", registrationNotice);
-        portalHash.put("aNotice", admissionNotice);
-        portalHash.put("autoSync", autoSync);
-        portalHash.put("lastAdmissionNoticeUpdate", lastAdmissionNoticeUpdate);
-        portalHash.put("lastRegistrationNoticeUpdate", lastRegistrationNoticeUpdate);
-        portalHash.put("lastLogin", lastLogin);
-        Serializer.toDisk(portalHash, "portal.ser");
+        final String data = Globals.joinLines(registrationNotice,
+                MDate.format(lastRegistrationNoticeUpdate),
+                admissionNotice,
+                MDate.format(lastAdmissionNoticeUpdate),
+                autoSync,
+                MDate.format(lastLogin));
+        Serializer.toDisk(data, Serializer.inPath("portal.ser"));
     }
 
     public static void deSerialize(){
-        final HashMap<String, Object> savedState = (HashMap<String, Object>) Serializer.fromDisk("portal.ser");
-        if (savedState == null) {
-            App.silenceException("Error reading Portal Data.");
-            return;
+        final Object obj = Serializer.fromDisk(Serializer.inPath("portal.ser"));
+        if (obj == null) {
+            App.silenceException("Failed to read Portal Data.");
+        } else {
+            final String[] data = Globals.splitLines((String) obj);
+            registrationNotice = data[0];
+            lastRegistrationNoticeUpdate = MDate.parse(data[1]);
+            admissionNotice = data[2];
+            lastAdmissionNoticeUpdate = MDate.parse(data[3]);
+            autoSync = Boolean.parseBoolean(data[4]);
+            lastLogin = MDate.parse(data[5]);
         }
-        registrationNotice = savedState.get("rNotice").toString();
-        admissionNotice = savedState.get("aNotice").toString();
-        autoSync = Boolean.parseBoolean(savedState.get("autoSync").toString());
-        lastAdmissionNoticeUpdate = (Date) savedState.get("lastAdmissionNoticeUpdate");
-        lastRegistrationNoticeUpdate = (Date) savedState.get("lastRegistrationNoticeUpdate");
-        lastLogin = (Date) savedState.get("lastLogin");
     }
 
 }

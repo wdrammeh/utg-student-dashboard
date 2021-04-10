@@ -1,6 +1,6 @@
 package proto;
 
-import core.MComponent;
+import core.utils.MComponent;
 
 import javax.swing.*;
 
