@@ -6,7 +6,7 @@ public class Version {
     public static final String SNAPSHOT = "SNAPSHOT";
     public static final String RELEASE = "RELEASE";
     public static final int LESS = -1;
-    public static final int EQUAL = 0;
+    public static final int EQUALS = 0;
     public static final int GREATER = 1;
 
 
@@ -40,7 +40,7 @@ public class Version {
 
     public int compare(Version other) {
         if (toString().equals(other.toString())) {
-            return EQUAL;
+            return EQUALS;
         } else {
             final String[] parts = literal.split("[.]");
             final String[] otherParts = other.literal.split("[.]");

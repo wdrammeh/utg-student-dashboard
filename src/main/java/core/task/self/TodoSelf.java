@@ -91,7 +91,7 @@ public class TodoSelf {
         if (layerPanel == null) {
             layerPanel = new KPanel(1_000, 35);
         } else {
-            MComponent.empty(layerPanel);
+            MComponent.clear(layerPanel);
         }
         layerPanel.setLayout(new BoxLayout(layerPanel, BoxLayout.X_AXIS));
         layerPanel.addAll(namePanel, quantaPanel);
@@ -100,18 +100,18 @@ public class TodoSelf {
 
     private void signalEveNotice(){
         if (!eveIsAlerted) {
-            final String text = "Dear "+ Student.getLastName()+", the Task you created on "+getStartDate()+", "+
-                    getDescription()+", is to be completed in less than a day.";
-            Notification.create("Task Reminder","Task "+getDescription()+" is due tomorrow", text);
+            final String info = "Dear "+ Student.getLastName()+"," +
+                    "<p>Task <b>"+getDescription()+"</b> is to be completed in less than a day.</p>";
+            Notification.create("Task Reminder","Task "+getDescription()+" is due tomorrow.", info);
             eveIsAlerted = true;
         }
     }
 
     private void signalDoneNotice(){
         if (!doneIsAlerted) {
-            final String text = "Dear "+Student.getLastName()+", the Task you created on "+getStartDate()+", "+
-                    getDescription()+", is now due. This Task is now considered done as per the given date limit.";
-            Notification.create("Task Completed","Task "+getDescription()+" is now completed", text);
+            final String info = "Dear "+Student.getLastName()+"," +
+                    "<p>Task <b>"+getDescription()+"</b> is now due. This Task is now considered done as per the given date limit.</p>";
+            Notification.create("Task Completed","Task "+getDescription()+" is now completed.", info);
             doneIsAlerted = true;
         }
     }
@@ -204,4 +204,5 @@ public class TodoSelf {
                 eveIsAlerted,
                 doneIsAlerted);
     }
+
 }

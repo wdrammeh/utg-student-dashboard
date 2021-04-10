@@ -176,7 +176,7 @@ public class SummerModule {
                     App.reportError(getRootPane(),"No Name","Please provide the name of the course.");
                     nameField.requestFocusInWindow();
                 } else if (scoreField.isBlank()) {
-                    App.reportError(getRootPane(),"Error","Please enter the score you get from this course.");
+                    App.reportError(getRootPane(),"No Score","Please enter the score you get from this course.");
                     scoreField.requestFocusInWindow();
                 } else {
                     final double score;
@@ -255,7 +255,7 @@ public class SummerModule {
                     App.reportError(this.getRootPane(),"No Name","Please provide the name of the course.");
                     nameField.requestFocusInWindow();
                 } else if (scoreField.isBlank()) {
-                    App.reportError(this.getRootPane(),"Error","Please enter the score you get from this course.");
+                    App.reportError(this.getRootPane(),"No Score","Please enter the score you get from this course.");
                     scoreField.requestFocusInWindow();
                 } else {
                     double score;

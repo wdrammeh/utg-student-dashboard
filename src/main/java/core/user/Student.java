@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 
 /**
@@ -51,9 +53,9 @@ public class Student {
     private static String address;
     /**
      * Telephones: at any point in time, the first partition is returned
-     * as the current telephone.
+     * as the primary telephone.
      */
-    private static String telephones;  // Todo: reconsider the delimiter
+    private static final ArrayList<String> telephones = new ArrayList<>();
     private static String placeOfBirth;
     private static String nationality;
     private static String dateOfBirth;
@@ -65,7 +67,7 @@ public class Student {
     private static String majorCode;
     private static String minorCode;
     private static String about;
-    private static int yearOfAdmission;//the exact year admission takes place
+    private static int yearOfAdmission; // the exact year admission takes place
     private static int monthOfAdmission;
     /**
      * Deals with the level in 'cents'
@@ -76,7 +78,7 @@ public class Student {
     private static int levelNumber;
     private static double CGPA;
     private static ImageIcon userIcon;
-    private static LinkedHashMap<String, String> additionalData;
+    private static final LinkedHashMap<String, String> additionalData = new LinkedHashMap<>();
     private static boolean isTrial;
     private static final int ICON_WIDTH = 275;
     private static final int ICON_HEIGHT = 200;
@@ -280,46 +282,27 @@ public class Student {
     /**
      * Returns just the first contact in the current telephones list
      * This may give 'Unknown' (when given by PrePortal / Portal),
-     * or the empty-string (when all are removed) by the user.
+     * or an empty-string, null (when all are removed) by the user.
      */
     public static String getTelephone() {
-        return telephones.split("/")[0];
+        return telephones.get(0);
     }
 
-    public static String getTelephones() {
+    public static ArrayList<String> getTelephones() {
         return telephones;
     }
 
-    public static void setTelephones(String tels){
-        Student.telephones = tels;
-    }
-
-    public static boolean alreadyInContacts(String tel){
-        return telephones.contains(tel);
-    }
-
     public static void addTelephone(String tel) {
-        Student.telephones = Globals.hasNoText(telephones) ? tel : telephones.contains(tel) ?
-                telephones : telephones + "/" + tel;
+        telephones.add(tel);
     }
 
     public static void removeTelephone(String tel) {
-        final int n = telephonesCount();
-        if (n == 1) {
-            setTelephones("");
-        } else if (n > 1) {
-            Student.telephones = telephones.replace(telephones.indexOf(tel) == 0 ? tel + "/" : "/" + tel, "");
-        }
-    }
-
-    public static int telephonesCount(){
-        return telephones.split("/").length;
+        telephones.remove(tel);
     }
 
     /**
      * Returns the CGPA of the student.
-     * Dashboard does not compute the student's gpa,
-     * so never surround this by Globals.toFourth()
+     * Dashboard does not compute the student's GPA.
      */
     public static double getCGPA() {
         return CGPA;
@@ -458,7 +441,7 @@ public class Student {
             address = (String) initials[10];
             maritalStatue = (String) initials[11];
             dateOfBirth = (String) initials[12];
-            telephones = (String) initials[13];
+            addTelephone((String) initials[13]);
             portalMail = (String) initials[14];
             portalPassword = (String) initials[15];
             try {
@@ -472,7 +455,6 @@ public class Student {
             setSemester((String)(initials[16]));
 
             minor = majorCode = minorCode = "";
-            additionalData = new LinkedHashMap<>();
             isTrial = false;
         } else {
             deserializeData();
@@ -483,9 +465,7 @@ public class Student {
         firstName = data[0];
         lastName = data[1];
         nationality = data[2];
-        address = data[3];
-        maritalStatue = dateOfBirth = placeOfBirth = about = telephones = "";
-        additionalData = new LinkedHashMap<>();
+        maritalStatue = dateOfBirth = placeOfBirth = about = address = "";
         isTrial = true;
     }
 
@@ -510,7 +490,7 @@ public class Student {
     }
 
     public static String predictedStudentPassword(){
-        return matNumber;// "student@utg"?
+        return matNumber; // "student@utg"?
     }
 
     public static String upperClassDivision() {
@@ -716,7 +696,6 @@ public class Student {
                 lastName,
                 nationality,
                 address,
-                telephones,
                 maritalStatue,
                 dateOfBirth,
                 placeOfBirth,
@@ -744,6 +723,7 @@ public class Student {
                     CGPA);
         }
         Serializer.toDisk(core, Serializer.inPath("user", "core.ser"));
+        Serializer.toDisk(telephones.toArray(new String[0]), Serializer.inPath("user", "dials.ser"));
         Serializer.toDisk(about, Serializer.inPath("user", "about.ser"));
 
         final String[] extraKeys = new String[additionalData.size()];
@@ -761,7 +741,7 @@ public class Student {
     private static void deserializeData() throws NullPointerException { // classCast,
         final Object coreObj = Serializer.fromDisk(Serializer.inPath("user", "core.ser"));
         if (coreObj == null) {
-            throw new NullPointerException("User's core file is null.");
+            throw new NullPointerException("User's core file is \"bad\", or missing.");
         }
 
         final String[] core = Globals.splitLines((String) coreObj);
@@ -769,41 +749,41 @@ public class Student {
         lastName = core[1];
         nationality = core[2];
         address = core[3];
-        telephones = core[4];
-        maritalStatue = core[5];
-        dateOfBirth = core[6];
-        placeOfBirth = core[7];
-        setNameFormat(core[8]);
-        isTrial = Boolean.parseBoolean(core[9]);
+        maritalStatue = core[4];
+        dateOfBirth = core[5];
+        placeOfBirth = core[6];
+        setNameFormat(core[7]);
+        isTrial = Boolean.parseBoolean(core[8]);
         try {
             about = (String) Serializer.fromDisk(Serializer.inPath("user", "about.ser"));
+            final String[] dials = (String[]) Serializer.fromDisk(Serializer.inPath("user", "dials.ser"));
+            Collections.addAll(telephones, dials);
         } catch (Exception e) {
             App.silenceException(e);
             about = "";
         }
 
         if (!isTrial) {
-            monthOfAdmission = Integer.parseInt(core[10]);
-            yearOfAdmission = Integer.parseInt(core[11]);
-            setSemester(core[12]);
-            matNumber = core[13];
-            major = core[14];
-            majorCode = core[15];
-            minor = core[16];
-            minorCode = core[17];
-            program = core[18];
-            school = core[19];
-            division = core[20];
-            portalMail = core[21];
-            portalPassword = core[22];
-            studentMail = core[23];
-            studentPassword = core[24];
-            setLevel(core[25]);
-            setStatus(core[26]);
-            CGPA = Double.parseDouble(core[27]);
+            monthOfAdmission = Integer.parseInt(core[9]);
+            yearOfAdmission = Integer.parseInt(core[10]);
+            setSemester(core[11]);
+            matNumber = core[12];
+            major = core[13];
+            majorCode = core[14];
+            minor = core[15];
+            minorCode = core[16];
+            program = core[17];
+            school = core[18];
+            division = core[19];
+            portalMail = core[20];
+            portalPassword = core[21];
+            studentMail = core[22];
+            studentPassword = core[23];
+            setLevel(core[24]);
+            setStatus(core[25]);
+            CGPA = Double.parseDouble(core[26]);
         }
 
-        additionalData = new LinkedHashMap<>();
         try {
             final String[] extraKeys = (String[]) Serializer.fromDisk(Serializer.inPath("user", "extra.keys.ser"));
             final String[] extraValues = (String[]) Serializer.fromDisk(Serializer.inPath("user", "extra.values.ser"));

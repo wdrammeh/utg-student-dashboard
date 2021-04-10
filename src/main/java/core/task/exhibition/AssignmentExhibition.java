@@ -65,7 +65,7 @@ public class AssignmentExhibition extends KDialog {
                     assignment.setQuestion(questionArea.getText());
                 }
             });
-            questionPanel.add(new KLabel("Question(s) wont be editable after assignments are submitted.",
+            questionPanel.add(new KLabel("Question(s) won't be editable after assignments are submitted.",
                     KFontFactory.createPlainFont(15), Color.RED), BorderLayout.SOUTH);
             contentPanel.addAll(subjectPanel, statusPanel, startPanel, deadlinePanel, remainPanel, modePanel,
                     questionPanel);

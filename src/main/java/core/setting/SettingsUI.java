@@ -10,10 +10,12 @@ import core.utils.App;
 import core.utils.Globals;
 import core.utils.MComponent;
 import proto.*;
+import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
@@ -173,66 +175,39 @@ public class SettingsUI implements Activity {
         final FlowLayout contactLabelsLayout = new FlowLayout();
         contactLabelsLayout.setHgap(15);
         final KPanel contactLabelsPanel = new KPanel(contactLabelsLayout);
-        contactLabelsPanel.addContainerListener(new ContainerAdapter() {
-            @Override
-            public void componentAdded(ContainerEvent e) {
-                final KLabel label = (KLabel) e.getChild();//see to it that only such are added
-                final String actualDial = label.getText();
-                label.setStyle(V_FONT, Color.BLUE);
-                label.underline(false);
-                label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                label.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (App.showYesNoCancelDialog("Confirm",
-                                "Are you sure you want to remove \""+actualDial+"\" from your list of contacts?")) {
-                            contactLabelsPanel.remove(label);
-                            MComponent.ready(contactLabelsPanel);
-                        }
-                    }
-                });
-                Student.addTelephone(actualDial);
-            }
-
-            @Override
-            public void componentRemoved(ContainerEvent e) {
-                Student.removeTelephone(((KLabel) e.getChild()).getText());
-            }
-        });
-
+        for (String dial : Student.getTelephones()) {
+            final KLabel contactLabel = newContactLabel(dial, contactLabelsPanel);
+            contactLabelsPanel.add(contactLabel);
+        }
         final KButton contactButton = KButton.createIconifiedButton("plus.png", 20, 20);
         contactButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         contactButton.setToolTipText("Add Number");
         contactButton.addActionListener(e-> {
-            if (Student.telephonesCount() >= 4) {
+            final ArrayList<String> dialList = Student.getTelephones();
+            if (dialList.size() >= 4) {
                 App.reportError("Error", "Sorry, you cannot add more than four (4) contacts.\n" +
-                        "You can remove a contact by clicking on it.");
+                        "You can remove a contact by clicking on it, then try this operation.");
                 return;
             }
             final String incomingDial = App.requestInput("New Telephone", "Enter the new contact number:");
             if (incomingDial == null) {
                 return;
             }
-            if (Student.alreadyInContacts(incomingDial)) {
-                App.reportError("Duplicate", incomingDial+" is already taken. Please enter a different number.");
+            if (dialList.contains(incomingDial)) {
+                App.reportError("Duplicate", "'"+incomingDial+"' is already taken. Please enter a different number.");
                 return;
             }
 
             final int vInt = App.verifyUser(changeHint);
             if (vInt == App.VERIFICATION_TRUE) {
-                contactLabelsPanel.add(new KLabel(incomingDial));
+                contactLabelsPanel.add(newContactLabel(incomingDial, contactLabelsPanel));
                 MComponent.ready(contactLabelsPanel);
+                Student.addTelephone(incomingDial);
             } else if (vInt == App.VERIFICATION_FALSE) {
                 App.reportMatError();
             }
         });
-//        notice, at this point, telephones are initialized whether from Portal, or Serial
-        if (Globals.hasText(Student.getTelephones())) {
-            final String[] dials = Student.getTelephones().split("/");
-            for (String dial : dials) {
-                contactLabelsPanel.add(new KLabel(dial));
-            }
-        }
+
         final KPanel telPanel = new KPanel(new BorderLayout());
         telPanel.add(new KPanel(new KLabel("Telephones:", H_FONT)), BorderLayout.WEST);
         telPanel.add(new KPanel(contactLabelsPanel), BorderLayout.CENTER);
@@ -259,6 +234,25 @@ public class SettingsUI implements Activity {
         }
         aboutComponent.add(MComponent.contentBottomGap());
         return new KScrollPane(aboutComponent);
+    }
+
+    private static KLabel newContactLabel(String text, KPanel resident){
+        final KLabel label = new KLabel(text);
+        label.setStyle(V_FONT, Color.BLUE);
+        label.underline(false);
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (App.showYesNoCancelDialog("Confirm",
+                        "Are you sure you want to remove \""+text+"\" from your list of contacts?")) {
+                    resident.remove(label);
+                    MComponent.ready(resident);
+                    Student.removeTelephone(text);
+                }
+            }
+        });
+        return label;
     }
 
     private static void acceptUserDetail(String key, String value) {
@@ -800,21 +794,18 @@ public class SettingsUI implements Activity {
             public void mouseClicked(MouseEvent e) {
                 if (App.showYesNoCancelDialog("Sign out", "Are are sure you want to sign out?\n" +
                         "By signing out, all your data will be lost.")) {
-                    final String matNumber = App.requestInput("Confirm","Enter your matriculation number to sign out:");
-                    if (Globals.hasText(matNumber)) {
-                        if (matNumber.equals(Student.getMatNumber())) {
-                            if (Serializer.unMountUserData()) {
-                                Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_THREAD);
-                                Board.getInstance().dispose();
-                                System.exit(0);
-                            } else {
-                                App.reportError("Error",
-                                        "Unusual error encountered un-mounting the serializable files.\n" +
-                                        "If there is any process using the Dashboard directory, stop it, and try signing out again.");
-                            }
+                    final int verInt = App.verifyUser("Enter your matriculation number to sign out:");
+                    if (verInt == App.VERIFICATION_TRUE) {
+                        if (Serializer.unMountUserData()) {
+                            Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);
+                            Runtime.getRuntime().removeShutdownHook(Dashboard.UNLOCK_HOOK);
+                            Board.getInstance().setVisible(false);
                         } else {
-                            App.reportMatError();
+                            App.reportError("Error",
+                                    "Sign out failed. Please restart Dashboard.");
                         }
+                    } else if (verInt == App.VERIFICATION_FALSE) {
+                        App.reportMatError();
                     }
                 }
             }

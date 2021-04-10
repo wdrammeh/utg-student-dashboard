@@ -2,8 +2,6 @@ package core.module;
 
 import core.Activity;
 import core.Board;
-import core.module.Course;
-import core.module.Memory;
 import core.user.Student;
 import core.utils.Globals;
 import core.utils.MComponent;
@@ -18,7 +16,7 @@ import java.util.StringJoiner;
 
 /**
  * The Analysis type is stand-alone - it does the analysis, presents the analysis.
- * Furthermore, it subclasses its collaborators like the performance-sketch and present-dialogues.
+ * By that, it subclasses its collaborators like the performance-sketch and present-dialogues.
  */
 public class Analysis implements Activity {
     private KLabel APlusLabel, ANeutralLabel, AMinusLabel, BPlusLabel, BNeutralLabel, BMinusLabel,
@@ -287,7 +285,7 @@ public class Analysis implements Activity {
      * @see #completeYearsBasement()
      */
     private void completeModulesBasement(){
-        MComponent.empty(modulesBasement);
+        MComponent.clear(modulesBasement);
         if (Memory.getList().isEmpty()) {
             modulesBasement.addAll(createNoAnalysisPanel());
         } else {
@@ -350,7 +348,7 @@ public class Analysis implements Activity {
      */
     private void completeSemestersBasement(){
         semesterScores = new ArrayList<>();
-        MComponent.empty(semestersBasement);
+        MComponent.clear(semestersBasement);
         if (semestersList.isEmpty()) {
             semestersBasement.addAll(createNoAnalysisPanel());
         } else {
@@ -406,9 +404,9 @@ public class Analysis implements Activity {
      * for convenience, as a String.
      * This is intended for Dashboard computed CGPAs only.
      */
-    public static String toFourth(double value){
-        final String t = String.valueOf(value);
-        return t.length() <= 6 ? t : t.substring(0, 6);
+    public static String toFourth(double d){
+        final String t = String.valueOf(d);
+        return t.length() <= 6 ? t : String.valueOf(Globals.round(d, 4));
     }
 
     private JComponent getYearsBasement(){
@@ -418,7 +416,7 @@ public class Analysis implements Activity {
     }
 
     private void completeYearsBasement(){
-        MComponent.empty(yearsBasement);
+        MComponent.clear(yearsBasement);
         if (yearsList.isEmpty()) {
             yearsBasement.addAll(createNoAnalysisPanel());
         } else {

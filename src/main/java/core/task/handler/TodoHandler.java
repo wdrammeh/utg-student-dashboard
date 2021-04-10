@@ -11,7 +11,6 @@ import proto.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -72,7 +71,7 @@ public class TodoHandler {
             final String name = todoCreator.getDescriptionField().getText();
             int givenDays = 0;
             if (Globals.hasNoText(name)) {
-                App.reportError(todoCreator.getRootPane(), "No Name", "Please specify a name for the task");
+                App.reportError(todoCreator.getRootPane(), "No Name", "Please specify a name for the task.");
                 todoCreator.getDescriptionField().requestFocusInWindow();
             } else if (name.length() > DESCRIPTION_LIMIT) {
                 App.reportError("Error", "Sorry, description of a task must be at most "+
@@ -111,7 +110,7 @@ public class TodoHandler {
             finalizeTransfer(oldSelf);
         } else {
             if (App.showYesNoCancelDialog(dialog.getRootPane(), "Confirm",
-                    "Are you sure you've completed this task? It will be marked as completed.")) {
+                    "Are you sure you've completed this task?")) {
                 oldSelf.setTotalTimeConsumed(oldSelf.getDaysTaken());
                 finalizeTransfer(oldSelf);
                 dialog.dispose();
@@ -173,9 +172,7 @@ public class TodoHandler {
     private JComponent runningTasks(){
         final KButton addButton = new KButton("New Task");
         addButton.setFont(TASK_BUTTONS_FONT);
-        addButton.setMnemonic(KeyEvent.VK_T);
         addButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        addButton.setToolTipText("Create Task (Alt+T)");
         addButton.addActionListener(e-> {
             todoCreator = new TodoCreator();
             todoCreator.setVisible(true);
@@ -194,12 +191,10 @@ public class TodoHandler {
     private JComponent completedTasks(){
         final KButton clearButton = new KButton("Clear List");
         clearButton.setFont(TASK_BUTTONS_FONT);
-        clearButton.setToolTipText("Remove All (Alt+C)");
-        clearButton.setMnemonic(KeyEvent.VK_C);
         clearButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         clearButton.addActionListener(e-> {
             if (dormantContainer.getComponentCount() > 0) {
-                if (App.showYesNoCancelDialog("Confirm", "Do you want to remove all the completed tasks.")) {
+                if (App.showYesNoCancelDialog("Confirm", "Do you want to remove all the completed tasks?")) {
                     for (Component c : dormantContainer.getComponents()) {
                         dormantContainer.remove(c);
                     }

@@ -1,6 +1,6 @@
 import core.Portal;
 import core.driver.MDriver;
-import core.module.RunningCourse;
+import core.module.RegisteredCourse;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -56,7 +56,7 @@ public class Register {
                 return;
             }
 
-            final ArrayList<RegisteringModule> foundRunningModules = new ArrayList<>();
+            final ArrayList<RunningCourse> foundRunningModules = new ArrayList<>();
             for (WebElement row : rows) {
                 final List<WebElement> data = row.findElements(By.tagName("td"));
                 final String[] nameExt = data.get(2).getText().split("[\s]");
@@ -67,7 +67,7 @@ public class Register {
                 }
                 final String[] dayTime = data.get(7).getText().split("[\s]");
                 final boolean registered = !data.get(data.size() - 1).getText().equalsIgnoreCase("Register");
-                foundRunningModules.add(new RegisteringModule(data.get(1).getText(), nameJoiner.toString(), numbRegistered,
+                foundRunningModules.add(new RunningCourse(data.get(1).getText(), nameJoiner.toString(), numbRegistered,
                         Integer.parseInt(data.get(3).getText()), data.get(4).getText(), data.get(5).getText(),
                         data.get(6).getText(), dayTime[0], dayTime[1].split("[-]")[0], registered));
             }
@@ -75,7 +75,7 @@ public class Register {
             final Scanner scanner = new Scanner(System.in);
             final int rIndex;
             if (foundRunningModules.size() == 1) {
-                final RegisteringModule module = foundRunningModules.get(0);
+                final RunningCourse module = foundRunningModules.get(0);
                 System.out.println("[INFO] Found the following course:");
                 System.out.printf("\tCode<%s> Name<%s> Lecturer<%s> Venue<%s> Room<%s> Time<%s> " +
                         "Class-Size<%d> Number-Registered<%d> Status<%s>%n", module.getCode(), module.getName(),
@@ -100,7 +100,7 @@ public class Register {
             } else {
                 System.out.println("[INFO] Found the following courses:");
                 int var = 1;
-                for (RegisteringModule module : foundRunningModules) {
+                for (RunningCourse module : foundRunningModules) {
                     System.out.printf("%d. Code<%s> Name<%s> Lecturer<%s> Venue<%s> Room<%s> Time<%s> " +
                                     "Class-Size<%d> Number-Registered<%d> Status<%s>%n", var++, module.getCode(), module.getName(),
                             module.getLecturer(), module.getVenue(), module.getRoom(), module.getTime(), module.classSize,
@@ -114,7 +114,7 @@ public class Register {
                         return;
                     }
                     rIndex = i - 1;
-                    final RegisteringModule module = foundRunningModules.get(rIndex);
+                    final RunningCourse module = foundRunningModules.get(rIndex);
                     if (module.isConfirmed()) {
                         System.out.println("You've already registered that course.");
                         return;
@@ -177,13 +177,12 @@ public class Register {
     }
 
 
-//    Todo: Rename this to RunningModule
-    public static class RegisteringModule extends RunningCourse {
+    public static class RunningCourse extends RegisteredCourse {
         private int classSize;
         private int numberRegistered;
 
-        public RegisteringModule(String code, String name, int classSize, int numbRegistered, String lecturer,
-                                 String campus, String room, String day, String time, boolean registered) {
+        public RunningCourse(String code, String name, int classSize, int numbRegistered, String lecturer,
+                             String campus, String room, String day, String time, boolean registered) {
             super(code, name, lecturer, campus, room, day, time, registered);
             this.classSize = classSize;
             this.numberRegistered = numbRegistered;

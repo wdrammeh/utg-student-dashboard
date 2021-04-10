@@ -12,7 +12,6 @@ import proto.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,7 +74,7 @@ public class AssignmentHandler {
             final String name = assignmentCreator.getNameField().getText();
             if (Globals.hasNoText(name)) {
                 App.reportError(assignmentCreator.getRootPane(), "No Name",
-                        "Please provide the name of the course");
+                        "Please provide the name of the course.");
                 assignmentCreator.getNameField().requestFocusInWindow();
             } else if (name.length() > DESCRIPTION_LIMIT) {
                 App.reportError(assignmentCreator.getRootPane(), "Error",
@@ -90,7 +89,7 @@ public class AssignmentHandler {
                 final String question = assignmentCreator.getQuestion();
                 final Date givenDate = Objects.requireNonNull(MDate.parse(assignmentCreator.getProvidedDeadLine()+" 0:0:0"));
                 if (givenDate.before(new Date())) {
-                    App.reportError(assignmentCreator.getRootPane(), "Invalid Deadline",
+                    App.reportError(assignmentCreator.getRootPane(), "Past Deadline",
                             "That deadline is already past. Enter a valid deadline.");
                     return;
                 }
@@ -132,7 +131,7 @@ public class AssignmentHandler {
             completeTransfer(assignmentSelf);
         } else {
             if (App.showYesNoCancelDialog(assignmentExhibition.getRootPane(),"Confirm",
-                    "Are you sure you have submitted this assignment?")) {
+                    "Are you sure you have submitted this assignment already?")) {
                 assignmentSelf.setSubmissionDate(MDate.formatDateOnly(new Date()));
                 completeTransfer(assignmentSelf);
                 assignmentExhibition.dispose();
@@ -199,9 +198,8 @@ public class AssignmentHandler {
     private JComponent activeAssignments() {
         final KButton createButton = new KButton("New Assignment");
         createButton.setFont(TASK_BUTTONS_FONT);
-        createButton.setMnemonic(KeyEvent.VK_A);
         createButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        createButton.setToolTipText("Add Assignment (Alt+A)");
+        createButton.setToolTipText("Add Assignment");
         createButton.addActionListener(e-> {
             assignmentCreator = new AssignmentCreator();
             assignmentCreator.setVisible(true);
@@ -218,10 +216,9 @@ public class AssignmentHandler {
     }
 
     private JComponent doneAssignments() {
-        final KButton clearButton = new KButton("Remove all");
+        final KButton clearButton = new KButton("Clear");
         clearButton.setFont(TASK_BUTTONS_FONT);
-        clearButton.setToolTipText("Remove All (Alt + R)");
-        clearButton.setMnemonic(KeyEvent.VK_R);
+        clearButton.setToolTipText("Remove all submissions");
         clearButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         clearButton.addActionListener(e -> {
             if (doneReside.getComponentCount() > 0) {

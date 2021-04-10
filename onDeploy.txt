@@ -1,8 +1,14 @@
-- Replace Dashboard with .dashboard as ROOT_DIR
-    { while testing, the path should remain Dashboard to avoid confliction }
+>> Herein defines tasks, processes, test-cases, etc.
+    that must be done prior to deployment.
+
+
+- Every release, whether snapshot, or release, must have its own branch.
+    Create a branch for the release version, if not already.
+- Replace Dashboard with .dashboard as ROOT_DIR.
 - Make sure Dashboard.VERSION := Bundle-Version in MANIFEST.MF := <version> in pom.xml
-- Be more specific in deployment, i.e Package := UTG-Student Dashboard
-- Cross-check for TODOs
-- Be sure to have dealt with all test-cases
-- Make sure the documentataion are in full-sync. Documentation in classes := *.static.txt files
-- Cross-check for reference-notices, and Dashboard dialog messages, including alert messages
+- Cross-check for TODOs.
+- Be sure to have dealt with all test-cases, as in the test file.
+- Make sure the documentation are in full-sync.
+    Documentation in source files := static files := README, logic, etc.
+- Make sure Versions are in order.
+- Test extensively on the three (3) major platforms.

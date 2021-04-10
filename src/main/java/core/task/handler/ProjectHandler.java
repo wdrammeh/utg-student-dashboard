@@ -14,7 +14,6 @@ import proto.KScrollPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -53,7 +52,7 @@ public class ProjectHandler {
             final String name = projectCreator.getNameField().getText();
             int givenDays = 0;
             if (Globals.hasNoText(name)) {
-                App.reportError("No Name","Please specify a name for the project");
+                App.reportError("No Name","Please specify a name for the project.");
                 projectCreator.getNameField().requestFocusInWindow();
             } else if (name.length() > DESCRIPTION_LIMIT) {
                 App.reportError("Error", "Sorry, name of a project must be at most "+
@@ -125,7 +124,7 @@ public class ProjectHandler {
 
     public static ActionListener removalListener(ProjectSelf project){
         return e -> {
-            if (App.showYesNoCancelDialog("Confirm","Are you sure you want to remove this project?.")) {
+            if (App.showYesNoCancelDialog("Confirm","Are you sure you want to remove this project?")) {
                 if (project.isLive()) {
                     renewCount(-1);
                 } else {
@@ -157,9 +156,8 @@ public class ProjectHandler {
     public JComponent getComponent(){
         final KButton addButton = new KButton("New Project");
         addButton.setFont(TASK_BUTTONS_FONT);
-        addButton.setMnemonic(KeyEvent.VK_P);
         addButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        addButton.setToolTipText("Create Project (Alt+P)");
+        addButton.setToolTipText("Create Project");
         addButton.addActionListener(e-> {
             projectCreator = new ProjectCreator();
             projectCreator.setVisible(true);

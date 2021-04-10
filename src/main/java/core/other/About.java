@@ -119,9 +119,9 @@ public class About extends KDialog {
         final Font specialNameFont = KFontFactory.createPlainFont(15);
         final KPanel specialNamesLayer = new KPanel();
         specialNamesLayer.setLayout(new BoxLayout(specialNamesLayer, BoxLayout.Y_AXIS));
-        specialNamesLayer.addAll(new KLabel("Mr. Fred Sangol Uche : Lecturer, UTG", specialNameFont),
-                new KLabel("Mahmud S Jallow : Student, UTG", specialNameFont),
-                new KLabel("Alieu Ceesay : Student, UTG", specialNameFont));
+        specialNamesLayer.addAll(new KLabel("Mr. Fred Sangol Uche  [Lecturer, UTG]", specialNameFont),
+                new KLabel("Mahmud S Jallow  [Student, UTG]", specialNameFont),
+                new KLabel("Alieu Ceesay  [Student, UTG]", specialNameFont));
 
         final KPanel respectLayer = new KPanel();
         respectLayer.setLayout(new BoxLayout(respectLayer, BoxLayout.Y_AXIS));
@@ -348,7 +348,7 @@ public class About extends KDialog {
     private KPanel getDonateCard(){
         final String donationText = "Dashboard is not currently backed, funded, or sponsored by any institution or organization. " +
                 "Therefore, to guarantee our long term of service, and continuous update, we humbly welcome all kinds of " +
-                "donations. (Every dalasi shall count!)";
+                "donations. (Every Dalasi will count!)";
 
         final KPanel donationCard = new KPanel();
         donationCard.setLayout(new BoxLayout(donationCard, BoxLayout.Y_AXIS));
@@ -378,6 +378,7 @@ public class About extends KDialog {
     private KTextPane newNotePane(String text, int height){
         final KTextPane textPane = KTextPane.htmlFormattedPane(text);
         textPane.setPreferredSize(new Dimension(getPreferredSize().width, height));
+        textPane.setOpaque(false);
         return textPane;
     }
 

@@ -35,18 +35,18 @@ public class MComponent {
     }
 
     /**
-     * Generates an url from the given name and returns an image-icon
+     * Generates a url from the given name and returns an imageIcon
      * as defined by {@link #scaleIcon(URL, int, int)}
      * This call is consequently self-silence.
      */
-    public static ImageIcon scaleIcon(String name, int width, int height) {
-        return scaleIcon(App.getIconURL(name), width, height);
+    public static ImageIcon scaleIcon(String iconName, int width, int height) {
+        return scaleIcon(App.getIconURL(iconName), width, height);
     }
 
     /**
      * Strips these container(s) off their children, if there's any.
      */
-    public static void empty(Container... components){
+    public static void clear(Container... components){
         for (Container c : components) {
             c.removeAll();
         }
@@ -99,7 +99,7 @@ public class MComponent {
     }
 
     /**
-     * Returns a component in place of an activity which is restricted.
+     * Returns a component in place of an activity which is restricted for the current user.
      */
     public static Component createUnavailableActivity(String activityName){
         final KLabel label1 = new KLabel(activityName, KFontFactory.createBoldFont(30));
@@ -107,7 +107,7 @@ public class MComponent {
                 KFontFactory.createPlainFont(20), Color.DARK_GRAY);
         final KLabel label3 = new KLabel("If you are a student of The University of The Gambia, you may...",
                 KFontFactory.createPlainFont(20), Color.GRAY);
-        final KLabel loginLabel = new KLabel("Login now", KFontFactory.createPlainFont(20), Color.BLUE);
+        final KLabel loginLabel = new KLabel("Login Now", KFontFactory.createPlainFont(20), Color.BLUE);
         loginLabel.underline(false);
         loginLabel.setCursor(HAND_CURSOR);
         loginLabel.addMouseListener(new MouseAdapter() {

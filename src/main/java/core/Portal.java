@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * The Dashboard's abstract Portal representative.
  * The functionality of this class come to life after the student is verified.
- * Never forget to use it on a different thread.
+ * Never forget to use them on a different thread.
  */
 public class Portal {
     public static final String LOGIN_PAGE = "https://utg.gm/login";
@@ -55,7 +55,7 @@ public class Portal {
             }
         } else {
             if (Internet.isInternetAvailable()) {
-                final int vInt = App.verifyUser("To access your portal, kindly enter your Matriculation Number below:");
+                final int vInt = App.verifyUser("To access your portal, please enter your Matriculation Number:");
                 if (vInt == App.VERIFICATION_TRUE) {
                     launchPortal();
                 } else if (vInt == App.VERIFICATION_FALSE) {
@@ -118,7 +118,6 @@ public class Portal {
             WebElement registrationElement = new WebDriverWait(noticeDriver,59).until(
                     ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             Portal.setRegistrationNotice(registrationElement.getText());
-//            Board.POST_PROCESSES.add(()-> RunningCourseActivity.noticeLabel.setText(getRegistrationNotice()));
             return true;
         } catch (Exception e) {
             if (userRequested) {
@@ -176,7 +175,6 @@ public class Portal {
     public static void setRegistrationNotice(String registrationNotice){
         Portal.registrationNotice = registrationNotice;
         lastRegistrationNoticeUpdate = new Date();
-//        RunningCourseActivity.effectNoticeUpdate();
     }
 
     /**
@@ -232,7 +230,7 @@ public class Portal {
             Student.setStatus(iGroup.get(3).getText().split("\n")[1]);
 
             final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
-            final String ongoingSemester = findingSemester[0]+" "+findingSemester[1]+" "+findingSemester[2];
+            final String ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
             Student.setSemester(ongoingSemester);
         }
         setLastLogin(new Date());
@@ -254,14 +252,13 @@ public class Portal {
 
     /**
      * Reports that the Portal is requesting course evaluations.
-     * This report is as a consequence of the
-     * This report is made on the given parent component [or Board.getRoot() if null].
+     * This report is as a consequence of {@link #isEvaluationNeeded(FirefoxDriver)}.
      */
     public static void reportEvaluationNeeded(Component parent){
-        final Component actualParent = parent == null ? Board.getRoot() : parent;
-        App.reportWarning(actualParent, "Course Evaluation",
+        App.reportWarning(parent, "Course Evaluation",
                 "Your portal is currently requesting \"Course Evaluations\".\n" +
-                        "Please visit your portal to perform the evaluation first.");
+                        "Please visit your portal to perform the evaluation first.\n" +
+                        "Until you're done, Dashboard won't be able to access your Portal.");
     }
 
     /**
@@ -269,7 +266,7 @@ public class Portal {
      * @see #reportEvaluationNeeded(Component)
      */
     public static void reportEvaluationNeeded(){
-        reportEvaluationNeeded(null);
+        reportEvaluationNeeded(Board.getRoot());
     }
 
     public static void serialize(){

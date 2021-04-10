@@ -66,7 +66,7 @@ public class EventSelf {
     public void setUpUI(){
         if (isPending) {
             canceller = KButton.createIconifiedButton("terminate.png", 20, 20);
-            canceller.setToolTipText("Terminate this Event");
+            canceller.setToolTipText("Terminate Event");
             canceller.addActionListener(e -> {
                 if (App.showYesNoCancelDialog("Confirm",
                         "Do you really wish to cancel this " + (isTest() ? "Test?" : isExam() ? "Exam?" : "Event?"))) {
@@ -77,9 +77,9 @@ public class EventSelf {
             });
         } else {
             canceller = KButton.createIconifiedButton("trash.png", 20, 20);
-            canceller.setToolTipText("Remove this Event");
+            canceller.setToolTipText("Remove Event");
             canceller.addActionListener(e -> {
-                if (App.showYesNoCancelDialog("Confirm Removal","Do you wish to remove this "+
+                if (App.showYesNoCancelDialog("Confirm","Do you wish to remove this "+
                         (isTest() ? "Test?" : isExam() ? "Exam?" : "Event?"))) {
                     EventHandler.deleteEvent(this);
                 }
@@ -99,16 +99,18 @@ public class EventSelf {
 
     private void signalEveNotice(){
         if (!eveIsAlerted) {
-            final String eveText = "Dear "+ Student.getLastName()+", "+title+" is just one day away from now.";
-            Notification.create("Event Reminder",Student.getLastName()+", "+getTitle()+" is at your door-step!", eveText);
+            final String info = "Dear "+ Student.getLastName()+"," +
+                    "<p>"+title+" is just one day away from now.</p>";
+            Notification.create("Event Reminder",Student.getLastName()+", "+getTitle()+" is at your door-step!", info);
             eveIsAlerted = true;
         }
     }
 
     private void signalTimeupNotice(){
         if (!timeupIsAlerted) {
-            final String timeupText = "Dear "+Student.getLastName()+", time is up for the event "+title+".";
-            Notification.create("Event Time-Up",Student.getLastName()+", "+getTitle()+" is due now!", timeupText);
+            final String info = "Dear "+Student.getLastName()+"," +
+                    "<p>time is up for the event "+title+".</p>";
+            Notification.create("Event Time-up",Student.getLastName()+", "+getTitle()+" is due now!", info);
             timeupIsAlerted = true;
         }
     }
@@ -167,4 +169,5 @@ public class EventSelf {
                 eveIsAlerted,
                 timeupIsAlerted);
     }
+
 }

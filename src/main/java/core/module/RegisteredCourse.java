@@ -8,13 +8,11 @@ import proto.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.Serializable;
 
 /**
  * A model for the registered courses.
- * Todo: Rename this to RegisteredCourse
  */
-public class RunningCourse implements Serializable {
+public class RegisteredCourse {
     private String code;
     private String name;
     private String lecturer;
@@ -25,8 +23,8 @@ public class RunningCourse implements Serializable {
     private boolean isConfirmed;
 
 
-    public RunningCourse(String code, String name, String lecturer, String venue, String room, String day, String time,
-                         boolean onPortal){
+    public RegisteredCourse(String code, String name, String lecturer, String venue, String room, String day, String time,
+                            boolean onPortal){
         this.code = code.toUpperCase();
         this.name = name;
         this.lecturer = lecturer;
@@ -134,21 +132,21 @@ public class RunningCourse implements Serializable {
     /**
      * @see Course#create(String)
      */
-    public static RunningCourse create(String data){
+    public static RegisteredCourse create(String data){
         final String[] lines = Globals.splitLines(data);
         boolean validity = false;
         try {
             validity = Boolean.parseBoolean(lines[7]);
         } catch (Exception e) {
-            App.silenceException("Error reading validity of registered course "+lines[3]);
+            App.silenceException(String.format("Failed to read validity of registered course '%s'.", lines[3]));
         }
-        return new RunningCourse(lines[0], lines[1], lines[2], lines[3], lines[4], lines[5], lines[6], validity);
+        return new RegisteredCourse(lines[0], lines[1], lines[2], lines[3], lines[4], lines[5], lines[6], validity);
     }
 
     /**
      * @see Course#exhibit(Course)
      */
-    public static void exhibit(RunningCourse course, Component base) {
+    public static void exhibit(RegisteredCourse course, Component base) {
         if (course == null) {
             return;
         }
@@ -205,7 +203,7 @@ public class RunningCourse implements Serializable {
         SwingUtilities.invokeLater(()-> dialog.setVisible(true));
     }
 
-    public static void exhibit(RunningCourse runningCourse) {
+    public static void exhibit(RegisteredCourse runningCourse) {
         exhibit(runningCourse, null);
     }
 

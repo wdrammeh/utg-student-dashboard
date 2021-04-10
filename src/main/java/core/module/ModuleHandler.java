@@ -243,7 +243,7 @@ public class ModuleHandler {
      */
     public static void launchVerification(Course target) {
         if (!App.showYesNoCancelDialog("Verify "+target.getCode(),
-                "Do you want verify \""+target.getName()+"\".\n" +
+                "Do you want to verify \""+target.getName()+"\".\n" +
                         "Dashboard will find out if it is on your Portal.\n" +
                         "Refer to Dashboard Tips for more info about this action.")) {
             return;
@@ -305,7 +305,7 @@ public class ModuleHandler {
             if (foundOne == null) {
                 App.reportWarning("Checkout Unsuccessful",
                         "The process to checkout for "+target.getAbsoluteName()+" was unsuccessful.\n" +
-                        "Dashboard could not locate any trace of it on your portal.\n" +
+                                "Dashboard could not locate any trace of it on your portal.\n" +
                                 "If you've done this course, then contact the lecturer, or the department.");
                 return;
             }
@@ -501,7 +501,7 @@ public class ModuleHandler {
 
                 final int foundCount = foundCourses.size();
                 final int semesterCount = semCaptions.size();
-                App.reportInfo("Sync Successful", "Synchronization of the modules completed successfully:\n" +
+                App.reportInfo("Sync Successful", "Synchronization of the modules completed successfully.\n" +
                         String.format("%s were found in %s.", Globals.checkPlurality(foundCount, "courses"),
                                 Globals.checkPlurality(semesterCount, "semesters.")));
                 triggerButton.setEnabled(true);
@@ -740,7 +740,7 @@ public class ModuleHandler {
             } else if (semester.equals(Student.SECOND_SEMESTER)) {
                 model2.addRow(new String[]{course.getCode(), course.getName(), course.getLecturer(), course.getGrade()});
             } else {
-                App.silenceException(String.format("Error: %s [%s] cannot be added to the academic year %s.",
+                App.silenceException(String.format("%s [%s] cannot be added to the academic year %s.",
                         course.getName(), course.getAbsoluteSemesterName(), yearName));
             }
         }

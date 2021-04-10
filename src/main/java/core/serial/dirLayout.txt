@@ -1,17 +1,19 @@
->> The storage directory shall use a completely new layout structure...
+>> The directory tree of the serializable files.
+    May be valid for the current version only.
 
-config.ser - as stored, it contains the configuration info.
-    of the last instance at collapse: version, userName,
+
+config.ser - It contains the configuration info
+    of the last Dashboard instance at time of collapse.
 settings.ser -
 portal.ser -
 alerts.ser -
 user:
     core.ser -
+    dials.ser -
     about.ser -
     extra.keys.ser -
     extra.values.ser -
 modules:
-    running.ser -
     registered.ser -
     modules.ser -
 tasks:

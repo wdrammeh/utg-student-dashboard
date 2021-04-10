@@ -4,7 +4,7 @@ import core.Portal;
 import core.driver.MDriver;
 import core.module.Course;
 import core.module.ModuleHandler;
-import core.module.RunningCourse;
+import core.module.RegisteredCourse;
 import core.module.RunningCourseActivity;
 import core.utils.App;
 import core.utils.Globals;
@@ -18,10 +18,11 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Todo: to save time, setting-up of the driver should begin (separately) since {@link utg.Dashboard}.
- * Todo: This type is to wait on that process, if not completed already.
+ *  And this type is to wait on that process, if not completed already.
  *
  * Also, Dashboard is to support multiple driver in a future release.
  * @see MDriver
@@ -33,7 +34,7 @@ public class PrePortal {
     private static boolean isTerminated;
     public static final ArrayList<String> USER_DATA = new ArrayList<>();
     public static final ActionListener CANCEL_LISTENER = e-> {
-        if (App.showYesNoCancelDialog(Login.getRoot(), "Cancel", "Do you really want to cancel the process?")) {
+        if (App.showYesNoCancelDialog(Login.getRoot(), "Confirm", "Do you really want to cancel the process?")) {
             isTerminated = true;
             Login.getInstance().dispose();
             if (driver != null) {
@@ -127,7 +128,7 @@ public class PrePortal {
             final WebElement admissionAlert = loadWaiter.until(ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             Portal.setAdmissionNotice(admissionAlert.getText());
         } catch (Exception e) {
-            App.silenceException("[WARNING] Failed to set 'Admission Notice'");
+            App.silenceException("Failed to set 'Admission Notice'");
         }
 
         Login.appendToStatus("Now processing details.......");
@@ -146,20 +147,17 @@ public class PrePortal {
             final WebElement registrationAlert = loadWaiter.until(ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             Portal.setRegistrationNotice(registrationAlert.getText());
         } catch (Exception e) {
-            App.silenceException("[WARNING] Failed to set 'Registration Notice'");
+            App.silenceException("Failed to set 'Registration Notice'");
         }
-        try {
-            final String[] fullName = temporaryName.split(" ");
-            firstName = fullName[fullName.length - 1];
-            lastName = fullName[0];
-            final StringBuilder lastNameBuilder = new StringBuilder(lastName);
-            for (int i = 1; i < fullName.length - 1; i++) {
-                lastNameBuilder.append(" ").append(fullName[i]);
-            }
-            lastName = lastNameBuilder.toString();
-        } catch (Exception e){ // though, this must be avoided at all costs
-            Login.appendToStatus("Error occurred assigning name parts");
+
+        final String[] fullName = temporaryName.split(" ");
+        firstName = fullName[fullName.length - 1];
+        final StringJoiner nameJoiner = new StringJoiner(" ");
+        for (int i = 0; i < fullName.length - 1; i++) {
+            nameJoiner.add(fullName[i]);
         }
+        lastName = nameJoiner.toString();
+
         try {
             program = driver.findElementByXPath("/html/body/section/div[2]/div/div[1]/div/div[2]/div[2]/div[1]/div/h4").getText();
             major = program.contains("Unknown") ? "Unknown" : program.split(" ")[4];
@@ -339,7 +337,7 @@ public class PrePortal {
             int match = allRows.size() - 1;
             while (!allRows.get(match).getText().equalsIgnoreCase(ongoingSemester)){
                 final List<WebElement> data = allRows.get(match).findElements(By.tagName("td"));
-                RunningCourseActivity.STARTUP_REGISTRATIONS.add(new RunningCourse(data.get(0).getText(),
+                RunningCourseActivity.STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(),
                         data.get(1).getText(), data.get(2).getText(), data.get(3).getText(), data.get(4).getText(),
                         "", "", true));
                 match--;

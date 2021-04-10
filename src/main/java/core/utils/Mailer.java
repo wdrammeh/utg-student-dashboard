@@ -44,10 +44,10 @@ public class Mailer {
             transport.connect(host, senderMail, senderPsswd);
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
-            App.reportInfo("Successful","The message was sent successfully. Thank you for the feedback!");
+            App.reportInfo("Successful","The message was sent successfully. Thank you for the feedback.");
             return true;
         } catch (MessagingException mex) {
-            App.reportError("Error","An error was encountered while sending the feedback.\n" +
+            App.reportError("Error","An error encountered while sending the feedback.\n" +
                     "Try again later.");
             return false;
         }

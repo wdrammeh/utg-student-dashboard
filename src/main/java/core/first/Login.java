@@ -133,7 +133,7 @@ public class Login extends JDialog {
     }
 
     public static void setInputState(boolean state){
-        MComponent.empty(statusPanel);
+        MComponent.clear(statusPanel);
         emailField.setEnabled(state);
         passwordField.setEnabled(state);
         loginButton.setEnabled(state);
@@ -218,7 +218,7 @@ public class Login extends JDialog {
         enter.addActionListener(e-> {
             instance.setVisible(false);
             if (Board.getInstance() != null) {
-                Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_THREAD);
+                Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);
                 Board.getInstance().dispose();
             }
             new Board().setVisible(true);

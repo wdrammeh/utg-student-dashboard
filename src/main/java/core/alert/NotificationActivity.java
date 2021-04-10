@@ -139,7 +139,7 @@ public class NotificationActivity implements Activity {
         refreshButton.addActionListener(e-> {
             if (Student.isTrial()) {
                 App.reportWarning("Unavailable",
-                        "Sorry, we cannot access the Portal for notices, because you're not logged in.");
+                        "Sorry, we cannot currently access the Portal for notices, because you're not logged in.");
             } else {
                 updateNotices(true);
             }
@@ -187,7 +187,7 @@ public class NotificationActivity implements Activity {
             if (!Notification.NOTIFICATIONS.isEmpty()) {
                 if (App.showYesNoCancelDialog("Clear", "This action will clear the notifications. Continue?.\n" +
                                 (unreadCount == 0 ? "" : "You currently have "+ Globals.checkPlurality(unreadCount,
-                                        "notifications")+" unread."))) {
+                                        "notifications")+" that are unread."))) {
                     for (Notification notification : Notification.NOTIFICATIONS) {
                         dashboardPanel.remove(notification.getLayer());
                     }
@@ -240,7 +240,7 @@ public class NotificationActivity implements Activity {
                 final boolean renew = Portal.startRenewingNotices(noticeDriver, userRequested);
                 if (renew) {
                     App.reportInfo("Successful",
-                            "The \"Admission\" and \"Registration\" Notices are updated successfully.");
+                            "The \"Admission\" and \"Registration\" Notices are been updated successfully.");
                 } else {
                     App.reportError("Error", "Something went wrong while updating the Notices.\n" +
                             "Please try again.");
@@ -295,7 +295,7 @@ public class NotificationActivity implements Activity {
                 noticeText = Portal.getRegistrationNotice();
                 if (Student.isTrial()) {
                     noticeText = "<b>Registration Notice</b> is not available for the current user type. " +
-                            "If you are a UTG student, then Login to track registration.";
+                            "If you are a UTG student, then Login to track registrations.";
                 }
             }
 

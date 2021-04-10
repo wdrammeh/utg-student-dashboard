@@ -32,13 +32,13 @@ public class News implements Activity {
             }
             return false;
         }
-    };//unlike many of its kind, this does not explicitly delete.
+    }; // unlike many of its kind, this does not explicitly delete.
     public static final String HOME_SITE = "https://www.utg.edu.gm/";
     public static final String NEWS_SITE = "https://www.utg.edu.gm/category/news/";
 
 
     public News() {
-        accessTime = "News Feeds will be shown here... Refresh now to get updates";
+        accessTime = "News Feeds will be shown here... Refresh now to get updates.";
         accessLabel = new KLabel(accessTime, KFontFactory.createPlainFont(16), Color.DARK_GRAY);
 
         refreshButton = new KButton("Refresh");
@@ -105,15 +105,15 @@ public class News implements Activity {
                     }
                 }
             }
-            accessTime = "Last accessed: "+ MDate.now();
+            accessTime = "Last Accessed: "+ MDate.now();
             accessLabel.setText(accessTime);
             if (userRequest) {
-                App.reportInfo("News", "News refreshed successfully.");
+                App.reportInfo("News", "News feeds refreshed successfully.");
             }
         } catch (IOException e) {
             if (userRequest) {
                 App.reportError("Error",
-                        "Sorry, unable to access the server at 'utg.edu.gm'.\n" +
+                        "We're unable to access the server at 'utg.edu.gm'.\n" +
                                 "Please try again later.");
             }
         } finally {
@@ -138,10 +138,10 @@ public class News implements Activity {
         extendedReader.setFont(KFontFactory.createPlainFont(15));
         extendedReader.setCursor(MComponent.HAND_CURSOR);
         if (Globals.hasNoText(allContent)) {
-            extendedReader.setText("Get full news...");
+            extendedReader.setText("Get full news");
             extendedReader.addActionListener(e-> newsDialog.primaryClick(extendedReader));
         } else {
-            extendedReader.setText("Continue reading...");
+            extendedReader.setText("Continue reading");
             extendedReader.setForeground(Color.BLUE);
             extendedReader.addActionListener(e-> newsDialog.setVisible(true));
         }
@@ -161,9 +161,6 @@ public class News implements Activity {
     }
 
 
-    /**
-     * Todo: push scrollBar to the top for a first-sight
-     */
     private static class NewsDialog extends KDialog {
         private String keyContent;
         private String bodyContent;
@@ -243,9 +240,6 @@ public class News implements Activity {
     }
 
 
-    // Todo remove this type...?
-    // Any class implementing Serializable
-    // will either be removed, or stop implementing it.
     private static final class NewsSavior {
         private String heading;
         private String body;

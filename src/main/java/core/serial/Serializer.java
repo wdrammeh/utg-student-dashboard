@@ -86,7 +86,7 @@ public class Serializer {
             FileUtils.deleteDirectory(new File(ROOT_DIR));
             return true;
         } catch (IOException ioe) {
-            final File configFile = new File(inPath("config.ser"));
+            final File configFile = new File(inPath("configs.ser"));
             return !configFile.exists() || configFile.delete();
         }
     }

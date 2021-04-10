@@ -23,7 +23,7 @@ public class Setup extends KDialog {
         final KPanel hintPanel = new KPanel();
         hintPanel.setLayout(new BoxLayout(hintPanel, BoxLayout.Y_AXIS));
         hintPanel.add(new KPanel(new KLabel("Welcome!", KFontFactory.createBoldFont(25))));
-        hintPanel.add(new KPanel(new KLabel("Kindly fill out the following fields to get started",
+        hintPanel.add(new KPanel(new KLabel("Kindly fill out the following fields to get started.",
                 KFontFactory.createPlainFont(20), Color.GRAY)));
         hintPanel.add(Box.createRigidArea(new Dimension(450, 25)));
 
@@ -45,14 +45,9 @@ public class Setup extends KDialog {
         nationalityLayer.add(new KPanel(newHintLabel("Nationality:")), BorderLayout.WEST);
         nationalityLayer.add(new KPanel(nationalityField), BorderLayout.CENTER);
 
-        final KTextField addressField = new KTextField(fieldDim);
-        final KPanel addressLayer = new KPanel(new BorderLayout());
-        addressLayer.add(new KPanel(newHintLabel("Address:")), BorderLayout.WEST);
-        addressLayer.add(new KPanel(addressField), BorderLayout.CENTER);
-
         final KPanel contentPanel = new KPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.addAll(hintPanel, firstNameLayer, lastNameLayer, nationalityLayer, addressLayer,
+        contentPanel.addAll(hintPanel, firstNameLayer, lastNameLayer, nationalityLayer,
                 MComponent.contentBottomGap());
 
         final KButton startButton = new KButton("Start Dashboard");
@@ -64,12 +59,10 @@ public class Setup extends KDialog {
                 signalMissingInfo("Last Name", lastNameField);
             } else if (!Globals.hasText(nationalityField.getText())) {
                 signalMissingInfo("Nationality", nationalityField);
-            } else if (!Globals.hasText(addressField.getText())) {
-                signalMissingInfo("Address", addressField);
             } else {
                 dispose();
                 Student.setupTrial(new String[]{firstNameField.getText(), lastNameField.getText(),
-                        nationalityField.getText(), addressField.getText()});
+                        nationalityField.getText()});
                 new Board().setVisible(true);
             }
         });

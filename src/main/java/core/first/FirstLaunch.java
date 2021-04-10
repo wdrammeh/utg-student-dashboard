@@ -261,6 +261,7 @@ public class FirstLaunch extends KDialog {
     }
 
     private static void mountDataPlus(){
+        // initialize an About Me
         final String aboutMe = "My name is "+Student.getFullNamePostOrder()+"\n" +
                 "The University of the Gambia\n" +
                 "School of "+Student.getSchool()+"\n" +
@@ -273,8 +274,7 @@ public class FirstLaunch extends KDialog {
 
         // create a welcome message notification...
         String welcomeMessage = "Dear "+Student.getLastName()+"," +
-                "<p><b>You're highly welcome to UTG-Student Dashboard</b></p>" +
-                "<p>Personalized, simplified. Dashboard is all yours!</p>";
+                "<p>You're highly welcome to <b>Dashboard</b>.</p>";
         Notification.create("Welcome",
                 "Welcome to Dashboard, "+Student.getFullNamePostOrder(), welcomeMessage);
     }

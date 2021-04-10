@@ -1,6 +1,8 @@
 package core.utils;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.StringJoiner;
 
 public class Globals {
@@ -27,6 +29,12 @@ public class Globals {
         } else {
             return count+" "+text;
         }
+    }
+
+    public static double round(double d, int places) {
+        BigDecimal bd = BigDecimal.valueOf(d);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     public static String joinPaths(String... paths){
@@ -64,11 +72,11 @@ public class Globals {
      * Returns true if the given string is null, or otherwise blank.
      */
     public static boolean hasNoText(String t){
-        if (t == null) {
-            return true;
-        } else {
-            return t.strip().length() == 0;
-        }
+        return t == null || t.isBlank();
+    }
+
+    public static String reference(String... parts){
+        return String.join("|", parts);
     }
 
 }

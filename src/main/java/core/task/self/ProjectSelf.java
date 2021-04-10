@@ -92,13 +92,13 @@ public class ProjectSelf {
         terminationButton = KButton.createIconifiedButton("terminate.png", 20, 20);
         terminationButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         terminationButton.setPreferredSize(optionsDim);
-        terminationButton.setToolTipText("Remove this Project");
+        terminationButton.setToolTipText("Terminate");
         terminationButton.addActionListener(ProjectHandler.removalListener(this));
 
         completionButton = KButton.createIconifiedButton("mark.png", 20, 20);
         completionButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         completionButton.setPreferredSize(optionsDim);
-        completionButton.setToolTipText("Mark as Complete");
+        completionButton.setToolTipText("Mark as Completed");
         completionButton.addActionListener(e-> ProjectHandler.performIComplete(this, false));
 
         moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
@@ -133,7 +133,7 @@ public class ProjectSelf {
         terminationButton = KButton.createIconifiedButton("trash.png", 20, 20);
         terminationButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         terminationButton.setPreferredSize(new Dimension(30, 30));
-        terminationButton.setToolTipText("Remove this Project");
+        terminationButton.setToolTipText("Remove");
         terminationButton.addActionListener(ProjectHandler.removalListener(this));
 
         moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
@@ -150,7 +150,7 @@ public class ProjectSelf {
             projectLayer = new KPanel(1_000, 35);
             projectLayer.setLayout(new BoxLayout(projectLayer, BoxLayout.X_AXIS));
         } else {
-            MComponent.empty(projectLayer);
+            MComponent.clear(projectLayer);
         }
         projectLayer.addAll(namePanel, quantaLayer);
         MComponent.ready(projectLayer);
@@ -158,20 +158,20 @@ public class ProjectSelf {
 
     private void signalEveNotice(){
         if (!eveIsAlerted) {
-            final String text = "Dear "+ Student.getLastName()+", the "+getSpecifiedDuration()+" days "+
-                    getType()+" Project you created, "+getProjectName()+", since "+getStartDate()+" is to be completed by tomorrow.";
+            final String info = "Dear "+ Student.getLastName()+"," +
+                    "<p>Project "+getProjectName()+", created since "+getStartDate()+" is to be completed by tomorrow.</p>";
             Notification.create("Project Reminder","Specified duration for the "+getType()+" Project "+
-                    getProjectName()+" is running out",text);
+                    getProjectName()+" is running out.", info);
             eveIsAlerted = true;
         }
     }
 
     private void signalCompletionNotice(){
         if (!completionIsAlerted) {
-            final String text = "Dear "+Student.getLastName()+", the specified period of the "+
-                    getType()+" Project you created, "+getProjectName()+", since "+getStartDate()+" is now attained.";
+            final String text = "Dear "+Student.getLastName()+"," +
+                    "<p>the specified period of the "+ getType()+" Project <b>"+getProjectName()+"</b> is now attained.</p>";
             Notification.create("Project Completed","Specified duration for the "+getType()+" Project "+
-                    getProjectName()+" is reached",text);
+                    getProjectName()+" is reached.", text);
             completionIsAlerted = true;
         }
     }
@@ -263,4 +263,5 @@ public class ProjectSelf {
                 eveIsAlerted,
                 completionIsAlerted);
     }
+
 }

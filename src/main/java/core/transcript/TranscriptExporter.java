@@ -83,7 +83,7 @@ public class TranscriptExporter {
     private void addMetaData(){
         document.addAuthor("Muhammed W. Drammeh");
         document.addTitle("UTG Student Transcript");
-        document.addCreator("UTG Student Dashboard");
+        document.addCreator("UTG-Student Dashboard");
         document.addSubject("Non-official UTG Transcript");
         document.addCreationDate();
     }
@@ -243,7 +243,7 @@ public class TranscriptExporter {
     }
 
 
-//    Todo: consider the link-like text at the bottom left - figures blindly generated
+//    Todo: consider the link-like text at the bottom-left (figures blindly generated)
     private static class WatermarkEvent extends PdfPageEventHelper {
         private String figure;
 

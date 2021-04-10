@@ -135,7 +135,7 @@ public class AssignmentSelf {
             groupLabel = KLabel.createIcon("group.png",20,20);
             groupLabel.setText(Globals.checkPlurality(members.size(), "Members"));
             groupLabel.setFont(KFontFactory.createPlainFont(17));
-            groupLabel.setToolTipText("View Participants");
+            groupLabel.setToolTipText("Participants");
             groupLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             groupLabel.addMouseListener(new MouseAdapter() {
                 @Override
@@ -161,7 +161,7 @@ public class AssignmentSelf {
 
         final KButton showButton = KButton.createIconifiedButton("options.png", 20, 20);
         showButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        showButton.setToolTipText("About this Assignment");
+        showButton.setToolTipText("About");
         showButton.addActionListener(e -> assignmentExhibitor = new AssignmentExhibition(AssignmentSelf.this));
 
         final KPanel quantaPanel = new KPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -175,9 +175,9 @@ public class AssignmentSelf {
 
     private void signalEveNotice(){
         if (!eveIsAlerted) {
-            final String text = "Dear, "+ Student.getLastName()+", the "+courseName+
-                    (isGroup ? " Group Assignment" : " Assignment")+" is to be submitted in 24 hours. Submission Mode is "+modeOfSubmission+". " +
-                    "If you have already submitted this assignment, mark it as 'submitted' to prevent further-notifications.";
+            final String text = "Dear, "+ Student.getLastName()+"," +
+                    "<p>"+courseName+ (isGroup ? " Group Assignment" : " Assignment")+" is to be submitted in 24 hours. Submission Mode is "+modeOfSubmission+". " +
+                    "If you have already submitted this assignment, mark it as 'submitted' to prevent further-notifications.<p>";
             Notification.create("Assignment Reminder",courseName+" Assignment is due tomorrow!", text);
             eveIsAlerted = true;
         }
@@ -185,8 +185,8 @@ public class AssignmentSelf {
 
     private void signalSubmissionNotice(){
         if (!submissionIsAlerted) {
-            final String text = "Dear, "+Student.getLastName()+", the submission date of the "+
-                    courseName+(isGroup ? " Group Assignment" : " Assignment")+" is past. Submission Mode was "+modeOfSubmission+".";
+            final String text = "Dear, "+Student.getLastName()+"," +
+                    "<p>submission date for the "+courseName+(isGroup ? " Group Assignment" : " Assignment")+" is past. Submission Mode was "+modeOfSubmission+".</p>";
             Notification.create("Assignment Completed",courseName+" Assignment has reached submission date.", text);
             submissionIsAlerted = true;
         }

@@ -221,6 +221,7 @@ public class Welcome extends KDialog {
                 "<li>FAQs & Help</li>" +
                 "<li>Tasks</li>" +
                 "<li>News</li>" +
+                "<li>Login anytime</li>" +
                 "</ul>";
         final KTextPane trialTextPane = KTextPane.htmlFormattedPane(trialText);
         trialTextPane.setBackground(null);

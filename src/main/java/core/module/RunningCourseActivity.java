@@ -8,6 +8,7 @@ import core.driver.MDriver;
 import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
+import core.utils.Globals;
 import core.utils.Internet;
 import core.utils.MComponent;
 import org.openqa.selenium.By;
@@ -36,10 +37,10 @@ public class RunningCourseActivity implements Activity {
     private static KButton optionsButton;
     private static JPopupMenu modulePopupMenu;
     private static KLabel hintLabel;
-    public static final ArrayList<RunningCourse> STARTUP_REGISTRATIONS = new ArrayList<>();
-    private static final ArrayList<RunningCourse> ACTIVE_COURSES = new ArrayList<RunningCourse>() {
+    public static final ArrayList<RegisteredCourse> STARTUP_REGISTRATIONS = new ArrayList<>();
+    private static final ArrayList<RegisteredCourse> ACTIVE_COURSES = new ArrayList<RegisteredCourse>() {
         @Override
-        public boolean add(RunningCourse course) {
+        public boolean add(RegisteredCourse course) {
             activeModel.addRow(new String[] {course.getCode(), course.getName(), course.getLecturer(),
                     course.getSchedule(), course.isConfirmed() ? "Confirmed" : "Unknown"});
             hintLabel.setVisible(true);
@@ -48,13 +49,13 @@ public class RunningCourseActivity implements Activity {
 
         @Override
         public boolean remove(Object o) {
-            activeModel.removeRow(activeModel.getRowOf(((RunningCourse) o).getCode()));
+            activeModel.removeRow(activeModel.getRowOf(((RegisteredCourse) o).getCode()));
             hintLabel.setVisible(activeModel.getRowCount() > 0);
             return super.remove(o);
         }
 
         @Override
-        public RunningCourse set(int index, RunningCourse course) {
+        public RegisteredCourse set(int index, RegisteredCourse course) {
             final int targetRow = activeModel.getRowOf(course.getCode());
             activeModel.setValueAt(course.getCode(), targetRow, 0);
             activeModel.setValueAt(course.getName(), targetRow, 1);
@@ -83,7 +84,7 @@ public class RunningCourseActivity implements Activity {
 
             final KMenuItem updateItem = new KMenuItem("Update Registration Notice",
                     e-> App.reportInfo("Tip",
-                            "To update the registration notice, go to 'Notifications / Portal Alerts / Update Alerts'"));
+                            "To update the registration notice, go to '"+ Globals.reference("Notifications", "Portal Alerts", "Update Alerts") +"'."));
 
             final KMenuItem visitItem = new KMenuItem("Visit Portal instead");
             visitItem.addActionListener(e-> new Thread(()-> Portal.openPortal(visitItem)).start());
@@ -122,7 +123,7 @@ public class RunningCourseActivity implements Activity {
 
     private static void uploadModules(){
         if (Dashboard.isFirst()) {
-            for (RunningCourse c : STARTUP_REGISTRATIONS) {
+            for (RegisteredCourse c : STARTUP_REGISTRATIONS) {
                 ACTIVE_COURSES.add(c);
             }
         } else {
@@ -145,7 +146,7 @@ public class RunningCourseActivity implements Activity {
      * If it's found, it shall be replaced; otherwise, unsuccessful.
      * Todo: if not found, an attempt will be made to register it.
      */
-    private static void startCheckout(RunningCourse targetCourse) {
+    private static void startCheckout(RegisteredCourse targetCourse) {
         final String targetCode = targetCourse.getCode();
         final String initialValue = String.valueOf(activeModel.getValueAt(activeModel.getRowOf(targetCode),
                 activeModel.getColumnCount() - 1));
@@ -238,13 +239,13 @@ public class RunningCourseActivity implements Activity {
             while (!allRows.get(match).getText().equals(Student.getSemester())) {
                 final List<WebElement> instantData = allRows.get(match).findElements(By.tagName("td"));
                 if (instantData.get(0).getText().equals(targetCode)) {
-                    final RunningCourse foundCourse = new RunningCourse(instantData.get(0).getText(),
+                    final RegisteredCourse foundCourse = new RegisteredCourse(instantData.get(0).getText(),
                             instantData.get(1).getText(), instantData.get(2).getText(), instantData.get(3).getText(),
                             instantData.get(4).getText(), targetCourse.getDay(), targetCourse.getTime(), true);
                     final int targetIndex = getIndexOf(targetCourse);
-                    if (targetIndex >= 0) {//still present?
+                    if (targetIndex >= 0) { // still present?
                         ACTIVE_COURSES.set(targetIndex, foundCourse);
-                    } else {//deleted?
+                    } else { // deleted?
                         ACTIVE_COURSES.add(foundCourse);
                     }
                     App.reportInfo("Checkout Successful",
@@ -281,7 +282,7 @@ public class RunningCourseActivity implements Activity {
         if (!userRequested || App.showYesNoCancelDialog("Match Table",
                 "Do you want to match this table with your Portal?\n" +
                         "Dashboard will contact the Portal and bring all the courses\n" +
-                "(if there exists any) you have registered this semester.")) {
+                "(if there is any) you have registered this semester.")) {
             new Thread(()-> {
                 matchItem.setEnabled(false);
                 fixRunningDriver();
@@ -349,7 +350,7 @@ public class RunningCourseActivity implements Activity {
                     final boolean isRegistered = captions.get(captions.size() - 1).getText().equals(Student.getSemester());
                     if (!isRegistered) {
                         if (userRequested) {
-                            App.reportWarning("Match Problem",
+                            App.reportWarning("Match Failed",
                                     "Dashboard could not locate any registered course on your portal.\n" +
                                     "Please, register your courses first then try this action.");
                         }
@@ -363,9 +364,9 @@ public class RunningCourseActivity implements Activity {
                     final StringBuilder matchBuilder = new StringBuilder("Match completed successfully.\n");
                     while (!allRows.get(match).getText().equalsIgnoreCase(Student.getSemester())) {
                         final List<WebElement> data = allRows.get(match).findElements(By.tagName("td"));
-                        final RunningCourse incoming = new RunningCourse(data.get(0).getText(), data.get(1).getText(),
+                        final RegisteredCourse incoming = new RegisteredCourse(data.get(0).getText(), data.get(1).getText(),
                                 data.get(2).getText(), data.get(3).getText(),data.get(4).getText(), "","", true);
-                        final RunningCourse present = getByCode(incoming.getCode());
+                        final RegisteredCourse present = getByCode(incoming.getCode());
                         if (present == null) {//does not exist at all
                             ACTIVE_COURSES.add(incoming);
                             matchBuilder.append(incoming.getAbsoluteName()).append(" was found registered.\n");
@@ -383,7 +384,7 @@ public class RunningCourseActivity implements Activity {
 
                     for (String existingCode : codes()) {
                         if (!foundCodes.contains(existingCode)) {
-                            final RunningCourse existingCourse = Objects.requireNonNull(getByCode(existingCode));
+                            final RegisteredCourse existingCourse = Objects.requireNonNull(getByCode(existingCode));
                             if (existingCourse.isConfirmed()) {
                                 ACTIVE_COURSES.remove(existingCourse);
                                 matchBuilder.append(existingCourse.getAbsoluteName());
@@ -412,7 +413,7 @@ public class RunningCourseActivity implements Activity {
     private static String generateNotificationWarning(String moduleName) {
         return String.format("Dear %s,", Student.getLastName()) +
                 "<p>you've added <b>"+moduleName+"</b> to your list of registered courses.<br>" +
-                "However, this does not means that Dashboard will <b>register</b> it on your Portal.</p>" +
+                "However, this does not means that Dashboard has <b>registered</b> it on your Portal.</p>" +
                 "Dashboard does not write your portal.";
     }
 
@@ -432,8 +433,8 @@ public class RunningCourseActivity implements Activity {
         return codes;
     }
 
-    private static RunningCourse getByCode(String code) {
-        for (RunningCourse course : ACTIVE_COURSES) {
+    private static RegisteredCourse getByCode(String code) {
+        for (RegisteredCourse course : ACTIVE_COURSES) {
             if (course.getCode().equals(code)) {
                 return course;
             }
@@ -445,7 +446,7 @@ public class RunningCourseActivity implements Activity {
      * This and co- refers to the index in the list.
      * For index in the table. use the model.getRowOf(String)
      */
-    private static int getIndexOf(RunningCourse course){
+    private static int getIndexOf(RegisteredCourse course){
         for (int i = 0; i < ACTIVE_COURSES.size(); i++) {
             if (ACTIVE_COURSES.get(i).getCode().equals(course.getCode())) {
                 return i;
@@ -458,7 +459,7 @@ public class RunningCourseActivity implements Activity {
         final KMenuItem editItem = new KMenuItem("Edit");
         editItem.addActionListener(e-> {
             final String code = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(), 0));
-            final RunningCourse runningCourse = getByCode(code);
+            final RegisteredCourse runningCourse = getByCode(code);
             if (runningCourse != null) {
                 SwingUtilities.invokeLater(()-> new RunningCourseEditor(runningCourse).setVisible(true));
             }
@@ -467,13 +468,13 @@ public class RunningCourseActivity implements Activity {
         final KMenuItem detailsItem = new KMenuItem("Details");
         detailsItem.addActionListener(e-> {
             final String code = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(), 0));
-            RunningCourse.exhibit(getByCode(code));
+            RegisteredCourse.exhibit(getByCode(code));
         });
 
         final KMenuItem checkItem = new KMenuItem("Checkout");
         checkItem.addActionListener(e-> new Thread(()-> {
             final String targetCode = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(),0));
-            final RunningCourse targetCourse = getByCode(targetCode);
+            final RegisteredCourse targetCourse = getByCode(targetCode);
             if (targetCourse != null) {
                 final boolean confirm = App.showYesNoCancelDialog("Checkout",
                         String.format("Do you want to checkout for %s?", targetCourse.getAbsoluteName()));
@@ -486,7 +487,7 @@ public class RunningCourseActivity implements Activity {
         final KMenuItem removeItem = new KMenuItem("Remove");
         removeItem.addActionListener(e-> {
             final String code = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(), 0));
-            final RunningCourse course = getByCode(code);
+            final RegisteredCourse course = getByCode(code);
             if (course != null && App.showYesNoCancelDialog("Remove "+course.getCode(),
                     "Do you really wish to remove \""+course.getName()+"\"?")){
                 if (course.isConfirmed()) {
@@ -530,7 +531,7 @@ public class RunningCourseActivity implements Activity {
                     final int selectedRow = activeTable.getSelectedRow();
                     if (selectedRow >= 0) {
                         final String code = String.valueOf(activeTable.getValueAt(selectedRow, 0));
-                        RunningCourse.exhibit(getByCode(code));
+                        RegisteredCourse.exhibit(getByCode(code));
                         e.consume();
                     }
                 }
@@ -649,11 +650,11 @@ public class RunningCourseActivity implements Activity {
                     final String givenCode = codeField.getText().toUpperCase();
                     if (getByCode(givenCode) != null) {
                         App.reportError("Duplicate Code",
-                                "Cannot add this code: "+givenCode+". It's already assigned to a course in the list.");
+                                "Cannot add code '"+givenCode+"'. It's already assigned to a course in the list.");
                         return;
                     }
 
-                    final RunningCourse addedCourse = new RunningCourse(codeField.getText(), nameField.getText(),
+                    final RegisteredCourse addedCourse = new RegisteredCourse(codeField.getText(), nameField.getText(),
                             lecturerField.getText(), venueField.getText(), roomField.getText(),
                             String.valueOf(daysBox.getSelectedItem()), String.valueOf(hoursBox.getSelectedItem()), false);
                     ACTIVE_COURSES.add(addedCourse);
@@ -662,7 +663,7 @@ public class RunningCourseActivity implements Activity {
                         new Thread(()-> startCheckout(addedCourse)).start();
                     } else {
                         Notification.create("Local Registration", nameField.getText()+
-                                " is locally added, and may not be on your portal",
+                                " is locally added, and may not be on your portal.",
                                 generateNotificationWarning(nameField.getText()));
                     }
                 }
@@ -687,7 +688,7 @@ public class RunningCourseActivity implements Activity {
 
     private static class RunningCourseEditor extends RunningCourseAdder {
 
-        private RunningCourseEditor(RunningCourse original){
+        private RunningCourseEditor(RegisteredCourse original){
             super();
             setTitle(original.getName());
             codeField.setText(original.getCode());
@@ -716,7 +717,7 @@ public class RunningCourseActivity implements Activity {
                     App.reportError(getRootPane(),"No Lecturer","Please provide the name of the lecturer.");
                     lecturerField.requestFocusInWindow();
                 } else {
-                    final RunningCourse refracted = new RunningCourse(codeField.getText(), nameField.getText(),
+                    final RegisteredCourse refracted = new RegisteredCourse(codeField.getText(), nameField.getText(),
                             lecturerField.getText(), venueField.getText(), roomField.getText(),
                             String.valueOf(daysBox.getSelectedItem()), String.valueOf(hoursBox.getSelectedItem()),
                             original.isConfirmed());
@@ -726,8 +727,8 @@ public class RunningCourseActivity implements Activity {
                         }
                         final String refCode = refracted.getCode();
                         if ((refCode.equalsIgnoreCase(String.valueOf(activeModel.getValueAt(i, 0))))) {
-                            App.reportError("Duplicate Code","Cannot add this code: "+refCode+
-                                    ". It's already assigned to a course in the list.");
+                            App.reportError("Duplicate Code",
+                                    "Cannot add code "+refCode+ ". It's already assigned to a course in the list.");
                             return;
                         }
                     }
@@ -744,17 +745,17 @@ public class RunningCourseActivity implements Activity {
         for (int i = 0; i < data.length; i++) {
             data[i] = ACTIVE_COURSES.get(i).exportContent();
         }
-        Serializer.toDisk(data, Serializer.inPath("modules", "running.ser"));
+        Serializer.toDisk(data, Serializer.inPath("modules", "registered.ser"));
     }
 
     public static void deserializeModules(){
-        final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "running.ser"));
+        final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "registered.ser"));
         if (obj == null) {
             App.silenceException("Failed to read Active Courses.");
         } else {
             final String[] data = (String[]) obj;
             for (String entry : data) {
-                ACTIVE_COURSES.add(RunningCourse.create(entry));
+                ACTIVE_COURSES.add(RegisteredCourse.create(entry));
             }
         }
     }

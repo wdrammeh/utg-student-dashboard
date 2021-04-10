@@ -24,6 +24,7 @@ import java.util.HashMap;
 public class Dashboard {
     private static final Preview PREVIEW = new Preview(null);
     public static final Version VERSION = new Version("0.0.1", Version.SNAPSHOT);
+    public static final Thread UNLOCK_HOOK = new Thread(Dashboard::unlockAccess);
     private static boolean isFirst;
 
 
@@ -32,10 +33,10 @@ public class Dashboard {
             App.silenceException("Dashboard is already running.");
         } else {
             PREVIEW.setVisible(true);
-            lockAccess();
-            Runtime.getRuntime().addShutdownHook(new Thread(Dashboard::unlockAccess));
             final File rootDir = new File(Serializer.ROOT_DIR);
             if (rootDir.exists()) {
+                lockAccess();
+                Runtime.getRuntime().addShutdownHook(UNLOCK_HOOK);
                 final HashMap<String, String> configs = getLastConfigs();
                 if (configs.isEmpty()) {
                     App.silenceException("Bad, or missing configuration files. Launching a new instance...");
@@ -50,8 +51,7 @@ public class Dashboard {
                                     "Please use Dashboard version '"+recentVersion.getLiteral()+"', or later.");
                 } else if (compare == Version.GREATER) {
                     App.silenceInfo("A version upgrade detected.");
-//                Todo some transition stuff here
-
+//                    Todo implement version upgrade stuff
                 } else {
                     if (configs.get("userName").equals(Globals.userName())) {
                         rebuildNow(true);
@@ -65,24 +65,21 @@ public class Dashboard {
         }
     }
 
-//    Todo implement this
     private static boolean isRunning(){
-//        final File statusFile = new File(Serializer.inPath("status.ser"));
-//        if (statusFile.exists()) {
-//            String status = (String) Serializer.fromDisk(Serializer.inPath("status.ser"));
-//            return status.equals("Running");
-//        }
+        final File statusFile = new File(Serializer.inPath("status.ser"));
+        if (statusFile.exists()) {
+            String status = (String) Serializer.fromDisk(statusFile.getAbsolutePath());
+            return status.equals("Running");
+        }
         return false;
     }
 
-    //    Todo implement this
     public static void lockAccess(){
-//        Serializer.toDisk("Running", Serializer.inPath("status.ser"));
+        Serializer.toDisk("Running", Serializer.inPath("status.ser"));
     }
 
-    //    Todo implement this
     public static void unlockAccess(){
-//        Serializer.toDisk("Closed", Serializer.inPath("status.ser"));
+        Serializer.toDisk("Closed", Serializer.inPath("status.ser"));
     }
 
     /**
@@ -100,7 +97,6 @@ public class Dashboard {
             final String[] lines = Globals.splitLines((String) configObj);
             map.put("version", lines[0]);
             map.put("userName", lines[1]);
-
         }
         return map;
     }
@@ -109,7 +105,6 @@ public class Dashboard {
      * Triggers a new Dashboard.
      * This happens, of course, if no data are found to deserialize.
      * The user may have signed out, or has actually never launched Dashboard.
-     * It sets the driver ahead of time, and brings a "Welcome Dialogue" to sight.
      */
     private static void freshStart(){
         isFirst = true;
@@ -120,8 +115,8 @@ public class Dashboard {
     }
 
     /**
-     * This is security measure, invoked if the current user-name does not matches
-     * the serialized user-name.
+     * This is a security measure invoked if the current userName does not matches
+     * the serialized userName.
      * The user will be asked of the previous user's matriculation number.
      * And Dashboard will not build until such a mat. number is correct.
      */
@@ -139,7 +134,7 @@ public class Dashboard {
             }
         }
 
-        PREVIEW.setVisible(false);  // why?
+        PREVIEW.setVisible(false);
         final String matNumber = requestInput();
         if (matNumber.equals(Student.getMatNumber())) {
             PREVIEW.setVisible(true);
@@ -147,15 +142,15 @@ public class Dashboard {
         } else {
             final String userName = Student.getFullNamePostOrder();
             App.reportError(PREVIEW, "Error",
-                    "Incorrect Matriculation Number for "+userName+". Please try again.");
+                    "Incorrect Matriculation Number for '"+userName+"'. Try again.");
             verifyUser(false);
         }
     }
 
     private static String requestInput(){
         final String studentName = Student.getFullNamePostOrder();
-        final String input = App.requestInput(PREVIEW, "UTG-Student Dashboard",
-                "This Dashboard belongs to "+studentName+".\n" +
+        final String input = App.requestInput(PREVIEW, "Dashboard",
+                "This Dashboard belongs to '"+studentName+"'.\n" +
                 "Please enter your Matriculation Number to confirm:");
         if (input == null) {
             System.exit(0);

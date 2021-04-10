@@ -11,7 +11,6 @@ import proto.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -72,7 +71,7 @@ public class EventHandler {
                     return;
                 }
                 if (date.before(new Date())) {
-                    App.reportError(requiredCreator.getRootPane(),"Invalid Deadline",
+                    App.reportError(requiredCreator.getRootPane(),"Past Deadline",
                             "Please consider the deadline. It's already past.");
                     return;
                 }
@@ -153,8 +152,6 @@ public class EventHandler {
         jPopup.add(otherItem);
 
         final KButton popUpButton = new KButton("New Event");
-        popUpButton.setToolTipText("Create Event (Alt+V)");
-        popUpButton.setMnemonic(KeyEvent.VK_V);
         popUpButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         popUpButton.setFont(TASK_BUTTONS_FONT);
         popUpButton.addActionListener(e-> jPopup.show(popUpButton, popUpButton.getX(), popUpButton.getY() +
