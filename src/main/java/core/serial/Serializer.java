@@ -6,7 +6,7 @@ import core.alert.Notification;
 import core.module.ModuleHandler;
 import core.module.RunningCourseActivity;
 import core.setting.Settings;
-import core.task.TaskCentral;
+import core.task.TaskActivity;
 import core.user.Student;
 import core.utils.App;
 import org.apache.commons.io.FileUtils;
@@ -76,7 +76,7 @@ public class Serializer {
             ModuleHandler.serialize();
         }
         Student.serialize();
-        TaskCentral.serializeAll();
+        TaskActivity.serializeAll();
         Notification.serialize();
         News.serialize();
     }
