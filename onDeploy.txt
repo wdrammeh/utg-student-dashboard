@@ -2,8 +2,8 @@
     that must be done prior to deployment.
 
 
-- Every release, whether snapshot, or release, must have its own branch.
-    Create a branch for the release version, if not already.
+- Every snapshot shall have its own branch
+    the final commit of which is a tag which is the release.
 - Replace Dashboard with .dashboard as ROOT_DIR.
 - Make sure Dashboard.VERSION := Bundle-Version in MANIFEST.MF := <version> in pom.xml
 - Cross-check for TODOs.
