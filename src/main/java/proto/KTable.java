@@ -1,7 +1,7 @@
 package proto;
 
-import core.App;
-import core.MComponent;
+import core.utils.App;
+import core.utils.MComponent;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

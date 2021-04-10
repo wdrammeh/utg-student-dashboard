@@ -1,5 +1,24 @@
 package core;
 
+import core.alert.NotificationActivity;
+import core.driver.MDriver;
+import core.first.FirstLaunch;
+import core.module.Analysis;
+import core.module.ModuleActivity;
+import core.module.ModuleHandler;
+import core.module.RunningCourseActivity;
+import core.other.About;
+import core.other.Tips;
+import core.serial.Serializer;
+import core.setting.Settings;
+import core.setting.SettingsUI;
+import core.task.TaskActivity;
+import core.transcript.TranscriptActivity;
+import core.user.Student;
+import core.utils.App;
+import core.utils.Globals;
+import core.utils.Internet;
+import core.utils.MComponent;
 import proto.*;
 import utg.Dashboard;
 
@@ -9,7 +28,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 /**
- * @author Muhammed W. Drammeh <wakadrammeh@gmail.com>
+ * @author Muhammed W. Drammeh <md21712494@utg.edu.gm>
  *
  * The ultimate class of UI.
  * When using Dashboard, the user actually interacts with an instance of this
@@ -74,11 +93,7 @@ public final class Board extends KFrame {
             return super.add(runnable);
         }
     };
-    /**
-     * The shut-down-thread ensures content of the user are written to the disk
-     * in case of unexpected shut-down.
-     */
-    public static final Thread SHUT_DOWN_THREAD = new Thread(Serializer::mountUserData);
+    public static final Thread SHUT_DOWN_HOOK = new Thread(Serializer::mountUserData);
 //    Collaborators declaration. The order in which these will be initialized does matter!
     private RunningCourseActivity runningCourseActivity;
     private ModuleActivity moduleActivity;
@@ -141,9 +156,9 @@ public final class Board extends KFrame {
         helpActivity = new Tips();
         about = new About();
 //        outlined / big buttons
+        alertActivity = new NotificationActivity();
         taskActivity = new TaskActivity();
         newsPresent = new News();
-        alertActivity = new NotificationActivity();
 
         pack();
         setMinimumSize(getPreferredSize());
@@ -161,13 +176,11 @@ public final class Board extends KFrame {
      * detailsPart = 375
      */
     private void setUpThorax() {
-        final KMenuItem resetOption = new KMenuItem("Reset", e-> Student.fireIconReset());
-        final KMenuItem shooterOption = new KMenuItem("Set Default", e-> Student.fireIconDefaultSet());
+        final KMenuItem resetOption = new KMenuItem("Set Default", e-> Student.fireIconReset());
 
         final JPopupMenu imageOptionsPop = new JPopupMenu();
         imageOptionsPop.add(new KMenuItem("Change", e-> Student.startSettingImage()));
         imageOptionsPop.add(resetOption);
-        imageOptionsPop.add(shooterOption);
 
         imageLabel = new KLabel(Student.getIcon());
         final KPanel imagePart = new KPanel(new BorderLayout(), new Dimension(275,200));
@@ -175,15 +188,14 @@ public final class Board extends KFrame {
         imagePart.addMouseListener(new MouseAdapter(){
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {//For unix-based systems
+                if (e.isPopupTrigger()) { // For unix-based systems
                     resetOption.setEnabled(!Student.isDefaultIconSet());
-                    shooterOption.setEnabled(!Student.isShooterIconSet());
                     imageOptionsPop.show(imagePart, e.getX(), e.getY());
                 }
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {//Windows systems
+            public void mouseReleased(MouseEvent e) { // Windows systems
                 mousePressed(e);
             }
         });
@@ -300,7 +312,7 @@ public final class Board extends KFrame {
                 } else {
                     super.setForeground(Color.RED);
                     super.setCursor(MComponent.HAND_CURSOR);
-                    //Todo: signal a desktop notification here
+//                    Todo signal a desktop notification here
                 }
             }
         };
@@ -402,7 +414,7 @@ public final class Board extends KFrame {
      */
     private void completeBuild() {
         isReady = true;
-        Runtime.getRuntime().addShutdownHook(SHUT_DOWN_THREAD);
+        Runtime.getRuntime().addShutdownHook(SHUT_DOWN_HOOK);
         if (Dashboard.isFirst()) {
             SettingsUI.loadDefaults();
         }

@@ -1,0 +1,189 @@
+>> In-depth sight of the serials directory tree.
+    May be valid for this version only.
+
+
+- Every serializable file is either an array of Strings, or simply a String.
+- Where every string (or every entry of the array where implemented so) must be a
+    line-separated value -> Every line must represent a separate value, or property
+    unless otherwise implemented, as with the News type.
+- If a field, or property, by itself has the potential to cause problems
+    over having the delimiter (i.e the line-separator), then it should be
+    saved in a separate serializable file. E.g Student.about.
+    This, particularly a problem when dealing with the News type;
+    or even question of an Assignment.
+- Leave primitive types as they are, but...
+- If the field is a date, format it using the implementation's standard formatter,
+    so it could be reconstructed safely by parsing by the same formatter.
+
+
+>> Configurations (configs.ser) | String
+Contains the Dashboard's configuration data.
+    0: version <String>
+    1: userName <String>
+
+
+>> Settings (settings.ser) | String
+Contains all the settings at collapse.
+    0: noVerifyNeeded <boolean>
+    1: confirmExit <boolean>
+    2: initialDelay <int>
+    3: dismissDelay <int>
+    4: lookAndFeelName <String>
+    5: backgroundColorName <String>
+
+
+>> Portal (portal.ser) | String
+Contains all portal related data.
+    0: registrationNotice <String>
+    1: lastRegistrationNoticeUpdate <String> | Might be 'Never' or a value returned by MDate.format(Date)
+    2: admissionNotice <String>
+    3: lastAdmissionNoticeUpdate <String> | Might be 'Never' or a value returned by MDate.format(Date)
+    4: isAutoSync <boolean>
+    5: lastLogin <String> | as returned by MDate.format(Date)
+
+
+>> Modules (modules/ )
+Courses are serialized to an array of Strings where every
+entry of the array is further split by the host platform's
+specific line-separator, as elaborated above.
+Every entry represents a course, and every
+line therein represents a property of the course,
+such that virtually the same course could be reconstructed
+during build.
+--> RegisteredCourses (registered.ser) | String[]
+    0: code <String>
+    1: name <String>
+    2: lecturer <String>
+    3: venue <String>
+    4: room <String>
+    5: day <String>
+    6: time <String>
+    7: isConfirmed <boolean>
+
+--> Courses (courses.ser) | String[]
+    0: year <String>
+    1: semester <String>
+    2: code <String>
+    3: name <String>
+    4: lecturer <String>
+    5: venue <String>
+    6: day <String>
+    7: time <String>
+    8: score <double>
+    9: creditHours <int>
+    10: requirement <String>
+    11: isVerified <boolean>
+    12: lecturerNameChangeability <boolean>
+
+>> User (user/ )
+It's specifically more difficult to deal with the user's data.
+--> Fundamentals (core.ser) | String
+     Refers to the fundamental user details.
+     0: firstName <String>
+     1: lastName <String>
+     2: nationality <String>
+     3: address <String>
+     4: maritalStatue <String>
+     5: dateOfBirth <String>
+     6: placeOfBirth <String>
+     7: nameFormat <String>
+     8: isTrial <boolean>
+     ...Student only details...
+     9: monthOfAdmission <int>
+     10: yearOfAdmission <int>
+     11: semester <String>
+     12: matNumber <String>
+     13: major <String>
+     14: majorCode <String>
+     15: minor <String>
+     16: minorCode <String>
+     17: program <String>
+     18: school <String>
+     19: division <String>
+     20: portalMail <String>
+     21: portalPassword <String>
+     22: studentMail <String>
+     23: studentPassword <String>
+     24: level <String>
+     25: status <String>
+     26: CGPA <double>
+
+--> Telephones (dials.ser) | String[]
+--> About (about.ser) | String (non-line separated)
+--> Extra / Additional
+    Keys (extra.keys.ser) | String[]
+    Values (extra.values.ser) | String[]
+
+
+>> Tasks (tasks/ )
+The tasks folder stores data regarding all the 4 main task types,
+each in a separate file therein. Every file is an array of String.
+--> Todo type (todos.ser) | String[]
+    0: description <String>
+    1: startDate <String> | initially a value returned by MDate.now()
+    2: specifiedDuration <int> | days
+    3: totalTimeConsumed <int>
+    4: isActive <boolean>
+    5: dateCompleted <String>
+    6: eveIsAlerted <boolean>
+    7: doneIsAlerted <boolean>
+
+--> Project type (projects.ser) | String[]
+    0: projectName <String>
+    1: type <String>
+    2: startDate <String> | initially a value returned by MDate.now()
+    3: specifiedDuration <int>
+    4: totalTimeConsumed <int>
+    5: isLive <boolean>
+    6: dateCompleted <String>
+    7: eveIsAlerted <boolean>
+    8: completionIsAlerted <boolean>
+
+--> Assignment type
+    --> Assignments (assignments) | String[]
+        An array of all the assignments.
+        Every entry is such that a line-separated value, excluding the members field.
+        0: courseName <String>
+        1: deadLine <String> | a value of MDate.formatDateOnly()
+        2: isGroup
+        3: modeOfSubmission <String>
+        4: startDate <String> | a value returned by MDate.formatDateOnly()
+        5: isOn
+        6: dateSubmitted <String> | a value of MDate.formatDateOnly()
+        7: eveIsAlerted <boolean>
+        8: submissionIsAlerted <boolean>
+
+    --> Questions (questions.ser) | String[]
+        An array of all the questions.
+        A question may span multiple lines, hence this separation is a must.
+        The size of this array := the size of the assignments (as above).
+
+    --> Members (groups.members.ser) | String[]
+        An array of all the members of all the group-assignments.
+        Every entry is such that a line-separated value.
+        The size of this array is equals the number of group assignments.
+
+    --> Event type (events.ser) | String[]
+        0:title <String>
+        1: dateDue <String> | a value returned by MDate.formatDateOnly()
+        2: isPending <boolean>
+        3: eveIsAlerted <boolean>
+        4: timeupIsAlerted <boolean>
+
+
+>> Notifications (alerts.ser) | String[]
+Stores notifications and information on their read-state.
+    0: heading <String>
+    1: text <String>
+    2: information <String>
+    3: time <Date> | full format
+    4: isRead <boolean>
+
+
+>> News (news/ )
+Should store content of every news.
+--> Heads (heads.ser) | String[]
+--> Bodies (bodies.ser) | String[]
+--> Links (links.ser) | String[]
+--> Contents (contents.ser) | String[]
+--> Access time (accessTime.ser) | String[]

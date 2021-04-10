@@ -4,3 +4,9 @@ out/
 
 # Maven
 target/
+
+# VS Code
+.settings/
+.vscode/
+.classpath
+.project

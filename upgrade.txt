@@ -1,20 +1,19 @@
-The following improvements will be made
+>> The following improvements will be made
 
-- The storage directory shall use a completely new layout structure
-- Package orientieed directory tree
-- Research for possible better alternatives
-- Research on the Selenium Driver
-    There's a need for flexibility regarding driver choices in a future release
-- Minimize Portal wait time - remove unnecessary waitings
-- Standardize serialization, deserialization by using JSON, XML instead of Java core classes
+- Remove static-orientation of task types.
+- Auto outdate feature: to either specify a term limit, or consult a webpage.
+- Manual check for updates feature.
+- Custom user password; as defaults to the mat. no.
+- Lock Dashboard at startup option.
+- Research on the Selenium Driver.
+- Flexible driver choices functionality.
+- Minimize Portal wait time - remove unnecessary waitings.
 - JPackage:
     Early deployment, linux (.deb / Debian) packages only
     Propose. interested? License and fund for extensive feature addition
 
-- Registration functionality
+- Registration functionality.
 - Website for project - announcement, upgrading downloadable packages
-- Flexible driver choices functionality
-- Well documentation; generate javadoc
-- Add update-checker functionality
-- Student Forum
-- Student voting system
+- Well documentation; generate javadoc.
+- Student Forum.
+- Student voting system.
