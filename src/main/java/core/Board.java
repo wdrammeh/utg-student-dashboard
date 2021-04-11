@@ -209,7 +209,10 @@ public final class Board extends KFrame {
 
         nameLabel = new KLabel(Student.requiredNameForFormat().toUpperCase(), KFontFactory.createBoldFont(20));
         if (!Student.isTrial()) {
-            final String nameTip = Student.getLevelNumber()+" Level "+Student.getMajor()+" Major";
+            final int levelNumber = Student.getLevelNumber();
+            final String nameTip = String.join(" ",
+                    levelNumber > 400 ? "Over 400" : String.valueOf(levelNumber), "Level",
+                    Student.getMajor(), "Major");
             nameLabel.setToolTipText(nameTip);
         }
 

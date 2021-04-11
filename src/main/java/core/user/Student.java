@@ -72,8 +72,8 @@ public class Student {
     /**
      * Deals with the level in 'cents'
      * Dashboard records levels in 50s.
-     * 50 = first semester; 100 = second semester; 150 = 2nd year, first semester; so on and so forth.
-     * The same way 300 implies 3rd year, 2nd semester.
+     * 50 = first semester; 100 = second semester; 150 = 2nd year, first semester;
+     * so on and so forth. The same way 300 implies 3rd year, 2nd semester.
      */
     private static int levelNumber;
     private static double CGPA;
