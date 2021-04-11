@@ -21,21 +21,21 @@ public class Serializer {
 
 
     /**
-     * Serializes the given object to the SERIALS_DIR with the given path.
-     * Classes that perform serialization data eventually invoke this to do the ultimate writing.
+     * Serializes the given object to the the given path.
+     * Classes that perform serialization eventually invoke this to do the ultimate writing.
      * This method is self-silent.
      */
-    public static void toDisk(Object obj, String fullPath){
+    public static void toDisk(Object obj, String path){
         try {
-            final File file = new File(fullPath);
+            final File file = new File(path);
             final File parentFile = file.getParentFile();
             if (parentFile.exists() || parentFile.mkdirs()) {
-                final FileOutputStream fileOutputStream = new FileOutputStream(fullPath);
+                final FileOutputStream fileOutputStream = new FileOutputStream(path);
                 final ObjectOutputStream objOutputStream = new ObjectOutputStream(fileOutputStream);
                 objOutputStream.writeObject(obj);
                 objOutputStream.close();
             } else {
-                App.silenceException("Failed to mount parent directories to serialize file '" + fullPath + "'.");
+                App.silenceException("Failed to mount parent directories to serialize file '" + path + "'.");
             }
         } catch (IOException e) {
             App.silenceException(e);
@@ -43,16 +43,16 @@ public class Serializer {
     }
 
     /**
-     * reads the object, from the SERIALS_DIR, that was serialized
-     * with the given path.
-     * Classes that perform de-serialization eventually invoke this to do the ultimate reading.
+     * reads the object that was serialized to the given path.
+     * Classes that perform de-serialization eventually
+     * invoke this to do the ultimate reading.
      * This method is self-silent.
      * Therefore, callers must check nullity of the returned object
      */
-    public static Object fromDisk(String fullPath) {
+    public static Object fromDisk(String path) {
         Object serObject = null;
         try {
-            final FileInputStream fileInputStream = new FileInputStream(fullPath);
+            final FileInputStream fileInputStream = new FileInputStream(path);
             final ObjectInputStream objInputStream = new ObjectInputStream(fileInputStream);
             serObject = objInputStream.readObject();
             objInputStream.close();
@@ -85,9 +85,10 @@ public class Serializer {
         try {
             FileUtils.deleteDirectory(new File(ROOT_DIR));
             return true;
-        } catch (IOException ioe) {
+        } catch (IOException e) {
+            App.silenceException(e);
             final File configFile = new File(inPath("configs.ser"));
-            return !configFile.exists() || configFile.delete();
+            return configFile.delete();
         }
     }
 

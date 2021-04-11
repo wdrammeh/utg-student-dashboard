@@ -115,7 +115,7 @@ public final class Board extends KFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (!Settings.confirmExit || App.showYesNoCancelDialog("Confirm Exit",
-                        "Do you really mean to quit the Dashboard?")) {
+                        "Do you really mean to close the Dashboard?")) {
                     setVisible(false);
                 }
             }

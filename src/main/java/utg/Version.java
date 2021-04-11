@@ -16,12 +16,12 @@ public class Version {
     }
 
     /**
-     *
-     * @param fullVersion a full version string of the format literal-type
+     * @param version a full version text in the format
+     *                as returned by {@link #toString()}
      * @return a new Version object
      */
-    public static Version construct(String fullVersion) {
-        final String[] v = fullVersion.split("[-]");
+    public static Version construct(String version) {
+        final String[] v = version.split("[-]");
         return new Version(v[0], v[1]);
     }
 

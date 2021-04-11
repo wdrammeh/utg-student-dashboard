@@ -2,8 +2,7 @@
     that must be done prior to deployment.
 
 
-- Every snapshot shall have its own branch
-    the final commit of which is a tag which is the release.
+- Create SNAPSHOT tag.
 - Make sure Dashboard.VERSION := Bundle-Version in MANIFEST.MF := <version> in pom.xml
 - Cross-check for TODOs.
 - Be sure to have dealt with all test-cases, as in the test file.
@@ -12,3 +11,5 @@
 - Make sure Versions are in order.
 - Test extensively on the three (3) major platforms.
 - Replace Dashboard with .dashboard as ROOT_DIR.
+    This probably is the latest commit of every release.
+- Create a RELEASE tag.
