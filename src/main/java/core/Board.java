@@ -39,7 +39,7 @@ import java.util.ArrayList;
  * bodyLayer (Panel), 450
  * Thus, the total dimension is roughly 1_000 x (680 - 700)
  *
- * It is important to explore the {@link Activity} interface, and classes that implemet it.
+ * It is important to explore the {@link Activity} interface, and implementing classes..
  */
 public final class Board extends KFrame {
     /**
