@@ -72,8 +72,8 @@ public class Student {
     /**
      * Deals with the level in 'cents'
      * Dashboard records levels in 50s.
-     * 50 = first semester; 100 = second semester; 150 = 2nd year, first semester; so on and so forth.
-     * The same way 300 implies 3rd year, 2nd semester.
+     * 50 = first semester; 100 = second semester; 150 = 2nd year, first semester;
+     * so on and so forth. The same way 300 implies 3rd year, 2nd semester.
      */
     private static int levelNumber;
     private static double CGPA;
@@ -213,12 +213,12 @@ public class Student {
 
     private static String getVisibleMail(String mail){
         try {
-            final String[] mailParts = mail.split("@");
-            final int l = mailParts[0].length();
-            String mask = "*".repeat(l - 2);
-            return mail.substring(0, 2) + mask + "@utg.edu.gm";
+            final String[] parts = mail.split("@");
+            final int l = parts[0].length();
+            final String mask = "*".repeat(l - 3);
+            return mail.substring(0, 2) + mask + mail.charAt(l - 1) + "@" + parts[1];
         } catch (Exception e) { // indexOutOfBounds,
-            App.silenceException(String.format("Bad mail format '%s'", mail));
+            App.silenceException(String.format("Bad mail format '%s'.", mail));
             return "";
         }
     }

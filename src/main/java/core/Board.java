@@ -39,7 +39,7 @@ import java.util.ArrayList;
  * bodyLayer (Panel), 450
  * Thus, the total dimension is roughly 1_000 x (680 - 700)
  *
- * It is important to explore the {@link Activity} interface, and classes that implemet it.
+ * It is important to explore the {@link Activity} interface, and implementing classes..
  */
 public final class Board extends KFrame {
     /**
@@ -115,7 +115,7 @@ public final class Board extends KFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (!Settings.confirmExit || App.showYesNoCancelDialog("Confirm Exit",
-                        "Do you really mean to quit the Dashboard?")) {
+                        "Do you really mean to close the Dashboard?")) {
                     setVisible(false);
                 }
             }
@@ -209,7 +209,10 @@ public final class Board extends KFrame {
 
         nameLabel = new KLabel(Student.requiredNameForFormat().toUpperCase(), KFontFactory.createBoldFont(20));
         if (!Student.isTrial()) {
-            final String nameTip = Student.getLevelNumber()+" Level "+Student.getMajor()+" Major";
+            final int levelNumber = Student.getLevelNumber();
+            final String nameTip = String.join(" ",
+                    levelNumber > 400 ? "Over 400" : String.valueOf(levelNumber), "Level",
+                    Student.getMajor(), "Major");
             nameLabel.setToolTipText(nameTip);
         }
 

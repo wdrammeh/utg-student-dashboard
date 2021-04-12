@@ -10,7 +10,7 @@ Dashboard is built by the students for the students.
 Dashboard uses the **UTG ERP System (Portal)** as a center of verification for users.
 The Portal is Dashboard's sole source of valid data. The data collected are used for,
 but not limited to, **verification**, **analysis**, and **presentation**.
-Read [Dashboard's Privacy Policy](Privacy.md) for more information.
+Read [Dashboard's Privacy Policy](PRIVACY.md) for more information.
 
 At every successful login, Dashboard grasps the fundamental details of the user.
 So students won't need to be specifying level, status on the go.
