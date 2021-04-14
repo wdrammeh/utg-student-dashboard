@@ -21,7 +21,7 @@ public class Serializer {
 
 
     /**
-     * Serializes the given object to the the given path.
+     * Serializes the given object to the given path.
      * Classes that perform serialization eventually invoke this to do the ultimate writing.
      * This method is self-silent.
      */
