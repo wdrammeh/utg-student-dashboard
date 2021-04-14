@@ -17,7 +17,7 @@ import java.io.*;
 import static core.utils.Globals.joinPaths;
 
 public class Serializer {
-    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), ".dashboard");
+    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), "Dashboard");
 
 
     /**
@@ -43,7 +43,7 @@ public class Serializer {
     }
 
     /**
-     * reads the object that was serialized to the given path.
+     * Reads the object that was serialized to the given path.
      * Classes that perform de-serialization eventually
      * invoke this to do the ultimate reading.
      * This method is self-silent.

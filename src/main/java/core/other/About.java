@@ -424,7 +424,7 @@ public class About extends KDialog {
 
             final KPanel nationalityPanel = new KPanel(new BorderLayout());
             nationalityPanel.add(new KPanel(new KLabel("Nationality:", hintFont)), BorderLayout.WEST);
-            nationalityPanel.add(new KPanel(new KLabel("The Gambia", valueFont)), BorderLayout.CENTER);
+            nationalityPanel.add(new KPanel(new KLabel("Gambian", valueFont)), BorderLayout.CENTER);
 
             final KButton closeButton = new KButton("Close");
             closeButton.addActionListener(e-> dispose());

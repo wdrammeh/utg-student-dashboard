@@ -4,6 +4,7 @@ import core.Activity;
 import core.Board;
 import core.Portal;
 import core.driver.MDriver;
+import core.module.RunningCourseActivity;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
@@ -267,11 +268,12 @@ public class NotificationActivity implements Activity {
             registrationLabel.setText(Portal.getRegistrationNotice());
             admissionLabel.setText(Portal.getAdmissionNotice());
         } else {
-            final String waitingText = "Contacting Portal... Please wait";
+            final String waitingText = "Contacting Portal... Please wait.";
             registrationLabel.setText(waitingText);
             admissionLabel.setText(waitingText);
         }
         refreshButton.setEnabled(responsive);
+        RunningCourseActivity.noticeLabel.setText(Portal.getRegistrationNotice());
     }
 
 

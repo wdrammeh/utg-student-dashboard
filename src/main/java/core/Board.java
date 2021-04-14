@@ -540,9 +540,11 @@ public final class Board extends KFrame {
     /**
      * Returns the rootPane of the current instance of the Dashboard.
      * A shorthand way of calling Board.getInstance().getRootPane()
+     *
+     * If the instance is null, returns null.
      */
     public static JRootPane getRoot(){
-        return instance.rootPane;
+        return instance == null ? null : instance.rootPane;
     }
 
     public static Board getInstance(){

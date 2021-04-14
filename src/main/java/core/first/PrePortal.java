@@ -59,7 +59,7 @@ public class PrePortal {
             return;
         }
         Login.replaceLastUpdate("Setting up the driver....... Successful");
-        Login.appendToStatus("Now contacting utg.gm.......");
+        Login.appendToStatus("Now contacting utg.edu.gm.......");
         loadWaiter = new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME);
 //        make sure we are at the login page
         if (MDriver.isOnPortal(driver)) {
@@ -86,9 +86,9 @@ public class PrePortal {
         } else if (loginAttempt == MDriver.ATTEMPT_FAILED) {
             Login.replaceLastUpdate("Now contacting utg....... Done");
             Login.appendToStatus("Verification failed : No such student");
-            App.reportError(Login.getRoot(),"Invalid Credentials","The information you provided,\n" +
-                    "Email: "+email+"\nPassword: "+password+"\n" +
-                    "do not match any student. Please try again.");
+            App.reportError(Login.getRoot(), "Invalid Credentials",
+                    "The information you provided do not match any student.\n" +
+                            "Please try again with valid credentials.");
             Login.setInputState(true);
         } else {
             Login.appendToStatus("Connection lost");

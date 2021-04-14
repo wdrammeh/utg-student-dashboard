@@ -1,5 +1,7 @@
 >> The following improvements will be made
 
+
+- Include JUnit
 - Remove static-orientation of task types.
 - Auto outdate feature: to either specify a term limit, or consult a webpage.
 - Manual check for updates feature.
