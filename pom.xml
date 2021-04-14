@@ -7,7 +7,7 @@
     <name>UTG-Student Dashboard</name>
     <groupId>utg.edu.gm</groupId>
     <artifactId>Dashboard</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <properties>
         <maven.compiler.source>15</maven.compiler.source>

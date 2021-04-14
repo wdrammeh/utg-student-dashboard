@@ -97,7 +97,7 @@ public class Dashboard {
     /**
      * Triggers a new Dashboard.
      * This happens, of course, if no data are found to deserialize.
-     * The user may have signed out, or has actually never launched Dashboard.
+     * The user might have signed out, or has actually never launched Dashboard.
      */
     private static void freshStart(){
         isFirst = true;
