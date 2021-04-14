@@ -2,14 +2,14 @@
     that must be done prior to deployment.
 
 
-- Create SNAPSHOT tag.
-- Make sure Dashboard.VERSION := Bundle-Version in MANIFEST.MF := <version> in pom.xml
+- Create SNAPSHOT Tag.
 - Cross-check for TODOs.
 - Be sure to have dealt with all test-cases, as in the test file.
-- Make sure the documentation are in full-sync.
+- Make sure the documentations are in full-sync.
     Documentation in source files := static files := README, logic, etc.
-- Make sure Versions are in order.
+- Make sure Versions are in order such that:
+    utg.Dashboard.VERSION := <version> in pom.xml := <version> in README.md
 - Test extensively on the three (3) major platforms.
 - Replace Dashboard with .dashboard as ROOT_DIR.
-    This probably is the latest commit of every release.
-- Create a RELEASE tag.
+    This, probably, is the latest commit of every release.
+- Create a RELEASE Tag. Deploy!

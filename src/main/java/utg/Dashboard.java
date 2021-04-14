@@ -23,63 +23,56 @@ import java.util.HashMap;
  */
 public class Dashboard {
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version("0.0.1", Version.SNAPSHOT);
-    public static final Thread UNLOCK_HOOK = new Thread(Dashboard::unlockAccess);
+    public static final Version VERSION = new Version("0.0.1", Version.RELEASE);
+    public static final Thread STATUS_HOOK = new Thread(()-> setStatus("Closed"));
     private static boolean isFirst;
 
 
     public static void main(String[] args) {
         if (isRunning()) {
-            App.silenceException("Dashboard is already running.");
-        } else {
-            PREVIEW.setVisible(true);
-            final File rootDir = new File(Serializer.ROOT_DIR);
-            if (rootDir.exists()) {
-                lockAccess();
-                Runtime.getRuntime().addShutdownHook(UNLOCK_HOOK);
-                final HashMap<String, String> configs = getLastConfigs();
-                if (configs.isEmpty()) {
-                    App.silenceException("Bad, or missing configuration files. Launching a new instance...");
-                    freshStart();
-                    return;
-                }
-                final Version recentVersion = Version.construct(configs.get("version"));
-                final int compare = VERSION.compare(recentVersion);
-                if (compare == Version.LESS) {
-                    App.reportError("Version Error | Downgrade detected",
-                            "You're trying launch Dashboard with an older version than your configuration files.\n" +
-                                    "Please use Dashboard version '"+recentVersion.getLiteral()+"', or later.");
-                } else if (compare == Version.GREATER) {
-                    App.silenceInfo("A version upgrade detected.");
-//                    Todo implement version upgrade stuff
-                } else {
-                    if (configs.get("userName").equals(Globals.userName())) {
-                        rebuildNow(true);
-                    } else {
-                        verifyUser(true);
-                    }
-                }
-            } else {
+            App.silenceWarning("Dashboard is already running.");
+        }
+        PREVIEW.setVisible(true);
+        final File rootDir = new File(Serializer.ROOT_DIR);
+        if (rootDir.exists()) {
+            setStatus("Running");
+            Runtime.getRuntime().addShutdownHook(STATUS_HOOK);
+            final HashMap<String, String> configs = getLastConfigs();
+            if (configs.isEmpty()) {
+                App.silenceException("Bad, or missing configuration files. Launching a new instance...");
                 freshStart();
+                return;
             }
+            final Version recentVersion = Version.construct(configs.get("version"));
+            final int compare = VERSION.compare(recentVersion);
+            if (compare == Version.LESS) {
+                PREVIEW.dispose();
+                App.reportError(null, "Version Error | Downgrade Detected",
+                        "You're trying to launch Dashboard with an older version than your configuration files.\n" +
+                                "Please use Dashboard version '"+recentVersion.getLiteral()+"', or later.");
+                System.exit(0);
+            } else if (compare == Version.GREATER) {
+                App.silenceInfo("A version upgrade detected.");
+//                    Todo implement version upgrade stuff
+            }
+
+            if (configs.get("userName").equals(Globals.userName())) {
+                rebuildNow(true);
+            } else {
+                verifyUser(true);
+            }
+        } else {
+            freshStart();
         }
     }
 
     private static boolean isRunning(){
         final File statusFile = new File(Serializer.inPath("status.ser"));
-        if (statusFile.exists()) {
-            String status = (String) Serializer.fromDisk(statusFile.getAbsolutePath());
-            return status.equals("Running");
-        }
-        return false;
+        return "Running".equals(Serializer.fromDisk(statusFile.getAbsolutePath()));
     }
 
-    public static void lockAccess(){
-        Serializer.toDisk("Running", Serializer.inPath("status.ser"));
-    }
-
-    public static void unlockAccess(){
-        Serializer.toDisk("Closed", Serializer.inPath("status.ser"));
+    private static void setStatus(String status){
+        Serializer.toDisk(status, Serializer.inPath("status.ser"));
     }
 
     /**
@@ -104,7 +97,7 @@ public class Dashboard {
     /**
      * Triggers a new Dashboard.
      * This happens, of course, if no data are found to deserialize.
-     * The user may have signed out, or has actually never launched Dashboard.
+     * The user might have signed out, or has actually never launched Dashboard.
      */
     private static void freshStart(){
         isFirst = true;
@@ -149,7 +142,7 @@ public class Dashboard {
 
     private static String requestInput(){
         final String studentName = Student.getFullNamePostOrder();
-        final String input = App.requestInput(PREVIEW, "Dashboard",
+        final String input = App.requestInput(null, "Dashboard",
                 "This Dashboard belongs to '"+studentName+"'.\n" +
                 "Please enter your Matriculation Number to confirm:");
         if (input == null) {
@@ -187,6 +180,10 @@ public class Dashboard {
 
     public static boolean isFirst() {
         return isFirst;
+    }
+
+    public static boolean isRelease(){
+        return VERSION.getType().equals(Version.RELEASE);
     }
 
 }

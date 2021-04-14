@@ -53,7 +53,7 @@ public class EventSelf {
             eveCalendar.add(Calendar.DATE, -1);
             if (MDate.isSameDay(eveCalendar.getTime(), new Date())) {
                 signalEveNotice();
-            } else if(MDate.isSameDay(MDate.parse(dateDue+" 0:0:0"), new Date())) {
+            } else if (MDate.isSameDay(MDate.parse(dateDue+" 0:0:0"), new Date())) {
                 endState();
                 setUpUI();
                 MComponent.ready(eventLayer);
@@ -147,7 +147,9 @@ public class EventSelf {
         stateIndicator.setText("Past : "+dateDue);
         stateIndicator.setFont(KFontFactory.createPlainFont(16));
         isPending = false;
-        timer.stop();
+        if (timer != null) {
+            timer.stop();
+        }
         signalTimeupNotice();
     }
 

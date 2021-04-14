@@ -43,7 +43,7 @@ public class Serializer {
     }
 
     /**
-     * reads the object that was serialized to the given path.
+     * Reads the object that was serialized to the given path.
      * Classes that perform de-serialization eventually
      * invoke this to do the ultimate reading.
      * This method is self-silent.

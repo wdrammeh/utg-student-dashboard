@@ -111,7 +111,7 @@ public class RunningCourseActivity implements Activity {
             runningActivity.add(new KPanel(new FlowLayout(FlowLayout.LEFT), noticeLabel), BorderLayout.SOUTH);
             uploadModules();
 
-            effectNoticeUpdate();
+            Board.POST_PROCESSES.add(()-> noticeLabel.setText(Portal.getRegistrationNotice()));
         }
         Board.addCard(runningActivity, "Running Courses");
     }
@@ -129,10 +129,6 @@ public class RunningCourseActivity implements Activity {
         } else {
             deserializeModules();
         }
-    }
-
-    public static void effectNoticeUpdate(){
-        Board.POST_PROCESSES.add(()-> noticeLabel.setText(Portal.getRegistrationNotice()));
     }
 
     private static synchronized void fixRunningDriver(){

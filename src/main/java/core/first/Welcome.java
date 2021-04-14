@@ -2,6 +2,7 @@ package core.first;
 
 import core.user.Setup;
 import proto.*;
+import utg.Dashboard;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -33,14 +34,12 @@ public class Welcome extends KDialog {
     }
 
     private void addWelcomeActivity(){
-        final KPanel topPanel = new KPanel(new KLabel("UTG-Student Dashboard (v0.0.1-SNAPSHOT)", KFontFactory.createBoldFont(20)));
+        final KPanel topPanel = new KPanel(new KLabel(String.format("UTG-Student Dashboard (v%s)", Dashboard.VERSION),
+                KFontFactory.createBoldFont(20)));
         topPanel.setBackground(Color.WHITE);
 
         final String broughtString = "Proudly brought to you by the <b>Dashboard Project</b>. Dashboard comes with solutions long-anticipated by the UTG Students, " +
-                "so use it to organize yourself! Before proceeding, we vehemently recommend that you go through the disclaimer below." +
-                "<p>Please note that this copy of Dashboard is a <b>SNAPSHOT</b> release which means that it is still under active development. " +
-                "SNAPSHOT releases are intended for Feedback purposes only; and hence, this will be replaced with a stable release. " +
-                "Also, configuration data serialized by this version won't be compatible with future releases.</p>";
+                "so use it to organize yourself! Before proceeding, we vehemently recommend that you go through the disclaimer below.";
 
         final String dedicationText = "Dashboard is developed by the Students for the Students. Whether you're an <b>Undergraduate</b>, <b>Postgraduate</b>, or a student <b>deferring</b>, Dashboard got you covered. " +
                 "Dashboard grasp your fundamental details at every successful login - so you don't " +
@@ -79,12 +78,9 @@ public class Welcome extends KDialog {
                 "This can let you have the <b>worst possible experience</b> from your usage of Dashboard! For instance, a student admitted in 2016 may have his/her year-of-admission 2019 in the portal. " +
                 "To mention a few consequences of this is that, obviously, a wrong computation will be returned when Dashboard is asked to predict the <b>expected year of graduation</b>, or the </b>current level</b> of the student. " +
                 "Plus, mis-indexing of modules' years will occur which, in turn, will cause <i>analysis-by-year</i> problems, and addition of modules to the inappropriate tables.</p>" +
-                "<p>The good news is: all these, if occurred, can be fixed at any point in time even after build - as Dashboard effortlessly <b>re-indexes</b> your resources after every successful login.</p>";
+                "<p>The good news is: all these, if occurred, can be fixed at any point in time even after build - as Dashboard effortlessly <b>re-indexes</b> your resources at every successful login.</p>";
 
-        final String nextText = "To continue, acknowledge adherence to these terms by selecting the <b>Checkbox</b> below.";
-
-        final KPanel separatorPanel = new KPanel(new KSeparator(new Dimension(PREFERRED_WIDTH, 1), Color.RED));
-        separatorPanel.setBackground(Color.WHITE);
+        final String nextText = "<br>To continue, acknowledge adherence to these terms by selecting the <b>Checkbox</b> below.";
 
         final KButton exitButton = new KButton("Exit");
         exitButton.setFont(KFontFactory.createPlainFont(15));
@@ -96,7 +92,7 @@ public class Welcome extends KDialog {
         nextButton.setEnabled(false);
 
         final KCheckBox nextCheckBox = new KCheckBox("I hereby read, understood, and consent to these terms.");
-        nextCheckBox.setFont(KFontFactory.createPlainFont(15));
+        nextCheckBox.setFont(KFontFactory.createBoldFont(15));
 //        nextCheckBox.setForeground(Color.RED);
         nextCheckBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         nextCheckBox.addItemListener(e-> nextButton.setEnabled(e.getStateChange() == ItemEvent.SELECTED));
@@ -111,12 +107,12 @@ public class Welcome extends KDialog {
         final KPanel textPanel = new KPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.addAll(topPanel,
-                write(broughtString, 165),
+                write(broughtString, 70),
                 head("Dedication"), write(dedicationText, 90),
-                head("System Requirement"), write(requirementText, 185),
+                head("System Requirement"), write(requirementText, 190),
                 head("Portal & Privacy"), write(securityText, 550),
                 head("Important"), write(importantText, 425),
-                separatorPanel, write(nextText, 50));
+                write(nextText, 65));
         scrollPane = new KScrollPane(textPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         welcomePanel.add(scrollPane, BorderLayout.CENTER);

@@ -798,7 +798,7 @@ public class SettingsUI implements Activity {
                     if (verInt == App.VERIFICATION_TRUE) {
                         if (Serializer.unMountUserData()) {
                             Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);
-                            Runtime.getRuntime().removeShutdownHook(Dashboard.UNLOCK_HOOK);
+                            Runtime.getRuntime().removeShutdownHook(Dashboard.STATUS_HOOK);
                             Board.getInstance().setVisible(false);
                         } else {
                             App.reportError("Error",

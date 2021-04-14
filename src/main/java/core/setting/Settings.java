@@ -85,8 +85,8 @@ public class Settings {
             confirmExit = Boolean.parseBoolean(settings[1]);
             ToolTipManager.sharedInstance().setInitialDelay(Integer.parseInt(settings[2]));
             ToolTipManager.sharedInstance().setDismissDelay(Integer.parseInt(settings[3]));
-            backgroundName = settings[4];
-            lookName = settings[5];
+            lookName = settings[4];
+            backgroundName = settings[5];
         }
     }
 

@@ -20,7 +20,7 @@ is entirely **Portal-independent**.
 Therefore, unexpected details from therein can induce misbehavior of Dashboard.
 We advise every student victim of wrong, or incomplete details on their Portals
 to refer to their respective departments for help before, or anytime soon after,
-launching proceeding.
+launching Dashboard.
 
 We however handle, gracefully, the common issue of missing-grades,
 but cannot afford to lose core details like the student's name,
@@ -41,39 +41,46 @@ at every successful login.
 
 ## What Dashboard can do
 - Offline content management capability.
-- Unlimited **Transcript Exportation** in Portable Document Format.
+- Unlimited **Transcript Exportation** in Portable Document Format (PDF).
 - News updates from UTG official news site (download once and for all).
 - Explore UTG Portal.
 - Track semesters on the go.
 - Course Collection, Classification, Organization, Analysis & Presentation.
 - Semester to semester performance graph.
-- Assignment management system with notification triggers.
 - TODO, Tasks, and Projects management.
+- Assignment management system with notification triggers.
 - UTG FAQs and Answers.
 
 ## What Dashboard cannot do
 - Cannot be used as a mean of application for non-enrolled students.
-- Cannot apply for deferments for enrolled students.
+- Cannot apply deferments for enrolled students.
 
 ## System Requirements
 Presently, Dashboard depends on the traditional **Firefox Web Browser**
-for the scrapping functionality.
+for the "scrapping" functionality.
+Therefore, **Firefox** is a requirement for Dashboard to effectively
+communicate with the Portal.
 
 ## Try Dashboard
 Dashboard has a **Trial** Functionality by the means of which non-UTG students
 can get to temporarily use it, exploring the vast features therein.
-Maximum functionality is only provided when user is logged in as a **UTG Student**.
+Should a student wish, he/she can try out the **Trial** as well,
+but maximum functionality is only provided when user is logged in as a **UTG Student**.
 
 ## "A journey of thousand miles begins with a single step"
 Dashboard is an ambitious project, and this is only the beginning.
 Also, we wish to integrate the following features in a future release:
 
 - Course Registration
-- Student Forum
 - Student Voting System
+- Student Forum
 
 ## License
-(c) 2021 UTG. All rights reserved.
+(c) 2021 UTG. All rights reserved. Read the [LICENSE](LICENSE.txt) file.
+
+## Privacy & Terms
+Whatever happens in your Dashboard, stays in your Dashboard.
+Read the [PRIVACY](PRIVACY.md) file.
 
 ## Maintainers
 - [Muhammed W. Drammeh <md21712494@utg.edu.gm>](https://www.github.com/w-drammeh)
