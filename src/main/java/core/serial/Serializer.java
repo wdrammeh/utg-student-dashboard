@@ -3,6 +3,7 @@ package core.serial;
 import core.News;
 import core.Portal;
 import core.alert.Notification;
+import core.driver.MDriver;
 import core.module.ModuleHandler;
 import core.module.RunningCourseActivity;
 import core.setting.Settings;
@@ -17,7 +18,7 @@ import java.io.*;
 import static core.utils.Globals.joinPaths;
 
 public class Serializer {
-    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), ".dashboard");
+    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), "Dashboard");
 
 
     /**
@@ -79,6 +80,7 @@ public class Serializer {
         TaskActivity.serializeAll();
         Notification.serialize();
         News.serialize();
+        MDriver.stopAll();
     }
 
     public static boolean unMountUserData(){

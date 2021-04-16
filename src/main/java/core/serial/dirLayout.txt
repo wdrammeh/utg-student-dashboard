@@ -2,7 +2,7 @@
     May be valid for the current version only.
 
 
-config.ser - It contains the configuration info
+configs.ser - It contains the configuration info
     of the last Dashboard instance at time of collapse.
 settings.ser -
 portal.ser -

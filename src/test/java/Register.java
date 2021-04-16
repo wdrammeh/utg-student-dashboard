@@ -42,6 +42,7 @@ public class Register {
                 return;
             }
             runningElement.click();
+//            Todo maximize the drop-down list here
             driver.findElementByCssSelector("#semester-table_filter > label > input").sendKeys(key);
             WebElement processElement = driver.findElementById("semester-table_processing");
             loadWaiter.until(ExpectedConditions.invisibilityOf(processElement));

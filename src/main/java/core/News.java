@@ -52,7 +52,7 @@ public class News implements Activity {
 
         present = new KPanel();
         present.setLayout(new BoxLayout(present, BoxLayout.Y_AXIS));
-        present.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 20), accessLabel));//then only add using addPenultimate(Component)
+        present.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 20), accessLabel));
 
         isFirstView = true;
         scrollPane = new KScrollPane(present);
@@ -64,6 +64,7 @@ public class News implements Activity {
         Board.addCard(activityPanel, "News");
 
         if (Dashboard.isFirst()) {
+            NEWS_DATA.clear(); // somewhat necessary... e.g. from "trial" to login
             new Thread(()-> packAll(false)).start();
         } else {
             Board.POST_PROCESSES.add(this::deserialize);
@@ -84,25 +85,14 @@ public class News implements Activity {
         try {
             final Document doc = Jsoup.connect(NEWS_SITE).get();
             final List<Element> elements = doc.getElementsByTag("article");
-            if (NEWS_DATA.isEmpty()) {
-                for (Element element : elements) {
-                    final String head = element.select("h2.entry-title").text();
-                    final String body = element.getElementsByTag("p").text();
-                    final String link = element.getElementsByTag("a").attr("href");
+            for (Element element : elements) {
+                final String head = element.select("h2.entry-title").text();
+                final String body = element.getElementsByTag("p").text();
+                final String link = element.getElementsByTag("a").attr("href");
+                if (!NEWS_DATA.contains(new NewsSavior(head, null, link, null))) {
                     NEWS_DATA.add(new NewsSavior(head, body, link, null));
-                    present.addPenultimate(packNews(head, body, link, null));
+                    present.add(packNews(head, body, link, null), NEWS_DATA.size() - 1);
                     MComponent.ready(present);
-                }
-            } else {
-                for (Element element : elements) {
-                    final String head = element.select("h2.entry-title").text();
-                    final String body = element.getElementsByTag("p").text();
-                    final String link = element.getElementsByTag("a").attr("href");
-                    if (!NEWS_DATA.contains(new NewsSavior(head, null, link, null))) {
-                        NEWS_DATA.add(0, new NewsSavior(head, body, link, null));
-                        present.add(packNews(head, body, link, null), 0);
-                        MComponent.ready(present);
-                    }
                 }
             }
             accessTime = "Last Accessed: "+ MDate.now();
@@ -304,8 +294,9 @@ public class News implements Activity {
                 final NewsSavior savior = new NewsSavior(heads[i], bodies[i], links[i], contents[i]);
                 NEWS_DATA.add(savior);
             }
-            for (NewsSavior news : NEWS_DATA) {
-                present.addPenultimate(packNews(news.heading, news.body, news.link, news.content));
+            for (int i = 0; i < NEWS_DATA.size(); i++) {
+                final NewsSavior news = NEWS_DATA.get(i);
+                present.add(packNews(news.heading, news.body, news.link, news.content), i);
             }
             MComponent.ready(present);
             final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "accessTime.ser"));

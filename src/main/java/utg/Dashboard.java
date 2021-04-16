@@ -1,6 +1,7 @@
 package utg;
 
 import core.Board;
+import core.alert.Notification;
 import core.first.Welcome;
 import core.other.Preview;
 import core.serial.Serializer;
@@ -23,8 +24,10 @@ import java.util.HashMap;
  */
 public class Dashboard {
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version("0.0.1", Version.RELEASE);
-    public static final Thread STATUS_HOOK = new Thread(()-> setStatus("Closed"));
+    public static final Version VERSION = new Version("0.1.1", Version.SNAPSHOT);
+    private static final String RUNNING = "Running";
+    private static final String CLOSED = "Closed";
+    public static final Thread STATUS_HOOK = new Thread(()-> setStatus(CLOSED));
     private static boolean isFirst;
 
 
@@ -35,44 +38,58 @@ public class Dashboard {
         PREVIEW.setVisible(true);
         final File rootDir = new File(Serializer.ROOT_DIR);
         if (rootDir.exists()) {
-            setStatus("Running");
-            Runtime.getRuntime().addShutdownHook(STATUS_HOOK);
-            final HashMap<String, String> configs = getLastConfigs();
-            if (configs.isEmpty()) {
-                App.silenceException("Bad, or missing configuration files. Launching a new instance...");
-                freshStart();
-                return;
-            }
-            final Version recentVersion = Version.construct(configs.get("version"));
-            final int compare = VERSION.compare(recentVersion);
-            if (compare == Version.LESS) {
-                PREVIEW.dispose();
-                App.reportError(null, "Version Error | Downgrade Detected",
-                        "You're trying to launch Dashboard with an older version than your configuration files.\n" +
-                                "Please use Dashboard version '"+recentVersion.getLiteral()+"', or later.");
-                System.exit(0);
-            } else if (compare == Version.GREATER) {
-                App.silenceInfo("A version upgrade detected.");
+            setStatus(RUNNING);
+            final File configFile = new File(Serializer.inPath("configs.ser"));
+            if (configFile.exists()) {
+                final HashMap<String, String> configs = getLastConfigs();
+                if (configs.isEmpty()) {
+                    App.silenceException("Bad configuration files. Launching a new instance...");
+                    freshStart();
+                } else {
+                    final Version recentVersion = Version.construct(configs.get("version"));
+                    final int comparison = VERSION.compare(recentVersion);
+                    if (comparison == Version.LESS) {
+                        PREVIEW.dispose();
+                        App.reportError(null, "Version Error | Downgrade Detected",
+                                "You're trying to launch Dashboard with an older version than your configuration files.\n" +
+                                        "Please use Dashboard version '"+recentVersion.getLiteral()+"', or later.");
+                        System.exit(0);
+                    } else if (comparison == Version.GREATER) {
+                        App.silenceInfo("A version upgrade detected.");
 //                    Todo implement version upgrade stuff
-            }
-
-            if (configs.get("userName").equals(Globals.userName())) {
-                rebuildNow(true);
+                        Board.POST_PROCESSES.add(()-> {
+                            Notification.create("New Update", "Dashboard has been updated.",
+                                    "<p>A version upgrade was detected: from <b>"+recentVersion+"</b> to <b>"+VERSION+"</b>.</p>");
+//                    Todo: Add What's new notice, or point to an external source containing such notice.
+                        });
+                    }
+                    if (configs.get("userName").equals(Globals.userName())) {
+                        rebuildNow(true);
+                    } else {
+                        verifyUser(true);
+                    }
+                }
             } else {
-                verifyUser(true);
+                App.silenceException("Missing configuration files. Launching a new instance...");
+                freshStart();
             }
         } else {
+            setStatus(RUNNING);
             freshStart();
         }
     }
 
     private static boolean isRunning(){
         final File statusFile = new File(Serializer.inPath("status.ser"));
-        return "Running".equals(Serializer.fromDisk(statusFile.getAbsolutePath()));
+        return statusFile.exists() &&
+                RUNNING.equals(Serializer.fromDisk(statusFile.getAbsolutePath()));
     }
 
     private static void setStatus(String status){
         Serializer.toDisk(status, Serializer.inPath("status.ser"));
+        if (RUNNING.equals(status)) {
+            Runtime.getRuntime().addShutdownHook(STATUS_HOOK);
+        }
     }
 
     /**

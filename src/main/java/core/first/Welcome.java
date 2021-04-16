@@ -91,10 +91,11 @@ public class Welcome extends KDialog {
         nextButton.addActionListener(e-> cardLayout.show(welcomeActivity, "Choose"));
         nextButton.setEnabled(false);
 
-        final KCheckBox nextCheckBox = new KCheckBox("I hereby read, understood, and consent to these terms.");
+        final KCheckBox nextCheckBox = new KCheckBox("I hereby READ, UNDERSTOOD, and CONSENT to these terms.");
         nextCheckBox.setFont(KFontFactory.createBoldFont(15));
-//        nextCheckBox.setForeground(Color.RED);
+        nextCheckBox.setForeground(Color.DARK_GRAY);
         nextCheckBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        nextCheckBox.setFocusable(false);
         nextCheckBox.addItemListener(e-> nextButton.setEnabled(e.getStateChange() == ItemEvent.SELECTED));
 
         final KPanel bottomPanel = new KPanel(new BorderLayout());

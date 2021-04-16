@@ -105,7 +105,7 @@ public class MComponent {
         final KLabel label1 = new KLabel(activityName, KFontFactory.createBoldFont(30));
         final KLabel label2 = new KLabel("This activity is not supported for \"Trial Users\"",
                 KFontFactory.createPlainFont(20), Color.DARK_GRAY);
-        final KLabel label3 = new KLabel("If you are a student of The University of The Gambia, you may...",
+        final KLabel label3 = new KLabel("If you are a student of the University of The Gambia, you may...",
                 KFontFactory.createPlainFont(20), Color.GRAY);
         final KLabel loginLabel = new KLabel("Login Now", KFontFactory.createPlainFont(20), Color.BLUE);
         loginLabel.underline(false);

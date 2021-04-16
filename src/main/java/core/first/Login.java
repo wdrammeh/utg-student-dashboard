@@ -1,6 +1,7 @@
 package core.first;
 
 import core.Board;
+import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
@@ -219,6 +220,7 @@ public class Login extends JDialog {
             instance.setVisible(false);
             if (Board.getInstance() != null) {
                 Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);
+                Serializer.unMountUserData();
                 Board.getInstance().dispose();
             }
             new Board().setVisible(true);

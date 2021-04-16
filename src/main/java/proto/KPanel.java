@@ -114,7 +114,7 @@ public class KPanel extends JPanel implements Preference {
     /**
      * Adds the given component, second to last, on this panel.
      * If this panel contains no children prior to this call,
-     * then this call is effectively equivalent to a add(Component)
+     * then this call is effectively equivalent to add(Component)
      */
     public Component addPenultimate(Component component){
         final int count = getComponentCount();

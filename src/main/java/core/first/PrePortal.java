@@ -148,6 +148,7 @@ public class PrePortal {
             Portal.setRegistrationNotice(registrationAlert.getText());
         } catch (Exception e) {
             App.silenceException("Failed to set 'Registration Notice'");
+            App.silenceException(e);
         }
 
         final String[] fullName = temporaryName.split(" ");

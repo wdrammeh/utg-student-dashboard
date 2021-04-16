@@ -1,7 +1,6 @@
 >> In-depth sight of the serials directory tree.
     May be valid for this version only.
 
-
 - Every serializable file is either an array of Strings, or simply a String.
 - Where every string (or every entry of the array where implemented so) must be a
     line-separated value -> Every line must represent a separate value, or property
@@ -35,11 +34,11 @@ Contains all the settings at collapse.
 >> Portal (portal.ser) | String
 Contains all portal related data.
     0: registrationNotice <String>
-    1: lastRegistrationNoticeUpdate <String> | Might be 'Never' or a value returned by MDate.format(Date)
+    1: lastRegistrationNoticeUpdate <String> | "Never", or MDate.format(Date)
     2: admissionNotice <String>
-    3: lastAdmissionNoticeUpdate <String> | Might be 'Never' or a value returned by MDate.format(Date)
+    3: lastAdmissionNoticeUpdate <String> | "Never", or MDate.format(Date)
     4: isAutoSync <boolean>
-    5: lastLogin <String> | as returned by MDate.format(Date)
+    5: lastLogin <String> | MDate.format(Date)
 
 
 >> Modules (modules/ )
@@ -120,8 +119,8 @@ The tasks folder stores data regarding all the 4 main task types,
 each in a separate file therein. Every file is an array of String.
 --> Todo type (todos.ser) | String[]
     0: description <String>
-    1: startDate <String> | initially a value returned by MDate.now()
-    2: specifiedDuration <int> | days
+    1: startDate <String> | MDate.now()
+    2: specifiedDuration <int> | in days
     3: totalTimeConsumed <int>
     4: isActive <boolean>
     5: dateCompleted <String>
@@ -131,7 +130,7 @@ each in a separate file therein. Every file is an array of String.
 --> Project type (projects.ser) | String[]
     0: projectName <String>
     1: type <String>
-    2: startDate <String> | initially a value returned by MDate.now()
+    2: startDate <String> | MDate.now()
     3: specifiedDuration <int>
     4: totalTimeConsumed <int>
     5: isLive <boolean>
@@ -144,12 +143,12 @@ each in a separate file therein. Every file is an array of String.
         An array of all the assignments.
         Every entry is such that a line-separated value, excluding the members field.
         0: courseName <String>
-        1: deadLine <String> | a value of MDate.formatDateOnly()
+        1: deadLine <String> | MDate.formatDateOnly()
         2: isGroup
         3: modeOfSubmission <String>
-        4: startDate <String> | a value returned by MDate.formatDateOnly()
+        4: startDate <String> | MDate.formatDateOnly()
         5: isOn
-        6: dateSubmitted <String> | a value of MDate.formatDateOnly()
+        6: dateSubmitted <String> | MDate.formatDateOnly()
         7: eveIsAlerted <boolean>
         8: submissionIsAlerted <boolean>
 
@@ -165,7 +164,7 @@ each in a separate file therein. Every file is an array of String.
 
     --> Event type (events.ser) | String[]
         0:title <String>
-        1: dateDue <String> | a value returned by MDate.formatDateOnly()
+        1: dateDue <String> | MDate.formatDateOnly()
         2: isPending <boolean>
         3: eveIsAlerted <boolean>
         4: timeupIsAlerted <boolean>
@@ -176,7 +175,7 @@ Stores notifications and information on their read-state.
     0: heading <String>
     1: text <String>
     2: information <String>
-    3: time <Date> | full format
+    3: time <String> | MDate.format()
     4: isRead <boolean>
 
 
@@ -186,4 +185,4 @@ Should store content of every news.
 --> Bodies (bodies.ser) | String[]
 --> Links (links.ser) | String[]
 --> Contents (contents.ser) | String[]
---> Access time (accessTime.ser) | String[]
+--> Access time (accessTime.ser) | String

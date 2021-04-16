@@ -12,6 +12,7 @@ public class Globals {
     public static final int DAY = 24 * HOUR;
     public static final String NONE = "None";
     public static final String UNKNOWN = "Unknown";
+    public static final String NEVER = "Never";
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 
@@ -41,6 +42,10 @@ public class Globals {
         return String.join(File.separator, paths);
     }
 
+    /**
+     * When an object is null, the empty string
+     * is placed on that line instead.
+     */
     public static String joinLines(Object... lines){
         final StringJoiner joiner = new StringJoiner(LINE_SEPARATOR);
         for (Object line : lines) {

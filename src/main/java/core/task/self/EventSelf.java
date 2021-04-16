@@ -85,8 +85,9 @@ public class EventSelf {
                 }
             });
         }
+        stateIndicator = new KLabel((isPending? "Pending" : "Past") + " : " + dateDue, KFontFactory.createBoldFont(16));
+
         canceller.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        stateIndicator = new KLabel("Pending : "+dateDue, KFontFactory.createBoldFont(16));
         stateIndicator.setOpaque(false);
 
         eventLayer = new KPanel(1_000,30);//this is 30

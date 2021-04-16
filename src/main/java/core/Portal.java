@@ -153,7 +153,8 @@ public class Portal {
      * @see MDate
      */
     public static String getLastAdmissionNoticeUpdate(){
-        return lastAdmissionNoticeUpdate == null ? "Never" : MDate.format(lastAdmissionNoticeUpdate);
+        return lastAdmissionNoticeUpdate == null ? Globals.NEVER :
+                MDate.format(lastAdmissionNoticeUpdate);
     }
 
     /**
@@ -184,7 +185,8 @@ public class Portal {
      * @see MDate
      */
     public static String getLastRegistrationNoticeUpdate(){
-        return lastRegistrationNoticeUpdate == null ? "Never" : MDate.format(lastRegistrationNoticeUpdate);
+        return lastRegistrationNoticeUpdate == null ? Globals.NEVER :
+                MDate.format(lastRegistrationNoticeUpdate);
     }
 
     public static WebElement getTabElement(String elementText, List<WebElement> tabs){
@@ -271,11 +273,11 @@ public class Portal {
 
     public static void serialize(){
         final String data = Globals.joinLines(registrationNotice,
-                MDate.format(lastRegistrationNoticeUpdate),
+                getLastRegistrationNoticeUpdate(),
                 admissionNotice,
-                MDate.format(lastAdmissionNoticeUpdate),
+                getLastAdmissionNoticeUpdate(),
                 autoSync,
-                MDate.format(lastLogin));
+                lastLogin == null ? Globals.NEVER : MDate.format(lastLogin));
         Serializer.toDisk(data, Serializer.inPath("portal.ser"));
     }
 
@@ -286,11 +288,11 @@ public class Portal {
         } else {
             final String[] data = Globals.splitLines((String) obj);
             registrationNotice = data[0];
-            lastRegistrationNoticeUpdate = MDate.parse(data[1]);
+            lastRegistrationNoticeUpdate = data[1].equals(Globals.NEVER) ? null : MDate.parse(data[1]);
             admissionNotice = data[2];
-            lastAdmissionNoticeUpdate = MDate.parse(data[3]);
+            lastAdmissionNoticeUpdate = data[3].equals(Globals.NEVER) ? null : MDate.parse(data[3]);
             autoSync = Boolean.parseBoolean(data[4]);
-            lastLogin = MDate.parse(data[5]);
+            lastLogin = data[5].equals(Globals.NEVER) ? null : MDate.parse(data[5]);
         }
     }
 

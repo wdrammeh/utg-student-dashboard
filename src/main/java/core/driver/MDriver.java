@@ -11,6 +11,9 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Handles driver-related operations, including setting and donating them.
  * In a future release, Dashboard will be flexible with its driver specification,
@@ -21,6 +24,7 @@ public class MDriver {
     public static final int CONNECTION_LOST = 0;
     public static final int ATTEMPT_FAILED = 1;
     public static final int ATTEMPT_SUCCEEDED = 2;
+    public static final List<FirefoxDriver> DRIVERS = new ArrayList<>();
 
 
     /**
@@ -33,7 +37,15 @@ public class MDriver {
     public static synchronized FirefoxDriver forgeNew(boolean headless) {
         setup();
         try {
-            return new FirefoxDriver(new FirefoxOptions().setHeadless(headless));
+            final FirefoxDriver foxDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(headless)){
+                @Override
+                public void quit() {
+                    super.quit();
+                    DRIVERS.remove(this);
+                }
+            };
+            DRIVERS.add(foxDriver);
+            return foxDriver;
         } catch (Exception e) {
             App.silenceException(e);
             return null;
@@ -137,6 +149,22 @@ public class MDriver {
     public static boolean isOnPortal(FirefoxDriver driver) {
         final String url = driver.getCurrentUrl();
         return url.equals(Portal.HOME_PAGE) || url.equals(Portal.CONTENTS_PAGE) || url.equals(Portal.PROFILE_PAGE);
+    }
+
+    public static WebDriverWait newDefaultWait(FirefoxDriver driver){
+        return new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME);
+    }
+
+    /**
+     * This is necessary because drivers, instead of closing,
+     * disconnect themselves from the program as it exits.
+     * Note that mostly classes do not explicitly quit drivers
+     * within runtime, as they reuse them over and over.
+     */
+    public static void stopAll(){
+        for (FirefoxDriver driver : DRIVERS) {
+            driver.quit();
+        }
     }
 
 }

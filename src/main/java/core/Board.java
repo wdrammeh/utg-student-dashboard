@@ -115,16 +115,14 @@ public final class Board extends KFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 if (!Settings.confirmExit || App.showYesNoCancelDialog("Confirm Exit",
-                        "Do you really mean to close the Dashboard?")) {
+                        "Do you want to close the Dashboard?")) {
                     setVisible(false);
                 }
             }
         });
 
         Settings.allLooksInfo = UIManager.getInstalledLookAndFeels();
-        if (Dashboard.isFirst()) {
-            Serializer.unMountUserData();
-        } else {
+        if (!Dashboard.isFirst()) {
             Settings.deserialize();
             for (UIManager.LookAndFeelInfo lookAndFeelInfo : Settings.allLooksInfo) {
                 if (lookAndFeelInfo.getName().equals(Settings.lookName)) {
