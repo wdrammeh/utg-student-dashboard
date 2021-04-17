@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.StringJoiner;
 
 /**
@@ -718,17 +720,19 @@ public class Analysis implements Activity {
          * on this root component [or Board.getRoot() if null].
          * The title is initialized herein, but some callers do need to change it.
          */
-        private GlassPrompt(String title, ArrayList<Course> courseList, Component root) {
-            super(title+" ["+ Globals.checkPlurality(courseList.size(),"Courses")+"]");
+        private GlassPrompt(String title, ArrayList<Course> courses, Component root) {
+            super(title);
+            final int listSize = courses.size();
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
             setResizable(true);
             substancePanel = new KPanel();
             substancePanel.setLayout(new BoxLayout(substancePanel, BoxLayout.Y_AXIS));
-            for (Course tCourse : courseList) {
-                join(tCourse);
+            courses.sort(Comparator.comparing(Course::getName));
+            for (int i = 0; i < listSize; i++) {
+                join(i + 1, courses.get(i));
             }
             final KScrollPane kScrollPane = new KScrollPane(substancePanel);
-            if (courseList.size() > 15) {
+            if (listSize > 15) {
                 kScrollPane.setPreferredSize(new Dimension(kScrollPane.getPreferredSize().width + 25,525));
             }
             setContentPane(new KPanel(new BorderLayout(), kScrollPane));
@@ -738,29 +742,32 @@ public class Analysis implements Activity {
         }
 
         /**
-         * Constructs a {@link GlassPrompt} of courses with the given title and list.
+         * Constructs a {@link GlassPrompt} of courses with the given label
+         * pre-attached to the description to produce the title.
          * This will be placed on the Dashboard's instance.
          * @see #GlassPrompt(String, ArrayList, Component)
          */
-        private GlassPrompt(String title, ArrayList<Course> courseList){
-            this(title, courseList, null);
+        private GlassPrompt(String label, ArrayList<Course> courses){
+            this(label+" ["+ Globals.checkPlurality(courses.size(), "Courses")+"]",
+                    courses, Board.getRoot());
         }
 
         /**
          * Constructs a {@link GlassPrompt} with the given title and list.
          * This is exclusive to lecturer names of a specific academic year.
          */
-        private GlassPrompt(ArrayList<String> yTutorsList, String yName) {
-            super(yName+" ["+yTutorsList.size()+" Lecturers]");
+        private GlassPrompt(ArrayList<String> tutors, String year) {
+            super(year+" ["+Globals.checkPlurality(tutors.size(), "Lecturers")+"]");
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
             setResizable(true);
             substancePanel = new KPanel();
             substancePanel.setLayout(new BoxLayout(substancePanel, BoxLayout.Y_AXIS));
-            for (String tutor : yTutorsList) {
-                join(tutor, yName);
+            Collections.sort(tutors);
+            for (int i = 0; i < tutors.size(); i++) {
+                join(i + 1, tutors.get(i), year);
             }
             final KScrollPane kScrollPane = new KScrollPane(substancePanel);
-            if (yTutorsList.size() > 15) {
+            if (tutors.size() > 15) {
                 kScrollPane.setPreferredSize(new Dimension(kScrollPane.getPreferredSize().width + 25, 525));
             }
             setContentPane(new KPanel(new BorderLayout(), kScrollPane));
@@ -771,7 +778,7 @@ public class Analysis implements Activity {
 
         /**
          * Constructs a {@link GlassPrompt} with the given title and list.
-         * This is exclusive to a list of all the lecturer names.
+         * This is for all the lecturer names.
          */
         private GlassPrompt(ArrayList<String> lecturers) {
             super("My Tutors ["+lecturers.size()+"]");
@@ -779,8 +786,9 @@ public class Analysis implements Activity {
             setResizable(true);
             substancePanel = new KPanel();
             substancePanel.setLayout(new BoxLayout(substancePanel, BoxLayout.Y_AXIS));
-            for (String lName : lecturers) {
-                join(lName);
+            Collections.sort(lecturers);
+            for (int i = 0; i < lecturers.size(); i++) {
+                join(i + 1, lecturers.get(i));
             }
             final KScrollPane kScrollPane = new KScrollPane(substancePanel);
             if (lecturers.size() > 15) {
@@ -795,14 +803,15 @@ public class Analysis implements Activity {
         /**
          * Adds the given course to the substancePanel;
          */
-        public void join(Course c) {
-            final KButton dtlButton = KButton.createIconifiedButton("warn.png",25,25);
-            dtlButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            dtlButton.addActionListener(e-> Course.exhibit(getRootPane(), c));
-
+        public void join(int row, Course c) {
+            final KButton aButton = newAboutButton();
+            aButton.setCursor(MComponent.HAND_CURSOR);
+            aButton.addActionListener(e-> Course.exhibit(getRootPane(), c));
+            final KLabel label = new KLabel(String.format(" %d. %s", row, c.getName()),
+                    KFontFactory.createPlainFont(15));
             final KPanel joinPanel = new KPanel(new BorderLayout());
-            joinPanel.add(new KPanel(new KLabel(c.getName(), KFontFactory.createPlainFont(15))), BorderLayout.WEST);
-            joinPanel.add(dtlButton, BorderLayout.EAST);
+            joinPanel.add(label, BorderLayout.WEST);
+            joinPanel.add(aButton, BorderLayout.EAST);
             substancePanel.add(joinPanel);
         }
 
@@ -810,37 +819,46 @@ public class Analysis implements Activity {
          * Adds the given tutor-name to the substancePanel.
          * This is year-bound as specified by the year-name.
          */
-        private void join(String tName, String yName) {
-            final KButton dtlButton = KButton.createIconifiedButton("warn.png",25,25);
-            dtlButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            dtlButton.addActionListener(e-> SwingUtilities.invokeLater(()->{
-                final ArrayList<Course> tList = Memory.getFractionByLecturer(tName,yName);
-                final GlassPrompt vPrompt = new GlassPrompt("", tList, getRootPane());
-                vPrompt.setTitle(tName+" ["+ yName +": "+tList.size()+"]");
-                vPrompt.setVisible(true);
+        private void join(int row, String tutorName, String year) {
+            final KButton aButton = newAboutButton();
+            aButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            aButton.addActionListener(e-> SwingUtilities.invokeLater(()->{
+                final ArrayList<Course> list = Memory.getFractionByLecturer(tutorName,year);
+                final String title = tutorName+" ["+ year +": "+list.size()+"]";
+                final GlassPrompt prompt = new GlassPrompt(title, list, getRootPane());
+                prompt.setVisible(true);
             }));
-
+            final KLabel label = new KLabel(String.format(" %d. %s", row, tutorName),
+                    KFontFactory.createPlainFont(15));
             final KPanel joinPanel = new KPanel(new BorderLayout());
-            joinPanel.add(new KPanel(new KLabel(tName,KFontFactory.createPlainFont(15))), BorderLayout.WEST);
+            joinPanel.add(label, BorderLayout.WEST);
             joinPanel.add(Box.createRigidArea(new Dimension(30, 30)), BorderLayout.CENTER);
-            joinPanel.add(dtlButton, BorderLayout.EAST);
+            joinPanel.add(aButton, BorderLayout.EAST);
             substancePanel.add(joinPanel);
         }
 
         /**
          * Adds the given lecturer-name to the substancePanel.
          */
-        private void join(String lectName) {
-            final KButton dtlButton = KButton.createIconifiedButton("warn.png",25,25);
-            dtlButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            dtlButton.addActionListener(e-> SwingUtilities.invokeLater(()->
-                    new GlassPrompt(lectName, Memory.getFractionByLecturer(lectName), getRootPane()).setVisible(true)));
-
+        private void join(int row, String tutorName) {
+            final KButton aButton = newAboutButton();
+            aButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            aButton.addActionListener(e-> SwingUtilities.invokeLater(()-> {
+                final ArrayList<Course> list = Memory.getFractionByLecturer(tutorName);
+                final String title = tutorName+" ["+ Globals.checkPlurality(list.size(),"Courses")+"]";
+                new GlassPrompt(title, list, getRootPane()).setVisible(true);
+            }));
+            final KLabel label = new KLabel(String.format(" %d. %s", row, tutorName),
+                    KFontFactory.createPlainFont(15));
             final KPanel joinPanel = new KPanel(new BorderLayout());
-            joinPanel.add(new KPanel(new KLabel(lectName, KFontFactory.createPlainFont(15))), BorderLayout.WEST);
+            joinPanel.add(label, BorderLayout.WEST);
             joinPanel.add(Box.createRigidArea(new Dimension(30, 30)), BorderLayout.CENTER);
-            joinPanel.add(dtlButton, BorderLayout.EAST);
+            joinPanel.add(aButton, BorderLayout.EAST);
             substancePanel.add(joinPanel);
+        }
+
+        private KButton newAboutButton(){
+            return KButton.createIconifiedButton("warn.png",23,23);
         }
     }
 
