@@ -56,8 +56,6 @@ public class Course {
 //    Known divisional codes
     public static final String DER = "DER";
     public static final String GER = "GER";
-//    The unknown constant
-    public static final String UNKNOWN = Globals.UNKNOWN;
 
 
     /**
@@ -76,8 +74,8 @@ public class Course {
         this.name = name;
         this.lecturer = tutor;
         this.venue = venue;
-        this.day = Globals.hasNoText(day) || day.equals(UNKNOWN) ? "" : day;
-        this.time = Globals.hasNoText(time) || time.equals(UNKNOWN) ? "" : time;
+        this.day = Globals.hasNoText(day) || day.equals(Globals.UNKNOWN) ? "" : day;
+        this.time = Globals.hasNoText(time) || time.equals(Globals.UNKNOWN) ? "" : time;
         this.score = score;
         this.creditHours = creditHours;
         this.isVerified = verified;
@@ -95,7 +93,8 @@ public class Course {
                 } else if (programPart.equals(GER)) {
                     setRequirement(GENERAL_REQUIREMENT);
                 }
-            } catch (StringIndexOutOfBoundsException ignored){
+            } catch (StringIndexOutOfBoundsException e){
+                App.silenceException(String.format("Bad code format '%s'.", code));
             }
         }
     }
@@ -206,7 +205,7 @@ public class Course {
      * Returns a compound-string of the code and name of this course.
      */
     public String getAbsoluteName() {
-        return String.join(" ", code, name);
+        return String.join(" ", "["+code+"]", name);
     }
 
     /**
@@ -525,8 +524,8 @@ public class Course {
      * Returns an array  of times most, if not all, lectures are conducted in UTG.
      * All time boxes must delegate to this as their list of time options.
      */
-    public static String[] getCoursePeriods(){
-        return new String[]{UNKNOWN, "8:00", "8:30", "9:00", "11:00", "11:30", "14:00", "14:30", "15:00",
+    public static String[] periods(){
+        return new String[] {Globals.UNKNOWN, "08:00", "08:30", "09:00", "11:00", "11:30", "14:00", "14:30", "15:00",
                 "17:00", "17:30", "20:00"};
     }
 
@@ -534,8 +533,8 @@ public class Course {
      * Returns an array of the days of a week.
      * All day boxes must delegate to this as their list of day options.
      */
-    public static String[] getWeekDays(){
-        return new String[]{UNKNOWN, "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays",
+    public static String[] weekDays(){
+        return new String[] {Globals.UNKNOWN, "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays",
                 "Saturdays", "Sundays"};
     }
 
@@ -543,13 +542,17 @@ public class Course {
      * Returns an array of the available requirement options.
      * All requirement boxes must delegate to this as their list of requirement options.
      */
-    public static String[] getRequirements(){
-        return new String[]{MAJOR_OBLIGATORY, MAJOR_OPTIONAL, MINOR_OBLIGATORY, MINOR_OPTIONAL,
+    public static String[] requirements(){
+        return new String[] {MAJOR_OBLIGATORY, MAJOR_OPTIONAL, MINOR_OBLIGATORY, MINOR_OPTIONAL,
                 DIVISIONAL_REQUIREMENT, GENERAL_REQUIREMENT, NONE};
     }
 
     public static String[] creditHours(){
-        return new String[]{"3", "4"};
+        return new String[] {"3", "4"};
+    }
+
+    public static String[] campuses(){
+        return new String[] {"Brikama", "Faraba", "Kanifing", "Banjul", "GTTI", "Online", Globals.UNKNOWN};
     }
 
     /**
