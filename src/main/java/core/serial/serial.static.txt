@@ -65,14 +65,15 @@ during build.
     2: code <String>
     3: name <String>
     4: lecturer <String>
-    5: venue <String>
-    6: day <String>
-    7: time <String>
-    8: score <double>
-    9: creditHours <int>
-    10: requirement <String>
-    11: isVerified <boolean>
-    12: lecturerNameChangeability <boolean>
+    5: campus <String>
+    6: room <String>
+    7: day <String>
+    8: time <String>
+    9: score <double>
+    10: creditHours <int>
+    11: requirement <String>
+    12: isVerified <boolean>
+    13: lecturerNameChangeability <boolean>
 
 >> User (user/ )
 It's specifically more difficult to deal with the user's data.

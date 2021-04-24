@@ -274,7 +274,7 @@ public class FirstLaunch extends KDialog {
 
         // create a welcome message notification...
         String welcomeMessage = "Dear "+Student.getLastName()+"," +
-                "<p>You're highly welcome to <b>Dashboard</b>.</p>";
+                "<p>You're highly welcome to <b>UTG-Student Dashboard</b>.</p>";
         Notification.create("Welcome",
                 "Welcome to Dashboard, "+Student.getFullNamePostOrder(), welcomeMessage);
     }

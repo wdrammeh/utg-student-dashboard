@@ -1,7 +1,7 @@
 package core;
 
 import core.driver.MDriver;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
 import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
@@ -171,7 +171,7 @@ public class Portal {
      * Sets the registration notice to the given registrationNotice;
      * and its reading date will be set to this point in time.
      * This has a runtime component modification consequence?
-     * @see RunningCourseActivity#noticeLabel
+     * @see SemesterActivity#noticeLabel
      */
     public static void setRegistrationNotice(String registrationNotice){
         Portal.registrationNotice = registrationNotice;

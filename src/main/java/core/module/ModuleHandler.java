@@ -47,11 +47,11 @@ public class ModuleHandler {
     public static final ArrayList<KTableModel> ALL_MODELS = new ArrayList<>();
     public static final ArrayList<Course> STARTUP_COURSES = new ArrayList<>();
     private static final String[] COLUMNS = new String[] { "CODE", "NAME", "LECTURER", "GRADE" };
+    public static final String DETAILS = "Show Details";
     public static final String EDIT = "Edit";
     public static final String CONFIRM = "Verify";
-    public static final String DETAILS = "Details";
     public static final String DELETE = "Remove";
-    public static final String ADD = "Add";
+    public static final String ADD = "Add Course";
 
 
     public ModuleHandler() {
@@ -60,7 +60,7 @@ public class ModuleHandler {
         yearThree = new ModuleYear(Student.thirdAcademicYear());
         yearFour = new ModuleYear(Student.fourthAcademicYear());
 
-        modulesMonitor = new ArrayList<Course>() {
+        modulesMonitor = new ArrayList<>() {
             @Override
             public boolean add(Course course) {
                 if (course.isMisc()) {
@@ -83,13 +83,14 @@ public class ModuleHandler {
             @Override
             public boolean remove(Object o) {
                 final Course course = (Course) o;
-                if (!App.showYesNoCancelDialog("Remove", "Are you sure you did not do \""+course.getName()+"\",\n" +
+                if (!App.showYesNoCancelDialog("Confirm",
+                        "Are you sure you did not do '" + course.getName() + "',\n" +
                         "and that you wish to remove it from your collection?")) {
                     return false;
                 }
 
                 if (course.isVerified()) {
-                    final int vInt = App.verifyUser("Enter your Mat. Number to proceed with this changes:");
+                    final int vInt = App.verifyUser("Enter your Mat. Number to effect this changes:");
                     if (vInt == App.VERIFICATION_FALSE) {
                         App.reportMatError();
                         return false;
@@ -242,12 +243,6 @@ public class ModuleHandler {
      * Call this on a different thread.
      */
     public static void launchVerification(Course target) {
-        if (!App.showYesNoCancelDialog("Verify "+target.getCode(),
-                "Do you want to verify \""+target.getName()+"\".\n" +
-                        "Dashboard will find out if it is on your Portal.\n" +
-                        "Refer to Dashboard Tips for more info about this action.")) {
-            return;
-        }
         fixModulesDriver();
         if (modulesDriver == null) {
             App.reportMissingDriver();
@@ -296,7 +291,7 @@ public class ModuleHandler {
                 final List<WebElement> instantRow = row.findElements(By.tagName("td"));
                 if (instantRow.get(0).getText().equalsIgnoreCase(target.getCode())) {
                     foundOne = new Course("","", instantRow.get(0).getText(), instantRow.get(1).getText(),
-                            "","","","", Double.parseDouble(instantRow.get(6).getText()),
+                            "","", "","","", Double.parseDouble(instantRow.get(6).getText()),
                             0,"",true);
                     break;
                 }
@@ -451,7 +446,7 @@ public class ModuleHandler {
                     } else {
                         final List<WebElement> data = transRow.findElements(By.tagName("td"));
                         foundCourses.add(new Course(vYear, vSemester, data.get(1).getText(), data.get(2).getText(),
-                                "", "", "", "", 0.0, Integer.parseInt(data.get(3).getText()),
+                                "", "", "", "", "", 0.0, Integer.parseInt(data.get(3).getText()),
                                 "", true));
                     }
                 }
@@ -661,9 +656,9 @@ public class ModuleHandler {
             });
 
             popupMenu = new JPopupMenu();
-            popupMenu.add(confirmItem);
-            popupMenu.add(editItem);
             popupMenu.add(detailsItem);
+            popupMenu.add(editItem);
+            popupMenu.add(confirmItem);
             popupMenu.add(removeItem);
             popupMenu.add(newItem);
         }
@@ -860,8 +855,8 @@ public class ModuleHandler {
      * Provides the dialog for locally addition of courses.
      */
     public static class ModuleAdder extends KDialog {
-        KTextField yearField, semesterField, codeField, nameField, lecturerField, venueField, scoreField;
-        JComboBox<String> dayBox, timeBox, requirementBox, creditBox;
+        KTextField yearField, semesterField, codeField, nameField, roomField, lecturerField, scoreField;
+        KComboBox<String> dayBox, timeBox, requirementBox, creditBox, campusBox;
         KPanel yearPanel, semesterPanel;
         String yearName, semesterName;
         KButton actionButton;
@@ -891,25 +886,25 @@ public class ModuleHandler {
             yearField.setText(yearName);
             yearField.setEditable(yearName == null);
             yearPanel = new KPanel(new BorderLayout());
-            yearPanel.add(new KPanel(new KLabel("Year:", hintFont)),  BorderLayout.WEST);
+            yearPanel.add(new KPanel(new KLabel("*Year:", hintFont)),  BorderLayout.WEST);
             yearPanel.add(new KPanel(yearField),BorderLayout.CENTER);
 
             semesterField = new KTextField(new Dimension(200,30));
             semesterField.setText(semesterName);
             semesterField.setEditable(semesterName == null);
             semesterPanel = new KPanel(new BorderLayout());
-            semesterPanel.add(new KPanel(new KLabel("Semester:", hintFont)), BorderLayout.WEST);
+            semesterPanel.add(new KPanel(new KLabel("*Semester:", hintFont)), BorderLayout.WEST);
             semesterPanel.add(new KPanel(semesterField), BorderLayout.CENTER);
 
             codeField = KTextField.rangeControlField(10);
             codeField.setPreferredSize(new Dimension(125,30));
             final KPanel codePanel = new KPanel(new BorderLayout());
-            codePanel.add(new KPanel(new KLabel("Code:", hintFont)), BorderLayout.WEST);
+            codePanel.add(new KPanel(new KLabel("*Code:", hintFont)), BorderLayout.WEST);
             codePanel.add(new KPanel(codeField), BorderLayout.CENTER);
 
             nameField = new KTextField(new Dimension(300,30));
             final KPanel namePanel = new KPanel(new BorderLayout());
-            namePanel.add(new KPanel(new KLabel("Name:", hintFont)), BorderLayout.WEST);
+            namePanel.add(new KPanel(new KLabel("*Name:", hintFont)), BorderLayout.WEST);
             namePanel.add(new KPanel(nameField), BorderLayout.CENTER);
 
             lecturerField = new KTextField(new Dimension(300,30));
@@ -917,29 +912,27 @@ public class ModuleHandler {
             lecturerPanel.add(new KPanel(new KLabel("Lecturer:", hintFont)), BorderLayout.WEST);
             lecturerPanel.add(new KPanel(lecturerField), BorderLayout.CENTER);
 
-            dayBox = new JComboBox<>(Course.getWeekDays());
-            dayBox.setFont(KFontFactory.createPlainFont(15));
-            timeBox = new JComboBox<>(Course.getCoursePeriods());
-            timeBox.setFont(KFontFactory.createPlainFont(15));
-            final KPanel schedulePanel = new KPanel(new FlowLayout(FlowLayout.CENTER));//this a litte sort of an exception
-            schedulePanel.addAll(new KLabel("Day:", hintFont), dayBox);
-            schedulePanel.addAll(Box.createRigidArea(new Dimension(25, 30)),
+            dayBox = new KComboBox<>(Course.weekDays());
+            timeBox = new KComboBox<>(Course.periods());
+            final KPanel schedulePanel = new KPanel(new FlowLayout()); // this a little sort of an exception
+            schedulePanel.addAll(new KLabel("Day:", hintFont), dayBox,
+                    Box.createRigidArea(new Dimension(25, 30)),
                     new KLabel("Time:", hintFont), timeBox);
 
-            venueField = new KTextField(new Dimension(300,30));
-            final KPanel venuePanel = new KPanel(new BorderLayout());
-            venuePanel.add(new KPanel(new KLabel("Venue:", hintFont)), BorderLayout.WEST);
-            venuePanel.add(new KPanel(venueField), BorderLayout.CENTER);
+            campusBox = new KComboBox<>(Course.campuses());
+            roomField = new KTextField(new Dimension(225,30));
+            final KPanel venuePanel = new KPanel();
+            venuePanel.addAll(new KLabel("Campus:", hintFont), campusBox,
+                    Box.createRigidArea(new Dimension(20, 30)),
+                    new KLabel("Room:", hintFont), roomField);
 
-            requirementBox = new JComboBox<>(Course.getRequirements());
-            requirementBox.setFont(KFontFactory.createPlainFont(15));
+            requirementBox = new KComboBox<>(Course.requirements());
             requirementBox.setSelectedItem(Course.NONE);
             final KPanel requirementPanel = new KPanel(new BorderLayout());
             requirementPanel.add(new KPanel(new KLabel("Requirement:", hintFont)), BorderLayout.WEST);
             requirementPanel.add(new KPanel(requirementBox), BorderLayout.CENTER);
 
-            creditBox = new JComboBox<>(Course.creditHours());
-            creditBox.setFont(KFontFactory.createPlainFont(15));
+            creditBox = new KComboBox<>(Course.creditHours());
             final KPanel creditPanel = new KPanel(new BorderLayout());
             creditPanel.add(new KPanel(new KLabel("Credit Hours:", hintFont)), BorderLayout.WEST);
             creditPanel.add(new KPanel(creditBox), BorderLayout.CENTER);
@@ -947,7 +940,7 @@ public class ModuleHandler {
             scoreField = KTextField.rangeControlField(7);
             scoreField.setPreferredSize(new Dimension(125,30));
             final KPanel scorePanel = new KPanel(new BorderLayout());
-            scorePanel.add(new KPanel(new KLabel("Score:", hintFont)), BorderLayout.WEST);
+            scorePanel.add(new KPanel(new KLabel("*Score:", hintFont)), BorderLayout.WEST);
             scorePanel.add(new KPanel(scoreField), BorderLayout.CENTER);
 
             final KButton cancelButton = new KButton("Cancel");
@@ -1003,11 +996,9 @@ public class ModuleHandler {
                     }
 
                     final Course incomingCourse = new Course(yearName, semesterName, codeField.getText().toUpperCase(),
-                            nameField.getText(), lecturerField.getText(), venueField.getText(),
-                            String.valueOf(dayBox.getSelectedItem()),
-                            String.valueOf(timeBox.getSelectedItem()), score,
-                            Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            String.valueOf(requirementBox.getSelectedItem()), false);
+                            nameField.getText(), lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(),
+                            dayBox.getSelectionText(), timeBox.getSelectionText(), score, Integer.parseInt(creditBox.getSelectionText()),
+                            requirementBox.getSelectionText(), false);
                     modulesMonitor.add(incomingCourse);
                     dispose();
                 }
@@ -1044,7 +1035,8 @@ public class ModuleHandler {
             lecturerField.setEditable(course.isLecturerNameEditable());
             dayBox.setSelectedItem(course.getDay());
             timeBox.setSelectedItem(course.getTime());
-            venueField.setText(course.getVenue());
+            campusBox.setSelectedItem(course.getCampus());
+            roomField.setText(course.getRoom());
             requirementBox.setSelectedItem(course.getRequirement());
             creditBox.setSelectedItem(String.valueOf(course.getCreditHours()));
             scoreField.setText(String.valueOf(course.getScore()));
@@ -1107,7 +1099,7 @@ public class ModuleHandler {
 
                     final Course course = new Course(yearField.getText(), semesterField.getText(),
                             codeField.getText().toUpperCase(), nameField.getText(), lecturerField.getText(),
-                            venueField.getText(), String.valueOf(dayBox.getSelectedItem()),
+                            campusBox.getSelectionText(), roomField.getText(), String.valueOf(dayBox.getSelectedItem()),
                             String.valueOf(timeBox.getSelectedItem()), score,
                             Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
                             String.valueOf(requirementBox.getSelectedItem()), target.isVerified());

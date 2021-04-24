@@ -10,6 +10,7 @@
 - Make sure Versions are in order such that:
     utg.Dashboard.VERSION := <version> in pom.xml := <version> in README.md
 - Test extensively on the three (3) major platforms.
+- Now make it backward-compatible.
 - Replace Dashboard with .dashboard as ROOT_DIR.
     This, probably, is the latest commit of every release.
 - Create a RELEASE Tag. Deploy!

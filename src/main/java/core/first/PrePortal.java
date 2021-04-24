@@ -5,7 +5,8 @@ import core.driver.MDriver;
 import core.module.Course;
 import core.module.ModuleHandler;
 import core.module.RegisteredCourse;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
+import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
 import org.openqa.selenium.By;
@@ -59,7 +60,7 @@ public class PrePortal {
             return;
         }
         Login.replaceLastUpdate("Setting up the driver....... Successful");
-        Login.appendToStatus("Now contacting utg.edu.gm.......");
+        Login.appendToStatus("Now contacting utg.......");
         loadWaiter = new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME);
 //        make sure we are at the login page
         if (MDriver.isOnPortal(driver)) {
@@ -290,8 +291,9 @@ public class PrePortal {
                 vSemester = transRow.getText().split(" ")[1]+" Semester";
             } else {
                 final List<WebElement> data = transRow.findElements(By.tagName("td"));
-                ModuleHandler.STARTUP_COURSES.add(new Course(vYear, vSemester, data.get(1).getText(), data.get(2).getText(),
-                        "", "", "", "", 0.0, Integer.parseInt(data.get(3).getText()),"",true));
+                ModuleHandler.STARTUP_COURSES.add(new Course(vYear, vSemester, data.get(1).getText(),
+                        data.get(2).getText(), "", "", "","", "", 0,
+                        Integer.parseInt(data.get(3).getText()),"",true));
             }
         }
         final WebElement surrounds = driver.findElementsByCssSelector(".pull-right").get(3);
@@ -338,7 +340,7 @@ public class PrePortal {
             int match = allRows.size() - 1;
             while (!allRows.get(match).getText().equalsIgnoreCase(ongoingSemester)){
                 final List<WebElement> data = allRows.get(match).findElements(By.tagName("td"));
-                RunningCourseActivity.STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(),
+                SemesterActivity.STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(),
                         data.get(1).getText(), data.get(2).getText(), data.get(3).getText(), data.get(4).getText(),
                         "", "", true));
                 match--;
@@ -363,10 +365,12 @@ public class PrePortal {
         Login.notifyCompletion();
     }
 
-    private static void enlistDetail(String key, String value){
+    private static void enlistDetail(String key, String value) {
         if (Globals.hasNoText(value) || value.contains("Unknown")) {
-            Login.appendToStatus("**Warning: " + key + " not found");
-        } else if(!(key.equals("Mat#") || key.equals("psswd") || key.equals("cgpa"))) {
+            Login.appendToStatus("[Warning] '" + key + "' not found");
+        } else if (key.equals("Email")) {
+            Login.appendToStatus("Email: "+ Student.getVisibleMail(value));
+        } else if (!(key.equals("Mat#") || key.equals("psswd") || key.equals("cgpa"))) {
             Login.appendToStatus(key+": "+value);
         }
 

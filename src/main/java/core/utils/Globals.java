@@ -81,7 +81,11 @@ public class Globals {
     }
 
     public static String reference(String... parts){
-        return String.join("|", parts);
+        return String.join(" | ", parts);
+    }
+
+    public static String getElseUnknown(String value){
+        return hasText(value) ? value : UNKNOWN;
     }
 
 }

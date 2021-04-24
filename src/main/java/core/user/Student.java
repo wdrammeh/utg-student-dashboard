@@ -211,7 +211,7 @@ public class Student {
         return Globals.hasText(portalMail) ? getVisibleMail(portalMail) : "";
     }
 
-    private static String getVisibleMail(String mail){
+    public static String getVisibleMail(String mail){
         try {
             final String[] parts = mail.split("@");
             final int l = parts[0].length();

@@ -24,10 +24,10 @@ import java.util.HashMap;
  */
 public class Dashboard {
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version("0.1.1", Version.SNAPSHOT);
+    public static final Version VERSION = new Version("0.1.1", Version.RELEASE);
     private static final String RUNNING = "Running";
     private static final String CLOSED = "Closed";
-    public static final Thread STATUS_HOOK = new Thread(()-> setStatus(CLOSED));
+    public static final Thread UNLOCK_HOOK = new Thread(()-> setStatus(CLOSED));
     private static boolean isFirst;
 
 
@@ -88,7 +88,7 @@ public class Dashboard {
     private static void setStatus(String status){
         Serializer.toDisk(status, Serializer.inPath("status.ser"));
         if (RUNNING.equals(status)) {
-            Runtime.getRuntime().addShutdownHook(STATUS_HOOK);
+            Runtime.getRuntime().addShutdownHook(UNLOCK_HOOK);
         }
     }
 

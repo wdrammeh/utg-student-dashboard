@@ -118,8 +118,8 @@ public class SummerModule {
         popupMenu = new JPopupMenu();
         popupMenu.add(detailsItem);
         popupMenu.add(editItem);
-        popupMenu.add(removeItem);
         popupMenu.add(confirmItem);
+        popupMenu.add(removeItem);
         popupMenu.add(newItem);
     }
 
@@ -201,9 +201,9 @@ public class SummerModule {
 
                     final Course course = new Course(String.valueOf(availableYearsBox.getSelectedItem()),
                             semesterField.getText(), codeField.getText().toUpperCase(), nameField.getText(),
-                            lecturerField.getText(), venueField.getText(), String.valueOf(dayBox.getSelectedItem()),
-                            String.valueOf(timeBox.getSelectedItem()), score,
-                            Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
+                            lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(),
+                            String.valueOf(dayBox.getSelectedItem()), String.valueOf(timeBox.getSelectedItem()),
+                            score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
                             String.valueOf(requirementBox.getSelectedItem()), false);
                     ModuleHandler.getMonitor().add(course);
                     dispose();
@@ -230,7 +230,8 @@ public class SummerModule {
             lecturerField.setEditable(target.isLecturerNameEditable());
             dayBox.setSelectedItem(target.getDay());
             timeBox.setSelectedItem(target.getTime());
-            venueField.setText(target.getVenue());
+            campusBox.setSelectedItem(target.getCampus());
+            roomField.setText(target.getRoom());
             requirementBox.setSelectedItem(target.getRequirement());
             creditBox.setSelectedItem(target.getCreditHours());
             scoreField.setText(Double.toString(target.getScore()));
@@ -292,7 +293,7 @@ public class SummerModule {
 
                     final Course course = new Course(String.valueOf(availableYearsBox.getSelectedItem()),
                             semesterField.getText(), codeField.getText().toUpperCase(), nameField.getText(),
-                            lecturerField.getText(), venueField.getText(), String.valueOf(dayBox.getSelectedItem()),
+                            lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(), String.valueOf(dayBox.getSelectedItem()),
                             String.valueOf(timeBox.getSelectedItem()), score,
                             Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
                             String.valueOf(requirementBox.getSelectedItem()), target.isVerified());

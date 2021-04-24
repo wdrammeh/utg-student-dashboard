@@ -37,7 +37,8 @@ public class Course {
     private String code;
     private String name;
     private String lecturer;
-    private String venue;
+    private String campus;
+    private String room;
     private String day;
     private String time;
     private double score;
@@ -60,22 +61,23 @@ public class Course {
 
     /**
      * Constructs a module, complete and initialized, with the given credentials.
-     * Instead of the empty-string, the default value of the day and time is the
+     * The default value of the day and time is the
      * unknown-constant; the requirement is the none-constant.
-     * This helps with the combo-boxes during editing of the modules.
+     * This helps with comboBoxes during editing of the modules.
      * Notice, if no explicit requirement is given, the constructor will
      * attempt to assign it a requirement.
      */
-    public Course(String year, String semester, String code, String name, String tutor, String venue, String day,
-                  String time, double score, int creditHours, String requirement, boolean verified) {
+    public Course(String year, String semester, String code, String name, String tutor, String campus, String room,
+                  String day, String time, double score, int creditHours, String requirement, boolean verified) {
         this.year = year;
         this.semester = semester;
         this.code = code;
         this.name = name;
         this.lecturer = tutor;
-        this.venue = venue;
-        this.day = Globals.hasNoText(day) || day.equals(Globals.UNKNOWN) ? "" : day;
-        this.time = Globals.hasNoText(time) || time.equals(Globals.UNKNOWN) ? "" : time;
+        this.campus = campus;
+        this.room = room;
+        this.day = day;
+        this.time = time;
         this.score = score;
         this.creditHours = creditHours;
         this.isVerified = verified;
@@ -93,8 +95,7 @@ public class Course {
                 } else if (programPart.equals(GER)) {
                     setRequirement(GENERAL_REQUIREMENT);
                 }
-            } catch (StringIndexOutOfBoundsException e){
-                App.silenceException(String.format("Bad code format '%s'.", code));
+            } catch (StringIndexOutOfBoundsException ignored){
             }
         }
     }
@@ -140,12 +141,24 @@ public class Course {
         lecturerNameChangeability = changeable;
     }
 
-    public String getVenue() {
-        return venue;
+    public String getCampus() {
+        return campus;
     }
 
-    public void setVenue(String venue) {
-        this.venue = venue;
+    public void setCampus(String campus) {
+        this.campus = campus;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
+    public String getVenue(){
+        return venueOf(campus, room);
     }
 
     public String getDay() {
@@ -255,15 +268,7 @@ public class Course {
     }
 
     public String getSchedule(){
-        if (Globals.hasText(day) && Globals.hasText(time)) {
-            return String.join(" ", day, time);
-        } else if (Globals.hasText(day) && Globals.hasNoText(time)) {
-            return String.join(" - ", day, "Unknown time");
-        } else if (Globals.hasNoText(day) && Globals.hasText(time)) {
-            return String.join(" - ", time, "Unknown day");
-        } else {
-            return "";
-        }
+        return scheduleOf(day, time);
     }
 
     /**
@@ -369,6 +374,30 @@ public class Course {
         return -1;
     }
 
+    public static String venueOf(String campus, String room){
+        if (Globals.hasText(campus) && Globals.hasText(room)) {
+            return campus+" ("+room+")";
+        } else if (Globals.hasText(campus) && Globals.hasNoText(room)) {
+            return campus+" (Unknown room)";
+        } else if (Globals.hasNoText(campus) && Globals.hasText(room)) {
+            return room;
+        } else {
+            return "";
+        }
+    }
+
+    public static String scheduleOf(String day, String time){
+        if (Globals.hasText(day) && Globals.hasText(time)) {
+            return day+" "+time;
+        } else if (Globals.hasText(day) && Globals.hasNoText(time)) {
+            return day+" - Unknown time";
+        } else if (Globals.hasNoText(day) && Globals.hasText(time)) {
+            return time+" - Unknown day";
+        } else {
+            return "";
+        }
+    }
+
     /**
      * Returns a grade based on the given score.
      * This must stay updated and in-line with UTG grading system.
@@ -468,7 +497,8 @@ public class Course {
                 code,
                 name,
                 lecturer,
-                venue,
+                campus,
+                room,
                 day,
                 time,
                 score,
@@ -487,20 +517,20 @@ public class Course {
         final String[] lines = Globals.splitLines(data);
         double score = 0;
         try {
-            score = Double.parseDouble(lines[8]);
+            score = Double.parseDouble(lines[9]);
         } catch (Exception e) {
             App.silenceException("Error reading score of "+lines[3]);
         }
         int creditsHours = 3;
         try {
-            creditsHours = Integer.parseInt(lines[9]);
+            creditsHours = Integer.parseInt(lines[10]);
         } catch (Exception e) {
             App.silenceException("Error reading credit hours of "+lines[3]);
         }
 
-        final Course serialCourse = new Course(lines[0], lines[1], lines[2], lines[3], lines[4], lines[5], lines[6], lines[7],
-                score, creditsHours, lines[10], Boolean.parseBoolean(lines[11]));
-        serialCourse.lecturerNameChangeability = Boolean.parseBoolean(lines[12]);
+        final Course serialCourse = new Course(lines[0], lines[1], lines[2], lines[3], lines[4],
+                lines[5], lines[6], lines[7], lines[8], score, creditsHours, lines[11], Boolean.parseBoolean(lines[12]));
+        serialCourse.lecturerNameChangeability = Boolean.parseBoolean(lines[13]);
         return serialCourse;
     }
 
@@ -513,7 +543,8 @@ public class Course {
     public static void merge(Course incoming, Course outgoing) {
         incoming.setDay(outgoing.day);
         incoming.setTime(outgoing.time);
-        incoming.setVenue(outgoing.venue);
+        incoming.setCampus(outgoing.getCampus());
+        incoming.setRoom(outgoing.getRoom());
         incoming.setRequirement(outgoing.requirement);
         if (incoming.isLecturerNameEditable()) {
             incoming.setLecturer(outgoing.getLecturer(), true);
@@ -607,7 +638,7 @@ public class Course {
 
         final KPanel venuePanel = new KPanel(new BorderLayout());
         venuePanel.add(new KPanel(new KLabel("Venue:", hintFont)), BorderLayout.WEST);
-        venuePanel.add(new KPanel(new KLabel(course.venue, valueFont)), BorderLayout.CENTER);
+        venuePanel.add(new KPanel(new KLabel(course.getVenue(), valueFont)), BorderLayout.CENTER);
 
         final KPanel creditPanel = new KPanel(new BorderLayout());
         creditPanel.add(new KPanel(new KLabel("Credit Hours:", hintFont)), BorderLayout.WEST);

@@ -745,7 +745,7 @@ public class SettingsUI implements Activity {
             Student.setNameFormat(selectedFormat);
         });
         final KPanel nameFormatPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
-        nameFormatPanel.addAll(new KLabel("Change Name Format:", H_FONT),
+        nameFormatPanel.addAll(new KLabel("Name Format:", H_FONT),
                 Box.createRigidArea(new Dimension(30,25)), nameFormatBox);
 
         bgBox = new JComboBox<String>(Settings.backgroundNames()) {
@@ -764,7 +764,7 @@ public class SettingsUI implements Activity {
             bgBox.setEnabled(true);
         }));
         final KPanel bgPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
-        bgPanel.addAll(new KLabel("Change Background:", H_FONT),
+        bgPanel.addAll(new KLabel("Background Colour:", H_FONT),
                 Box.createRigidArea(new Dimension(30,25)), bgBox);
 
         looksBox = new JComboBox<String>(Settings.getLookNames()) {
@@ -785,7 +785,7 @@ public class SettingsUI implements Activity {
             looksBox.setEnabled(true);
         }));
         final KPanel lafPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
-        lafPanel.addAll(new KLabel("Change Look & Feel:", H_FONT),
+        lafPanel.addAll(new KLabel("Look & Feel:", H_FONT),
                 Box.createRigidArea(new Dimension(30,25)), looksBox);
 
         final KLabel signOutLabel = newSignLabel("Sign out");
@@ -798,7 +798,7 @@ public class SettingsUI implements Activity {
                     if (verInt == App.VERIFICATION_TRUE) {
                         if (Serializer.unMountUserData()) {
                             Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);
-                            Runtime.getRuntime().removeShutdownHook(Dashboard.STATUS_HOOK);
+                            Runtime.getRuntime().removeShutdownHook(Dashboard.UNLOCK_HOOK);
                             Board.getInstance().setVisible(false);
                         } else {
                             App.reportError("Error",

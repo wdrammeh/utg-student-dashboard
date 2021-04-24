@@ -4,7 +4,7 @@ import core.Activity;
 import core.Board;
 import core.Portal;
 import core.driver.MDriver;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
@@ -273,7 +273,7 @@ public class NotificationActivity implements Activity {
             admissionLabel.setText(waitingText);
         }
         refreshButton.setEnabled(responsive);
-        RunningCourseActivity.noticeLabel.setText(Portal.getRegistrationNotice());
+        SemesterActivity.noticeLabel.setText(Portal.getRegistrationNotice());
     }
 
 

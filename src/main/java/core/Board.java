@@ -6,7 +6,7 @@ import core.first.FirstLaunch;
 import core.module.Analysis;
 import core.module.ModuleActivity;
 import core.module.ModuleHandler;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
 import core.other.About;
 import core.other.Tips;
 import core.serial.Serializer;
@@ -95,7 +95,7 @@ public final class Board extends KFrame {
     };
     public static final Thread SHUT_DOWN_HOOK = new Thread(Serializer::mountUserData);
 //    Collaborators declaration. The order in which these will be initialized does matter!
-    private RunningCourseActivity runningCourseActivity;
+    private SemesterActivity semesterActivity;
     private ModuleActivity moduleActivity;
     private SettingsUI settingsUI;
     private TranscriptActivity transcriptActivity;
@@ -146,7 +146,7 @@ public final class Board extends KFrame {
         if (!(Dashboard.isFirst() || Student.isTrial())) {
             Portal.deSerialize();
         }
-        runningCourseActivity = new RunningCourseActivity();
+        semesterActivity = new SemesterActivity();
         moduleActivity = new ModuleActivity();
         settingsUI = new SettingsUI();
         transcriptActivity = new TranscriptActivity();
@@ -177,7 +177,7 @@ public final class Board extends KFrame {
         final KMenuItem resetOption = new KMenuItem("Set Default", e-> Student.fireIconReset());
 
         final JPopupMenu imageOptionsPop = new JPopupMenu();
-        imageOptionsPop.add(new KMenuItem("Change", e-> Student.startSettingImage()));
+        imageOptionsPop.add(new KMenuItem("Select", e-> Student.startSettingImage()));
         imageOptionsPop.add(resetOption);
 
         imageLabel = new KLabel(Student.getIcon());
@@ -271,7 +271,7 @@ public final class Board extends KFrame {
         final KLabel utgIcon = KLabel.createIcon("UTGLogo.gif", 125, 85);
 
         final KLabel schoolLabel = createLabelFor("School of", Student.getSchool());
-        final KLabel divLabel = createLabelFor("Department of", Student.getDivision());
+        final KLabel divLabel = createLabelFor("Division of", Student.getDivision());
         semesterLabel = new KLabel(Student.isTrial() ? "" : Student.getSemester(),
                 KFontFactory.createBoldFont(17));
 
@@ -432,7 +432,7 @@ public final class Board extends KFrame {
         semesterPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                runningCourseActivity.answerActivity();
+                semesterActivity.answerActivity();
             }
         });
 
@@ -578,7 +578,7 @@ public final class Board extends KFrame {
         final String semester = Student.getSemester();
         POST_PROCESSES.add(()-> {
             semesterLabel.setText(semester);
-            RunningCourseActivity.semesterBigLabel.setText(semester);
+            SemesterActivity.semesterBigLabel.setText(semester);
         });
     }
 
@@ -597,7 +597,7 @@ public final class Board extends KFrame {
 
     public static void online() {
         if (Portal.isAutoSynced() && !Student.isTrial()) {
-            RunningCourseActivity.startMatching(false);
+            SemesterActivity.startMatching(false);
             ModuleHandler.launchThoroughSync(false, null);
             NotificationActivity.updateNotices(false);
             instance.newsPresent.packAll(false);

@@ -2,7 +2,7 @@
     May be valid for the current version only.
 
 
-configs.ser - It contains the configuration info
+configs.ser - contains the configuration info
     of the last Dashboard instance at time of collapse.
 settings.ser -
 portal.ser -
@@ -17,7 +17,7 @@ modules:
     registered.ser -
     modules.ser -
 tasks:
-    todo.ser -
+    todos.ser -
     projects.ser -
     assignments.ser -
     events.ser -
@@ -28,5 +28,3 @@ news:
     contents.ser -
     accessTime.ser -
 status.ser -
-
-

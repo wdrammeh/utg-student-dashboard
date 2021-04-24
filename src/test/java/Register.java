@@ -80,7 +80,7 @@ public class Register {
                 System.out.println("[INFO] Found the following course:");
                 System.out.printf("\tCode<%s> Name<%s> Lecturer<%s> Venue<%s> Room<%s> Time<%s> " +
                         "Class-Size<%d> Number-Registered<%d> Status<%s>%n", module.getCode(), module.getName(),
-                        module.getLecturer(), module.getVenue(), module.getRoom(), module.getTime(), module.classSize,
+                        module.getLecturer(), module.getCampus(), module.getRoom(), module.getTime(), module.classSize,
                         module.numberRegistered, module.getStatus());
                 if (module.isConfirmed()) {
                     System.out.println("You've already registered this course.");
@@ -104,7 +104,7 @@ public class Register {
                 for (RunningCourse module : foundRunningModules) {
                     System.out.printf("%d. Code<%s> Name<%s> Lecturer<%s> Venue<%s> Room<%s> Time<%s> " +
                                     "Class-Size<%d> Number-Registered<%d> Status<%s>%n", var++, module.getCode(), module.getName(),
-                            module.getLecturer(), module.getVenue(), module.getRoom(), module.getTime(), module.classSize,
+                            module.getLecturer(), module.getCampus(), module.getRoom(), module.getTime(), module.classSize,
                             module.numberRegistered, module.getStatus());
                 }
                 System.out.print("Enter the number you want to register for: ");

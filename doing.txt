@@ -1,0 +1,3 @@
+- As for the registered type, add campus property for done modules;
+    remove static oriented-exhibition; regulate exhibitions on/after checkout.
+- setting mask option for comboBoxes

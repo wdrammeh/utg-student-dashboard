@@ -191,7 +191,7 @@ public class AssignmentHandler {
     public JComponent getComponent(){
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, activeAssignments(), doneAssignments());
         splitPane.setContinuousLayout(true);
-        splitPane.setDividerLocation(200);
+        splitPane.setDividerLocation(275);
         return new KPanel(new BorderLayout(), splitPane);
     }
 

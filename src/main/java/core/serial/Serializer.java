@@ -5,7 +5,7 @@ import core.Portal;
 import core.alert.Notification;
 import core.driver.MDriver;
 import core.module.ModuleHandler;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
 import core.setting.Settings;
 import core.task.TaskActivity;
 import core.user.Student;
@@ -18,7 +18,7 @@ import java.io.*;
 import static core.utils.Globals.joinPaths;
 
 public class Serializer {
-    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), ".dashboard");
+    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), "Dashboard");
 
 
     /**
@@ -73,7 +73,7 @@ public class Serializer {
         Settings.serialize();
         if (!Student.isTrial()) {
             Portal.serialize();
-            RunningCourseActivity.serialize();
+            SemesterActivity.serialize();
             ModuleHandler.serialize();
         }
         Student.serialize();

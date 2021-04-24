@@ -75,16 +75,17 @@ public class TranscriptExporter {
         addUserData();
         addTable();
         document.close();
+        outputStream.flush();
         outputStream.close();
         SwingUtilities.invokeLater(()-> App.reportInfo("Successful",
-                "Your Transcript is been exported successfully to "+savePath));
+                "Your Transcript is been exported successfully to '"+savePath+"'"));
     }
 
     private void addMetaData(){
         document.addAuthor("Muhammed W. Drammeh");
         document.addTitle("UTG Student Transcript");
         document.addCreator("UTG-Student Dashboard");
-        document.addSubject("Non-official UTG Transcript");
+        document.addSubject("Unofficial UTG Transcript");
         document.addCreationDate();
     }
 

@@ -1,6 +1,6 @@
 # UTG-Student Dashboard
 
-`v0.0.1`
+`v0.1.1`
 
 A flexible and elegant student management system for the University of The Gambia.
 
@@ -71,9 +71,10 @@ but maximum functionality is only provided when user is logged in as a **UTG Stu
 Dashboard is an ambitious project, and this is only the beginning.
 Also, we wish to integrate the following features in a future release:
 
-- Course Registration
+- Course Registration Functionality
 - Student Voting System
 - Student Forum
+- Student Auditing System
 
 ## License
 (c) 2021 UTG. All rights reserved. Read the [LICENSE](LICENSE.txt) file.

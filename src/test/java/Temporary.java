@@ -6,7 +6,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class Temp {
+public class Temporary {
 
     public static void main(String[] args) {
         final FirefoxDriver driver = MDriver.forgeNew(false);

@@ -37,13 +37,7 @@ public class MDriver {
     public static synchronized FirefoxDriver forgeNew(boolean headless) {
         setup();
         try {
-            final FirefoxDriver foxDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(headless)){
-                @Override
-                public void quit() {
-                    super.quit();
-                    DRIVERS.remove(this);
-                }
-            };
+            final FirefoxDriver foxDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(headless));
             DRIVERS.add(foxDriver);
             return foxDriver;
         } catch (Exception e) {
@@ -163,7 +157,11 @@ public class MDriver {
      */
     public static void stopAll(){
         for (FirefoxDriver driver : DRIVERS) {
-            driver.quit();
+            try {
+                driver.quit();
+            } catch (Exception e) {
+                App.silenceException(e);
+            }
         }
     }
 
