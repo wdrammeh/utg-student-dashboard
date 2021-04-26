@@ -63,11 +63,10 @@ public class TranscriptActivity implements Activity {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() >= 2) {
-                        final int selectedRow = table.getSelectedRow();
-                        if (selectedRow >= 0) {
-                            final String code = String.valueOf(TRANSCRIPT_MODEL.getValueAt(selectedRow, 0));
-                            Course.exhibit(ModuleHandler.getModuleByCode(code));
-                            e.consume();
+                        final String code = String.valueOf(TRANSCRIPT_MODEL.getValueAt(table.getSelectedRow(), 0));
+                        final Course c = ModuleHandler.getModuleByCode(code);
+                        if (c != null) {
+                            c.exhibit();
                         }
                     }
                 }

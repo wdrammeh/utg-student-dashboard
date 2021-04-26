@@ -84,7 +84,7 @@ public class ModuleHandler {
             public boolean remove(Object o) {
                 final Course course = (Course) o;
                 if (!App.showYesNoCancelDialog("Confirm",
-                        "Are you sure you did not do '" + course.getName() + "',\n" +
+                        "Are you sure you did not do '" + course.getAbsoluteName() + "',\n" +
                         "and that you wish to remove it from your collection?")) {
                     return false;
                 }
@@ -174,12 +174,12 @@ public class ModuleHandler {
 
     /**
      * This call is complete.
-     * It makes sure the list replaces the old with recent, and inflict
+     * It makes sure the list replaces the old with recent, and inflicts
      * the changes on the appropriate table, thereafter.
      * This also caters for the case where the old might not exist for whatever reason,
      * and halt, in that case, the subsequent attempt for visual changes.
      *
-     * Do not call set() on the monitor! Call this.
+     * Do not call set() on the monitor! Call this instead.
      */
     public static void substitute(Course old, Course recent){
         if (exists(old.getCode())) {
@@ -187,7 +187,7 @@ public class ModuleHandler {
             // the details should be merged prior to this call
             modulesMonitor.set(old.getListIndex(), recent);
         } else {
-            //may be an issue, after verification - as the user might have removed it during the process
+            // may be an issue, after verification - as the user might have removed it during the process
             modulesMonitor.add(recent);
             return;
         }
@@ -229,6 +229,7 @@ public class ModuleHandler {
                 return course;
             }
         }
+        App.silenceException("No course with code '"+code+"'");
         return null;
     }
 
@@ -243,14 +244,24 @@ public class ModuleHandler {
      * Call this on a different thread.
      */
     public static void launchVerification(Course target) {
+        if (target.getStatus().equals(Course.VERIFYING)) {
+            App.silenceInfo(String.format("Already verifying '%s'.", target.getAbsoluteName()));
+            return;
+        }
+
+        final String initialStatus = target.getStatus();
+        target.setStatus(Course.VERIFYING);
+
         fixModulesDriver();
         if (modulesDriver == null) {
             App.reportMissingDriver();
+            target.setStatus(initialStatus);
             return;
         }
 
         if (!Internet.isInternetAvailable()) {
             App.reportNoInternet();
+            target.setStatus(initialStatus);
             return;
         }
 
@@ -260,13 +271,16 @@ public class ModuleHandler {
             if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
                 if (Portal.isEvaluationNeeded(modulesDriver)) {
                     Portal.reportEvaluationNeeded();
+                    target.setStatus(initialStatus);
                     return;
                 }
             } else if (loginAttempt == MDriver.ATTEMPT_FAILED) {
                 App.reportLoginAttemptFailed();
+                target.setStatus(initialStatus);
                 return;
             } else if (loginAttempt == MDriver.CONNECTION_LOST) {
                 App.reportConnectionLost();
+                target.setStatus(initialStatus);
                 return;
             }
 
@@ -275,6 +289,7 @@ public class ModuleHandler {
                 Portal.onPortal(modulesDriver);
             } catch (Exception e) {
                 App.reportConnectionLost();
+                target.setStatus(initialStatus);
                 return;
             }
 
@@ -298,10 +313,12 @@ public class ModuleHandler {
             }
 
             if (foundOne == null) {
-                App.reportWarning("Checkout Unsuccessful",
-                        "The process to checkout for "+target.getAbsoluteName()+" was unsuccessful.\n" +
+                App.reportWarning("Verification Unsuccessful",
+                        "The process to verify "+target.getAbsoluteName()+" was unsuccessful.\n" +
                                 "Dashboard could not locate any trace of it on your portal.\n" +
                                 "If you've done this course, then contact the lecturer, or the department.");
+                target.setVerified(false);
+                target.setStatus(Globals.UNKNOWN);
                 return;
             }
 
@@ -344,16 +361,16 @@ public class ModuleHandler {
             }
 
             final Course existed = getModuleByCode(target.getCode());
-            if (existed == null) {//removed?
+            if (existed == null) { // removed?
                 modulesMonitor.add(foundOne);
-            } else {//merge and replace
+            } else { // merge and replace (substitute)
                 Course.merge(foundOne, existed);
                 substitute(existed, foundOne);
             }
 
-            App.reportInfo("Checkout Successful",
-                    "The process to checkout for "+target.getAbsoluteName()+" is completed successfully.\n" +
-                    "It has been found on your Portal. It would now be included your Analysis and Transcript.");
+            App.reportInfo("Verification Successful",
+                    "'"+target.getAbsoluteName()+"' has been verified successfully.\n" +
+                    "Dashboard will included it in your Analysis and Transcript.");
         }
     }
 
@@ -365,7 +382,7 @@ public class ModuleHandler {
     public static void launchThoroughSync(boolean userRequested, KButton triggerButton){
         if (userRequested && !App.showYesNoCancelDialog("Synchronize Modules",
                 "Do you want to synchronize your courses with the Portal?\n" +
-                        "Dashboard will perform a complete 're-indexing' of your courses.\n" +
+                        "Dashboard will perform a thorough 're-indexing' of your courses.\n \n" +
                         "Refer to the Tips for more info about this action.")) {
             return;
         }
@@ -619,7 +636,10 @@ public class ModuleHandler {
             detailsItem = new KMenuItem(DETAILS);
             detailsItem.addActionListener(e-> {
                 final String code = String.valueOf(focusModel.getValueAt(focusTable.getSelectedRow(), 0));
-                Course.exhibit(getModuleByCode(code));
+                final Course c = getModuleByCode(code);
+                if (c != null) {
+                    c.exhibit();
+                }
             });
 
             editItem = new KMenuItem(EDIT);
@@ -777,7 +797,10 @@ public class ModuleHandler {
                         final int selectedRow = table.getSelectedRow();
                         if (selectedRow >= 0) {
                             final String code = String.valueOf(table.getValueAt(selectedRow, 0));
-                            Course.exhibit(getModuleByCode(code));
+                            final Course c = getModuleByCode(code);
+                            if (c != null) {
+                                c.exhibit();
+                            }
                             e.consume();
                         }
                     }
@@ -912,27 +935,31 @@ public class ModuleHandler {
             lecturerPanel.add(new KPanel(new KLabel("Lecturer:", hintFont)), BorderLayout.WEST);
             lecturerPanel.add(new KPanel(lecturerField), BorderLayout.CENTER);
 
-            dayBox = new KComboBox<>(Course.weekDays());
-            timeBox = new KComboBox<>(Course.periods());
-            final KPanel schedulePanel = new KPanel(new FlowLayout()); // this a little sort of an exception
+            dayBox = new KComboBox<>(Course.weekDays(), -1);
+            dayBox.addMask(Globals.UNKNOWN, "");
+            timeBox = new KComboBox<>(Course.periods(), -1);
+            timeBox.addMask(Globals.UNKNOWN, "");
+            final KPanel schedulePanel = new KPanel(new FlowLayout());
             schedulePanel.addAll(new KLabel("Day:", hintFont), dayBox,
                     Box.createRigidArea(new Dimension(25, 30)),
                     new KLabel("Time:", hintFont), timeBox);
 
-            campusBox = new KComboBox<>(Course.campuses());
+            campusBox = new KComboBox<>(Course.campuses(), -1);
+            campusBox.addMask(Globals.UNKNOWN, "");
             roomField = new KTextField(new Dimension(225,30));
             final KPanel venuePanel = new KPanel();
             venuePanel.addAll(new KLabel("Campus:", hintFont), campusBox,
-                    Box.createRigidArea(new Dimension(20, 30)),
+                    Box.createRigidArea(new Dimension(15, 30)),
                     new KLabel("Room:", hintFont), roomField);
 
-            requirementBox = new KComboBox<>(Course.requirements());
-            requirementBox.setSelectedItem(Course.NONE);
+            requirementBox = new KComboBox<>(Course.requirements(), -1);
+            requirementBox.addMask(Globals.UNKNOWN, "");
             final KPanel requirementPanel = new KPanel(new BorderLayout());
             requirementPanel.add(new KPanel(new KLabel("Requirement:", hintFont)), BorderLayout.WEST);
             requirementPanel.add(new KPanel(requirementBox), BorderLayout.CENTER);
 
-            creditBox = new KComboBox<>(Course.creditHours());
+            creditBox = new KComboBox<>(Course.creditHours(), -1);
+            creditBox.setSelectedIndex(0);
             final KPanel creditPanel = new KPanel(new BorderLayout());
             creditPanel.add(new KPanel(new KLabel("Credit Hours:", hintFont)), BorderLayout.WEST);
             creditPanel.add(new KPanel(creditBox), BorderLayout.CENTER);
@@ -1011,7 +1038,7 @@ public class ModuleHandler {
     /**
      * Extends the Adding-dialog to make it an editing-one.
      */
-    private static class ModuleEditor extends ModuleAdder {
+    public static class ModuleEditor extends ModuleAdder {
         private KTableModel onModel;
         private Course target;
 
@@ -1023,7 +1050,7 @@ public class ModuleHandler {
          * @param onModel The model to perform the removal.
          * @see ModuleAdder
          */
-        private ModuleEditor(Course course, KTableModel onModel) {
+        public ModuleEditor(Course course, KTableModel onModel) {
             super(course.getYear(), course.getSemester());
             setTitle(course.getName());
             this.target = course;
@@ -1090,7 +1117,7 @@ public class ModuleHandler {
                             return;
                         }
                     }
-                    //check for general existence in other tables
+                    // check for general existence in other tables
                     if (existsExcept(onModel, codeField.getText())) {
                         reportCodeDuplication(codeField.getText());
                         codeField.requestFocusInWindow();
@@ -1099,10 +1126,10 @@ public class ModuleHandler {
 
                     final Course course = new Course(yearField.getText(), semesterField.getText(),
                             codeField.getText().toUpperCase(), nameField.getText(), lecturerField.getText(),
-                            campusBox.getSelectionText(), roomField.getText(), String.valueOf(dayBox.getSelectedItem()),
-                            String.valueOf(timeBox.getSelectedItem()), score,
-                            Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            String.valueOf(requirementBox.getSelectedItem()), target.isVerified());
+                            campusBox.getSelectionText(), roomField.getText(), dayBox.getSelectionText(),
+                            timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
+                            requirementBox.getSelectionText(), target.isVerified());
+                    course.setStatus(target.getStatus());
                     substitute(target, course);
                     dispose();
                 }

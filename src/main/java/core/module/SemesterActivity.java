@@ -147,7 +147,7 @@ public class SemesterActivity implements Activity {
      * Todo: if not found, an attempt will be made to register it.
      */
     private static void startCheckout(RegisteredCourse targetCourse) {
-        if (targetCourse.isVerifying()) {
+        if (targetCourse.getStatus().equals(Course.VERIFYING)) {
             App.silenceInfo(String.format("Already verifying '%s'.", targetCourse.getAbsoluteName()));
             return;
         }
@@ -155,8 +155,8 @@ public class SemesterActivity implements Activity {
         final String targetCode = targetCourse.getCode();
         final String initialStatus = String.valueOf(activeModel.getValueAt(activeModel.getRowOf(targetCode),
                 activeModel.getColumnCount() - 1)); // any of 'confirmed', or 'unknown'
-        targetCourse.setStatus(RegisteredCourse.VERIFYING);
-        activeModel.setValueAt(RegisteredCourse.VERIFYING, activeModel.getRowOf(targetCode),
+        targetCourse.setStatus(Course.VERIFYING);
+        activeModel.setValueAt(Course.VERIFYING, activeModel.getRowOf(targetCode),
                 activeModel.getColumnCount() - 1);
         fixRunningDriver();
         if (activeDriver == null) {
@@ -273,12 +273,14 @@ public class SemesterActivity implements Activity {
             if (!found) {
                 App.reportError("Checkout Unsuccessful",
                         "The attempt to checkout '"+targetCourse.getName()+"' was unsuccessful.\n" +
-                        "It seems like you haven't registered that course for this semester.");
+                                "It seems like you haven't registered that course for this semester.");
                 activeModel.setValueAt(initialStatus, activeModel.getRowOf(targetCode),
                         activeModel.getColumnCount() - 1);
-                targetCourse.setStatus(initialStatus);
+                targetCourse.setConfirmed(false);
+                targetCourse.setStatus(Globals.UNKNOWN);
             }
         }
+
     }
 
     /**
@@ -447,12 +449,13 @@ public class SemesterActivity implements Activity {
         return codes;
     }
 
-    private static RegisteredCourse getByCode(String code) {
+    public static RegisteredCourse getByCode(String code) {
         for (RegisteredCourse course : ACTIVE_COURSES) {
             if (course.getCode().equals(code)) {
                 return course;
             }
         }
+        App.silenceException("No registered course with code '"+code+"'.");
         return null;
     }
 
@@ -492,20 +495,8 @@ public class SemesterActivity implements Activity {
         checkItem.addActionListener(e-> new Thread(()-> {
             final String targetCode = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(),0));
             final RegisteredCourse targetCourse = getByCode(targetCode);
-            if (targetCourse == null) {
-                App.silenceException("Checkout cancelled. Cannot retrieve course with code '"+targetCode+"'.");
-            } else {
+            if (targetCourse != null) {
                 startCheckout(targetCourse);
-                final KDialog targetExhibitor = targetCourse.getExhibitor();
-                if (targetExhibitor != null && targetExhibitor.isShowing()) {
-                    final RegisteredCourse course = getByCode(targetCode);
-                    if (course == null) {
-                        App.silenceException("Exhibition cancelled. Cannot retrieve course with code '"+targetCode+"'.");
-                    } else {
-                        course.exhibit();
-                    }
-                    targetExhibitor.dispose();
-                }
             }
 
         }).start());
@@ -618,7 +609,7 @@ public class SemesterActivity implements Activity {
         KPanel checkPanel;
         KPanel contentPanel;
 
-        private RegisteredCourseAdder(){
+        public RegisteredCourseAdder(){
             super("New Registered Course");
             setResizable(true);
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
@@ -639,8 +630,8 @@ public class SemesterActivity implements Activity {
             lecturerLayer.add(new KPanel(newHintLabel("*Lecturer:")), BorderLayout.WEST);
             lecturerLayer.add(new KPanel(lecturerField), BorderLayout.CENTER);
 
-            campusBox = new KComboBox<>(Course.campuses());
-            campusBox.setMask(Globals.UNKNOWN, "");
+            campusBox = new KComboBox<>(Course.campuses(), -1);
+            campusBox.addMask(Globals.UNKNOWN, "");
             final KPanel campusLayer = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
             campusLayer.add(new KPanel(newHintLabel("Campus:")), BorderLayout.WEST);
             campusLayer.add(new KPanel(campusBox), BorderLayout.CENTER);
@@ -650,10 +641,10 @@ public class SemesterActivity implements Activity {
             roomLayer.add(new KPanel(newHintLabel("Lecture Room:")), BorderLayout.WEST);
             roomLayer.add(new KPanel(roomField), BorderLayout.CENTER);
 
-            daysBox = new KComboBox<>(Course.weekDays());
-            daysBox.setMask(Globals.UNKNOWN, "");
-            hoursBox = new KComboBox<>(Course.periods());
-            hoursBox.setMask(Globals.UNKNOWN, "");
+            daysBox = new KComboBox<>(Course.weekDays(), -1);
+            daysBox.addMask(Globals.UNKNOWN, "");
+            hoursBox = new KComboBox<>(Course.periods(), -1);
+            hoursBox.addMask(Globals.UNKNOWN, "");
             final KPanel scheduleLayer = new KPanel();
             scheduleLayer.addAll(newHintLabel("Day:"), daysBox,
                     Box.createRigidArea(new Dimension(50, 30)),
@@ -690,7 +681,7 @@ public class SemesterActivity implements Activity {
 
                     final RegisteredCourse addedCourse = new RegisteredCourse(codeField.getText(), nameField.getText(),
                             lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(),
-                            String.valueOf(daysBox.getSelectedItem()), String.valueOf(hoursBox.getSelectedItem()), false);
+                            daysBox.getSelectionText(), hoursBox.getSelectionText(), false);
                     ACTIVE_COURSES.add(addedCourse);
                     dispose();
                     if (instantCheck.isSelected()) {
@@ -722,16 +713,16 @@ public class SemesterActivity implements Activity {
 
     public static class RegisteredCourseEditor extends RegisteredCourseAdder {
 
-        private RegisteredCourseEditor(RegisteredCourse original){
+        public RegisteredCourseEditor(RegisteredCourse original){
             super();
             setTitle(original.getName());
             codeField.setText(original.getCode());
             nameField.setText(original.getName());
             lecturerField.setText(original.getLecturer());
-            campusBox.setSelectedItem(Globals.getElseUnknown(original.getCampus()));
+            campusBox.setSelectedItem(original.getCampus()); // remember, selection is not affected if it has no such item in its model
             roomField.setText(original.getRoom());
-            daysBox.setSelectedItem(Globals.getElseUnknown(original.getDay()));
-            hoursBox.setSelectedItem(Globals.getElseUnknown(original.getTime()));
+            daysBox.setSelectedItem(original.getDay());
+            hoursBox.setSelectedItem(original.getTime());
 
             if (original.isConfirmed()) {
                 codeField.setEditable(false);
@@ -753,8 +744,7 @@ public class SemesterActivity implements Activity {
                 } else {
                     final RegisteredCourse refracted = new RegisteredCourse(codeField.getText(), nameField.getText(),
                             lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(),
-                            String.valueOf(daysBox.getSelectedItem()), String.valueOf(hoursBox.getSelectedItem()),
-                            original.isConfirmed());
+                            daysBox.getSelectionText(), hoursBox.getSelectionText(), original.isConfirmed());
                     for (int i = 0; i < activeModel.getRowCount(); i++) {
                         if (i == activeTable.getSelectedRow()) {
                             continue;
@@ -762,10 +752,11 @@ public class SemesterActivity implements Activity {
                         final String refCode = refracted.getCode();
                         if ((refCode.equalsIgnoreCase(String.valueOf(activeModel.getValueAt(i, 0))))) {
                             App.reportError("Duplicate Code",
-                                    "Cannot add code "+refCode+ ". It's already assigned to a course in the list.");
+                                    "Cannot add code '"+refCode+"'. It's already assigned to a course in the list.");
                             return;
                         }
                     }
+                    refracted.setStatus(original.getStatus());
                     ACTIVE_COURSES.set(getIndexOf(original), refracted);
                     dispose();
                 }

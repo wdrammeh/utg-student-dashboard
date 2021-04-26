@@ -46,6 +46,10 @@ public class Course {
     private String requirement;
     private boolean isVerified;
     private boolean lecturerNameChangeability;
+    private String status;
+//
+    public static final String VERIFYING = "Verifying...";
+    public static final String CONFIRMED = "Confirmed";
 //    Requirement options
     public static final String MAJOR_OBLIGATORY = "Major Obligatory";
     public static final String MINOR_OBLIGATORY = "Minor Obligatory";
@@ -81,6 +85,7 @@ public class Course {
         this.score = score;
         this.creditHours = creditHours;
         this.isVerified = verified;
+        this.status = isVerified ? CONFIRMED : Globals.UNKNOWN;
         this.lecturerNameChangeability = !verified;
         this.requirement = Globals.hasText(requirement) ? requirement : NONE;
         if (this.requirement.equals(NONE)) {
@@ -212,6 +217,18 @@ public class Course {
 
     public void setVerified(boolean verified) {
         this.isVerified = verified;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+        final Course any = ModuleHandler.getModuleByCode(this.code);
+        if (any != null) {
+            any.status = status;
+        }
     }
 
     /**
@@ -376,9 +393,9 @@ public class Course {
 
     public static String venueOf(String campus, String room){
         if (Globals.hasText(campus) && Globals.hasText(room)) {
-            return campus+" ("+room+")";
+            return campus+" Campus ("+room+")";
         } else if (Globals.hasText(campus) && Globals.hasNoText(room)) {
-            return campus+" (Unknown room)";
+            return campus+" Campus (Unknown room)";
         } else if (Globals.hasNoText(campus) && Globals.hasText(room)) {
             return room;
         } else {
@@ -556,8 +573,8 @@ public class Course {
      * All time boxes must delegate to this as their list of time options.
      */
     public static String[] periods(){
-        return new String[] {Globals.UNKNOWN, "08:00", "08:30", "09:00", "11:00", "11:30", "14:00", "14:30", "15:00",
-                "17:00", "17:30", "20:00"};
+        return new String[] {"08:00", "08:30", "09:00", "11:00", "11:30", "14:00", "14:30", "15:00",
+                "17:00", "17:30", "20:00", Globals.UNKNOWN};
     }
 
     /**
@@ -565,8 +582,8 @@ public class Course {
      * All day boxes must delegate to this as their list of day options.
      */
     public static String[] weekDays(){
-        return new String[] {Globals.UNKNOWN, "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays",
-                "Saturdays", "Sundays"};
+        return new String[] {"Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays",
+                "Saturdays", "Sundays", Globals.UNKNOWN};
     }
 
     /**
@@ -589,100 +606,95 @@ public class Course {
     /**
      * Exhibits the contents of the given course on a dialog,
      * placed on the given base component.
-     * If the course is null, nothing is done; returns immediately.
      * Do not call this with {@link SwingUtilities#invokeLater(Runnable)},
      * {@link EventQueue#invokeLater(Runnable)}, etc.
      */
-    public static void exhibit(Component base, Course course){
-        if (course == null) {
-            return;
+    public void exhibit(Component base){
+        final KDialog exhibitor = new KDialog(this.name);
+        if (this.isMisc()) {
+            exhibitor.setTitle(exhibitor.getTitle()+" - Miscellaneous");
         }
-
-        final KDialog dialog = new KDialog(course.name);
-        if (course.isMisc()) {
-            dialog.setTitle(dialog.getTitle()+" - Miscellaneous");
-        }
-        dialog.setResizable(true);
-        dialog.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
+        exhibitor.setResizable(true);
+        exhibitor.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
 
         final Font hintFont = KFontFactory.createBoldFont(15);
         final Font valueFont = KFontFactory.createPlainFont(15);
 
         final KPanel codePanel = new KPanel(new BorderLayout());
         codePanel.add(new KPanel(new KLabel("Code:", hintFont)), BorderLayout.WEST);
-        codePanel.add(new KPanel(new KLabel(course.code, valueFont)), BorderLayout.CENTER);
+        codePanel.add(new KPanel(new KLabel(this.code, valueFont)), BorderLayout.CENTER);
 
         final KPanel namePanel = new KPanel(new BorderLayout());
         namePanel.add(new KPanel(new KLabel("Name:", hintFont)), BorderLayout.WEST);
-        namePanel.add(new KPanel(new KLabel(course.name, valueFont)), BorderLayout.CENTER);
+        namePanel.add(new KPanel(new KLabel(this.name, valueFont)), BorderLayout.CENTER);
 
         final KPanel lectPanel = new KPanel(new BorderLayout());
         lectPanel.add(new KPanel(new KLabel("Lecturer:", hintFont)), BorderLayout.WEST);
-        lectPanel.add(new KPanel(new KLabel(course.lecturer, valueFont)), BorderLayout.CENTER);
+        lectPanel.add(new KPanel(new KLabel(this.lecturer, valueFont)), BorderLayout.CENTER);
 
         final KPanel yearPanel = new KPanel(new BorderLayout());
         yearPanel.add(new KPanel(new KLabel("Academic Year:", hintFont)), BorderLayout.WEST);
-        yearPanel.add(new KPanel(new KLabel(course.year, valueFont)), BorderLayout.CENTER);
+        yearPanel.add(new KPanel(new KLabel(this.year, valueFont)), BorderLayout.CENTER);
 
         final KPanel semesterPanel = new KPanel(new BorderLayout());
         semesterPanel.add(new KPanel(new KLabel("Semester:", hintFont)), BorderLayout.WEST);
-        semesterPanel.add(new KPanel(new KLabel(course.semester,valueFont)), BorderLayout.CENTER);
+        semesterPanel.add(new KPanel(new KLabel(this.semester,valueFont)), BorderLayout.CENTER);
 
         final KPanel typePanel = new KPanel(new BorderLayout());
         typePanel.add(new KPanel(new KLabel("Requirement:", hintFont)), BorderLayout.WEST);
-        typePanel.add(new KPanel(new KLabel(course.requirement, valueFont)), BorderLayout.CENTER);
+        typePanel.add(new KPanel(new KLabel(this.requirement, valueFont)), BorderLayout.CENTER);
 
         final KPanel schedulePanel = new KPanel(new BorderLayout());
         schedulePanel.add(new KPanel(new KLabel("Schedule:", hintFont)), BorderLayout.WEST);
-        schedulePanel.add(new KPanel(new KLabel(course.getSchedule(), valueFont)), BorderLayout.CENTER);
+        schedulePanel.add(new KPanel(new KLabel(this.getSchedule(), valueFont)), BorderLayout.CENTER);
 
         final KPanel venuePanel = new KPanel(new BorderLayout());
         venuePanel.add(new KPanel(new KLabel("Venue:", hintFont)), BorderLayout.WEST);
-        venuePanel.add(new KPanel(new KLabel(course.getVenue(), valueFont)), BorderLayout.CENTER);
+        venuePanel.add(new KPanel(new KLabel(this.getVenue(), valueFont)), BorderLayout.CENTER);
 
         final KPanel creditPanel = new KPanel(new BorderLayout());
         creditPanel.add(new KPanel(new KLabel("Credit Hours:", hintFont)), BorderLayout.WEST);
-        creditPanel.add(new KPanel(new KLabel(Integer.toString(course.creditHours), valueFont)), BorderLayout.CENTER);
+        creditPanel.add(new KPanel(new KLabel(Integer.toString(this.creditHours), valueFont)), BorderLayout.CENTER);
 
         final KPanel scorePanel = new KPanel(new BorderLayout());
         scorePanel.add(new KPanel(new KLabel("Final Score:", hintFont)), BorderLayout.WEST);
-        scorePanel.add(new KPanel(new KLabel(Double.toString(course.score), valueFont)), BorderLayout.CENTER);
+        scorePanel.add(new KPanel(new KLabel(Double.toString(this.score), valueFont)), BorderLayout.CENTER);
 
         final KPanel gradePanel = new KPanel(new BorderLayout());
         gradePanel.add(new KPanel(new KLabel("Grade:", hintFont)), BorderLayout.WEST);
-        gradePanel.add(new KPanel(new KLabel(course.getGrade()+"  ("+course.getGradeComment()+")", valueFont)), BorderLayout.CENTER);
+        gradePanel.add(new KPanel(new KLabel(this.getGrade()+"  ("+this.getGradeComment()+")", valueFont)), BorderLayout.CENTER);
 
         final KPanel gradeValuePanel = new KPanel(new BorderLayout());
         gradeValuePanel.add(new KPanel(new KLabel("Grade Value:", hintFont)), BorderLayout.WEST);
-        gradeValuePanel.add(new KPanel(new KLabel(Double.toString(course.getQualityPoint()), valueFont)), BorderLayout.CENTER);
+        gradeValuePanel.add(new KPanel(new KLabel(Double.toString(this.getQualityPoint()), valueFont)), BorderLayout.CENTER);
 
+        final KLabel statusLabel = new KLabel(this.status, valueFont, this.status.equals(CONFIRMED) ? Color.BLUE :
+                this.status.equals(Globals.UNKNOWN) ? Color.RED : Color.GRAY);
         final KPanel statusPanel = new KPanel(new BorderLayout());
         statusPanel.add(new KPanel(new KLabel("Status:", hintFont)), BorderLayout.WEST);
-        final KLabel vLabel = course.isVerified ? new KLabel("Confirmed", valueFont, Color.BLUE) :
-                new KLabel("Unknown", valueFont, Color.RED);
-        statusPanel.add(new KPanel(vLabel), BorderLayout.CENTER);
+        statusPanel.add(new KPanel(statusLabel), BorderLayout.CENTER);
 
         final KButton closeButton = new KButton("Close");
-        closeButton.addActionListener(e -> dialog.dispose());
+        closeButton.addActionListener(e -> exhibitor.dispose());
 
         final KPanel contentPanel = new KPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(codePanel, namePanel, lectPanel, yearPanel, semesterPanel, schedulePanel, venuePanel,
                 typePanel, creditPanel, scorePanel, gradePanel, gradeValuePanel, statusPanel,
                 MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), closeButton));
-        dialog.getRootPane().setDefaultButton(closeButton);
-        dialog.setContentPane(contentPanel);
-        dialog.pack();
-        dialog.setLocationRelativeTo(base == null ? Board.getRoot() : base);
-        SwingUtilities.invokeLater(()-> dialog.setVisible(true));
+        exhibitor.getRootPane().setDefaultButton(closeButton);
+        exhibitor.setContentPane(contentPanel);
+        exhibitor.pack();
+        exhibitor.setLocationRelativeTo(base);
+        SwingUtilities.invokeLater(()-> exhibitor.setVisible(true));
     }
 
     /**
      * Exhibits the contents of the given course on the Dashboard's instance.
-     * @see #exhibit(Component, Course)
+     * @see #exhibit(Component)
      */
-    public static void exhibit(Course c){
-        exhibit(null, c);
+    public void exhibit(){
+        exhibit(Board.getRoot());
     }
 
 }

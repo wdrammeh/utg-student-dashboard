@@ -86,7 +86,10 @@ public class MiscModule {
                     final int selectedRow = miscTable.getSelectedRow();
                     if (selectedRow >= 0) {
                         final String code = String.valueOf(miscTable.getValueAt(selectedRow, 0));
-                        Course.exhibit(ModuleHandler.getModuleByCode(code));
+                        final Course course = ModuleHandler.getModuleByCode(code);
+                        if (course != null) {
+                            course.exhibit();
+                        }
                     }
                     e.consume();
                 }
@@ -99,7 +102,9 @@ public class MiscModule {
         detailsItem.addActionListener(e-> SwingUtilities.invokeLater(()-> {
             final Course course = ModuleHandler.getModuleByCode(String.valueOf(miscModel.getValueAt(
                     miscTable.getSelectedRow(), 0)));
-            Course.exhibit(course);
+            if (course != null) {
+                course.exhibit();
+            }
         }));
 
         editItem = new KMenuItem(ModuleHandler.EDIT);
@@ -176,7 +181,7 @@ public class MiscModule {
         KComboBox<String> semestersBox;
 
         private MiscModuleAdder(){
-            super(null, null);
+            super("", "");
             setTitle("New Miscellaneous Course");
 
             semestersBox = new KComboBox<>(new String[] {Student.FIRST_SEMESTER, Student.SECOND_SEMESTER,
@@ -263,10 +268,9 @@ public class MiscModule {
 
                     final Course course = new Course(givenYear, semestersBox.getSelectionText(),
                             codeField.getText().toUpperCase(), nameField.getText(), lecturerField.getText(),
-                            campusBox.getSelectionText(), roomField.getText(), String.valueOf(dayBox.getSelectedItem()),
-                            String.valueOf(timeBox.getSelectedItem()), score,
-                            Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            String.valueOf(requirementBox.getSelectedItem()), false);
+                            campusBox.getSelectionText(), roomField.getText(), dayBox.getSelectionText(),
+                            timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
+                            requirementBox.getSelectionText(), false);
                     ModuleHandler.getMonitor().add(course);
                     dispose();
                 }
@@ -392,12 +396,12 @@ public class MiscModule {
                         return;
                     }
 
-                    final Course course = new Course(yearField.getText(), String.valueOf(semestersBox.getSelectedItem()),
+                    final Course course = new Course(yearField.getText(), semestersBox.getSelectionText(),
                             codeField.getText().toUpperCase(), nameField.getText(), lecturerField.getText(),
-                            campusBox.getSelectionText(), roomField.getText(), String.valueOf(dayBox.getSelectedItem()),
-                            String.valueOf(timeBox.getSelectedItem()), score,
-                            Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            String.valueOf(requirementBox.getSelectedItem()), target.isVerified());
+                            campusBox.getSelectionText(), roomField.getText(), dayBox.getSelectionText(),
+                            timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
+                            requirementBox.getSelectionText(), target.isVerified());
+                    course.setStatus(target.getStatus());
                     ModuleHandler.substitute(target, course);
                     dispose();
                 }

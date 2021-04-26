@@ -11,6 +11,7 @@ import java.awt.*;
 
 /**
  * A model for registered (active) courses.
+ * Todo: add requirement field
  */
 public class RegisteredCourse {
     private String code;
@@ -22,9 +23,7 @@ public class RegisteredCourse {
     private String time;
     private boolean isConfirmed;
     private String status;
-    private KDialog exhibitor;
     public static final String REGISTERED = "Registered";
-    public static final String VERIFYING = "Verifying..."; // Checking out...
 
 
     public RegisteredCourse(String code, String name, String lecturer, String campus, String room,
@@ -110,14 +109,12 @@ public class RegisteredCourse {
 
     public void setStatus(String status) {
         this.status = status;
-    }
 
-    public KDialog getExhibitor(){
-        return exhibitor;
-    }
-
-    public boolean isVerifying(){
-        return status.equals(VERIFYING);
+//        if this course was edited while being verified, then it was replaced in the list, then this is just an unintended pointer
+        final RegisteredCourse any = SemesterActivity.getByCode(this.code);
+        if (any != null) {
+            any.status = status;
+        }
     }
 
     public String getAbsoluteName(){
@@ -161,10 +158,10 @@ public class RegisteredCourse {
     }
 
     /**
-     * @see Course#exhibit(Course)
+     * @see Course#exhibit(Component)
      */
     public void exhibit(Component base) {
-        exhibitor = new KDialog(this.name);
+        final KDialog exhibitor = new KDialog(this.name);
         exhibitor.setResizable(true);
         exhibitor.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
 
@@ -191,8 +188,8 @@ public class RegisteredCourse {
         schedulePanel.add(new KPanel(new KLabel("Schedule:", hintFont)), BorderLayout.WEST);
         schedulePanel.add(new KPanel(new KLabel(this.getSchedule(), valueFont)), BorderLayout.CENTER);
 
-        final KLabel statusLabel = new KLabel(this.status, valueFont, this.isConfirmed ? Color.BLUE :
-                this.status.equals(Globals.UNKNOWN) ? Color.RED : null);
+        final KLabel statusLabel = new KLabel(this.status, valueFont, this.status.equals(Course.CONFIRMED) ? Color.BLUE :
+                this.status.equals(Globals.UNKNOWN) ? Color.RED : Color.GRAY);
         final KPanel statusPanel = new KPanel(new BorderLayout());
         statusPanel.add(new KPanel(new KLabel("Status:", hintFont)), BorderLayout.WEST);
         statusPanel.add(new KPanel(statusLabel), BorderLayout.CENTER);

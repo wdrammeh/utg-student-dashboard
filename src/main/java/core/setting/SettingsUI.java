@@ -412,7 +412,7 @@ public class SettingsUI implements Activity {
             portalPsswdField.setEditable(false);
             final ActionListener portalPsswdEditorListener = e -> {
                 App.reportInfo("Portal Password","This is the password Dashboard uses, in addition to the email above,\n" +
-                        "to gain access to your portal. Only change this if you've changed actually your password.");
+                        "to gain access to your portal. Only change this if you've changed your password.");
                 final String newPortalPassword = App.requestInput("Portal Password","Enter your new Portal Password:");
                 if (Globals.hasText(newPortalPassword)) {
                     final int vInt = App.verifyUser(changeHint);

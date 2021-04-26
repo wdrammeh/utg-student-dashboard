@@ -168,16 +168,16 @@ public class Analysis implements Activity {
         });
 
 //        by score
-        highestScoreLabel = newSingletonLabel(()-> Course.exhibit(highestScoreCourse));
-        lowestScoreLabel = newSingletonLabel(()-> Course.exhibit(lowestScoreCourse));
-        highestMajorScoreLabel = newSingletonLabel(()-> Course.exhibit(highestMajorScoreCourse));
-        lowestMajorScoreLabel = newSingletonLabel(()-> Course.exhibit(lowestMajorScoreCourse));
-        highestMinorScoreLabel = newSingletonLabel(()-> Course.exhibit(highestMinorScoreCourse));
-        lowestMinorScoreLabel = newSingletonLabel(()-> Course.exhibit(lowestMinorScoreCourse));
-        highestDERScoreLabel = newSingletonLabel(()-> Course.exhibit(highestDERScoreCourse));
-        lowestDERScoreLabel = newSingletonLabel(()-> Course.exhibit(lowestDERScoreCourse));
-        highestGERScoreLabel = newSingletonLabel(()-> Course.exhibit(highestGERScoreCourse));
-        lowestGERScoreLabel = newSingletonLabel(()-> Course.exhibit(lowestGERScoreCourse));
+        highestScoreLabel = newSingletonLabel(()-> highestScoreCourse.exhibit());
+        lowestScoreLabel = newSingletonLabel(()-> lowestScoreCourse.exhibit());
+        highestMajorScoreLabel = newSingletonLabel(()-> highestMajorScoreCourse.exhibit());
+        lowestMajorScoreLabel = newSingletonLabel(()-> lowestMajorScoreCourse.exhibit());
+        highestMinorScoreLabel = newSingletonLabel(()-> highestMinorScoreCourse.exhibit());
+        lowestMinorScoreLabel = newSingletonLabel(()-> lowestMinorScoreCourse.exhibit());
+        highestDERScoreLabel = newSingletonLabel(()-> highestDERScoreCourse.exhibit());
+        lowestDERScoreLabel = newSingletonLabel(()-> lowestDERScoreCourse.exhibit());
+        highestGERScoreLabel = newSingletonLabel(()-> highestGERScoreCourse.exhibit());
+        lowestGERScoreLabel = newSingletonLabel(()-> lowestGERScoreCourse.exhibit());
 
 //        by requirement
         majorsLabel = newValueLabel(()-> {
@@ -806,7 +806,7 @@ public class Analysis implements Activity {
         public void join(int row, Course c) {
             final KButton aButton = newAboutButton();
             aButton.setCursor(MComponent.HAND_CURSOR);
-            aButton.addActionListener(e-> Course.exhibit(getRootPane(), c));
+            aButton.addActionListener(e-> c.exhibit(getRootPane()));
             final KLabel label = new KLabel(String.format(" %d. %s", row, c.getName()),
                     KFontFactory.createPlainFont(15));
             final KPanel joinPanel = new KPanel(new BorderLayout());
