@@ -107,7 +107,7 @@ public class MComponent {
                 KFontFactory.createPlainFont(20), Color.DARK_GRAY);
         final KLabel label3 = new KLabel("If you are a student of the University of The Gambia, you may...",
                 KFontFactory.createPlainFont(20), Color.GRAY);
-        final KLabel loginLabel = new KLabel("Login Now", KFontFactory.createPlainFont(20), Color.BLUE);
+        final KLabel loginLabel = new KLabel("Login now", KFontFactory.createPlainFont(20), Color.BLUE);
         loginLabel.underline(false);
         loginLabel.setCursor(HAND_CURSOR);
         loginLabel.addMouseListener(new MouseAdapter() {

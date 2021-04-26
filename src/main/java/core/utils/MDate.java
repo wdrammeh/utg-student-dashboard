@@ -14,7 +14,7 @@ public class MDate {
     /**
      * The format-pattern. This is in the full-state.
      */
-    private static final String pattern = String.join(VAL_SEP, "dd", "MM", "yyyy H:m:s");
+    private static final String pattern = String.join(VAL_SEP, "dd", "MM", "yyyy HH:mm:ss");
     /**
      * The standard date format.
      * Changing this format has great consequences since some functions

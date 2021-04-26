@@ -84,8 +84,4 @@ public class Globals {
         return String.join(" | ", parts);
     }
 
-    public static String getElseUnknown(String value){
-        return hasText(value) ? value : UNKNOWN;
-    }
-
 }

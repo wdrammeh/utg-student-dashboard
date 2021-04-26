@@ -296,13 +296,14 @@ public class App {
      *
      * This is a control-point should Dashboard style messages
      * using HTML, on textPanes.
+     * Todo: joinLines, and unpack them here using splitLines
      */
     public static KPanel dialogTextPanel(String text){
         final KPanel panel = new KPanel();
         panel.setOpaque(false);
         panel.setReflectTheme(false);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        for (String line : Globals.splitLines(text)) {
+        for (String line : text.split("\n")) {
             final KLabel label = new KLabel(line, KFontFactory.createPlainFont(15));
             label.setOpaque(false);
 //            label.setReflectTheme(false);

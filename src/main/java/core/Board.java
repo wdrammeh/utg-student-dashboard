@@ -108,7 +108,7 @@ public final class Board extends KFrame {
 
 
     public Board() {
-        super("UTG-Student Dashboard");
+        super("UTG Student Dashboard");
         instance = Board.this;
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
