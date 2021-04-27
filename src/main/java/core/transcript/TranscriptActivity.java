@@ -1,6 +1,6 @@
 package core.transcript;
 
-import com.lowagie.text.DocumentException;
+import com.itextpdf.text.DocumentException;
 import core.Activity;
 import core.Board;
 import core.module.Course;

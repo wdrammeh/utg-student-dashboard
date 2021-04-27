@@ -45,12 +45,16 @@ public class Internet {
      * @see #isInternetAvailable()
      */
     public static boolean isHostAvailable(String hostName) throws IOException {
+        Socket socket = null;
         try {
-            final Socket socket = new Socket();
+            socket = new Socket();
             socket.connect(new InetSocketAddress(hostName, 80), 10_000);
             return true;
-        } catch (UnknownHostException unknownHost) {
+        } catch (UnknownHostException e) {
+            App.silenceException(e);
             return false;
+        } finally {
+            socket.close();
         }
     }
 

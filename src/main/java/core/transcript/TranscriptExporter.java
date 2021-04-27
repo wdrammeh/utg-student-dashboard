@@ -1,10 +1,10 @@
 package core.transcript;
 
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.*;
 import core.Board;
 import core.module.Course;
 import core.module.Memory;
@@ -13,7 +13,6 @@ import core.utils.App;
 import core.utils.Globals;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,8 +36,8 @@ public class TranscriptExporter {
     private Rectangle pageSize;
     private int maxUsableWidth;
     final int[] columnWidths = new int[] {5, 15, 40, 15, 10, 15};
-    final Font captionFont = new Font(Font.HELVETICA, 10, Font.BOLD);
-    final Font bodyFont = new Font(Font.HELVETICA, 10, Font.NORMAL);
+    final Font captionFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+    final Font bodyFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
     private static final String[] HEAD = {"#", "COURSE CODE", "COURSE DESCRIPTION", "CREDIT VALUE", "GRADE", "QUALITY POINT"};
 
 
@@ -91,12 +90,12 @@ public class TranscriptExporter {
 
     private void addUTGLabels() throws IOException, DocumentException {
         final Paragraph line1 = new Paragraph(new Phrase("THE UNIVERSITY OF THE GAMBIA",
-                new Font(Font.TIMES_ROMAN, 18, Font.BOLD)));
+                new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD)));
         line1.setAlignment(Paragraph.ALIGN_CENTER);
         line1.setSpacingAfter(10);
 
         final Paragraph line2 = new Paragraph(new Phrase("STUDENT ACADEMIC RECORDS",
-                new Font(Font.TIMES_ROMAN, 13, Font.BOLD)));
+                new Font(Font.FontFamily.TIMES_ROMAN, 13, Font.BOLD)));
         line2.setAlignment(Paragraph.ALIGN_CENTER);
         line2.setSpacingAfter(50);
 
@@ -114,8 +113,8 @@ public class TranscriptExporter {
         final int detailTableWidth = (int)(pageSize.getWidth()/2) - 50;
         final int longCellHeight = 30;
         final int shortCellHeight = 15;
-        final Font hintFont = new Font(Font.HELVETICA, 10, Font.BOLD);
-        final Font valueFont = new Font(Font.HELVETICA, 10, Font.NORMAL);
+        final Font hintFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+        final Font valueFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
 
         final PdfPTable leftTable = new PdfPTable(2);
         leftTable.setHorizontalAlignment(PdfPTable.ALIGN_LEFT);
@@ -145,7 +144,7 @@ public class TranscriptExporter {
         rightTable.addCell(newDataCell(minorText, valueFont, shortCellHeight));
 
         final PdfPTable detailsTable = new PdfPTable(2);
-        detailsTable.getDefaultCell().setBorderColor(Color.WHITE);//desperately trying to hide the border
+        detailsTable.getDefaultCell().setBorderColor(BaseColor.WHITE);//desperately trying to hide the border
         detailsTable.setTotalWidth(maxUsableWidth);
         detailsTable.setLockedWidth(true);
         detailsTable.addCell(leftTable);
@@ -169,8 +168,8 @@ public class TranscriptExporter {
         headTable.setLockedWidth(true);
         headTable.setWidths(columnWidths);
         for (String header : HEAD) {
-            final PdfPCell headCell = new PdfPCell(new Phrase(header, new Font(Font.HELVETICA, 9, Font.BOLD)));
-            headCell.setBackgroundColor(Color.LIGHT_GRAY);
+            final PdfPCell headCell = new PdfPCell(new Phrase(header, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD)));
+            headCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
             headCell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
             headCell.setPadding(5F);
             headTable.addCell(headCell);

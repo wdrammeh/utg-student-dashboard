@@ -1,20 +1,12 @@
 import core.Board;
-import core.News;
-import core.Portal;
-import core.alert.Notification;
-import core.module.ModuleHandler;
 import core.module.SemesterActivity;
-import core.setting.Settings;
-import core.task.TaskActivity;
-import core.user.Student;
 import utg.Dashboard;
-
-import java.util.Date;
 
 public class Tester {
 
     public static void main(String[] args) {
-//        Student.initialize();
+        new SemesterActivity.RegisteredCourseAdder().setVisible(true);
+        // new ModuleHandler.ModuleAdder("2016/2017", Student.FIRST_SEMESTER).setVisible(true);
     }
 
     private static void run(boolean save){

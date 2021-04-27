@@ -1,13 +1,14 @@
 >> The following improvements will be made
 
 
+- Not "Trial" but "Guest"
 - Include JUnit
 - Option to maximize (and restore) the bodyLayer.
 - Transcript export options.
 - Remove static-orientation of task types.
 - Student auditing tool.
 - Improve the design for the trial system.
-- Do not ask me again.
+- Do not ask me dialogs.
 - Auto outdate feature: to either specify a term limit, or consult a webpage.
 - Manual check for updates feature.
 - Custom user password; as defaults to the mat. no.
