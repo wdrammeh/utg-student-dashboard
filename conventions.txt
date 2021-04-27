@@ -1,8 +1,0 @@
->> Conventions
-
-- Final commit of a revision will be done by the master branch after merging.
-    It shall ensure that the implementing version is concurrent across the project,
-    and the root path name is set to .dashboard.
-- Consequently, running the main branch should always as the same as running
-    the actual app.
--

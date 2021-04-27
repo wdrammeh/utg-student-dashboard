@@ -1,27 +1,19 @@
->> The following improvements will be made
-
-
-- Not "Trial" but "Guest"
+- "Trial" -> "Guest"
 - Include JUnit
-- Option to maximize (and restore) the bodyLayer.
-- Transcript export options.
-- Remove static-orientation of task types.
-- Student auditing tool.
-- Improve the design for the trial system.
-- Do not ask me dialogs.
-- Auto outdate feature: to either specify a term limit, or consult a webpage.
-- Manual check for updates feature.
-- Custom user password; as defaults to the mat. no.
-- Lock Dashboard at startup option.
-- Research on the Selenium Driver.
-- Flexible driver choices functionality.
-- Minimize Portal wait time - remove unnecessary waitings.
-- JPackage:
-    Early deployment, linux (.deb / Debian) packages only
-    Propose. interested? License and fund for extensive feature addition
-
-- Registration functionality.
-- Website for project - announcement, upgrading downloadable packages
-- Well documentation; generate javadoc.
-- Student Forum.
-- Student voting system.
+- Option to maximize (and restore) the bodyLayer
+- Transcript export customization
+- Remove static-orientation of task types
+- Student auditing tool
+- Improve the design for "Guest" users
+- Do not ask me dialogs
+- Auto outdate feature
+- Manual check for updates
+- Custom user password; as defaults to the Mat. No
+- Lock Dashboard at startup
+- Research on the Selenium Driver
+- Flexible driver choices functionality
+- Minimize Portal wait time - remove unnecessary waitings
+- Registration functionality
+- Well documentation; generate javadoc
+- Student Forum
+- Student voting system

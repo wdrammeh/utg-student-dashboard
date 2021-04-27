@@ -1,16 +1,9 @@
->> Herein defines tasks, processes, test-cases, etc.
-    that must be done prior to deployment.
-
-
 - Create SNAPSHOT Tag.
-- Cross-check for TODOs.
-- Be sure to have dealt with all test-cases, as in the test file.
-- Make sure the documentations are in full-sync.
+- Cross-check TODOs.
+- Deal with all test-cases, as in the test file.
+- Versions, Documentations in full-sync.
     Documentation in source files := static files := README, logic, etc.
-- Make sure Versions are in order such that:
-    utg.Dashboard.VERSION := <version> in pom.xml := <version> in README.md
-- Test extensively on the three (3) major platforms.
-- Now make it backward-compatible.
-- Replace Dashboard with .dashboard as ROOT_DIR.
-    This, probably, is the latest commit of every release.
+- Extensive testing on the three (3) major platforms.
+- Make backward-compatible.
+- Replace Dashboard/ with .dashboard/ as ROOT_DIR.
 - Create a RELEASE Tag. Deploy!
