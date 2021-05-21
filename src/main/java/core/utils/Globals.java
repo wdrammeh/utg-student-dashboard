@@ -16,11 +16,13 @@ public class Globals {
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 
+
     /**
      * Checks plurality of the given count,
      * and assigns a compound string with text based on the count.
-     * This is only compatible with Regular Nouns.
-     * And the text must be in the plural format already.
+     * 
+     * This is only compatible with Regular Nouns, and the given text
+     * must be in the plural format already => must be ending in letter "s".
      */
     public static String checkPlurality(int count, String text) {
         if (count == 0) {
@@ -49,7 +51,7 @@ public class Globals {
     public static String joinLines(Object... lines){
         final StringJoiner joiner = new StringJoiner(LINE_SEPARATOR);
         for (Object line : lines) {
-            joiner.add(line == null ? "" : String.valueOf(line));
+            joiner.add(line == null ? " " : String.valueOf(line));
         }
         return joiner.toString();
     }
@@ -74,14 +76,14 @@ public class Globals {
     }
 
     /**
-     * Returns true if the given string is null, or otherwise blank.
+     * Returns true if the given string is null, or blank.
      */
     public static boolean hasNoText(String t){
         return t == null || t.isBlank();
     }
 
     public static String reference(String... parts){
-        return String.join(" | ", parts);
+        return "'"+String.join(" > ", parts)+"'";
     }
 
 }

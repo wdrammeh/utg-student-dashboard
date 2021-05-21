@@ -1,10 +1,11 @@
-- "Trial" -> "Guest"
 - Include JUnit
+- Reindex resources completely without signing out (or re-signing in)
 - Option to maximize (and restore) the bodyLayer
 - Transcript export customization
 - Remove static-orientation of task types
 - Student auditing tool
 - Improve the design for "Guest" users
+- Custom OptionPane dialogs
 - Do not ask me dialogs
 - Auto outdate feature
 - Manual check for updates

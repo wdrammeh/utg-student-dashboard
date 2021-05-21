@@ -103,7 +103,7 @@ public class MComponent {
      */
     public static Component createUnavailableActivity(String activityName){
         final KLabel label1 = new KLabel(activityName, KFontFactory.createBoldFont(30));
-        final KLabel label2 = new KLabel("This activity is not supported for \"Trial Users\"",
+        final KLabel label2 = new KLabel("This activity is not supported for \"Guest Users\"",
                 KFontFactory.createPlainFont(20), Color.DARK_GRAY);
         final KLabel label3 = new KLabel("If you are a student of the University of The Gambia, you may...",
                 KFontFactory.createPlainFont(20), Color.GRAY);

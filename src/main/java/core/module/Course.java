@@ -1,3 +1,23 @@
+/*
+UTG Student Dashboard:
+    "A student management system for the University of The Gambia"
+
+Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package core.module;
 
 import core.Board;
@@ -45,7 +65,7 @@ public class Course {
     private int creditHours;
     private String requirement;
     private boolean isVerified;
-    private boolean lecturerNameChangeability;
+    private boolean isLecturerNameEditable;
     private String status;
 //
     public static final String VERIFYING = "Verifying...";
@@ -86,7 +106,7 @@ public class Course {
         this.creditHours = creditHours;
         this.isVerified = verified;
         this.status = isVerified ? CONFIRMED : Globals.UNKNOWN;
-        this.lecturerNameChangeability = !verified;
+        this.isLecturerNameEditable = true;
         this.requirement = Globals.hasText(requirement) ? requirement : NONE;
         if (this.requirement.equals(NONE)) {
             try {
@@ -100,7 +120,7 @@ public class Course {
                 } else if (programPart.equals(GER)) {
                     setRequirement(GENERAL_REQUIREMENT);
                 }
-            } catch (StringIndexOutOfBoundsException ignored){
+            } catch (IndexOutOfBoundsException ignored){
             }
         }
     }
@@ -141,9 +161,8 @@ public class Course {
         return lecturer;
     }
 
-    public void setLecturer(String lecturer, boolean changeable) {
+    public void setLecturer(String lecturer) {
         this.lecturer = lecturer;
-        lecturerNameChangeability = changeable;
     }
 
     public String getCampus() {
@@ -231,11 +250,26 @@ public class Course {
         }
     }
 
+    public void setLecturerNameEditable(boolean isLecturerNameEditable){
+        this.isLecturerNameEditable = isLecturerNameEditable;
+    }
+
+    /**
+     * A lecturer's name of a module is changeable
+     * iff it was not actually found on the Portal.
+     * Note that courses done before the implementation of the Portal
+     * do not have their lecturer names uploaded afterwards.
+     * Hence this is for backward-compatibility.
+     */
+    public boolean isLecturerNameEditable() {
+        return isLecturerNameEditable;
+    }
+
     /**
      * Returns a compound-string of the code and name of this course.
      */
     public String getAbsoluteName() {
-        return String.join(" ", "["+code+"]", name);
+        return String.join(" ", "("+code+")", name);
     }
 
     /**
@@ -279,9 +313,8 @@ public class Course {
      * four years bachelor's program specification.
      */
     public boolean isMisc() {
-        final String y = year;
-        return !(y.equals(Student.firstAcademicYear()) || y.equals(Student.secondAcademicYear()) ||
-                y.equals(Student.thirdAcademicYear()) || y.equals(Student.fourthAcademicYear()));
+        return !(year.equals(Student.firstAcademicYear()) || year.equals(Student.secondAcademicYear()) ||
+                year.equals(Student.thirdAcademicYear()) || year.equals(Student.fourthAcademicYear()));
     }
 
     public String getSchedule(){
@@ -364,16 +397,6 @@ public class Course {
 
     public double getQualityPoint() {
         return pointsOf(getGrade());
-    }
-
-    /**
-     * A lecturer's name of a module is changeable
-     * iff it was not actually found on the Portal.
-     * Note that courses done before the implementation of the Portal
-     * do not have their lecturer names uploaded afterwards.
-     */
-    public boolean isLecturerNameEditable() {
-        return Globals.hasNoText(lecturer) || lecturerNameChangeability;
     }
 
     /**
@@ -522,12 +545,13 @@ public class Course {
                 creditHours,
                 requirement,
                 isVerified,
-                lecturerNameChangeability);
+                isLecturerNameEditable);
     }
 
     /**
      * Creates a course whose exportContent() was this dataLines.
-     * Exceptions throwable by this operation must be handled with great care across implementations.
+     * Exceptions throwable by this operation must be handled with
+     * great care across implementations.
      * @see #exportContent()
      */
     public static Course create(String data) {
@@ -536,18 +560,18 @@ public class Course {
         try {
             score = Double.parseDouble(lines[9]);
         } catch (Exception e) {
-            App.silenceException("Error reading score of "+lines[3]);
+            App.silenceException("Failed to read score of "+lines[3]);
         }
-        int creditsHours = 3;
+        int creditsHours = 0;
         try {
             creditsHours = Integer.parseInt(lines[10]);
         } catch (Exception e) {
-            App.silenceException("Error reading credit hours of "+lines[3]);
+            App.silenceException("Failed read credit hours of "+lines[3]);
         }
 
         final Course serialCourse = new Course(lines[0], lines[1], lines[2], lines[3], lines[4],
                 lines[5], lines[6], lines[7], lines[8], score, creditsHours, lines[11], Boolean.parseBoolean(lines[12]));
-        serialCourse.lecturerNameChangeability = Boolean.parseBoolean(lines[13]);
+        serialCourse.isLecturerNameEditable = Boolean.parseBoolean(lines[13]);
         return serialCourse;
     }
 
@@ -563,8 +587,8 @@ public class Course {
         incoming.setCampus(outgoing.getCampus());
         incoming.setRoom(outgoing.getRoom());
         incoming.setRequirement(outgoing.requirement);
-        if (incoming.isLecturerNameEditable()) {
-            incoming.setLecturer(outgoing.getLecturer(), true);
+        if (incoming.isLecturerNameEditable()) { // yeah
+            incoming.setLecturer(outgoing.getLecturer());
         }
     }
 

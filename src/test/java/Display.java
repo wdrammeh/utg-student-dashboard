@@ -1,13 +1,11 @@
 import proto.KFrame;
-import proto.KLabel;
-import proto.KPanel;
 
 import java.awt.*;
 
-public class MComponent {
+public class Display {
 
     public static void main(String[] args) {
-        display(new KPanel(new KLabel("Muhammed W. Drammeh")));
+
     }
 
     private static void display(Component c){

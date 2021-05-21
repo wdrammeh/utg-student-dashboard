@@ -47,7 +47,7 @@ public class Portal {
 
     public static void openPortal(Component clickable){
         clickable.setEnabled(false);
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             try {
                 Internet.visit(LOGIN_PAGE);
             } catch (Exception e) {
@@ -234,6 +234,8 @@ public class Portal {
             final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
             final String ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
             Student.setSemester(ongoingSemester);
+            final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+            Student.setCGPA(Double.parseDouble(CGPA));
         }
         setLastLogin(new Date());
     }

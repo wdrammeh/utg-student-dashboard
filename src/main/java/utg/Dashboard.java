@@ -1,22 +1,42 @@
+/*
+UTG Student Dashboard:
+    "A student management system for the University of The Gambia"
+
+Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package utg;
 
 import core.Board;
+import core.Preview;
 import core.alert.Notification;
 import core.first.Welcome;
-import core.other.Preview;
 import core.serial.Serializer;
 import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
+import core.utils.*;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
  * @author Muhammed W. Drammeh <md21712494@utg.edu.gm>
  *
- * This is the actual runner type.
+ * This is the actual runner type of the program.
  * In a nutshell, it reads from a serializable state if existed,
  * or triggers a new instance if not - or otherwise found inconsistent.
  * This class defines the normal process-flow of the Dashboard.
@@ -24,46 +44,59 @@ import java.util.HashMap;
  */
 public class Dashboard {
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version("0.1.1", Version.RELEASE);
-    private static final String RUNNING = "Running";
-    private static final String CLOSED = "Closed";
-    public static final Thread UNLOCK_HOOK = new Thread(()-> setStatus(CLOSED));
+    public static final Version VERSION = new Version("2021.2");
+    private static boolean isAuthentic = true;
     private static boolean isFirst;
 
 
     public static void main(String[] args) {
-        if (isRunning()) {
-            App.silenceWarning("Dashboard is already running.");
-        }
         PREVIEW.setVisible(true);
         final File rootDir = new File(Serializer.ROOT_DIR);
         if (rootDir.exists()) {
-            setStatus(RUNNING);
             final File configFile = new File(Serializer.inPath("configs.ser"));
             if (configFile.exists()) {
-                final HashMap<String, String> configs = getLastConfigs();
-                if (configs.isEmpty()) {
+                final HashMap<String, String> lastConfigs = getLastConfigs();
+                if (lastConfigs.isEmpty()) {
                     App.silenceException("Bad configuration files. Launching a new instance...");
                     freshStart();
                 } else {
-                    final Version recentVersion = Version.construct(configs.get("version"));
+                    final boolean isAuthentic = Boolean.parseBoolean(lastConfigs.get("isAuthentic"));
+                    if (!isAuthentic) {
+                        reportAuthenticationError();
+                    }
+                    final Version recentVersion = new Version(lastConfigs.get("version"));
                     final int comparison = VERSION.compare(recentVersion);
                     if (comparison == Version.LESS) {
                         PREVIEW.dispose();
                         App.reportError(null, "Version Error | Downgrade Detected",
                                 "You're trying to launch Dashboard with an older version than your configuration files.\n" +
-                                        "Please use Dashboard version '"+recentVersion.getLiteral()+"', or later.");
+                                        "Please use Dashboard version '"+recentVersion+"', or later.");
                         System.exit(0);
+                    } else if (comparison == Version.EQUAL) {
+                        final String deprecateTime = lastConfigs.get("deprecateTime");
+                        if (Globals.hasText(deprecateTime)) {
+                            final Date deprecateDate = MDate.parse(deprecateTime);
+                            VERSION.setDeprecateTime(deprecateDate);
+                            if (new Date().after(deprecateDate)) {
+                                App.reportError(null, "Dashboard Outdated",
+                                        "This version of Dashboard is outdated. You must update...\n" +
+                                                Internet.DOWNLOAD_URL);
+                                System.exit(0);
+                            } else {
+                                App.silenceWarning(String.format("This version will be outdated by '%s'. " +
+                                        "Kindly download the latest version: %s", deprecateTime, Internet.DOWNLOAD_URL));
+                            }
+                        }
                     } else if (comparison == Version.GREATER) {
                         App.silenceInfo("A version upgrade detected.");
-//                    Todo implement version upgrade stuff
-                        Board.POST_PROCESSES.add(()-> {
-                            Notification.create("New Update", "Dashboard has been updated.",
-                                    "<p>A version upgrade was detected: from <b>"+recentVersion+"</b> to <b>"+VERSION+"</b>.</p>");
-//                    Todo: Add What's new notice, or point to an external source containing such notice.
-                        });
+                        final String logAddress = String.join("/", Internet.REPO_URL, "blob", "master", "ChangeLog.md");
+                        Board.POST_PROCESSES.add(()-> Notification.create("New Update", "Your Dashboard has been updated.",
+                                "<p>A version upgrade was detected: from <b>"+recentVersion+"</b> to <b>"+VERSION+"</b>.</p>" +
+                                        "<p>Kindly visit the official Dashboard repository on Github to <i>check out</i> " +
+                                        "<a href="+logAddress+">What's New</a> about this release.</p>"));
+                        Transition.transit(recentVersion, VERSION);
                     }
-                    if (configs.get("userName").equals(Globals.userName())) {
+                    if (Globals.userName().equals(lastConfigs.get("userName"))) {
                         rebuildNow(true);
                     } else {
                         verifyUser(true);
@@ -74,29 +107,17 @@ public class Dashboard {
                 freshStart();
             }
         } else {
-            setStatus(RUNNING);
             freshStart();
         }
     }
 
-    private static boolean isRunning(){
-        final File statusFile = new File(Serializer.inPath("status.ser"));
-        return statusFile.exists() &&
-                RUNNING.equals(Serializer.fromDisk(statusFile.getAbsolutePath()));
-    }
-
-    private static void setStatus(String status){
-        Serializer.toDisk(status, Serializer.inPath("status.ser"));
-        if (RUNNING.equals(status)) {
-            Runtime.getRuntime().addShutdownHook(UNLOCK_HOOK);
-        }
-    }
-
     /**
-     * Serializes the configurations at this point.
+     * Serializes the configurations at this point in time -
+     * usually during collapse.
      */
     public static void storeConfigs(){
-        final String configs = Globals.joinLines(VERSION, Globals.userName());
+        final String configs = Globals.joinLines(isAuthentic, Globals.userName(), VERSION,
+                MDate.format(VERSION.getDeprecateTime()));
         Serializer.toDisk(configs, Serializer.inPath("configs.ser"));
     }
 
@@ -105,14 +126,16 @@ public class Dashboard {
         final Object configObj = Serializer.fromDisk(Serializer.inPath("configs.ser"));
         if (configObj != null) {
             final String[] lines = Globals.splitLines((String) configObj);
-            map.put("version", lines[0]);
+            map.put("isAuthentic", lines[0]);
             map.put("userName", lines[1]);
+            map.put("version", lines[2]);
+            map.put("deprecateTime", lines[3]);
         }
         return map;
     }
 
     /**
-     * Triggers a new Dashboard.
+     * Triggers a new Dashboard instance.
      * This happens, of course, if no data are found to deserialize.
      * The user might have signed out, or has actually never launched Dashboard.
      */
@@ -128,13 +151,13 @@ public class Dashboard {
      * This is a security measure invoked if the current userName does not matches
      * the serialized userName.
      * The user will be asked of the previous user's matriculation number.
-     * And Dashboard will not build until such a mat. number is correct.
+     * And Dashboard will not build until such mat. number is correct.
      */
     private static void verifyUser(boolean initialize){
         if (initialize) {
             try {
                 Student.initialize();
-                if (Student.isTrial()) {
+                if (Student.isGuest()) {
                     rebuildNow(false);
                 }
             } catch (Exception e) {
@@ -145,7 +168,7 @@ public class Dashboard {
         }
 
         PREVIEW.setVisible(false);
-        final String matNumber = requestInput();
+        final String matNumber = requestMatNumber();
         if (matNumber.equals(Student.getMatNumber())) {
             PREVIEW.setVisible(true);
             rebuildNow(false);
@@ -157,7 +180,7 @@ public class Dashboard {
         }
     }
 
-    private static String requestInput(){
+    private static String requestMatNumber(){ // not necessarily - should be requestPassword() in a future implementation
         final String studentName = Student.getFullNamePostOrder();
         final String input = App.requestInput(null, "Dashboard",
                 "This Dashboard belongs to '"+studentName+"'.\n" +
@@ -165,7 +188,7 @@ public class Dashboard {
         if (input == null) {
             System.exit(0);
         }
-        return Globals.hasText(input) ? input : requestInput();
+        return Globals.hasText(input) ? input : requestMatNumber();
     }
 
     /**
@@ -199,8 +222,19 @@ public class Dashboard {
         return isFirst;
     }
 
-    public static boolean isRelease(){
-        return VERSION.getType().equals(Version.RELEASE);
+    public static void setAuthentic(boolean authentic){
+        isAuthentic = authentic;
+    }
+
+    public static boolean isAuthentic() {
+        return isAuthentic;
+    }
+
+    public static void reportAuthenticationError() {
+        App.reportWarning("Authentication Error",
+                "This Dashboard is either not verified, or no longer supported.\n" +
+                        "For more info contact the developers: '"+ Mailer.DEVELOPER_MAIL +"'.");
+        System.exit(0);
     }
 
 }

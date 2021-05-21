@@ -6,9 +6,9 @@
 
     <name>UTG Student Dashboard</name>
     <description>A flexible and elegant student management system for the University of The Gambia.</description>
-    <groupId>utg.edu.gm</groupId>
+    <groupId>utg.edu</groupId>
     <artifactId>Dashboard</artifactId>
-    <version>0.1.1-RELEASE</version>
+    <version>2021.2</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
@@ -59,6 +59,12 @@
             <version>1.7.30</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.28</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -92,7 +98,7 @@
                         <configuration>
                             <outputDirectory>${project.build.directory}/libs</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
                         </configuration>
                     </execution>

@@ -8,9 +8,9 @@ import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
+import core.utils.Internet;
 import core.utils.MComponent;
 import proto.*;
-import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -228,7 +228,7 @@ public class SettingsUI implements Activity {
                 new KPanel(new KSeparator(new Dimension(750, 1))));
 //        notice the last child... the custom details are added by index and over this
 //        now
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             aboutComponent.removeAll(schoolPanel, depPanel, progPanel, minPanel, yoaPanel, moaPanel, eygPanel,
                     levelPanel);
         }
@@ -245,7 +245,7 @@ public class SettingsUI implements Activity {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (App.showYesNoCancelDialog("Confirm",
-                        "Are you sure you want to remove \""+text+"\" from your list of contacts?")) {
+                        "Are you sure you want to remove '"+text+"' from your contacts?")) {
                     resident.remove(label);
                     MComponent.ready(resident);
                     Student.removeTelephone(text);
@@ -300,7 +300,7 @@ public class SettingsUI implements Activity {
     private static JComponent profileComponent(){
         final KPanel profileUI = new KPanel();
         profileUI.setLayout(new BoxLayout(profileUI, BoxLayout.Y_AXIS));
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             final KTextField fNameField = new KTextField(Student.getFirstName());
             fNameField.setPreferredSize(new Dimension(320, 30));
             fNameField.setEditable(false);
@@ -667,7 +667,7 @@ public class SettingsUI implements Activity {
         final Cursor handCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
         final int hereGap = 10;
 
-        userChecking = new KCheckBox("Two-Step Verification", !Settings.noVerifyNeeded);
+        userChecking = new KCheckBox("Verify Changes", !Settings.noVerifyNeeded);
         userChecking.setIconTextGap(hereGap);
         userChecking.setFont(H_FONT);
         userChecking.setCursor(handCursor);
@@ -691,9 +691,9 @@ public class SettingsUI implements Activity {
                 }
             }
         });
-        userChecking.setEnabled(!Student.isTrial());
+        userChecking.setEnabled(!Student.isGuest());
 
-        exitChecking = new KCheckBox("Confirm on Exit", Settings.confirmExit);
+        exitChecking = new KCheckBox("Confirm Exit", Settings.confirmExit);
         exitChecking.setIconTextGap(hereGap);
         exitChecking.setFont(H_FONT);
         exitChecking.setCursor(handCursor);
@@ -725,7 +725,7 @@ public class SettingsUI implements Activity {
             }
         });
 
-        syncChecking = new KCheckBox("Automatic syncing of Portal Resources", Portal.isAutoSynced());
+        syncChecking = new KCheckBox("Automatically sync Portal Resources", Portal.isAutoSynced());
         syncChecking.setIconTextGap(hereGap);
         syncChecking.setFont(H_FONT);
         syncChecking.setCursor(handCursor);
@@ -748,25 +748,6 @@ public class SettingsUI implements Activity {
         nameFormatPanel.addAll(new KLabel("Name Format:", H_FONT),
                 Box.createRigidArea(new Dimension(30,25)), nameFormatBox);
 
-        bgBox = new JComboBox<String>(Settings.backgroundNames()) {
-            @Override
-            public JToolTip createToolTip() {
-                return MComponent.preferredTip();
-            }
-        };
-        bgBox.setFont(KFontFactory.createPlainFont(15));
-        bgBox.setSelectedItem(Settings.currentBackgroundName());
-        bgBox.setCursor(handCursor);
-        bgBox.addActionListener(e-> SwingUtilities.invokeLater(()-> {
-            bgBox.setEnabled(false);
-            Settings.backgroundName = String.valueOf(bgBox.getSelectedItem());
-            effectBackgroundChanges();
-            bgBox.setEnabled(true);
-        }));
-        final KPanel bgPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
-        bgPanel.addAll(new KLabel("Background Colour:", H_FONT),
-                Box.createRigidArea(new Dimension(30,25)), bgBox);
-
         looksBox = new JComboBox<String>(Settings.getLookNames()) {
             @Override
             public JToolTip createToolTip() {
@@ -788,30 +769,52 @@ public class SettingsUI implements Activity {
         lafPanel.addAll(new KLabel("Look & Feel:", H_FONT),
                 Box.createRigidArea(new Dimension(30,25)), looksBox);
 
-        final KLabel signOutLabel = newSignLabel("Sign out");
-        signOutLabel.addMouseListener(new MouseAdapter() {
+        bgBox = new JComboBox<String>(Settings.backgroundNames()) {
+            @Override
+            public JToolTip createToolTip() {
+                return MComponent.preferredTip();
+            }
+        };
+        bgBox.setFont(KFontFactory.createPlainFont(15));
+        bgBox.setSelectedItem(Settings.currentBackgroundName());
+        bgBox.setCursor(handCursor);
+        bgBox.addActionListener(e-> SwingUtilities.invokeLater(()-> {
+            bgBox.setEnabled(false);
+            Settings.backgroundName = String.valueOf(bgBox.getSelectedItem());
+            effectBackgroundChanges();
+            bgBox.setEnabled(true);
+        }));
+        final KPanel bgPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
+        bgPanel.addAll(new KLabel("Background Colour:", H_FONT),
+                Box.createRigidArea(new Dimension(30,25)), bgBox);
+
+        final KLabel unmountLabel = newSignLabel("Remove Account", Color.RED);
+        unmountLabel.setForeground(Color.RED);
+        unmountLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (App.showYesNoCancelDialog("Sign out", "Are are sure you want to sign out?\n" +
-                        "By signing out, all your data will be lost.")) {
-                    final int verInt = App.verifyUser("Enter your matriculation number to sign out:");
-                    if (verInt == App.VERIFICATION_TRUE) {
-                        if (Serializer.unMountUserData()) {
-                            Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);
-                            Runtime.getRuntime().removeShutdownHook(Dashboard.UNLOCK_HOOK);
-                            Board.getInstance().setVisible(false);
+                if (App.showYesNoCancelDialog("Remove Account",
+                        "Are are sure you want to remove your account?")) {
+                    final String matNo = App.requestInput("Confirm",
+                            "Enter your matriculation number to continue:");
+                    if (Globals.hasText(matNo)) {
+                        if (matNo.equals(Student.getMatNumber())) {
+                            if (Serializer.unMountUserData()) {
+                                Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);
+                                Board.getInstance().setVisible(false);
+                            } else {
+                                App.reportError("Error",
+                                        "Operation failed. Please restart Dashboard.");
+                            }
                         } else {
-                            App.reportError("Error",
-                                    "Sign out failed. Please restart Dashboard.");
+                            App.reportMatError();
                         }
-                    } else if (verInt == App.VERIFICATION_FALSE) {
-                        App.reportMatError();
                     }
                 }
             }
         });
 
-        final KLabel signInLabel = newSignLabel("Sign in");
+        final KLabel signInLabel = newSignLabel("Sign in", Color.BLUE);
         signInLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -819,10 +822,22 @@ public class SettingsUI implements Activity {
             }
         });
 
+        final KLabel updateLabel = newSignLabel("Check for Updates", Color.BLUE);
+        updateLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new Thread(()-> {
+                    updateLabel.setEnabled(false);
+                    Internet.checkForUpdate(true);
+                    updateLabel.setEnabled(true);
+                }).start();
+            }
+        });
+
         final KPanel layoutPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
         layoutPanel.addAll(new KLabel("You may wish to:", H_FONT),
-                Box.createRigidArea(new Dimension(30,25)),
-                Student.isTrial() ? signInLabel : signOutLabel);
+                Box.createHorizontalStrut(30), updateLabel, Box.createHorizontalStrut(20),
+                Student.isGuest() ? signInLabel : unmountLabel);
 
         final KPanel homeOfNice = new KPanel();
         homeOfNice.setLayout(new BoxLayout(homeOfNice, BoxLayout.Y_AXIS));
@@ -831,7 +846,7 @@ public class SettingsUI implements Activity {
                 new KPanel(new FlowLayout(FlowLayout.LEFT), instantToolTip),
                 new KPanel(new FlowLayout(FlowLayout.LEFT), tipDismissible),
                 new KPanel(new FlowLayout(FlowLayout.LEFT), syncChecking),
-                nameFormatPanel, bgPanel, lafPanel, layoutPanel);
+                nameFormatPanel, lafPanel, bgPanel, layoutPanel);
 
         final KButton resetButton = new KButton("Reset Settings");
         resetButton.setFont(KFontFactory.createPlainFont(15));
@@ -849,8 +864,8 @@ public class SettingsUI implements Activity {
         return dashUI;
     }
 
-    private static KLabel newSignLabel(String text){
-        final KLabel label = new KLabel(text, KFontFactory.createPlainFont(16), Color.BLUE);
+    private static KLabel newSignLabel(String text, Color color){
+        final KLabel label = new KLabel(text, KFontFactory.createPlainFont(16), color);
         label.underline(false);
         label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return label;
@@ -883,9 +898,12 @@ public class SettingsUI implements Activity {
     private static void effectBackgroundChanges() {
         final Color background = Settings.currentBackground();
         for (KPanel panel : KPanel.ALL_PANELS) {
-            if (panel.getReflectTheme()) {
+            if (panel.isReflectTheme()) {
                 panel.setBackground(background);
             }
+        }
+        for (KTextPane textPane : KTextPane.TEXT_PANES) {
+            textPane.setBackground(background);
         }
     }
 

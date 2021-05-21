@@ -118,7 +118,7 @@ public class RegisteredCourse {
     }
 
     public String getAbsoluteName(){
-        return String.join(" ", "["+code+"]", name);
+        return String.join(" ", "("+code+")", name);
     }
 
     public String getSchedule(){

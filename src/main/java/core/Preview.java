@@ -1,4 +1,4 @@
-package core.other;
+package core;
 
 import core.utils.App;
 import proto.KDialog;

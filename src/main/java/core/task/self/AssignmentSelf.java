@@ -40,20 +40,14 @@ public class AssignmentSelf {
     public final ArrayList<String> members = new ArrayList<>(){
         @Override
         public boolean add(String s) {
-            groupLabel.setText(getText(1)); // a unit/step behind
+            groupLabel.setText(getMemberText(1)); // a unit/step behind
             return super.add(s);
         }
 
         @Override
         public boolean remove(Object o) {
-            groupLabel.setText(getText(-1)); // a unit/step ahead
+            groupLabel.setText(getMemberText(-1)); // a unit/step ahead
             return super.remove(o);
-        }
-
-        private String getText(int step){
-            final int val = members.size() + step;
-            final String text = Globals.checkPlurality(val, "Members");
-            return String.format("(%d) %s", val, text.split(" ")[1]);
         }
     };
     public boolean eveIsAlerted;
@@ -133,7 +127,7 @@ public class AssignmentSelf {
 
         if (isGroup()) {
             groupLabel = KLabel.createIcon("group.png",20,20);
-            groupLabel.setText(Globals.checkPlurality(members.size(), "Members"));
+            groupLabel.setText(getMemberText(0));
             groupLabel.setFont(KFontFactory.createPlainFont(17));
             groupLabel.setToolTipText("Participants");
             groupLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -161,7 +155,6 @@ public class AssignmentSelf {
 
         final KButton showButton = KButton.createIconifiedButton("options.png", 20, 20);
         showButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        showButton.setToolTipText("About");
         showButton.addActionListener(e -> assignmentExhibitor = new AssignmentExhibition(AssignmentSelf.this));
 
         final KPanel quantaPanel = new KPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -171,6 +164,15 @@ public class AssignmentSelf {
         assignmentPanel = new KPanel(1_000, 35);
         assignmentPanel.setLayout(new BoxLayout(assignmentPanel, BoxLayout.X_AXIS));
         assignmentPanel.addAll(namePanel, quantaPanel);
+    }
+
+    private String getMemberText(int step){
+        final int val = members.size() + step;
+        if (val <= 0) {
+            return "No Members";
+        }
+        final String text = Globals.checkPlurality(val, "Members");
+        return String.format("(%d) %s", val, text.split(" ")[1]);
     }
 
     private void signalEveNotice(){

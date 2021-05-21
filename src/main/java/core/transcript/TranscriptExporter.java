@@ -1,8 +1,25 @@
+/*
+UTG Student Dashboard:
+    "A student management system for the University of The Gambia"
+
+Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package core.transcript;
 
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import core.Board;
@@ -112,7 +129,7 @@ public class TranscriptExporter {
     private void addUserData() throws DocumentException {
         final int detailTableWidth = (int)(pageSize.getWidth()/2) - 50;
         final int longCellHeight = 30;
-        final int shortCellHeight = 15;
+        final int shortCellHeight = 20;
         final Font hintFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
         final Font valueFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
 
@@ -271,9 +288,9 @@ public class TranscriptExporter {
             final Phrase linkText = new Phrase("https://utg.gm/records/transcript/print/"+ figure, textFont);
             ColumnText.showTextAligned(contentByte, Element.ALIGN_LEFT, linkText, 15, 20, 0F);
 
-            final Phrase waterMark = new Phrase("CONFIDENTIAL",
-                        FontFactory.getFont(FontFactory.HELVETICA, 75, Font.BOLD, new GrayColor(.85F)));
-            ColumnText.showTextAligned(contentByte, Element.ALIGN_CENTER, waterMark, 297.5F, 421, 45);
+//            final Phrase waterMark = new Phrase("CONFIDENTIAL",
+//                        FontFactory.getFont(FontFactory.HELVETICA, 75, Font.BOLD, new GrayColor(.85F)));
+//            ColumnText.showTextAligned(contentByte, Element.ALIGN_CENTER, waterMark, 297.5F, 421, 45);
         }
     }
 

@@ -71,7 +71,7 @@ public class NotificationActivity implements Activity {
     }
 
     private Component dashboardComponent() {
-        final KButton clearButton = new KButton("Remove All");
+        final KButton clearButton = new KButton("Remove all");
         clearButton.setFont(KFontFactory.createPlainFont(15));
         clearButton.addActionListener(clearAction());
         clearButton.setToolTipText("Clear Notifications");
@@ -84,7 +84,7 @@ public class NotificationActivity implements Activity {
     }
 
     private Component portalComponent() {
-        admissionLabel = new KLabel(Student.isTrial() ? "Not available" : Portal.getAdmissionNotice(),
+        admissionLabel = new KLabel(Student.isGuest() ? "Not available" : Portal.getAdmissionNotice(),
                 KFontFactory.createPlainFont(16));
         final KPanel admissionPanel = new KPanel(new BorderLayout());
         admissionPanel.setPreferredSize(new Dimension(1_000, 35));
@@ -109,7 +109,7 @@ public class NotificationActivity implements Activity {
                 Color.BLUE)), BorderLayout.WEST);
         admissionPanel.add(new KPanel(admissionLabel), BorderLayout.CENTER);
 
-        registrationLabel = new KLabel(Student.isTrial() ? "Not available" : Portal.getRegistrationNotice(),
+        registrationLabel = new KLabel(Student.isGuest() ? "Not available" : Portal.getRegistrationNotice(),
                 KFontFactory.createPlainFont(16));
         final KPanel registrationPanel = new KPanel(new BorderLayout());
         registrationPanel.setPreferredSize(new Dimension(1_000, 35));
@@ -138,7 +138,7 @@ public class NotificationActivity implements Activity {
         refreshButton = new KButton("Update Alerts");
         refreshButton.setFont(KFontFactory.createPlainFont(15));
         refreshButton.addActionListener(e-> {
-            if (Student.isTrial()) {
+            if (Student.isGuest()) {
                 App.reportWarning("Unavailable",
                         "Sorry, we cannot currently access the Portal for notices, because you're not logged in.");
             } else {
@@ -289,13 +289,13 @@ public class NotificationActivity implements Activity {
             String noticeText = "";
             if (type.equals(ADMISSION_NOTICE)) {
                 noticeText = Portal.getAdmissionNotice();
-                if (Student.isTrial()) {
+                if (Student.isGuest()) {
                     noticeText = "<b>Admission Notice</b> is not available for the current user type." +
                             "<p>However, you can checkout the <a href="+Portal.ADMISSION_PAGE+">UTG Admissions</a> Page for updates.</p>";
                 }
             } else if (type.equals(REGISTRATION_NOTICE)) {
                 noticeText = Portal.getRegistrationNotice();
-                if (Student.isTrial()) {
+                if (Student.isGuest()) {
                     noticeText = "<b>Registration Notice</b> is not available for the current user type. " +
                             "If you are a UTG student, then Login to track registrations.";
                 }
@@ -309,7 +309,7 @@ public class NotificationActivity implements Activity {
 
             final KPanel lowerPart = new KPanel();
             lowerPart.setLayout(new BoxLayout(lowerPart, BoxLayout.Y_AXIS));
-            if (!Student.isTrial()) {
+            if (!Student.isGuest()) {
                 lowerPart.add(new KPanel(new KLabel("Last updated: ", KFontFactory.createBoldFont(16)),
                         new KLabel(type.equals(ADMISSION_NOTICE) ? Portal.getLastAdmissionNoticeUpdate() :
                                 Portal.getLastRegistrationNoticeUpdate(), KFontFactory.createPlainFont(16))));

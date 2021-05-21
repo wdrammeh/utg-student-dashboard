@@ -5,6 +5,7 @@ import core.utils.MComponent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.net.URL;
 
 /**
@@ -57,6 +58,13 @@ public class KButton extends JButton implements Preference {
         final KButton button = new KButton(MComponent.scaleIcon(App.getIconURL(name), width, height));
         button.undress();
         return button;
+    }
+
+    public static KButton createRootPaneButton(int mnemonic, ActionListener a){
+        final KButton rootButton = new KButton();
+        rootButton.addActionListener(a);
+        rootButton.setMnemonic(mnemonic);
+        return rootButton;
     }
 
     public void setStyle(Font font, Color foreground){

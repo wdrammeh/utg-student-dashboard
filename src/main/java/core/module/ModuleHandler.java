@@ -297,7 +297,6 @@ public class ModuleHandler {
             final List<WebElement> tabs = loadWaiter.until(
                     ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
             //Firstly, the code, name, and score at grades tab
-//            tabs.get(6).click();
             Portal.getTabElement("Grades", tabs).click();
             final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
             final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
@@ -323,7 +322,6 @@ public class ModuleHandler {
             }
 
             //Secondly, the code, year and semester at transcript tab
-//            tabs.get(7).click();
             Portal.getTabElement("Transcript", tabs).click();
             final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
             final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
@@ -344,17 +342,16 @@ public class ModuleHandler {
             }
 
             //Finally, the lecturer name at registration tab - if there
-//            tabs.get(4).click();
             Portal.getTabElement("All Registered Courses", tabs).click();
             final WebElement allCourseTable = modulesDriver.findElementByCssSelector(".table-warning");
             final WebElement tableBody = allCourseTable.findElement(By.tagName("tbody"));
             final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
-
             int i = 0;
             while (i < allRows.size()) {
                 final List<WebElement> instantRow = allRows.get(i).findElements(By.tagName("td"));
                 if (foundOne.getCode().equals(instantRow.get(0).getText())) {
-                    foundOne.setLecturer(instantRow.get(2).getText(), false);
+                    foundOne.setLecturer(instantRow.get(2).getText());
+                    foundOne.setLecturerNameEditable(false);
                     break;
                 }
                 i++;
@@ -363,7 +360,7 @@ public class ModuleHandler {
             final Course existed = getModuleByCode(target.getCode());
             if (existed == null) { // removed?
                 modulesMonitor.add(foundOne);
-            } else { // merge and replace (substitute)
+            } else { // merge and replace (substitute) then
                 Course.merge(foundOne, existed);
                 substitute(existed, foundOne);
             }
@@ -383,7 +380,7 @@ public class ModuleHandler {
         if (userRequested && !App.showYesNoCancelDialog("Synchronize Modules",
                 "Do you want to synchronize your courses with the Portal?\n" +
                         "Dashboard will perform a thorough 're-indexing' of your courses.\n \n" +
-                        "Refer to the Tips for more info about this action.")) {
+                        "For more info about this action, refer to the Tips.")) {
             return;
         }
 
@@ -449,7 +446,7 @@ public class ModuleHandler {
 //                Addition to startupCourses is only here; all the following loops only updates the details.
 //                this eradicates the possibility of adding running courses at tab-4
                 final ArrayList<Course> foundCourses = new ArrayList<>();
-                tabs.get(7).click();
+                Portal.getTabElement("Transcript", tabs).click();
                 final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
                 final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
                 final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
@@ -458,8 +455,9 @@ public class ModuleHandler {
                 String vSemester = null;
                 for (WebElement transRow : transRows) {
                     if (transRow.getText().contains("Semester")) {
-                        vYear = transRow.getText().split(" ")[0];
-                        vSemester = transRow.getText().split(" ")[1]+" Semester";
+                        final String[] hintParts = transRow.getText().split("\s");
+                        vYear = hintParts[0];
+                        vSemester = hintParts[1]+" Semester";
                     } else {
                         final List<WebElement> data = transRow.findElements(By.tagName("td"));
                         foundCourses.add(new Course(vYear, vSemester, data.get(1).getText(), data.get(2).getText(),
@@ -467,12 +465,11 @@ public class ModuleHandler {
                                 "", true));
                     }
                 }
-                final WebElement surrounds = modulesDriver.findElementsByCssSelector(".pull-right").get(3);
-                final String CGPA = surrounds.findElements(By.tagName("th")).get(1).getText();
+                final String CGPA = modulesDriver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
                 Student.setCGPA(Double.parseDouble(CGPA));
 
-                //Secondly, add scores at grades tab
-                tabs.get(6).click();
+                // Secondly, add scores at grades tab
+                Portal.getTabElement("Grades", tabs).click();
                 final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
                 final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
                 final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
@@ -486,7 +483,7 @@ public class ModuleHandler {
                 }
 
                 //Finally, available lecturer names at all-registered tab
-                tabs.get(4).click();
+                Portal.getTabElement("All Registered Courses", tabs).click();
                 final WebElement allRegisteredTable = modulesDriver.findElementByCssSelector(".table-warning");
                 final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
                 final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
@@ -495,7 +492,8 @@ public class ModuleHandler {
                     final List<WebElement> instantRow = allRows.get(l).findElements(By.tagName("td"));
                     for (Course c : foundCourses) {
                         if (c.getCode().equals(instantRow.get(0).getText())) {
-                            c.setLecturer(instantRow.get(2).getText(), false);
+                            c.setLecturer(instantRow.get(2).getText());
+                            c.setLecturerNameEditable(false);
                         }
                     }
                     l++;
@@ -888,7 +886,6 @@ public class ModuleHandler {
          * Constructs a course addition dialog.
          * The yearName and semesterName are provided-set,
          * fields of them are never editable.
-         * Todo: there should be distinction between the venue and the room.
          * Todo: 'Checkout Now' option to be added.
          */
         public ModuleAdder(String yearName, String semesterName){
@@ -1130,12 +1127,12 @@ public class ModuleHandler {
                             timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
                             requirementBox.getSelectionText(), target.isVerified());
                     course.setStatus(target.getStatus());
+                    course.setLecturerNameEditable(target.isLecturerNameEditable());
                     substitute(target, course);
                     dispose();
                 }
             };
         }
-
     }
 
 

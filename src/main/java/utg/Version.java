@@ -1,59 +1,67 @@
 package utg;
 
+import java.util.Date;
+
 public class Version {
+    /**
+     * The literal of a version is what defines the version
+     * relative to the time (academic-semester) of release as `year.month`
+     */
     private final String literal;
-    private final String type;
-    public static final String SNAPSHOT = "SNAPSHOT";
-    public static final String RELEASE = "RELEASE";
+    /**
+     * The depreciation date of this version.
+     * deprecateTime and upcoming goes hand-in-hand -
+     * either both are available or none is.
+     */
+    private Date deprecateTime;
+    /**
+     * The maximum period, in days, a user is allowed
+     * to use a deprecated version of Dashboard.
+     */
+    public static final int MAX_DEPRECATE_TIME = 14;
     public static final int LESS = -1;
-    public static final int EQUALS = 0;
+    public static final int EQUAL = 0;
     public static final int GREATER = 1;
 
 
-    public Version(String literal, String type) {
+    public Version(String literal) {
         this.literal = literal;
-        this.type = type;
-    }
-
-    /**
-     * @param version a full version text in the format
-     *                as returned by {@link #toString()}
-     * @return a new Version object
-     */
-    public static Version construct(String version) {
-        final String[] v = version.split("[-]");
-        return new Version(v[0], v[1]);
     }
 
     public String getLiteral() {
         return literal;
     }
 
-    public String getType() {
-        return type;
+    public Date getDeprecateTime() {
+        return deprecateTime;
+    }
+
+    public void setDeprecateTime(Date deprecateTime) {
+        this.deprecateTime = deprecateTime;
     }
 
     @Override
     public String toString() {
-        return String.join("-", literal, type);
+        return literal;
     }
 
     public int compare(Version other) {
         if (toString().equals(other.toString())) {
-            return EQUALS;
+            return EQUAL;
         } else {
             final String[] parts = literal.split("[.]");
             final String[] otherParts = other.literal.split("[.]");
-            for (int i = 0; i < parts.length; i++) {
-                final int a = Integer.parseInt(parts[i]);
-                final int b = Integer.parseInt(otherParts[i]);
-                if (a > b) {
-                    return GREATER;
-                } else if (a < b) {
-                    return LESS;
-                }
+            final int a1 = Integer.parseInt(parts[0]);
+            final int a2 = Integer.parseInt(parts[1]);
+            final int b1 = Integer.parseInt(otherParts[0]);
+            final int b2 = Integer.parseInt(otherParts[1]);
+            if (a1 > b1) {
+                return GREATER;
+            } else if (b1 > a1) {
+                return LESS;
+            } else { // a1 == b1
+                return a2 > b2 ? GREATER : LESS;
             }
-            return type.equals(SNAPSHOT) ? LESS : GREATER;
         }
     }
 

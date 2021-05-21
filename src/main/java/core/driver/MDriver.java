@@ -160,7 +160,7 @@ public class MDriver {
             try {
                 driver.quit();
             } catch (Exception e) {
-                App.silenceException(e);
+                App.silenceException(e.getMessage());
             }
         }
     }

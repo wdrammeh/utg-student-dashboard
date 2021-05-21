@@ -43,7 +43,7 @@ public class App {
      * And the operation will be performed on the parent component.
      */
     public static int verifyUser(Component parent, String text){
-        if (Settings.noVerifyNeeded || Student.isTrial()) {
+        if (Settings.noVerifyNeeded || Student.isGuest()) {
             return VERIFICATION_TRUE;
         } else {
             final String input = requestInput(parent, "Confirm", text);

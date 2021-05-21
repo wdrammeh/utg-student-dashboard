@@ -70,7 +70,7 @@ public class SemesterActivity implements Activity {
 
     public SemesterActivity() {
         final KPanel runningActivity = new KPanel(new BorderLayout());
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             runningActivity.add(MComponent.createUnavailableActivity("Semester"), BorderLayout.CENTER);
         } else {
             semesterBigLabel = new KLabel(Student.getSemester(), KFontFactory.BODY_HEAD_FONT);
@@ -85,7 +85,7 @@ public class SemesterActivity implements Activity {
 
             final KMenuItem updateItem = new KMenuItem("Update Registration Notice",
                     e-> App.reportInfo("Tip",
-                            "To update the registration notice, go to '"+ Globals.reference("Notifications", "Portal Alerts", "Update Alerts") +"'."));
+                            "To update the Registration Notice, go to "+ Globals.reference("Notifications", "Portal Alerts", "Update Alerts") +"."));
 
             final KMenuItem visitItem = new KMenuItem("Visit Portal");
             visitItem.addActionListener(e-> new Thread(()-> Portal.openPortal(visitItem)).start());
@@ -225,7 +225,6 @@ public class SemesterActivity implements Activity {
                 return;
             }
 
-//            tabs.get(4).click();
             Portal.getTabElement("All Registered Courses", tabs).click();
             final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
             final WebElement tableBody = registrationTable.findElement(By.tagName("tbody"));
@@ -357,7 +356,6 @@ public class SemesterActivity implements Activity {
                         return;
                     }
 
-//                    tabs.get(4).click();
                     Portal.getTabElement("All Registered Courses", tabs).click();
                     final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
                     final WebElement tableBody = registrationTable.findElement(By.tagName("tbody"));

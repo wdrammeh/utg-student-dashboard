@@ -103,7 +103,7 @@ public class ProjectSelf {
 
         moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
         moreOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        moreOptions.setToolTipText("About this Project");
+        moreOptions.setToolTipText("About");
         moreOptions.addActionListener(e -> exhibition = new ProjectExhibition(this));
 
         final KPanel quanterLayer = new KPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -118,7 +118,7 @@ public class ProjectSelf {
 
     public void setUpDoneUI(){
         final KPanel namePanel = new KPanel(new BorderLayout());
-        namePanel.add(new KLabel(this.projectName, KFontFactory.createBoldFont(16), Color.BLUE),
+        namePanel.add(new KLabel(this.projectName, KFontFactory.createPlainFont(17), Color.BLUE),
                 BorderLayout.CENTER);
 
         projectProgression = new JProgressBar(0, specifiedDuration);
@@ -138,7 +138,7 @@ public class ProjectSelf {
 
         moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
         moreOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        moreOptions.setToolTipText("About this Project");
+        moreOptions.setToolTipText("About");
         moreOptions.addActionListener(e -> exhibition = new ProjectExhibition(this));
 
         final KPanel quantaLayer = new KPanel(new FlowLayout(FlowLayout.RIGHT));

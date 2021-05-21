@@ -11,12 +11,12 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * For setting up the user for a trial only.
+ * For setting up guest users.
  */
-public class Setup extends KDialog {
+public class Guest extends KDialog {
 
 
-    public Setup(Welcome welcome){
+    public Guest(Welcome welcome){
         super("Try Dashboard");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 

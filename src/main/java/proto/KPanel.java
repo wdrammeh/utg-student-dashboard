@@ -18,7 +18,7 @@ public class KPanel extends JPanel implements Preference {
      * Decides whether this panel will reflect background color of the theme.
      * If not, then this panel has a permanent background color.
      */
-    private boolean reflectTheme;
+    private boolean reflectTheme = true;
     public static final List<KPanel> ALL_PANELS = new ArrayList<>();
 
 
@@ -92,7 +92,6 @@ public class KPanel extends JPanel implements Preference {
     /**
      * Removes all the given components from this instance.
      * This is intended for removing only specific children.
-     * If you intend to cleanse this panel, then consider {@link main.MComponent#empty(Container...)}
      */
     public void removeAll(Component... list){
         for (Component c : list) {
@@ -132,13 +131,12 @@ public class KPanel extends JPanel implements Preference {
         this.reflectTheme = reflectTheme;
     }
 
-    public boolean getReflectTheme(){
+    public boolean isReflectTheme(){
         return reflectTheme;
     }
 
     public void setPreferences(){
         setBackground(Settings.currentBackground());
-        reflectTheme = true;
         ALL_PANELS.add(this);
     }
 

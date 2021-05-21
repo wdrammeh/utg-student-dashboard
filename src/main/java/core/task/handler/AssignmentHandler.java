@@ -199,7 +199,6 @@ public class AssignmentHandler {
         final KButton createButton = new KButton("New Assignment");
         createButton.setFont(TASK_BUTTONS_FONT);
         createButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        createButton.setToolTipText("Add Assignment");
         createButton.addActionListener(e-> {
             assignmentCreator = new AssignmentCreator();
             assignmentCreator.setVisible(true);

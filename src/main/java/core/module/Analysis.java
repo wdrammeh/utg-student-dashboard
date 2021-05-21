@@ -1,3 +1,23 @@
+/*
+UTG Student Dashboard:
+    "A student management system for the University of The Gambia"
+
+Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package core.module;
 
 import core.Activity;
@@ -53,7 +73,7 @@ public class Analysis implements Activity {
 
     public Analysis(){
         final KPanel analysisActivity = new KPanel(new BorderLayout());
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             analysisActivity.add(MComponent.createUnavailableActivity("Analysis"), BorderLayout.CENTER);
         } else {
             cardLayout = new CardLayout();
@@ -94,7 +114,7 @@ public class Analysis implements Activity {
     @Override
     public void answerActivity() {
         Board.showCard("Analysis");
-        if (!Student.isTrial()) {
+        if (!Student.isGuest()) {
             SwingUtilities.invokeLater(()-> {
                 resetLists();
                 completeModulesBasement();

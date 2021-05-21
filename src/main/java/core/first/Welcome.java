@@ -1,6 +1,6 @@
 package core.first;
 
-import core.user.Setup;
+import core.user.Guest;
 import proto.*;
 import utg.Dashboard;
 
@@ -78,7 +78,7 @@ public class Welcome extends KDialog {
         nextCheckBox.addItemListener(e-> nextButton.setEnabled(e.getStateChange() == ItemEvent.SELECTED));
 
         final KPanel bottomPanel = new KPanel(new BorderLayout());
-        bottomPanel.add(new KPanel(nextCheckBox), BorderLayout.WEST);
+        bottomPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 10), nextCheckBox), BorderLayout.WEST);
         bottomPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 10), exitButton, nextButton),
                 BorderLayout.EAST);
 
@@ -220,7 +220,7 @@ public class Welcome extends KDialog {
             if (studentOption.isSelected()) {
                 SwingUtilities.invokeLater(()-> new Login(this).setVisible(true));
             } else if (trylOption.isSelected()) {
-                SwingUtilities.invokeLater(()-> new Setup(this).setVisible(true));
+                SwingUtilities.invokeLater(()-> new Guest(this).setVisible(true));
             }
         });
 

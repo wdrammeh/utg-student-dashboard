@@ -1,3 +1,2 @@
->> Test cases
-
-- Incoming news behaviour
+- Checking for updates behaviour
+- Task.totalTimeConsumed upon normal completion

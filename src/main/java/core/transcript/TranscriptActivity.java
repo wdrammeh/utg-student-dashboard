@@ -40,7 +40,7 @@ public class TranscriptActivity implements Activity {
 
     public TranscriptActivity(){
         final KPanel activityPanel = new KPanel(new BorderLayout());
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             activityPanel.add(MComponent.createUnavailableActivity("Transcript"), BorderLayout.CENTER);
         } else {
             minorLabel = new KLabel("", KFontFactory.createBoldFont(15));
@@ -89,7 +89,7 @@ public class TranscriptActivity implements Activity {
     @Override
     public void answerActivity() {
         Board.showCard("Transcript");
-        if (!Student.isTrial()) {
+        if (!Student.isGuest()) {
             minorLabel.setText(Student.isDoingMinor() ? Student.getMinor().toUpperCase() : "NONE");
             CGPALabel.setText(Double.toString(Student.getCGPA()));
             classificationLabel.setText(Student.upperClassDivision());

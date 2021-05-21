@@ -12,7 +12,7 @@ public class MaximizeList {
 
     public static void main(String[] args) {
         final FirefoxDriver driver = MDriver.forgeNew(false);
-       MDriver.attemptLogin(driver, "student-mail@utg.edu.gm", "passwd");
+        MDriver.attemptLogin(driver, "<address>@utg.edu.gm", "<passwd>");
         final WebDriverWait waiter = MDriver.newDefaultWait(driver);
         final WebElement admissionAlert = waiter.until(ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
         System.out.println(admissionAlert.getText());

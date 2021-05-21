@@ -402,6 +402,7 @@ public class MiscModule {
                             timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
                             requirementBox.getSelectionText(), target.isVerified());
                     course.setStatus(target.getStatus());
+                    course.setLecturerNameEditable(target.isLecturerNameEditable());
                     ModuleHandler.substitute(target, course);
                     dispose();
                 }
