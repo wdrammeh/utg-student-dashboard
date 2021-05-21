@@ -1,6 +1,5 @@
-package core.other;
+package core;
 
-import core.Board;
 import core.user.Student;
 import core.utils.*;
 import proto.*;
@@ -82,7 +81,7 @@ public class About extends KDialog {
 
         final KPanel bottomLayer = new KPanel();
         bottomLayer.setLayout(new BoxLayout(bottomLayer, BoxLayout.Y_AXIS));
-        bottomLayer.addAll(new KLabel("Version: "+ Dashboard.VERSION, KFontFactory.createPlainFont(15)),
+        bottomLayer.addAll(new KLabel("Release: "+ Dashboard.VERSION, KFontFactory.createPlainFont(15)),
                 new KLabel("Email: "+ Mailer.DEVELOPER_MAIL, KFontFactory.createPlainFont(15)),
                 new KLabel("Contact: +220 3413910", KFontFactory.createPlainFont(15)));
 

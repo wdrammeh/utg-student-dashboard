@@ -1,3 +1,23 @@
+/*
+UTG Student Dashboard:
+    "A student management system for the University of The Gambia"
+
+Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package core.user;
 
 import core.Board;
@@ -79,7 +99,7 @@ public class Student {
     private static double CGPA;
     private static ImageIcon userIcon;
     private static final LinkedHashMap<String, String> additionalData = new LinkedHashMap<>();
-    private static boolean isTrial;
+    private static boolean isGuest;
     private static final int ICON_WIDTH = 275;
     private static final int ICON_HEIGHT = 200;
     private static final ImageIcon DEFAULT_ICON = MComponent.scaleIcon(App.getIconURL("default-icon.png"),
@@ -211,13 +231,13 @@ public class Student {
         return Globals.hasText(portalMail) ? getVisibleMail(portalMail) : "";
     }
 
-    private static String getVisibleMail(String mail){
+    public static String getVisibleMail(String mail){
         try {
             final String[] parts = mail.split("@");
             final int l = parts[0].length();
             final String mask = "*".repeat(l - 3);
             return mail.substring(0, 2) + mask + mail.charAt(l - 1) + "@" + parts[1];
-        } catch (Exception e) { // indexOutOfBounds,
+        } catch (Exception e) { // indexOutOfBounds, ?
             App.silenceException(String.format("Bad mail format '%s'.", mail));
             return "";
         }
@@ -341,6 +361,7 @@ public class Student {
      * The semester says a lot about the student,
      * including his/her level.
      * Never call this before setting the yearOfAdmission.
+     * 
      * At every login, level is set first, state, then semester.
      */
     public static void setSemester(String semester) {
@@ -455,7 +476,7 @@ public class Student {
             setSemester((String)(initials[16]));
 
             minor = majorCode = minorCode = "";
-            isTrial = false;
+            isGuest = false;
         } else {
             deserializeData();
         }
@@ -466,11 +487,11 @@ public class Student {
         lastName = data[1];
         nationality = data[2];
         maritalStatue = dateOfBirth = placeOfBirth = about = address = "";
-        isTrial = true;
+        isGuest = true;
     }
 
-    public static boolean isTrial(){
-        return isTrial;
+    public static boolean isGuest(){
+        return isGuest;
     }
 
     public static String getFullName() {
@@ -700,8 +721,8 @@ public class Student {
                 dateOfBirth,
                 placeOfBirth,
                 nameFormat,
-                isTrial);
-        if (!isTrial) {
+                isGuest);
+        if (!isGuest) {
             core = Globals.joinLines(core,
                     monthOfAdmission,
                     yearOfAdmission,
@@ -753,7 +774,7 @@ public class Student {
         dateOfBirth = core[5];
         placeOfBirth = core[6];
         setNameFormat(core[7]);
-        isTrial = Boolean.parseBoolean(core[8]);
+        isGuest = Boolean.parseBoolean(core[8]);
         try {
             about = (String) Serializer.fromDisk(Serializer.inPath("user", "about.ser"));
             final String[] dials = (String[]) Serializer.fromDisk(Serializer.inPath("user", "dials.ser"));
@@ -763,7 +784,7 @@ public class Student {
             about = "";
         }
 
-        if (!isTrial) {
+        if (!isGuest) {
             monthOfAdmission = Integer.parseInt(core[9]);
             yearOfAdmission = Integer.parseInt(core[10]);
             setSemester(core[11]);

@@ -1,33 +1,21 @@
-import core.News;
-import core.Portal;
-import core.alert.Notification;
-import core.module.ModuleHandler;
-import core.module.RunningCourseActivity;
-import core.setting.Settings;
-import core.task.TaskActivity;
-import core.user.Student;
-
-import java.util.Date;
+import core.Board;
+import utg.Dashboard;
 
 public class Tester {
 
     public static void main(String[] args) {
-        System.out.println(new Date());
-
+        Dashboard.storeConfigs();
+        System.exit(0);
     }
 
     /**
-     * Loads up all serializable matter from the disk.
+     * Run Dashboard without the "Collapse Sequence".
      */
-    public static void loadEverything(){
-        Student.initialize();
-        final ModuleHandler moduleHandler = new ModuleHandler();
-        Settings.deserialize();
-        Portal.deSerialize();
-        RunningCourseActivity.deserializeModules();
-        TaskActivity.deSerializeAll();
-        Notification.deSerialize();
-        final News news = new News();
+    private static void run(boolean save) {
+        Dashboard.main(null);
+        if (!save) {
+            Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);
+        }
     }
 
 }

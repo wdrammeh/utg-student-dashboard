@@ -1,6 +1,6 @@
 package core.transcript;
 
-import com.lowagie.text.DocumentException;
+import com.itextpdf.text.DocumentException;
 import core.Activity;
 import core.Board;
 import core.module.Course;
@@ -40,7 +40,7 @@ public class TranscriptActivity implements Activity {
 
     public TranscriptActivity(){
         final KPanel activityPanel = new KPanel(new BorderLayout());
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             activityPanel.add(MComponent.createUnavailableActivity("Transcript"), BorderLayout.CENTER);
         } else {
             minorLabel = new KLabel("", KFontFactory.createBoldFont(15));
@@ -63,11 +63,10 @@ public class TranscriptActivity implements Activity {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() >= 2) {
-                        final int selectedRow = table.getSelectedRow();
-                        if (selectedRow >= 0) {
-                            final String code = String.valueOf(TRANSCRIPT_MODEL.getValueAt(selectedRow, 0));
-                            Course.exhibit(ModuleHandler.getModuleByCode(code));
-                            e.consume();
+                        final String code = String.valueOf(TRANSCRIPT_MODEL.getValueAt(table.getSelectedRow(), 0));
+                        final Course c = ModuleHandler.getModuleByCode(code);
+                        if (c != null) {
+                            c.exhibit();
                         }
                     }
                 }
@@ -90,7 +89,7 @@ public class TranscriptActivity implements Activity {
     @Override
     public void answerActivity() {
         Board.showCard("Transcript");
-        if (!Student.isTrial()) {
+        if (!Student.isGuest()) {
             minorLabel.setText(Student.isDoingMinor() ? Student.getMinor().toUpperCase() : "NONE");
             CGPALabel.setText(Double.toString(Student.getCGPA()));
             classificationLabel.setText(Student.upperClassDivision());

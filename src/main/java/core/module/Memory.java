@@ -88,8 +88,8 @@ public class Memory {
      * is that they may not return it however.
      */
     private static Course newBlankModule(){
-        return new Course("", "", "", "", "", "", "", "",
-                0D, 0, "", true);
+        return new Course("", "", "", "", "", "", "", "", "",
+                0, 3, "", true);
     }
 
     /**

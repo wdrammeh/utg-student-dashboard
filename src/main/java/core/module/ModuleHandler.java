@@ -47,11 +47,11 @@ public class ModuleHandler {
     public static final ArrayList<KTableModel> ALL_MODELS = new ArrayList<>();
     public static final ArrayList<Course> STARTUP_COURSES = new ArrayList<>();
     private static final String[] COLUMNS = new String[] { "CODE", "NAME", "LECTURER", "GRADE" };
+    public static final String DETAILS = "Show Details";
     public static final String EDIT = "Edit";
     public static final String CONFIRM = "Verify";
-    public static final String DETAILS = "Details";
     public static final String DELETE = "Remove";
-    public static final String ADD = "Add";
+    public static final String ADD = "Add Course";
 
 
     public ModuleHandler() {
@@ -60,7 +60,7 @@ public class ModuleHandler {
         yearThree = new ModuleYear(Student.thirdAcademicYear());
         yearFour = new ModuleYear(Student.fourthAcademicYear());
 
-        modulesMonitor = new ArrayList<Course>() {
+        modulesMonitor = new ArrayList<>() {
             @Override
             public boolean add(Course course) {
                 if (course.isMisc()) {
@@ -83,13 +83,14 @@ public class ModuleHandler {
             @Override
             public boolean remove(Object o) {
                 final Course course = (Course) o;
-                if (!App.showYesNoCancelDialog("Remove", "Are you sure you did not do \""+course.getName()+"\",\n" +
+                if (!App.showYesNoCancelDialog("Confirm",
+                        "Are you sure you did not do '" + course.getAbsoluteName() + "',\n" +
                         "and that you wish to remove it from your collection?")) {
                     return false;
                 }
 
                 if (course.isVerified()) {
-                    final int vInt = App.verifyUser("Enter your Mat. Number to proceed with this changes:");
+                    final int vInt = App.verifyUser("Enter your Mat. Number to effect this changes:");
                     if (vInt == App.VERIFICATION_FALSE) {
                         App.reportMatError();
                         return false;
@@ -173,12 +174,12 @@ public class ModuleHandler {
 
     /**
      * This call is complete.
-     * It makes sure the list replaces the old with recent, and inflict
+     * It makes sure the list replaces the old with recent, and inflicts
      * the changes on the appropriate table, thereafter.
      * This also caters for the case where the old might not exist for whatever reason,
      * and halt, in that case, the subsequent attempt for visual changes.
      *
-     * Do not call set() on the monitor! Call this.
+     * Do not call set() on the monitor! Call this instead.
      */
     public static void substitute(Course old, Course recent){
         if (exists(old.getCode())) {
@@ -186,7 +187,7 @@ public class ModuleHandler {
             // the details should be merged prior to this call
             modulesMonitor.set(old.getListIndex(), recent);
         } else {
-            //may be an issue, after verification - as the user might have removed it during the process
+            // may be an issue, after verification - as the user might have removed it during the process
             modulesMonitor.add(recent);
             return;
         }
@@ -228,6 +229,7 @@ public class ModuleHandler {
                 return course;
             }
         }
+        App.silenceException("No course with code '"+code+"'");
         return null;
     }
 
@@ -242,20 +244,24 @@ public class ModuleHandler {
      * Call this on a different thread.
      */
     public static void launchVerification(Course target) {
-        if (!App.showYesNoCancelDialog("Verify "+target.getCode(),
-                "Do you want to verify \""+target.getName()+"\".\n" +
-                        "Dashboard will find out if it is on your Portal.\n" +
-                        "Refer to Dashboard Tips for more info about this action.")) {
+        if (target.getStatus().equals(Course.VERIFYING)) {
+            App.silenceInfo(String.format("Already verifying '%s'.", target.getAbsoluteName()));
             return;
         }
+
+        final String initialStatus = target.getStatus();
+        target.setStatus(Course.VERIFYING);
+
         fixModulesDriver();
         if (modulesDriver == null) {
             App.reportMissingDriver();
+            target.setStatus(initialStatus);
             return;
         }
 
         if (!Internet.isInternetAvailable()) {
             App.reportNoInternet();
+            target.setStatus(initialStatus);
             return;
         }
 
@@ -265,13 +271,16 @@ public class ModuleHandler {
             if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
                 if (Portal.isEvaluationNeeded(modulesDriver)) {
                     Portal.reportEvaluationNeeded();
+                    target.setStatus(initialStatus);
                     return;
                 }
             } else if (loginAttempt == MDriver.ATTEMPT_FAILED) {
                 App.reportLoginAttemptFailed();
+                target.setStatus(initialStatus);
                 return;
             } else if (loginAttempt == MDriver.CONNECTION_LOST) {
                 App.reportConnectionLost();
+                target.setStatus(initialStatus);
                 return;
             }
 
@@ -280,6 +289,7 @@ public class ModuleHandler {
                 Portal.onPortal(modulesDriver);
             } catch (Exception e) {
                 App.reportConnectionLost();
+                target.setStatus(initialStatus);
                 return;
             }
 
@@ -287,7 +297,6 @@ public class ModuleHandler {
             final List<WebElement> tabs = loadWaiter.until(
                     ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
             //Firstly, the code, name, and score at grades tab
-//            tabs.get(6).click();
             Portal.getTabElement("Grades", tabs).click();
             final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
             final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
@@ -296,22 +305,23 @@ public class ModuleHandler {
                 final List<WebElement> instantRow = row.findElements(By.tagName("td"));
                 if (instantRow.get(0).getText().equalsIgnoreCase(target.getCode())) {
                     foundOne = new Course("","", instantRow.get(0).getText(), instantRow.get(1).getText(),
-                            "","","","", Double.parseDouble(instantRow.get(6).getText()),
+                            "","", "","","", Double.parseDouble(instantRow.get(6).getText()),
                             0,"",true);
                     break;
                 }
             }
 
             if (foundOne == null) {
-                App.reportWarning("Checkout Unsuccessful",
-                        "The process to checkout for "+target.getAbsoluteName()+" was unsuccessful.\n" +
+                App.reportWarning("Verification Unsuccessful",
+                        "The process to verify "+target.getAbsoluteName()+" was unsuccessful.\n" +
                                 "Dashboard could not locate any trace of it on your portal.\n" +
                                 "If you've done this course, then contact the lecturer, or the department.");
+                target.setVerified(false);
+                target.setStatus(Globals.UNKNOWN);
                 return;
             }
 
             //Secondly, the code, year and semester at transcript tab
-//            tabs.get(7).click();
             Portal.getTabElement("Transcript", tabs).click();
             final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
             final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
@@ -332,33 +342,32 @@ public class ModuleHandler {
             }
 
             //Finally, the lecturer name at registration tab - if there
-//            tabs.get(4).click();
             Portal.getTabElement("All Registered Courses", tabs).click();
             final WebElement allCourseTable = modulesDriver.findElementByCssSelector(".table-warning");
             final WebElement tableBody = allCourseTable.findElement(By.tagName("tbody"));
             final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
-
             int i = 0;
             while (i < allRows.size()) {
                 final List<WebElement> instantRow = allRows.get(i).findElements(By.tagName("td"));
                 if (foundOne.getCode().equals(instantRow.get(0).getText())) {
-                    foundOne.setLecturer(instantRow.get(2).getText(), false);
+                    foundOne.setLecturer(instantRow.get(2).getText());
+                    foundOne.setLecturerNameEditable(false);
                     break;
                 }
                 i++;
             }
 
             final Course existed = getModuleByCode(target.getCode());
-            if (existed == null) {//removed?
+            if (existed == null) { // removed?
                 modulesMonitor.add(foundOne);
-            } else {//merge and replace
+            } else { // merge and replace (substitute) then
                 Course.merge(foundOne, existed);
                 substitute(existed, foundOne);
             }
 
-            App.reportInfo("Checkout Successful",
-                    "The process to checkout for "+target.getAbsoluteName()+" is completed successfully.\n" +
-                    "It has been found on your Portal. It would now be included your Analysis and Transcript.");
+            App.reportInfo("Verification Successful",
+                    "'"+target.getAbsoluteName()+"' has been verified successfully.\n" +
+                    "Dashboard will included it in your Analysis and Transcript.");
         }
     }
 
@@ -370,8 +379,8 @@ public class ModuleHandler {
     public static void launchThoroughSync(boolean userRequested, KButton triggerButton){
         if (userRequested && !App.showYesNoCancelDialog("Synchronize Modules",
                 "Do you want to synchronize your courses with the Portal?\n" +
-                        "Dashboard will perform a complete 're-indexing' of your courses.\n" +
-                        "Refer to the Tips for more info about this action.")) {
+                        "Dashboard will perform a thorough 're-indexing' of your courses.\n \n" +
+                        "For more info about this action, refer to the Tips.")) {
             return;
         }
 
@@ -437,7 +446,7 @@ public class ModuleHandler {
 //                Addition to startupCourses is only here; all the following loops only updates the details.
 //                this eradicates the possibility of adding running courses at tab-4
                 final ArrayList<Course> foundCourses = new ArrayList<>();
-                tabs.get(7).click();
+                Portal.getTabElement("Transcript", tabs).click();
                 final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
                 final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
                 final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
@@ -446,21 +455,21 @@ public class ModuleHandler {
                 String vSemester = null;
                 for (WebElement transRow : transRows) {
                     if (transRow.getText().contains("Semester")) {
-                        vYear = transRow.getText().split(" ")[0];
-                        vSemester = transRow.getText().split(" ")[1]+" Semester";
+                        final String[] hintParts = transRow.getText().split("\s");
+                        vYear = hintParts[0];
+                        vSemester = hintParts[1]+" Semester";
                     } else {
                         final List<WebElement> data = transRow.findElements(By.tagName("td"));
                         foundCourses.add(new Course(vYear, vSemester, data.get(1).getText(), data.get(2).getText(),
-                                "", "", "", "", 0.0, Integer.parseInt(data.get(3).getText()),
+                                "", "", "", "", "", 0.0, Integer.parseInt(data.get(3).getText()),
                                 "", true));
                     }
                 }
-                final WebElement surrounds = modulesDriver.findElementsByCssSelector(".pull-right").get(3);
-                final String CGPA = surrounds.findElements(By.tagName("th")).get(1).getText();
+                final String CGPA = modulesDriver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
                 Student.setCGPA(Double.parseDouble(CGPA));
 
-                //Secondly, add scores at grades tab
-                tabs.get(6).click();
+                // Secondly, add scores at grades tab
+                Portal.getTabElement("Grades", tabs).click();
                 final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
                 final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
                 final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
@@ -474,7 +483,7 @@ public class ModuleHandler {
                 }
 
                 //Finally, available lecturer names at all-registered tab
-                tabs.get(4).click();
+                Portal.getTabElement("All Registered Courses", tabs).click();
                 final WebElement allRegisteredTable = modulesDriver.findElementByCssSelector(".table-warning");
                 final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
                 final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
@@ -483,7 +492,8 @@ public class ModuleHandler {
                     final List<WebElement> instantRow = allRows.get(l).findElements(By.tagName("td"));
                     for (Course c : foundCourses) {
                         if (c.getCode().equals(instantRow.get(0).getText())) {
-                            c.setLecturer(instantRow.get(2).getText(), false);
+                            c.setLecturer(instantRow.get(2).getText());
+                            c.setLecturerNameEditable(false);
                         }
                     }
                     l++;
@@ -624,7 +634,10 @@ public class ModuleHandler {
             detailsItem = new KMenuItem(DETAILS);
             detailsItem.addActionListener(e-> {
                 final String code = String.valueOf(focusModel.getValueAt(focusTable.getSelectedRow(), 0));
-                Course.exhibit(getModuleByCode(code));
+                final Course c = getModuleByCode(code);
+                if (c != null) {
+                    c.exhibit();
+                }
             });
 
             editItem = new KMenuItem(EDIT);
@@ -661,9 +674,9 @@ public class ModuleHandler {
             });
 
             popupMenu = new JPopupMenu();
-            popupMenu.add(confirmItem);
-            popupMenu.add(editItem);
             popupMenu.add(detailsItem);
+            popupMenu.add(editItem);
+            popupMenu.add(confirmItem);
             popupMenu.add(removeItem);
             popupMenu.add(newItem);
         }
@@ -782,7 +795,10 @@ public class ModuleHandler {
                         final int selectedRow = table.getSelectedRow();
                         if (selectedRow >= 0) {
                             final String code = String.valueOf(table.getValueAt(selectedRow, 0));
-                            Course.exhibit(getModuleByCode(code));
+                            final Course c = getModuleByCode(code);
+                            if (c != null) {
+                                c.exhibit();
+                            }
                             e.consume();
                         }
                     }
@@ -860,8 +876,8 @@ public class ModuleHandler {
      * Provides the dialog for locally addition of courses.
      */
     public static class ModuleAdder extends KDialog {
-        KTextField yearField, semesterField, codeField, nameField, lecturerField, venueField, scoreField;
-        JComboBox<String> dayBox, timeBox, requirementBox, creditBox;
+        KTextField yearField, semesterField, codeField, nameField, roomField, lecturerField, scoreField;
+        KComboBox<String> dayBox, timeBox, requirementBox, creditBox, campusBox;
         KPanel yearPanel, semesterPanel;
         String yearName, semesterName;
         KButton actionButton;
@@ -870,7 +886,6 @@ public class ModuleHandler {
          * Constructs a course addition dialog.
          * The yearName and semesterName are provided-set,
          * fields of them are never editable.
-         * Todo: there should be distinction between the venue and the room.
          * Todo: 'Checkout Now' option to be added.
          */
         public ModuleAdder(String yearName, String semesterName){
@@ -891,25 +906,25 @@ public class ModuleHandler {
             yearField.setText(yearName);
             yearField.setEditable(yearName == null);
             yearPanel = new KPanel(new BorderLayout());
-            yearPanel.add(new KPanel(new KLabel("Year:", hintFont)),  BorderLayout.WEST);
+            yearPanel.add(new KPanel(new KLabel("*Year:", hintFont)),  BorderLayout.WEST);
             yearPanel.add(new KPanel(yearField),BorderLayout.CENTER);
 
             semesterField = new KTextField(new Dimension(200,30));
             semesterField.setText(semesterName);
             semesterField.setEditable(semesterName == null);
             semesterPanel = new KPanel(new BorderLayout());
-            semesterPanel.add(new KPanel(new KLabel("Semester:", hintFont)), BorderLayout.WEST);
+            semesterPanel.add(new KPanel(new KLabel("*Semester:", hintFont)), BorderLayout.WEST);
             semesterPanel.add(new KPanel(semesterField), BorderLayout.CENTER);
 
             codeField = KTextField.rangeControlField(10);
             codeField.setPreferredSize(new Dimension(125,30));
             final KPanel codePanel = new KPanel(new BorderLayout());
-            codePanel.add(new KPanel(new KLabel("Code:", hintFont)), BorderLayout.WEST);
+            codePanel.add(new KPanel(new KLabel("*Code:", hintFont)), BorderLayout.WEST);
             codePanel.add(new KPanel(codeField), BorderLayout.CENTER);
 
             nameField = new KTextField(new Dimension(300,30));
             final KPanel namePanel = new KPanel(new BorderLayout());
-            namePanel.add(new KPanel(new KLabel("Name:", hintFont)), BorderLayout.WEST);
+            namePanel.add(new KPanel(new KLabel("*Name:", hintFont)), BorderLayout.WEST);
             namePanel.add(new KPanel(nameField), BorderLayout.CENTER);
 
             lecturerField = new KTextField(new Dimension(300,30));
@@ -917,29 +932,31 @@ public class ModuleHandler {
             lecturerPanel.add(new KPanel(new KLabel("Lecturer:", hintFont)), BorderLayout.WEST);
             lecturerPanel.add(new KPanel(lecturerField), BorderLayout.CENTER);
 
-            dayBox = new JComboBox<>(Course.getWeekDays());
-            dayBox.setFont(KFontFactory.createPlainFont(15));
-            timeBox = new JComboBox<>(Course.getCoursePeriods());
-            timeBox.setFont(KFontFactory.createPlainFont(15));
-            final KPanel schedulePanel = new KPanel(new FlowLayout(FlowLayout.CENTER));//this a litte sort of an exception
-            schedulePanel.addAll(new KLabel("Day:", hintFont), dayBox);
-            schedulePanel.addAll(Box.createRigidArea(new Dimension(25, 30)),
+            dayBox = new KComboBox<>(Course.weekDays(), -1);
+            dayBox.addMask(Globals.UNKNOWN, "");
+            timeBox = new KComboBox<>(Course.periods(), -1);
+            timeBox.addMask(Globals.UNKNOWN, "");
+            final KPanel schedulePanel = new KPanel(new FlowLayout());
+            schedulePanel.addAll(new KLabel("Day:", hintFont), dayBox,
+                    Box.createRigidArea(new Dimension(25, 30)),
                     new KLabel("Time:", hintFont), timeBox);
 
-            venueField = new KTextField(new Dimension(300,30));
-            final KPanel venuePanel = new KPanel(new BorderLayout());
-            venuePanel.add(new KPanel(new KLabel("Venue:", hintFont)), BorderLayout.WEST);
-            venuePanel.add(new KPanel(venueField), BorderLayout.CENTER);
+            campusBox = new KComboBox<>(Course.campuses(), -1);
+            campusBox.addMask(Globals.UNKNOWN, "");
+            roomField = new KTextField(new Dimension(225,30));
+            final KPanel venuePanel = new KPanel();
+            venuePanel.addAll(new KLabel("Campus:", hintFont), campusBox,
+                    Box.createRigidArea(new Dimension(15, 30)),
+                    new KLabel("Room:", hintFont), roomField);
 
-            requirementBox = new JComboBox<>(Course.getRequirements());
-            requirementBox.setFont(KFontFactory.createPlainFont(15));
-            requirementBox.setSelectedItem(Course.NONE);
+            requirementBox = new KComboBox<>(Course.requirements(), -1);
+            requirementBox.addMask(Globals.UNKNOWN, "");
             final KPanel requirementPanel = new KPanel(new BorderLayout());
             requirementPanel.add(new KPanel(new KLabel("Requirement:", hintFont)), BorderLayout.WEST);
             requirementPanel.add(new KPanel(requirementBox), BorderLayout.CENTER);
 
-            creditBox = new JComboBox<>(Course.creditHours());
-            creditBox.setFont(KFontFactory.createPlainFont(15));
+            creditBox = new KComboBox<>(Course.creditHours(), -1);
+            creditBox.setSelectedIndex(0);
             final KPanel creditPanel = new KPanel(new BorderLayout());
             creditPanel.add(new KPanel(new KLabel("Credit Hours:", hintFont)), BorderLayout.WEST);
             creditPanel.add(new KPanel(creditBox), BorderLayout.CENTER);
@@ -947,7 +964,7 @@ public class ModuleHandler {
             scoreField = KTextField.rangeControlField(7);
             scoreField.setPreferredSize(new Dimension(125,30));
             final KPanel scorePanel = new KPanel(new BorderLayout());
-            scorePanel.add(new KPanel(new KLabel("Score:", hintFont)), BorderLayout.WEST);
+            scorePanel.add(new KPanel(new KLabel("*Score:", hintFont)), BorderLayout.WEST);
             scorePanel.add(new KPanel(scoreField), BorderLayout.CENTER);
 
             final KButton cancelButton = new KButton("Cancel");
@@ -1003,11 +1020,9 @@ public class ModuleHandler {
                     }
 
                     final Course incomingCourse = new Course(yearName, semesterName, codeField.getText().toUpperCase(),
-                            nameField.getText(), lecturerField.getText(), venueField.getText(),
-                            String.valueOf(dayBox.getSelectedItem()),
-                            String.valueOf(timeBox.getSelectedItem()), score,
-                            Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            String.valueOf(requirementBox.getSelectedItem()), false);
+                            nameField.getText(), lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(),
+                            dayBox.getSelectionText(), timeBox.getSelectionText(), score, Integer.parseInt(creditBox.getSelectionText()),
+                            requirementBox.getSelectionText(), false);
                     modulesMonitor.add(incomingCourse);
                     dispose();
                 }
@@ -1020,7 +1035,7 @@ public class ModuleHandler {
     /**
      * Extends the Adding-dialog to make it an editing-one.
      */
-    private static class ModuleEditor extends ModuleAdder {
+    public static class ModuleEditor extends ModuleAdder {
         private KTableModel onModel;
         private Course target;
 
@@ -1032,7 +1047,7 @@ public class ModuleHandler {
          * @param onModel The model to perform the removal.
          * @see ModuleAdder
          */
-        private ModuleEditor(Course course, KTableModel onModel) {
+        public ModuleEditor(Course course, KTableModel onModel) {
             super(course.getYear(), course.getSemester());
             setTitle(course.getName());
             this.target = course;
@@ -1044,7 +1059,8 @@ public class ModuleHandler {
             lecturerField.setEditable(course.isLecturerNameEditable());
             dayBox.setSelectedItem(course.getDay());
             timeBox.setSelectedItem(course.getTime());
-            venueField.setText(course.getVenue());
+            campusBox.setSelectedItem(course.getCampus());
+            roomField.setText(course.getRoom());
             requirementBox.setSelectedItem(course.getRequirement());
             creditBox.setSelectedItem(String.valueOf(course.getCreditHours()));
             scoreField.setText(String.valueOf(course.getScore()));
@@ -1098,7 +1114,7 @@ public class ModuleHandler {
                             return;
                         }
                     }
-                    //check for general existence in other tables
+                    // check for general existence in other tables
                     if (existsExcept(onModel, codeField.getText())) {
                         reportCodeDuplication(codeField.getText());
                         codeField.requestFocusInWindow();
@@ -1107,16 +1123,16 @@ public class ModuleHandler {
 
                     final Course course = new Course(yearField.getText(), semesterField.getText(),
                             codeField.getText().toUpperCase(), nameField.getText(), lecturerField.getText(),
-                            venueField.getText(), String.valueOf(dayBox.getSelectedItem()),
-                            String.valueOf(timeBox.getSelectedItem()), score,
-                            Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            String.valueOf(requirementBox.getSelectedItem()), target.isVerified());
+                            campusBox.getSelectionText(), roomField.getText(), dayBox.getSelectionText(),
+                            timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
+                            requirementBox.getSelectionText(), target.isVerified());
+                    course.setStatus(target.getStatus());
+                    course.setLecturerNameEditable(target.isLecturerNameEditable());
                     substitute(target, course);
                     dispose();
                 }
             };
         }
-
     }
 
 

@@ -1,7 +1,7 @@
 package core;
 
 import core.driver.MDriver;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
 import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
@@ -47,7 +47,7 @@ public class Portal {
 
     public static void openPortal(Component clickable){
         clickable.setEnabled(false);
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             try {
                 Internet.visit(LOGIN_PAGE);
             } catch (Exception e) {
@@ -171,7 +171,7 @@ public class Portal {
      * Sets the registration notice to the given registrationNotice;
      * and its reading date will be set to this point in time.
      * This has a runtime component modification consequence?
-     * @see RunningCourseActivity#noticeLabel
+     * @see SemesterActivity#noticeLabel
      */
     public static void setRegistrationNotice(String registrationNotice){
         Portal.registrationNotice = registrationNotice;
@@ -234,6 +234,8 @@ public class Portal {
             final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
             final String ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
             Student.setSemester(ongoingSemester);
+            final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+            Student.setCGPA(Double.parseDouble(CGPA));
         }
         setLastLogin(new Date());
     }

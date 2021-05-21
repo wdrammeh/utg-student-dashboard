@@ -1,6 +1,6 @@
 package core.first;
 
-import core.user.Setup;
+import core.user.Guest;
 import proto.*;
 import utg.Dashboard;
 
@@ -34,8 +34,7 @@ public class Welcome extends KDialog {
     }
 
     private void addWelcomeActivity(){
-        final KPanel topPanel = new KPanel(new KLabel(String.format("UTG-Student Dashboard (v%s)", Dashboard.VERSION),
-                KFontFactory.createBoldFont(20)));
+        final KPanel topPanel = new KPanel(new KLabel("UTG-STUDENT DASHBOARD", KFontFactory.createBoldFont(20)));
         topPanel.setBackground(Color.WHITE);
 
         final String broughtString = "Proudly brought to you by the <b>Dashboard Project</b>. Dashboard comes with solutions long-anticipated by the UTG Students, " +
@@ -46,39 +45,19 @@ public class Welcome extends KDialog {
                 "need to be manually specifying your level, or status on the go.";
 
         final String requirementText = "Dashboard, as a project, is written completely in the Java (<i>platform-independent</i>) Language, allowing it to run gently on virtually all operating systems. " +
-                "The system-dependent compilations are as a result of the <b>Selenium Web-Driver Specification</b> across platforms." +
+                "The system-dependent compilations are as a result of the <b>Selenium Web Driver Specification</b> across platforms." +
                 "<p>Dashboard uses the traditional <b>Firefox Browser</b> to get the better of your Portal. " +
                 "This is wholly background, and does no way interfere with the normal usage of your browser.</p>" +
                 "<p>For uniformity reasons, Dashboard is not <b>tested compatible</b> with any other browser. " +
                 "So if Firefox is not installed, please make sure it is installed and ready before start.</p>";
 
-        final String securityText = "Whatever happens in your Dashboard, stays in your Dashboard. However, keep the following points in mind as long as the Portal is concerned:" +
-                "<h3 style='font-size: 14px;'>What Dashboard cannot do</h3>" +
-                "<b>Dashboard does not write your portal</b>! Dashboard is not legalized to do so just yet, therefore it cannot <i>register</i> or <i>drop</i> courses, neither can it <i>apply deferment</i>, nor can it be used as a <i>mean of application</i> for non-enrolled students." +
-                "<h3 style='font-size: 14px;'>What Dashboard can do</h3>" +
-                "Just a glimpse of what Dashboard is capable of carving out for you:" +
-                "<ul>" +
-                "<li>You'll be able to <b>Print / Export your transcript</b> in a Portable Document Format</li>" +
-                "<li>Dashboard provides powerful analyzation system of filtering your courses based on grades, scores, requirements, etc; your attended-lecturers, CGPAs earned, to mention a few</li>" +
-                "<li>Sketches your semester-to-semester performance with respect to the CGPA earned per semester</li>" +
-                "<li>Dashboard possesses rich customization property, letting you to keep track of even <b>non-academic related details</b>. Customizations include changing the <b>Look & Feel</b> " +
-                "to your native system's Look</li>" +
-                "<li>Enjoy the carefully spelled-out answers to some <b>FAQs</b> of UTG</li>" +
-                "<li>Dashboard keeps you up to date with the News from UTG's official news site in a more presentable manner, and offline reading capability</li>" +
-                "<li>Dashboard effectively organizes your <b>personal tasks, group works, assignments, and other student-related cares</b>, all at your fingertips</li>" +
-                "<li>Dashboard reads, if necessary, every last detail of your portal which you can access anytime offline!</li></ul>";
-
-        final String importantText = "The analysis provided to you by Dashboard is entirely <b>Portal-independent</b>.<br>" +
-                "But analysis is based on data, and their is no better source of your data than your portal. Therefore, unexpected details from therein can induce <i>misbehavior of your Dashboard</i>!" +
+        final String importantText = "Whatever happens in your Dashboard, stays in your Dashboard. However, keep the following points in mind as long as the ERP System is concerned:<br>" +
+                "The <b>analysis</b> provided to you by Dashboard is entirely <i>Portal-independent</i>. " +
+                "But analysis is based on data, and their is no better source of your data than the Portal. Therefore, unexpected details from therein can induce <i>misbehavior of your Dashboard</i>!" +
                 "<p>We urged every student victim of <b>wrong</b>, or <b>incomplete details</b> from their portals to refer to their respective departments " +
-                "for help before or anytime soon after proceeding.</p>" +
+                "for help before, or anytime soon after, proceeding.</p>" +
                 "<p>We however handle, gracefully, the common issue of <b>missing-grades</b>, but cannot afford to lose core details like your <b>name or matriculation number</b>. " +
-                "Dashboard may halt build, if such details are missing, or not readable somehow.</p>" +
-                "<p>Besides missing details, some students have <b>conflicting information</b> in their portals. " +
-                "This can let you have the <b>worst possible experience</b> from your usage of Dashboard! For instance, a student admitted in 2016 may have his/her year-of-admission 2019 in the portal. " +
-                "To mention a few consequences of this is that, obviously, a wrong computation will be returned when Dashboard is asked to predict the <b>expected year of graduation</b>, or the </b>current level</b> of the student. " +
-                "Plus, mis-indexing of modules' years will occur which, in turn, will cause <i>analysis-by-year</i> problems, and addition of modules to the inappropriate tables.</p>" +
-                "<p>The good news is: all these, if occurred, can be fixed at any point in time even after build - as Dashboard effortlessly <b>re-indexes</b> your resources at every successful login.</p>";
+                "Dashboard may halt build, if such details are missing, or not readable somehow.</p>";
 
         final String nextText = "<br>To continue, acknowledge adherence to these terms by selecting the <b>Checkbox</b> below.";
 
@@ -99,8 +78,8 @@ public class Welcome extends KDialog {
         nextCheckBox.addItemListener(e-> nextButton.setEnabled(e.getStateChange() == ItemEvent.SELECTED));
 
         final KPanel bottomPanel = new KPanel(new BorderLayout());
-        bottomPanel.add(new KPanel(nextCheckBox), BorderLayout.WEST);
-        bottomPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5), exitButton, nextButton),
+        bottomPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 10), nextCheckBox), BorderLayout.WEST);
+        bottomPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 10), exitButton, nextButton),
                 BorderLayout.EAST);
 
         final KPanel welcomePanel = new KPanel();
@@ -108,11 +87,11 @@ public class Welcome extends KDialog {
         final KPanel textPanel = new KPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.addAll(topPanel,
+                head("v"+Dashboard.VERSION),
                 write(broughtString, 70),
                 head("Dedication"), write(dedicationText, 90),
                 head("System Requirement"), write(requirementText, 190),
-                head("Portal & Privacy"), write(securityText, 550),
-                head("Important"), write(importantText, 425),
+                head("Portal & Privacy"), write(importantText, 225),
                 write(nextText, 65));
         scrollPane = new KScrollPane(textPanel);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -241,7 +220,7 @@ public class Welcome extends KDialog {
             if (studentOption.isSelected()) {
                 SwingUtilities.invokeLater(()-> new Login(this).setVisible(true));
             } else if (trylOption.isSelected()) {
-                SwingUtilities.invokeLater(()-> new Setup(this).setVisible(true));
+                SwingUtilities.invokeLater(()-> new Guest(this).setVisible(true));
             }
         });
 

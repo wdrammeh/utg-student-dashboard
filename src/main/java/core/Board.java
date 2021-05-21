@@ -1,3 +1,23 @@
+/*
+UTG Student Dashboard:
+    "A student management system for the University of The Gambia"
+
+Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package core;
 
 import core.alert.NotificationActivity;
@@ -6,9 +26,7 @@ import core.first.FirstLaunch;
 import core.module.Analysis;
 import core.module.ModuleActivity;
 import core.module.ModuleHandler;
-import core.module.RunningCourseActivity;
-import core.other.About;
-import core.other.Tips;
+import core.module.SemesterActivity;
 import core.serial.Serializer;
 import core.setting.Settings;
 import core.setting.SettingsUI;
@@ -77,6 +95,18 @@ public final class Board extends KFrame {
     private static KLabel nameLabel;
     private static KLabel semesterLabel;
     private static KButton notificationButton;
+//    Collaborators declaration. The order in which these will be initialized does matter!
+    private SemesterActivity semesterActivity;
+    private ModuleActivity moduleActivity;
+    private SettingsUI settingsUI;
+    private TranscriptActivity transcriptActivity;
+    private Analysis analysisActivity;
+    private Help helpActivity;
+    private About about;
+    private TaskActivity taskActivity;
+    private News newsPresent;
+    private NotificationActivity alertActivity;
+    public static final Thread SHUT_DOWN_HOOK = new Thread(Serializer::mountUserData);
     /**
      * Some processes cannot be applied while Dashboard is building,
      * so they're packed here, and triggered simultaneously as soon as
@@ -93,22 +123,10 @@ public final class Board extends KFrame {
             return super.add(runnable);
         }
     };
-    public static final Thread SHUT_DOWN_HOOK = new Thread(Serializer::mountUserData);
-//    Collaborators declaration. The order in which these will be initialized does matter!
-    private RunningCourseActivity runningCourseActivity;
-    private ModuleActivity moduleActivity;
-    private SettingsUI settingsUI;
-    private TranscriptActivity transcriptActivity;
-    private Analysis analysisActivity;
-    private Tips helpActivity;
-    private About about;
-    private TaskActivity taskActivity;
-    private News newsPresent;
-    private NotificationActivity alertActivity;
 
 
     public Board() {
-        super("UTG-Student Dashboard");
+        super("UTG Student Dashboard");
         instance = Board.this;
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -134,7 +152,11 @@ public final class Board extends KFrame {
                     break;
                 }
             }
-            POST_PROCESSES.add(MDriver::setup);
+            POST_PROCESSES.add(()-> {
+                if (Internet.isInternetAvailable()) {
+                    MDriver.setup();
+                }
+            });
         }
 
         contentPanel = new KPanel();
@@ -143,15 +165,15 @@ public final class Board extends KFrame {
         setUpThorax();
         setUpBody();
 
-        if (!(Dashboard.isFirst() || Student.isTrial())) {
+        if (!(Dashboard.isFirst() || Student.isGuest())) {
             Portal.deSerialize();
         }
-        runningCourseActivity = new RunningCourseActivity();
+        semesterActivity = new SemesterActivity();
         moduleActivity = new ModuleActivity();
         settingsUI = new SettingsUI();
         transcriptActivity = new TranscriptActivity();
         analysisActivity = new Analysis();
-        helpActivity = new Tips();
+        helpActivity = new Help();
         about = new About();
 //        outlined / big buttons
         alertActivity = new NotificationActivity();
@@ -161,7 +183,7 @@ public final class Board extends KFrame {
         pack();
         setMinimumSize(getPreferredSize());
         setLocationRelativeTo(null);
-        attachUniversalKeys();
+        attachListeners();
         completeBuild();
     }
 
@@ -177,7 +199,7 @@ public final class Board extends KFrame {
         final KMenuItem resetOption = new KMenuItem("Set Default", e-> Student.fireIconReset());
 
         final JPopupMenu imageOptionsPop = new JPopupMenu();
-        imageOptionsPop.add(new KMenuItem("Change", e-> Student.startSettingImage()));
+        imageOptionsPop.add(new KMenuItem("Select", e-> Student.startSettingImage()));
         imageOptionsPop.add(resetOption);
 
         imageLabel = new KLabel(Student.getIcon());
@@ -198,23 +220,19 @@ public final class Board extends KFrame {
             }
         });
 
-        levelLabel = new KLabel(Student.isTrial() ? "" : Student.getLevel().toUpperCase(),
+        levelLabel = new KLabel(Student.isGuest() ? "" : Student.getLevel().toUpperCase(),
                 KFontFactory.createPlainFont(15), Color.BLUE);
         final KPanel levelPanel = new KPanel(new FlowLayout(FlowLayout.LEFT), new Dimension(325,25));
-        if (!Student.isTrial()) {
+        if (!Student.isGuest()) {
             levelPanel.addAll(new KLabel("Level:", KFontFactory.createPlainFont(15)), levelLabel);
         }
 
         nameLabel = new KLabel(Student.requiredNameForFormat().toUpperCase(), KFontFactory.createBoldFont(20));
-        if (!Student.isTrial()) {
-            final int levelNumber = Student.getLevelNumber();
-            final String nameTip = String.join(" ",
-                    levelNumber > 400 ? "Over 400" : String.valueOf(levelNumber), "Level",
-                    Student.getMajor(), "Major");
-            nameLabel.setToolTipText(nameTip);
+        if (!Student.isGuest()) {
+            nameLabel.setToolTipText(Student.getMajor()+" Major");
         }
 
-        final KLabel programLabel = new KLabel(Student.isTrial() ? "" : Student.getProgram(),
+        final KLabel programLabel = new KLabel(Student.isGuest() ? "" : Student.getProgram(),
                 KFontFactory.createPlainFont(17));
 
         final KButton toPortalButton = KButton.createIconifiedButton("go-arrow.png",25,25);
@@ -222,7 +240,7 @@ public final class Board extends KFrame {
         toPortalButton.setMaximumSize(new Dimension(145, 35));
         toPortalButton.setFont(KFontFactory.createBoldItalic(15));
         toPortalButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        toPortalButton.setToolTipText(String.format("Visit %s Portal", Student.isTrial() ? "UTG" : "your"));
+        toPortalButton.setToolTipText(String.format("Visit %s Portal", Student.isGuest() ? "UTG" : "your"));
         toPortalButton.addActionListener(actionEvent-> new Thread(()-> Portal.openPortal(toPortalButton)).start());
 
         final KPanel midPart = new KPanel(300, 200);
@@ -255,12 +273,12 @@ public final class Board extends KFrame {
             }
         });
 
-        statusLabel = new KLabel(Student.isTrial() ? "" : Student.getStatus().toUpperCase(),
+        statusLabel = new KLabel(Student.isGuest() ? "" : Student.getStatus().toUpperCase(),
                 KFontFactory.createBoldFont(15));
         statusLabel.setForeground(Color.GRAY);
 
         final KPanel statePanel = new KPanel();
-        if (!Student.isTrial()) {
+        if (!Student.isGuest()) {
             statePanel.addAll(new KLabel("Status:", KFontFactory.createPlainFont(15)), statusLabel);
         }
 
@@ -271,8 +289,8 @@ public final class Board extends KFrame {
         final KLabel utgIcon = KLabel.createIcon("UTGLogo.gif", 125, 85);
 
         final KLabel schoolLabel = createLabelFor("School of", Student.getSchool());
-        final KLabel divLabel = createLabelFor("Department of", Student.getDivision());
-        semesterLabel = new KLabel(Student.isTrial() ? "" : Student.getSemester(),
+        final KLabel divLabel = createLabelFor("Division of", Student.getDivision());
+        semesterLabel = new KLabel(Student.isGuest() ? "" : Student.getSemester(),
                 KFontFactory.createBoldFont(17));
 
         final KPanel moreDetails = new KPanel();
@@ -365,25 +383,37 @@ public final class Board extends KFrame {
     }
 
     /**
-     * Attach universal keys to the Dashboard here.
-     * The keys should be added to the rootPane, are typically focus-hungry.
-     * Since typical Dashboard buttons do not seek focus.
-     * In a future release, some components in some activities will
-     * have their own key-bindings as well. So care must be taken.
+     * Attaches universal action-, and key-listeners to the Dashboard.
+     * Since typical Dashboard buttons do not seek focus,
+     * the keys are typically focus-hungry.
+     * In a future release, some activities will define or
+     * have their own key-bindings as well.
      * @see KButton
      */
-    private void attachUniversalKeys(){
-        final JButton comeHomeButton = new JButton("Home Page");
-        comeHomeButton.addActionListener(e-> cardLayout.show(bodyLayer, "Home"));
-        comeHomeButton.setMnemonic(KeyEvent.VK_H);
-        rootPane.add(comeHomeButton);
+    private void attachListeners(){
+        final KButton homeButton = KButton.createRootPaneButton(KeyEvent.VK_H,
+                e-> cardLayout.show(bodyLayer, "Home"));
+        homeButton.setFocusable(true);
+        rootPane.add(homeButton);
+
+        final Timer onlineTimer = new Timer(5 * Globals.SECOND, null);
+        onlineTimer.addActionListener(e-> new Thread(()-> {
+            if (Internet.isInternetAvailable()) {
+                Internet.checkForUpdate(false);
+                if (Portal.isAutoSynced() && !Student.isGuest()) {
+                    syncAll();
+                }
+                onlineTimer.stop();
+            }
+        }).start());
+        POST_PROCESSES.add(onlineTimer::start);
     }
 
     @Override
     public void setVisible(boolean b) {
         if (b) {
             super.setVisible(true);
-            if (Dashboard.isFirst() && !Student.isTrial()) {
+            if (Dashboard.isFirst() && !Student.isGuest()) {
                 final FirstLaunch firstLaunch = new FirstLaunch();
                 SwingUtilities.invokeLater(()-> firstLaunch.setVisible(true));
             }
@@ -414,11 +444,11 @@ public final class Board extends KFrame {
      * actions.
      */
     private void completeBuild() {
-        isReady = true;
-        Runtime.getRuntime().addShutdownHook(SHUT_DOWN_HOOK);
         if (Dashboard.isFirst()) {
             SettingsUI.loadDefaults();
         }
+        Runtime.getRuntime().addShutdownHook(SHUT_DOWN_HOOK);
+        isReady = true;
     }
 
     /**
@@ -432,7 +462,7 @@ public final class Board extends KFrame {
         semesterPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                runningCourseActivity.answerActivity();
+                semesterActivity.answerActivity();
             }
         });
 
@@ -471,7 +501,7 @@ public final class Board extends KFrame {
             }
         });
 
-        final KPanel helpPanel = newHomePanel("FAQs & Help","help.png",200,170);
+        final KPanel helpPanel = newHomePanel("FAQ & Help","help.png",200,170);
         helpPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -578,7 +608,7 @@ public final class Board extends KFrame {
         final String semester = Student.getSemester();
         POST_PROCESSES.add(()-> {
             semesterLabel.setText(semester);
-            RunningCourseActivity.semesterBigLabel.setText(semester);
+            SemesterActivity.semesterBigLabel.setText(semester);
         });
     }
 
@@ -595,13 +625,11 @@ public final class Board extends KFrame {
         POST_PROCESSES.add(()-> statusLabel.setText(Student.getStatus().toUpperCase()));
     }
 
-    public static void online() {
-        if (Portal.isAutoSynced() && !Student.isTrial()) {
-            RunningCourseActivity.startMatching(false);
-            ModuleHandler.launchThoroughSync(false, null);
-            NotificationActivity.updateNotices(false);
-            instance.newsPresent.packAll(false);
-        }
+    private static void syncAll() {
+        SemesterActivity.startMatching(false);
+        ModuleHandler.launchThoroughSync(false, null);
+        NotificationActivity.updateNotices(false);
+        instance.newsPresent.packAll(false);
     }
 
 }

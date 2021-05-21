@@ -70,7 +70,6 @@ public class TodoSelf {
 
         final KButton moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
         moreOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        moreOptions.setToolTipText("About this Task");
         moreOptions.addActionListener(e-> exhibition = new TodoExhibition(this));
 
         togoLabel = new KLabel(Globals.checkPlurality(getDaysLeft(), "days") + " to complete",
@@ -190,6 +189,7 @@ public class TodoSelf {
 
     public void wakeDead(){
         dateCompleted = dateExpectedToComplete;
+        totalTimeConsumed = specifiedDuration;
         isActive = false;
         signalDoneNotice();
     }

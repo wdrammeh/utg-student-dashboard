@@ -5,7 +5,8 @@ import core.driver.MDriver;
 import core.module.Course;
 import core.module.ModuleHandler;
 import core.module.RegisteredCourse;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
+import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
 import org.openqa.selenium.By;
@@ -59,7 +60,7 @@ public class PrePortal {
             return;
         }
         Login.replaceLastUpdate("Setting up the driver....... Successful");
-        Login.appendToStatus("Now contacting utg.edu.gm.......");
+        Login.appendToStatus("Now contacting utg.gm.......");
         loadWaiter = new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME);
 //        make sure we are at the login page
         if (MDriver.isOnPortal(driver)) {
@@ -276,7 +277,6 @@ public class PrePortal {
         final List<WebElement> tabs = loadWaiter.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
 //        Firstly, code, name, year, semester, and credit hours at transcript tab
 //        Addition to startupCourses is only here; all the following loops only updates the details. this eradicates the possibility of adding running courses at tab-4
-//        tabs.get(7).click();  // depreciated!
         Portal.getTabElement("Transcript", tabs).click();
         final WebElement transcriptTable = driver.findElementByCssSelector(".table-bordered");
         final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
@@ -286,20 +286,20 @@ public class PrePortal {
         String vSemester = null;
         for (WebElement transRow : transRows) {
             if (transRow.getText().contains("Semester")) {
-                vYear = transRow.getText().split(" ")[0];
-                vSemester = transRow.getText().split(" ")[1]+" Semester";
+                final String[] hintParts = transRow.getText().split("\s");
+                vYear = hintParts[0];
+                vSemester = hintParts[1]+" Semester";
             } else {
                 final List<WebElement> data = transRow.findElements(By.tagName("td"));
-                ModuleHandler.STARTUP_COURSES.add(new Course(vYear, vSemester, data.get(1).getText(), data.get(2).getText(),
-                        "", "", "", "", 0.0, Integer.parseInt(data.get(3).getText()),"",true));
+                ModuleHandler.STARTUP_COURSES.add(new Course(vYear, vSemester, data.get(1).getText(),
+                        data.get(2).getText(), "", "", "","", "", 0,
+                        Integer.parseInt(data.get(3).getText()),"",true));
             }
         }
-        final WebElement surrounds = driver.findElementsByCssSelector(".pull-right").get(3);
-        final String cgpa = surrounds.findElements(By.tagName("th")).get(1).getText();
-        enlistDetail("cgpa", cgpa);
+        final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+        enlistDetail("cgpa", CGPA);
 
 //        Secondly, add scores at grades tab
-//        tabs.get(6).click();  // depreciated!
         Portal.getTabElement("Grades", tabs).click();
         final WebElement gradesTable = driver.findElementsByCssSelector(".table-warning").get(1);
         final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
@@ -314,7 +314,6 @@ public class PrePortal {
         }
 
 //        Finally, available lecturer names at all-registered tab
-//        tabs.get(4).click();  // depreciated!
         Portal.getTabElement("All Registered Courses", tabs).click();
         final WebElement allRegisteredTable = driver.findElementByCssSelector(".table-warning");
         final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
@@ -324,7 +323,8 @@ public class PrePortal {
             final List<WebElement> instantRow = allRows.get(t).findElements(By.tagName("td"));
             for (Course c : ModuleHandler.STARTUP_COURSES) {
                 if (c.getCode().equals(instantRow.get(0).getText())) {
-                    c.setLecturer(instantRow.get(2).getText(), false);
+                    c.setLecturer(instantRow.get(2).getText());
+                    c.setLecturerNameEditable(false);
                 }
             }
             t++;
@@ -338,7 +338,7 @@ public class PrePortal {
             int match = allRows.size() - 1;
             while (!allRows.get(match).getText().equalsIgnoreCase(ongoingSemester)){
                 final List<WebElement> data = allRows.get(match).findElements(By.tagName("td"));
-                RunningCourseActivity.STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(),
+                SemesterActivity.STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(),
                         data.get(1).getText(), data.get(2).getText(), data.get(3).getText(), data.get(4).getText(),
                         "", "", true));
                 match--;
@@ -363,10 +363,12 @@ public class PrePortal {
         Login.notifyCompletion();
     }
 
-    private static void enlistDetail(String key, String value){
+    private static void enlistDetail(String key, String value) {
         if (Globals.hasNoText(value) || value.contains("Unknown")) {
-            Login.appendToStatus("**Warning: " + key + " not found");
-        } else if(!(key.equals("Mat#") || key.equals("psswd") || key.equals("cgpa"))) {
+            Login.appendToStatus("[Warning] '" + key + "' not found");
+        } else if (key.equals("Email")) {
+            Login.appendToStatus("Email: "+ Student.getVisibleMail(value));
+        } else if (!(key.equals("Mat#") || key.equals("psswd") || key.equals("cgpa"))) {
             Login.appendToStatus(key+": "+value);
         }
 

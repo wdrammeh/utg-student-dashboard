@@ -1,3 +1,23 @@
+/*
+UTG Student Dashboard:
+    "A student management system for the University of The Gambia"
+
+Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package core;
 
 import core.serial.Serializer;
@@ -19,9 +39,10 @@ public class News implements Activity {
     private KPanel present;
     private KScrollPane scrollPane;
     private KButton refreshButton;
-    private static String accessTime;
     private KLabel accessLabel;
+    private KPanel accessResident;
     private boolean isFirstView;
+    private static String accessTime;
     private static final ArrayList<NewsSavior> NEWS_DATA = new ArrayList<>() {
         @Override
         public boolean contains(Object o) {
@@ -38,9 +59,6 @@ public class News implements Activity {
 
 
     public News() {
-        accessTime = "News Feeds will be shown here... Refresh now to get updates.";
-        accessLabel = new KLabel(accessTime, KFontFactory.createPlainFont(16), Color.DARK_GRAY);
-
         refreshButton = new KButton("Refresh");
         refreshButton.setFont(KFontFactory.createPlainFont(15));
         refreshButton.setCursor(MComponent.HAND_CURSOR);
@@ -50,9 +68,14 @@ public class News implements Activity {
         northPanel.add(new KPanel(new KLabel("News Feeds", KFontFactory.BODY_HEAD_FONT)), BorderLayout.WEST);
         northPanel.add(new KPanel(refreshButton), BorderLayout.EAST);
 
+        accessTime = "News Feeds will be shown here... Refresh now to get updates.";
+        accessLabel = new KLabel(accessTime, KFontFactory.createPlainFont(14), Color.GRAY);
+
+        accessResident = new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 20), accessLabel);
+
         present = new KPanel();
         present.setLayout(new BoxLayout(present, BoxLayout.Y_AXIS));
-        present.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 20), accessLabel));
+        present.add(accessResident);
 
         isFirstView = true;
         scrollPane = new KScrollPane(present);
@@ -85,18 +108,26 @@ public class News implements Activity {
         try {
             final Document doc = Jsoup.connect(NEWS_SITE).get();
             final List<Element> elements = doc.getElementsByTag("article");
-            for (Element element : elements) {
+            final boolean wasEmpty = NEWS_DATA.isEmpty();
+            for (final Element element : elements) {
                 final String head = element.select("h2.entry-title").text();
                 final String body = element.getElementsByTag("p").text();
                 final String link = element.getElementsByTag("a").attr("href");
-                if (!NEWS_DATA.contains(new NewsSavior(head, null, link, null))) {
-                    NEWS_DATA.add(new NewsSavior(head, body, link, null));
-                    present.add(packNews(head, body, link, null), NEWS_DATA.size() - 1);
+                final NewsSavior savior = new NewsSavior(head, body, link, null);
+                if (!NEWS_DATA.contains(savior)) {
+                    if (wasEmpty) {
+                        NEWS_DATA.add(savior);
+                        present.add(packNews(head, body, link, null));
+                    } else {
+                        NEWS_DATA.add(0, savior);
+                        present.add(packNews(head, body, link, null), 0);
+                    }
                     MComponent.ready(present);
                 }
             }
-            accessTime = "Last Accessed: "+ MDate.now();
+            accessTime = "Accessed: "+ MDate.now();
             accessLabel.setText(accessTime);
+            present.add(accessResident); // will be sent to the bottom while trying to change its parent
             if (userRequest) {
                 App.reportInfo("News", "News feeds refreshed successfully.");
             }
@@ -108,6 +139,7 @@ public class News implements Activity {
             }
         } finally {
             refreshButton.setEnabled(true);
+            MComponent.ready(present);
         }
     }
 
@@ -294,13 +326,13 @@ public class News implements Activity {
                 final NewsSavior savior = new NewsSavior(heads[i], bodies[i], links[i], contents[i]);
                 NEWS_DATA.add(savior);
             }
-            for (int i = 0; i < NEWS_DATA.size(); i++) {
-                final NewsSavior news = NEWS_DATA.get(i);
-                present.add(packNews(news.heading, news.body, news.link, news.content), i);
+            for (final NewsSavior news : NEWS_DATA) {
+                present.add(packNews(news.heading, news.body, news.link, news.content));
             }
+            present.add(accessResident);
             MComponent.ready(present);
             final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "accessTime.ser"));
-            accessTime = (String) accessObj;
+            accessTime = String.valueOf(accessObj);
             accessLabel.setText(accessTime);
         }
     }

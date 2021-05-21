@@ -21,13 +21,14 @@ import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class RunningCourseActivity implements Activity {
+public class SemesterActivity implements Activity {
     private static KTable activeTable;
     private static KTableModel activeModel;
     private static FirefoxDriver activeDriver;
@@ -38,11 +39,11 @@ public class RunningCourseActivity implements Activity {
     private static JPopupMenu modulePopupMenu;
     private static KLabel hintLabel;
     public static final ArrayList<RegisteredCourse> STARTUP_REGISTRATIONS = new ArrayList<>();
-    private static final ArrayList<RegisteredCourse> ACTIVE_COURSES = new ArrayList<RegisteredCourse>() {
+    private static final ArrayList<RegisteredCourse> ACTIVE_COURSES = new ArrayList<>() {
         @Override
         public boolean add(RegisteredCourse course) {
-            activeModel.addRow(new String[] {course.getCode(), course.getName(), course.getLecturer(),
-                    course.getSchedule(), course.isConfirmed() ? "Confirmed" : "Unknown"});
+            activeModel.addRow(new String[]{course.getCode(), course.getName(), course.getLecturer(),
+                    course.getSchedule(), course.getStatus()});
             hintLabel.setVisible(true);
             return super.add(course);
         }
@@ -61,15 +62,15 @@ public class RunningCourseActivity implements Activity {
             activeModel.setValueAt(course.getName(), targetRow, 1);
             activeModel.setValueAt(course.getLecturer(), targetRow, 2);
             activeModel.setValueAt(course.getSchedule(), targetRow, 3);
-            activeModel.setValueAt(course.isConfirmed() ? "Confirmed" : "Unknown", targetRow, 4);
+            activeModel.setValueAt(course.getStatus(), targetRow, 4);
             return super.set(index, course);
         }
     };
 
 
-    public RunningCourseActivity() {
+    public SemesterActivity() {
         final KPanel runningActivity = new KPanel(new BorderLayout());
-        if (Student.isTrial()) {
+        if (Student.isGuest()) {
             runningActivity.add(MComponent.createUnavailableActivity("Semester"), BorderLayout.CENTER);
         } else {
             semesterBigLabel = new KLabel(Student.getSemester(), KFontFactory.BODY_HEAD_FONT);
@@ -84,14 +85,17 @@ public class RunningCourseActivity implements Activity {
 
             final KMenuItem updateItem = new KMenuItem("Update Registration Notice",
                     e-> App.reportInfo("Tip",
-                            "To update the registration notice, go to '"+ Globals.reference("Notifications", "Portal Alerts", "Update Alerts") +"'."));
+                            "To update the Registration Notice, go to "+ Globals.reference("Notifications", "Portal Alerts", "Update Alerts") +"."));
 
-            final KMenuItem visitItem = new KMenuItem("Visit Portal instead");
+            final KMenuItem visitItem = new KMenuItem("Visit Portal");
             visitItem.addActionListener(e-> new Thread(()-> Portal.openPortal(visitItem)).start());
+
+            final KMenuItem addItem = new KMenuItem("Add Running Course", additionAction());
 
             final JPopupMenu popupMenu = new JPopupMenu();
             popupMenu.add(matchItem);
             popupMenu.add(updateItem);
+            popupMenu.add(addItem);
             popupMenu.add(visitItem);
 
             optionsButton = KButton.createIconifiedButton("options.png",25,25);
@@ -107,18 +111,18 @@ public class RunningCourseActivity implements Activity {
             upperPanel.add(Box.createRigidArea(new Dimension(975, 10)), BorderLayout.SOUTH);
 
             runningActivity.add(upperPanel, BorderLayout.NORTH);
-            runningActivity.add(runningSubstances(), BorderLayout.CENTER);
+            runningActivity.add(semesterContent(), BorderLayout.CENTER);
             runningActivity.add(new KPanel(new FlowLayout(FlowLayout.LEFT), noticeLabel), BorderLayout.SOUTH);
             uploadModules();
 
             Board.POST_PROCESSES.add(()-> noticeLabel.setText(Portal.getRegistrationNotice()));
         }
-        Board.addCard(runningActivity, "Running Courses");
+        Board.addCard(runningActivity, "This Semester");
     }
 
     @Override
     public void answerActivity() {
-        Board.showCard("Running Courses");
+        Board.showCard("This Semester");
     }
 
     private static void uploadModules(){
@@ -143,17 +147,24 @@ public class RunningCourseActivity implements Activity {
      * Todo: if not found, an attempt will be made to register it.
      */
     private static void startCheckout(RegisteredCourse targetCourse) {
+        if (targetCourse.getStatus().equals(Course.VERIFYING)) {
+            App.silenceInfo(String.format("Already verifying '%s'.", targetCourse.getAbsoluteName()));
+            return;
+        }
+
         final String targetCode = targetCourse.getCode();
-        final String initialValue = String.valueOf(activeModel.getValueAt(activeModel.getRowOf(targetCode),
-                activeModel.getColumnCount() - 1));
-        activeModel.setValueAt("Verifying...", activeModel.getRowOf(targetCode),
+        final String initialStatus = String.valueOf(activeModel.getValueAt(activeModel.getRowOf(targetCode),
+                activeModel.getColumnCount() - 1)); // any of 'confirmed', or 'unknown'
+        targetCourse.setStatus(Course.VERIFYING);
+        activeModel.setValueAt(Course.VERIFYING, activeModel.getRowOf(targetCode),
                 activeModel.getColumnCount() - 1);
         fixRunningDriver();
         if (activeDriver == null) {
             App.reportMissingDriver();
             final int targetRow = activeModel.getRowOf(targetCode);
             if (targetRow >= 0) {
-                activeModel.setValueAt(initialValue, targetRow, activeModel.getColumnCount() - 1);
+                activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                targetCourse.setStatus(initialStatus);
             }
             return;
         }
@@ -161,7 +172,8 @@ public class RunningCourseActivity implements Activity {
             App.reportNoInternet();
             final int targetRow = activeModel.getRowOf(targetCode);
             if (targetRow >= 0) {
-                activeModel.setValueAt(initialValue, targetRow, activeModel.getColumnCount() - 1);
+                activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                targetCourse.setStatus(initialStatus);
             }
             return;
         }
@@ -174,7 +186,8 @@ public class RunningCourseActivity implements Activity {
                     Portal.reportEvaluationNeeded();
                     final int targetRow = activeModel.getRowOf(targetCode);
                     if (targetRow >= 0) {
-                        activeModel.setValueAt(initialValue, targetRow, activeModel.getColumnCount() - 1);
+                        activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                        targetCourse.setStatus(initialStatus);
                     }
                     return;
                 }
@@ -182,14 +195,16 @@ public class RunningCourseActivity implements Activity {
                 App.reportConnectionLost();
                 final int targetRow = activeModel.getRowOf(targetCode);
                 if (targetRow >= 0) {
-                    activeModel.setValueAt(initialValue, targetRow, activeModel.getColumnCount() - 1);
+                    activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                    targetCourse.setStatus(initialStatus);
                 }
                 return;
             } else if (loginAttempt == MDriver.ATTEMPT_FAILED) {
                 App.reportLoginAttemptFailed();
                 final int targetRow = activeModel.getRowOf(targetCode);
                 if (targetRow >= 0) {
-                    activeModel.setValueAt(initialValue, targetRow, activeModel.getColumnCount() - 1);
+                    activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                    targetCourse.setStatus(initialStatus);
                 }
                 return;
             }
@@ -204,12 +219,12 @@ public class RunningCourseActivity implements Activity {
                 App.reportConnectionLost();
                 final int targetRow = activeModel.getRowOf(targetCode);
                 if (targetRow >= 0) {
-                    activeModel.setValueAt(initialValue, targetRow, activeModel.getColumnCount() - 1);
+                    activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                    targetCourse.setStatus(initialStatus);
                 }
                 return;
             }
 
-//            tabs.get(4).click();
             Portal.getTabElement("All Registered Courses", tabs).click();
             final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
             final WebElement tableBody = registrationTable.findElement(By.tagName("tbody"));
@@ -221,7 +236,8 @@ public class RunningCourseActivity implements Activity {
                         "It seems like you haven't registered any for this semester yet.");
                 final int targetRow = activeModel.getRowOf(targetCode);
                 if (targetRow >= 0) {
-                    activeModel.setValueAt(initialValue, targetRow, activeModel.getColumnCount() - 1);
+                    activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                    targetCourse.setStatus(initialStatus);
                 }
                 return;
             }
@@ -229,7 +245,7 @@ public class RunningCourseActivity implements Activity {
             final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
 //            Let the scrapping begin!
 //            'match' refers the row-index of the table's data falling under the required caption
-            int match = allRows.size() -1;
+            int match = allRows.size() - 1;
             boolean found = false;
 //            iteration works upward until the caption is found
             while (!allRows.get(match).getText().equals(Student.getSemester())) {
@@ -245,7 +261,7 @@ public class RunningCourseActivity implements Activity {
                         ACTIVE_COURSES.add(foundCourse);
                     }
                     App.reportInfo("Checkout Successful",
-                            "Registered course '"+targetCourse.getName()+"' checked out successful.\n" +
+                            "Registered course '"+targetCourse.getName()+"' checked-out successful.\n" +
                             "It is found on your Portal as a registered course for this semester.");
                     found = true;
                     break;
@@ -256,11 +272,14 @@ public class RunningCourseActivity implements Activity {
             if (!found) {
                 App.reportError("Checkout Unsuccessful",
                         "The attempt to checkout '"+targetCourse.getName()+"' was unsuccessful.\n" +
-                        "It seems like you haven't registered that course for this semester.");
-                activeModel.setValueAt(initialValue, activeModel.getRowOf(targetCode),
+                                "It seems like you haven't registered that course for this semester.");
+                activeModel.setValueAt(initialStatus, activeModel.getRowOf(targetCode),
                         activeModel.getColumnCount() - 1);
+                targetCourse.setConfirmed(false);
+                targetCourse.setStatus(Globals.UNKNOWN);
             }
         }
+
     }
 
     /**
@@ -337,7 +356,6 @@ public class RunningCourseActivity implements Activity {
                         return;
                     }
 
-//                    tabs.get(4).click();
                     Portal.getTabElement("All Registered Courses", tabs).click();
                     final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
                     final WebElement tableBody = registrationTable.findElement(By.tagName("tbody"));
@@ -410,7 +428,7 @@ public class RunningCourseActivity implements Activity {
         return String.format("Dear %s,", Student.getLastName()) +
                 "<p>you've added <b>"+moduleName+"</b> to your list of registered courses.<br>" +
                 "However, this does not means that Dashboard has <b>registered</b> it on your Portal.</p>" +
-                "Dashboard does not write your portal.";
+                "Dashboard does not <i>write</i> your portal.";
     }
 
     public static String[] names() {
@@ -429,12 +447,13 @@ public class RunningCourseActivity implements Activity {
         return codes;
     }
 
-    private static RegisteredCourse getByCode(String code) {
+    public static RegisteredCourse getByCode(String code) {
         for (RegisteredCourse course : ACTIVE_COURSES) {
             if (course.getCode().equals(code)) {
                 return course;
             }
         }
+        App.silenceException("No registered course with code '"+code+"'.");
         return null;
     }
 
@@ -451,20 +470,23 @@ public class RunningCourseActivity implements Activity {
         return -1;
     }
 
-    private Container runningSubstances() {
+    private Container semesterContent() {
         final KMenuItem editItem = new KMenuItem("Edit");
         editItem.addActionListener(e-> {
             final String code = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(), 0));
             final RegisteredCourse runningCourse = getByCode(code);
             if (runningCourse != null) {
-                SwingUtilities.invokeLater(()-> new RunningCourseEditor(runningCourse).setVisible(true));
+                SwingUtilities.invokeLater(()-> new RegisteredCourseEditor(runningCourse).setVisible(true));
             }
         });
 
-        final KMenuItem detailsItem = new KMenuItem("Details");
+        final KMenuItem detailsItem = new KMenuItem("Show Details");
         detailsItem.addActionListener(e-> {
             final String code = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(), 0));
-            RegisteredCourse.exhibit(getByCode(code));
+            final RegisteredCourse course = getByCode(code);
+            if (course != null) {
+                course.exhibit();
+            }
         });
 
         final KMenuItem checkItem = new KMenuItem("Checkout");
@@ -472,36 +494,33 @@ public class RunningCourseActivity implements Activity {
             final String targetCode = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(),0));
             final RegisteredCourse targetCourse = getByCode(targetCode);
             if (targetCourse != null) {
-                final boolean confirm = App.showYesNoCancelDialog("Checkout",
-                        String.format("Do you want to checkout for %s?", targetCourse.getAbsoluteName()));
-                if (confirm) {
-                    startCheckout(targetCourse);
-                }
+                startCheckout(targetCourse);
             }
+
         }).start());
 
         final KMenuItem removeItem = new KMenuItem("Remove");
         removeItem.addActionListener(e-> {
             final String code = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(), 0));
             final RegisteredCourse course = getByCode(code);
-            if (course != null && App.showYesNoCancelDialog("Remove "+course.getCode(),
-                    "Do you really wish to remove \""+course.getName()+"\"?")){
+            if (course != null && App.showYesNoCancelDialog("Confirm",
+                    "Do you want to remove '"+course.getAbsoluteName()+"'?")){
                 if (course.isConfirmed()) {
-                    final int vInt = App.verifyUser("Enter your Matriculation number to proceed with this changes:");
-                    if (vInt == App.VERIFICATION_TRUE) {
-                        ACTIVE_COURSES.remove(course);
-                    } else if (vInt == App.VERIFICATION_FALSE) {
+                    final int vInt = App.verifyUser("Enter your Mat. number to effect this changes:");
+                    if (vInt == App.VERIFICATION_FALSE) {
                         App.reportMatError();
+                        return;
+                    } else if (vInt != App.VERIFICATION_TRUE) {
+                        return;
                     }
-                } else {
-                    ACTIVE_COURSES.remove(course);
                 }
+                ACTIVE_COURSES.remove(course);
             }
         });
 
         modulePopupMenu = new JPopupMenu();
-        modulePopupMenu.add(editItem);
         modulePopupMenu.add(detailsItem);
+        modulePopupMenu.add(editItem);
         modulePopupMenu.add(checkItem);
         modulePopupMenu.add(removeItem);
 
@@ -527,7 +546,10 @@ public class RunningCourseActivity implements Activity {
                     final int selectedRow = activeTable.getSelectedRow();
                     if (selectedRow >= 0) {
                         final String code = String.valueOf(activeTable.getValueAt(selectedRow, 0));
-                        RegisteredCourse.exhibit(getByCode(code));
+                        final RegisteredCourse course = getByCode(code);
+                        if (course != null) {
+                            course.exhibit();
+                        }
                         e.consume();
                     }
                 }
@@ -551,16 +573,10 @@ public class RunningCourseActivity implements Activity {
         addButton.redress();
         addButton.setText("Add");
         addButton.setFont(KFontFactory.createPlainFont(16));
-        addButton.addActionListener(e-> {
-            if (activeTable.getRowCount() >= 6) {
-                App.reportError("Error","You can only register semester up to six (6) courses per semester.");
-            } else {
-                SwingUtilities.invokeLater(()-> new RunningCourseAdder().setVisible(true));
-            }
-        });
+        addButton.addActionListener(additionAction());
 
-        hintLabel = new KLabel("For more actions, right-click a row (or a course) on the table.",
-                KFontFactory.createBoldFont(15), Color.GRAY);
+        hintLabel = new KLabel("Right-click a row (or a course) on the table for more actions.",
+                KFontFactory.createPlainFont(16), Color.GRAY);
         hintLabel.setVisible(activeModel.getRowCount() > 0);
 
         final KPanel bottomPanel = new KPanel(new BorderLayout());
@@ -573,15 +589,25 @@ public class RunningCourseActivity implements Activity {
         return substancePanel;
     }
 
+    private static ActionListener additionAction(){
+        return e-> {
+            if (activeTable.getRowCount() >= 6) {
+                App.reportError("Error","You can only register up to six (6) courses per semester.");
+            } else {
+                SwingUtilities.invokeLater(()-> new RegisteredCourseAdder().setVisible(true));
+            }
+        };
+    }
 
-    private static class RunningCourseAdder extends KDialog {
-        KTextField codeField, nameField, lecturerField, venueField, roomField;
-        JComboBox<String> daysBox, hoursBox;
+
+    public static class RegisteredCourseAdder extends KDialog {
+        KTextField codeField, nameField, lecturerField, roomField;
+        KComboBox<String> daysBox, hoursBox, campusBox;
         KButton doneButton;
         KPanel checkPanel;
         KPanel contentPanel;
 
-        private RunningCourseAdder(){
+        public RegisteredCourseAdder(){
             super("New Registered Course");
             setResizable(true);
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
@@ -589,42 +615,43 @@ public class RunningCourseActivity implements Activity {
             codeField = KTextField.rangeControlField(10);
             codeField.setPreferredSize(new Dimension(150, 30));
             final KPanel codeLayer = new KPanel(new BorderLayout());
-            codeLayer.add(new KPanel(newHintLabel("Course Code:")), BorderLayout.WEST);
+            codeLayer.add(new KPanel(newHintLabel("*Course Code:")), BorderLayout.WEST);
             codeLayer.add(new KPanel(codeField), BorderLayout.CENTER);
 
             nameField = new KTextField(new Dimension(325,30));
             final KPanel nameLayer = new KPanel(new BorderLayout());
-            nameLayer.add(new KPanel(newHintLabel("Course Name:")), BorderLayout.WEST);
+            nameLayer.add(new KPanel(newHintLabel("*Name:")), BorderLayout.WEST);
             nameLayer.add(new KPanel(nameField), BorderLayout.CENTER);
 
             lecturerField = new KTextField(new Dimension(325,30));
             final KPanel lecturerLayer = new KPanel(new BorderLayout());
-            lecturerLayer.add(new KPanel(newHintLabel("Lecturer's Name:")), BorderLayout.WEST);
+            lecturerLayer.add(new KPanel(newHintLabel("*Lecturer:")), BorderLayout.WEST);
             lecturerLayer.add(new KPanel(lecturerField), BorderLayout.CENTER);
 
-            venueField = new KTextField(new Dimension(275,30));
-            final KPanel placeLayer = new KPanel(new BorderLayout());
-            placeLayer.add(new KPanel(newHintLabel("Venue / Campus:")), BorderLayout.WEST);
-            placeLayer.add(new KPanel(venueField), BorderLayout.CENTER);
+            campusBox = new KComboBox<>(Course.campuses(), -1);
+            campusBox.addMask(Globals.UNKNOWN, "");
+            final KPanel campusLayer = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+            campusLayer.add(new KPanel(newHintLabel("Campus:")), BorderLayout.WEST);
+            campusLayer.add(new KPanel(campusBox), BorderLayout.CENTER);
 
-            roomField = new KTextField(new Dimension(325, 30));
+            roomField = new KTextField(new Dimension(275, 30));
             final KPanel roomLayer = new KPanel(new BorderLayout());
             roomLayer.add(new KPanel(newHintLabel("Lecture Room:")), BorderLayout.WEST);
             roomLayer.add(new KPanel(roomField), BorderLayout.CENTER);
 
-            daysBox = new JComboBox<>(Course.getWeekDays());
-            daysBox.setFont(KFontFactory.createPlainFont(15));
-            hoursBox = new JComboBox<>(Course.getCoursePeriods());
-            hoursBox.setFont(daysBox.getFont());
-            final KPanel scheduleLayer = new KPanel(new FlowLayout(FlowLayout.CENTER));
-            scheduleLayer.addAll(newHintLabel("Day:"), daysBox, Box.createRigidArea(new Dimension(50, 30)),
+            daysBox = new KComboBox<>(Course.weekDays(), -1);
+            daysBox.addMask(Globals.UNKNOWN, "");
+            hoursBox = new KComboBox<>(Course.periods(), -1);
+            hoursBox.addMask(Globals.UNKNOWN, "");
+            final KPanel scheduleLayer = new KPanel();
+            scheduleLayer.addAll(newHintLabel("Day:"), daysBox,
+                    Box.createRigidArea(new Dimension(50, 30)),
                     newHintLabel("Time:"), hoursBox);
 
             final KCheckBox instantCheck = new KCheckBox("Checkout now", true);
             instantCheck.setFont(KFontFactory.createBoldFont(15));
             instantCheck.setForeground(Color.BLUE);
             instantCheck.setCursor(MComponent.HAND_CURSOR);
-            instantCheck.setFocusable(false);
             checkPanel = new KPanel(instantCheck);
             ((FlowLayout) checkPanel.getLayout()).setVgap(10);
 
@@ -651,8 +678,8 @@ public class RunningCourseActivity implements Activity {
                     }
 
                     final RegisteredCourse addedCourse = new RegisteredCourse(codeField.getText(), nameField.getText(),
-                            lecturerField.getText(), venueField.getText(), roomField.getText(),
-                            String.valueOf(daysBox.getSelectedItem()), String.valueOf(hoursBox.getSelectedItem()), false);
+                            lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(),
+                            daysBox.getSelectionText(), hoursBox.getSelectionText(), false);
                     ACTIVE_COURSES.add(addedCourse);
                     dispose();
                     if (instantCheck.isSelected()) {
@@ -668,7 +695,7 @@ public class RunningCourseActivity implements Activity {
             getRootPane().setDefaultButton(doneButton);
             contentPanel = new KPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-            contentPanel.addAll(codeLayer, nameLayer, lecturerLayer, placeLayer, roomLayer, scheduleLayer, checkPanel,
+            contentPanel.addAll(codeLayer, nameLayer, lecturerLayer, campusLayer, roomLayer, scheduleLayer, checkPanel,
                     MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, doneButton));
             setContentPane(contentPanel);
             pack();
@@ -682,15 +709,15 @@ public class RunningCourseActivity implements Activity {
     }
 
 
-    private static class RunningCourseEditor extends RunningCourseAdder {
+    public static class RegisteredCourseEditor extends RegisteredCourseAdder {
 
-        private RunningCourseEditor(RegisteredCourse original){
+        public RegisteredCourseEditor(RegisteredCourse original){
             super();
             setTitle(original.getName());
             codeField.setText(original.getCode());
             nameField.setText(original.getName());
             lecturerField.setText(original.getLecturer());
-            venueField.setText(original.getVenue());
+            campusBox.setSelectedItem(original.getCampus()); // remember, selection is not affected if it has no such item in its model
             roomField.setText(original.getRoom());
             daysBox.setSelectedItem(original.getDay());
             hoursBox.setSelectedItem(original.getTime());
@@ -714,9 +741,8 @@ public class RunningCourseActivity implements Activity {
                     lecturerField.requestFocusInWindow();
                 } else {
                     final RegisteredCourse refracted = new RegisteredCourse(codeField.getText(), nameField.getText(),
-                            lecturerField.getText(), venueField.getText(), roomField.getText(),
-                            String.valueOf(daysBox.getSelectedItem()), String.valueOf(hoursBox.getSelectedItem()),
-                            original.isConfirmed());
+                            lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(),
+                            daysBox.getSelectionText(), hoursBox.getSelectionText(), original.isConfirmed());
                     for (int i = 0; i < activeModel.getRowCount(); i++) {
                         if (i == activeTable.getSelectedRow()) {
                             continue;
@@ -724,10 +750,11 @@ public class RunningCourseActivity implements Activity {
                         final String refCode = refracted.getCode();
                         if ((refCode.equalsIgnoreCase(String.valueOf(activeModel.getValueAt(i, 0))))) {
                             App.reportError("Duplicate Code",
-                                    "Cannot add code "+refCode+ ". It's already assigned to a course in the list.");
+                                    "Cannot add code '"+refCode+"'. It's already assigned to a course in the list.");
                             return;
                         }
                     }
+                    refracted.setStatus(original.getStatus());
                     ACTIVE_COURSES.set(getIndexOf(original), refracted);
                     dispose();
                 }

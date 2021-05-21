@@ -17,8 +17,8 @@ public class Register {
 
     public static void main(String[] args) {
 //        This is a registration attempt
-        final String email = "md21712494@utg.edu.gm";
-        final String password = "Student@21712494";
+        final String email = "<address>@utg.edu.gm";
+        final String password = "<passwd>";
         final String courseCode = ""; // to be provided
         final String courseName = ""; // to be provided
         final String key = String.join(" ",
@@ -80,7 +80,7 @@ public class Register {
                 System.out.println("[INFO] Found the following course:");
                 System.out.printf("\tCode<%s> Name<%s> Lecturer<%s> Venue<%s> Room<%s> Time<%s> " +
                         "Class-Size<%d> Number-Registered<%d> Status<%s>%n", module.getCode(), module.getName(),
-                        module.getLecturer(), module.getVenue(), module.getRoom(), module.getTime(), module.classSize,
+                        module.getLecturer(), module.getCampus(), module.getRoom(), module.getTime(), module.classSize,
                         module.numberRegistered, module.getStatus());
                 if (module.isConfirmed()) {
                     System.out.println("You've already registered this course.");
@@ -104,7 +104,7 @@ public class Register {
                 for (RunningCourse module : foundRunningModules) {
                     System.out.printf("%d. Code<%s> Name<%s> Lecturer<%s> Venue<%s> Room<%s> Time<%s> " +
                                     "Class-Size<%d> Number-Registered<%d> Status<%s>%n", var++, module.getCode(), module.getName(),
-                            module.getLecturer(), module.getVenue(), module.getRoom(), module.getTime(), module.classSize,
+                            module.getLecturer(), module.getCampus(), module.getRoom(), module.getTime(), module.classSize,
                             module.numberRegistered, module.getStatus());
                 }
                 System.out.print("Enter the number you want to register for: ");

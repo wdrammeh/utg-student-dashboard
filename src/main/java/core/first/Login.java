@@ -228,7 +228,7 @@ public class Login extends JDialog {
         rootPane.add(enter);
         rootPane.setDefaultButton(enter);
         replaceLastUpdate("Now running Pre-Dashboard builds....... Completed");
-        appendToStatus("Your Dashboard is ready : Press \"Enter\" to launch");
+        appendToStatus("Your Dashboard is ready : Press \"Enter\" to launch now");
         appendToStatus("------------------------------------------------------------------------------------------------------------------------------------------");
         appendToStatus("                                                <<<<------- Enter ------>>>>");
         appendToStatus("-");

@@ -191,7 +191,7 @@ public class AssignmentHandler {
     public JComponent getComponent(){
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, activeAssignments(), doneAssignments());
         splitPane.setContinuousLayout(true);
-        splitPane.setDividerLocation(200);
+        splitPane.setDividerLocation(275);
         return new KPanel(new BorderLayout(), splitPane);
     }
 
@@ -199,7 +199,6 @@ public class AssignmentHandler {
         final KButton createButton = new KButton("New Assignment");
         createButton.setFont(TASK_BUTTONS_FONT);
         createButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        createButton.setToolTipText("Add Assignment");
         createButton.addActionListener(e-> {
             assignmentCreator = new AssignmentCreator();
             assignmentCreator.setVisible(true);

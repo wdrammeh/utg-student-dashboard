@@ -1,7 +1,7 @@
 package core.task.creator;
 
 import core.Board;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
 import core.task.handler.AssignmentHandler;
 import core.utils.App;
 import core.utils.Globals;
@@ -33,7 +33,7 @@ public class AssignmentCreator extends KDialog {
         final Font hintsFont = KFontFactory.createPlainFont(16);
 
         final KPanel importPanel = new KPanel();
-        final String[] activeNames = RunningCourseActivity.names();
+        final String[] activeNames = SemesterActivity.names();
         if (activeNames.length >= 1) {
             final KComboBox<String> importBox = new KComboBox<>(activeNames);
             importBox.setFont(KFontFactory.createPlainFont(15));

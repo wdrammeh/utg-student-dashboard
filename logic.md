@@ -1,5 +1,7 @@
 # Dashboard Logic
 
+`Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>`
+
 The life process of Dashboard includes important series of sets of calls
 known as 'Sequences'.  These include **Verification**, **Launch**,
 **Build**, and **Collapse Sequence**.
@@ -14,16 +16,12 @@ A sequence may undergo several distinct phases as needed, or where implemented.
 The Verification Sequence is the first and foremost of all the sequences.
 Involves setting up the Dashboard, followed by authenticating the user.
 
-Firstly, Dashboard strongly discourages **multiple instances**.
-In a nutshell, if it's detected that Dashboard is already running, then any
-subsequent launch attempt might potentially be ignored.
+Firstly, Dashboard relies on its **configuration** files to determine what
+to do at startup, and how to do. This includes **version checks**, and **user-matching**.
 
-Furthermore, Dashboard relies on its **configuration** files to determine what
-to do, at startup, and how to do. This includes **version checks**, and **user-matching**.
-
-Where the configuration are missing, or otherwise not consistent, a new instance
+Where the configurations are missing, or otherwise not consistent, a new instance
 will be triggered. This is what is known as a "First Run".
-The student then will have to Login. But, if the configuration files are found
+The student then will have to _Login_. If the configuration files are found
 intact, Dashboard then will build from a serializable state.
 Please see the [Dashboard](src/main/java/utg/Dashboard.java) class for more info.
 
@@ -40,12 +38,13 @@ the Verification is asked to force the user back to the Login page,
 undergoing a First Run. Failure of any other de-serializations -
 like de-serialization of Tasks, Alerts, etc. - won't cause this retreat.
 
-If it's a **First Run**, **serialization** obviously comes into play instead of **de-serialization**.
+If it's a **First Run**, serialization obviously comes into play instead of de-serialization.
 In this case, the Build Sequence does not wait on the Launch Sequence
 as the user's data are readily available by [PrePortal](src/main/java/core/first/PrePortal.java).
 The Launch Sequence, then, will complete its job by activating
 [FirstLaunch](src/main/java/core/first/FirstLaunch.java) which performs
-the serialization at dispose. See the [First](src/main/java/core/first) package.
+the serialization at dispose. See the [first package](src/main/java/core/first) for more info on
+how Dashboard sets up the user on a First Launch.
 
 ## Build Sequence
 Next is the **Build Sequence**. This involves loading the components for user-interaction.
@@ -56,14 +55,14 @@ The initial phase is the same for all the runs whether "First" or not.
 If it's not "first", then a Remembrance is made eventually to reload
 the previously saved settings & UI preferences.
 
-See [Activity](src/main/java/core/Activity.java),
+See [Activity](src/main/java/core/Activity.java) and its sub-classes,
 [Board](src/main/java/core/Board.java) and its collaborators.
 
 ## Collapse Sequence
 **Collapse Sequence**, in a nutshell, involves preparing the data for the next
-**Verification Sequence**. The Dashboard is made to hide prior to this serialization,
+Verification Sequence. The Dashboard is made to hide prior to this serialization,
 and the virtual machine is terminated afterwards. Finally, the root folder is,
-entirely, overridden. Notice, Dashboard is independent of this directory within runtime.
+entirely, overridden. Though, Dashboard is independent of this directory within runtime.
 
 The VM is terminated to relief the native system of any potential pending
 charges. This can save memory and battery-life.

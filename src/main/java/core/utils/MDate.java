@@ -14,7 +14,7 @@ public class MDate {
     /**
      * The format-pattern. This is in the full-state.
      */
-    private static final String pattern = String.join(VAL_SEP, "dd", "MM", "yyyy H:m:s");
+    private static final String pattern = String.join(VAL_SEP, "dd", "MM", "yyyy HH:mm:ss");
     /**
      * The standard date format.
      * Changing this format has great consequences since some functions
@@ -30,14 +30,28 @@ public class MDate {
      * This includes both the date and time, as per the current form.
      */
     public static String format(Date d){
-        return standardFormat.format(d);
+        return d == null ? null : standardFormat.format(d);
     }
 
     /**
      * Returns only the date (and not the time) of the given date instance.
      */
     public static String formatDateOnly(Date d){
-        return standardFormat.format(d).split(" ")[0];
+        return d == null ? null : standardFormat.format(d).split(" ")[0];
+    }
+
+    /**
+     * Constructs a date object from the given date-string
+     * which must be in accordance with the {@link #standardFormat}'s
+     * implementation. Method self-silent.
+     */
+    public static Date parse(String dateString){
+        try {
+            return standardFormat.parse(dateString);
+        } catch (ParseException e) {
+            App.silenceException(e);
+            return null;
+        }
     }
 
     /**
@@ -62,20 +76,6 @@ public class MDate {
 
     public static int currentMonth(){
         return Calendar.getInstance().get(Calendar.MONTH) + 1;
-    }
-
-    /**
-     * Constructs a date object from the given date-string
-     * which must be in accordance with the {@link #standardFormat}'s
-     * implementation.
-     */
-    public static Date parse(String dateString){
-        try {
-            return standardFormat.parse(dateString);
-        } catch (ParseException e) {
-            App.silenceException(e);
-            return null;
-        }
     }
 
     /**
@@ -141,14 +141,14 @@ public class MDate {
     }
 
     /**
-     * Returns a Dashboard-formatted date by adding (or subtracting)
-     * the given interval of days from the given date.
+     * Returns a Dashboard-formatted date by adding
+     * the given interval of days to the given date.
      */
     public static String daysAfter(Date date, int days) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, days);
-        return standardFormat.format(calendar.getTime());
+        return format(calendar.getTime());
     }
 
     /**

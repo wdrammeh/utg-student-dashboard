@@ -66,10 +66,9 @@ public class EventSelf {
     public void setUpUI(){
         if (isPending) {
             canceller = KButton.createIconifiedButton("terminate.png", 20, 20);
-            canceller.setToolTipText("Terminate Event");
             canceller.addActionListener(e -> {
                 if (App.showYesNoCancelDialog("Confirm",
-                        "Do you really wish to cancel this " + (isTest() ? "Test?" : isExam() ? "Exam?" : "Event?"))) {
+                        "Do you really wish to cancel '"+title+"'?")) {
                     EventHandler.deleteEvent(this);
                     isPending = false;
                     timer.stop();
@@ -77,10 +76,9 @@ public class EventSelf {
             });
         } else {
             canceller = KButton.createIconifiedButton("trash.png", 20, 20);
-            canceller.setToolTipText("Remove Event");
             canceller.addActionListener(e -> {
-                if (App.showYesNoCancelDialog("Confirm","Do you wish to remove this "+
-                        (isTest() ? "Test?" : isExam() ? "Exam?" : "Event?"))) {
+                if (App.showYesNoCancelDialog("Confirm",
+                        "Do you really wish to remove '"+title+"'?")) {
                     EventHandler.deleteEvent(this);
                 }
             });

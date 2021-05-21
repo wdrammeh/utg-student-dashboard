@@ -1,0 +1,18 @@
+# Index of Navigation Tabs
+{
+    0=""
+    1=""
+    2="RUNNING COURSES"
+    3="ALL REGISTERED COURSES"
+    4="PROGRAM COURSES"
+    5="GRADES"
+    6="TRANSCRIPT"
+    7="PAYMENTS"
+    8="REFUNDS"
+}
+- Date: 2021-03-22 12:46 PM UTC.
+
+# Course Codes on the Portal have whitespace between the Program Code and the Number
+- E.g. MTH101 := 'MTH 101'
+
+#

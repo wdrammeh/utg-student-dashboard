@@ -165,7 +165,7 @@ public class TodoHandler {
     public JComponent getComponent(){
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, runningTasks(), completedTasks());
         splitPane.setContinuousLayout(true);
-        splitPane.setDividerLocation(200);
+        splitPane.setDividerLocation(275);
         return new KPanel(new BorderLayout(), splitPane);
     }
 

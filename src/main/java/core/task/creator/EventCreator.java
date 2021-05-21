@@ -1,7 +1,7 @@
 package core.task.creator;
 
 import core.Board;
-import core.module.RunningCourseActivity;
+import core.module.SemesterActivity;
 import core.task.handler.EventHandler;
 import core.utils.Globals;
 import core.utils.MComponent;
@@ -33,7 +33,7 @@ public class EventCreator extends KDialog {
         dateLabel.setFont(KFontFactory.createBoldFont(16));
 
         final KPanel importPanel = new KPanel();
-        final String[] activeNames = RunningCourseActivity.names();
+        final String[] activeNames = SemesterActivity.names();
         if (activeNames.length >= 1) {
             final KComboBox<String> importBox = new KComboBox<>(activeNames);
             importBox.setFont(KFontFactory.createPlainFont(15));

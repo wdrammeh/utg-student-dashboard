@@ -1,3 +1,23 @@
+/*
+UTG Student Dashboard:
+    "A student management system for the University of The Gambia"
+
+Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package core.module;
 
 import core.Board;
@@ -37,14 +57,19 @@ public class Course {
     private String code;
     private String name;
     private String lecturer;
-    private String venue;
+    private String campus;
+    private String room;
     private String day;
     private String time;
     private double score;
     private int creditHours;
     private String requirement;
     private boolean isVerified;
-    private boolean lecturerNameChangeability;
+    private boolean isLecturerNameEditable;
+    private String status;
+//
+    public static final String VERIFYING = "Verifying...";
+    public static final String CONFIRMED = "Confirmed";
 //    Requirement options
     public static final String MAJOR_OBLIGATORY = "Major Obligatory";
     public static final String MINOR_OBLIGATORY = "Minor Obligatory";
@@ -56,32 +81,32 @@ public class Course {
 //    Known divisional codes
     public static final String DER = "DER";
     public static final String GER = "GER";
-//    The unknown constant
-    public static final String UNKNOWN = Globals.UNKNOWN;
 
 
     /**
      * Constructs a module, complete and initialized, with the given credentials.
-     * Instead of the empty-string, the default value of the day and time is the
+     * The default value of the day and time is the
      * unknown-constant; the requirement is the none-constant.
-     * This helps with the combo-boxes during editing of the modules.
+     * This helps with comboBoxes during editing of the modules.
      * Notice, if no explicit requirement is given, the constructor will
      * attempt to assign it a requirement.
      */
-    public Course(String year, String semester, String code, String name, String tutor, String venue, String day,
-                  String time, double score, int creditHours, String requirement, boolean verified) {
+    public Course(String year, String semester, String code, String name, String tutor, String campus, String room,
+                  String day, String time, double score, int creditHours, String requirement, boolean verified) {
         this.year = year;
         this.semester = semester;
         this.code = code;
         this.name = name;
         this.lecturer = tutor;
-        this.venue = venue;
-        this.day = Globals.hasNoText(day) || day.equals(UNKNOWN) ? "" : day;
-        this.time = Globals.hasNoText(time) || time.equals(UNKNOWN) ? "" : time;
+        this.campus = campus;
+        this.room = room;
+        this.day = day;
+        this.time = time;
         this.score = score;
         this.creditHours = creditHours;
         this.isVerified = verified;
-        this.lecturerNameChangeability = !verified;
+        this.status = isVerified ? CONFIRMED : Globals.UNKNOWN;
+        this.isLecturerNameEditable = true;
         this.requirement = Globals.hasText(requirement) ? requirement : NONE;
         if (this.requirement.equals(NONE)) {
             try {
@@ -95,7 +120,7 @@ public class Course {
                 } else if (programPart.equals(GER)) {
                     setRequirement(GENERAL_REQUIREMENT);
                 }
-            } catch (StringIndexOutOfBoundsException ignored){
+            } catch (IndexOutOfBoundsException ignored){
             }
         }
     }
@@ -136,17 +161,28 @@ public class Course {
         return lecturer;
     }
 
-    public void setLecturer(String lecturer, boolean changeable) {
+    public void setLecturer(String lecturer) {
         this.lecturer = lecturer;
-        lecturerNameChangeability = changeable;
     }
 
-    public String getVenue() {
-        return venue;
+    public String getCampus() {
+        return campus;
     }
 
-    public void setVenue(String venue) {
-        this.venue = venue;
+    public void setCampus(String campus) {
+        this.campus = campus;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
+    public String getVenue(){
+        return venueOf(campus, room);
     }
 
     public String getDay() {
@@ -202,11 +238,38 @@ public class Course {
         this.isVerified = verified;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+        final Course any = ModuleHandler.getModuleByCode(this.code);
+        if (any != null) {
+            any.status = status;
+        }
+    }
+
+    public void setLecturerNameEditable(boolean isLecturerNameEditable){
+        this.isLecturerNameEditable = isLecturerNameEditable;
+    }
+
+    /**
+     * A lecturer's name of a module is changeable
+     * iff it was not actually found on the Portal.
+     * Note that courses done before the implementation of the Portal
+     * do not have their lecturer names uploaded afterwards.
+     * Hence this is for backward-compatibility.
+     */
+    public boolean isLecturerNameEditable() {
+        return isLecturerNameEditable;
+    }
+
     /**
      * Returns a compound-string of the code and name of this course.
      */
     public String getAbsoluteName() {
-        return String.join(" ", code, name);
+        return String.join(" ", "("+code+")", name);
     }
 
     /**
@@ -250,21 +313,12 @@ public class Course {
      * four years bachelor's program specification.
      */
     public boolean isMisc() {
-        final String y = year;
-        return !(y.equals(Student.firstAcademicYear()) || y.equals(Student.secondAcademicYear()) ||
-                y.equals(Student.thirdAcademicYear()) || y.equals(Student.fourthAcademicYear()));
+        return !(year.equals(Student.firstAcademicYear()) || year.equals(Student.secondAcademicYear()) ||
+                year.equals(Student.thirdAcademicYear()) || year.equals(Student.fourthAcademicYear()));
     }
 
     public String getSchedule(){
-        if (Globals.hasText(day) && Globals.hasText(time)) {
-            return String.join(" ", day, time);
-        } else if (Globals.hasText(day) && Globals.hasNoText(time)) {
-            return String.join(" - ", day, "Unknown time");
-        } else if (Globals.hasNoText(day) && Globals.hasText(time)) {
-            return String.join(" - ", time, "Unknown day");
-        } else {
-            return "";
-        }
+        return scheduleOf(day, time);
     }
 
     /**
@@ -346,16 +400,6 @@ public class Course {
     }
 
     /**
-     * A lecturer's name of a module is changeable
-     * iff it was not actually found on the Portal.
-     * Note that courses done before the implementation of the Portal
-     * do not have their lecturer names uploaded afterwards.
-     */
-    public boolean isLecturerNameEditable() {
-        return Globals.hasNoText(lecturer) || lecturerNameChangeability;
-    }
-
-    /**
      * Returns the list-index of this course.
      * This is useful for substitution, editing.
      * @see ModuleHandler
@@ -368,6 +412,30 @@ public class Course {
             }
         }
         return -1;
+    }
+
+    public static String venueOf(String campus, String room){
+        if (Globals.hasText(campus) && Globals.hasText(room)) {
+            return campus+" Campus ("+room+")";
+        } else if (Globals.hasText(campus) && Globals.hasNoText(room)) {
+            return campus+" Campus (Unknown room)";
+        } else if (Globals.hasNoText(campus) && Globals.hasText(room)) {
+            return room;
+        } else {
+            return "";
+        }
+    }
+
+    public static String scheduleOf(String day, String time){
+        if (Globals.hasText(day) && Globals.hasText(time)) {
+            return day+" "+time;
+        } else if (Globals.hasText(day) && Globals.hasNoText(time)) {
+            return day+" - Unknown time";
+        } else if (Globals.hasNoText(day) && Globals.hasText(time)) {
+            return time+" - Unknown day";
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -469,39 +537,41 @@ public class Course {
                 code,
                 name,
                 lecturer,
-                venue,
+                campus,
+                room,
                 day,
                 time,
                 score,
                 creditHours,
                 requirement,
                 isVerified,
-                lecturerNameChangeability);
+                isLecturerNameEditable);
     }
 
     /**
      * Creates a course whose exportContent() was this dataLines.
-     * Exceptions throwable by this operation must be handled with great care across implementations.
+     * Exceptions throwable by this operation must be handled with
+     * great care across implementations.
      * @see #exportContent()
      */
     public static Course create(String data) {
         final String[] lines = Globals.splitLines(data);
         double score = 0;
         try {
-            score = Double.parseDouble(lines[8]);
+            score = Double.parseDouble(lines[9]);
         } catch (Exception e) {
-            App.silenceException("Error reading score of "+lines[3]);
+            App.silenceException("Failed to read score of "+lines[3]);
         }
-        int creditsHours = 3;
+        int creditsHours = 0;
         try {
-            creditsHours = Integer.parseInt(lines[9]);
+            creditsHours = Integer.parseInt(lines[10]);
         } catch (Exception e) {
-            App.silenceException("Error reading credit hours of "+lines[3]);
+            App.silenceException("Failed read credit hours of "+lines[3]);
         }
 
-        final Course serialCourse = new Course(lines[0], lines[1], lines[2], lines[3], lines[4], lines[5], lines[6], lines[7],
-                score, creditsHours, lines[10], Boolean.parseBoolean(lines[11]));
-        serialCourse.lecturerNameChangeability = Boolean.parseBoolean(lines[12]);
+        final Course serialCourse = new Course(lines[0], lines[1], lines[2], lines[3], lines[4],
+                lines[5], lines[6], lines[7], lines[8], score, creditsHours, lines[11], Boolean.parseBoolean(lines[12]));
+        serialCourse.isLecturerNameEditable = Boolean.parseBoolean(lines[13]);
         return serialCourse;
     }
 
@@ -514,10 +584,11 @@ public class Course {
     public static void merge(Course incoming, Course outgoing) {
         incoming.setDay(outgoing.day);
         incoming.setTime(outgoing.time);
-        incoming.setVenue(outgoing.venue);
+        incoming.setCampus(outgoing.getCampus());
+        incoming.setRoom(outgoing.getRoom());
         incoming.setRequirement(outgoing.requirement);
-        if (incoming.isLecturerNameEditable()) {
-            incoming.setLecturer(outgoing.getLecturer(), true);
+        if (incoming.isLecturerNameEditable()) { // yeah
+            incoming.setLecturer(outgoing.getLecturer());
         }
     }
 
@@ -525,130 +596,129 @@ public class Course {
      * Returns an array  of times most, if not all, lectures are conducted in UTG.
      * All time boxes must delegate to this as their list of time options.
      */
-    public static String[] getCoursePeriods(){
-        return new String[]{UNKNOWN, "8:00", "8:30", "9:00", "11:00", "11:30", "14:00", "14:30", "15:00",
-                "17:00", "17:30", "20:00"};
+    public static String[] periods(){
+        return new String[] {"08:00", "08:30", "09:00", "11:00", "11:30", "14:00", "14:30", "15:00",
+                "17:00", "17:30", "20:00", Globals.UNKNOWN};
     }
 
     /**
      * Returns an array of the days of a week.
      * All day boxes must delegate to this as their list of day options.
      */
-    public static String[] getWeekDays(){
-        return new String[]{UNKNOWN, "Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays",
-                "Saturdays", "Sundays"};
+    public static String[] weekDays(){
+        return new String[] {"Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays",
+                "Saturdays", "Sundays", Globals.UNKNOWN};
     }
 
     /**
      * Returns an array of the available requirement options.
      * All requirement boxes must delegate to this as their list of requirement options.
      */
-    public static String[] getRequirements(){
-        return new String[]{MAJOR_OBLIGATORY, MAJOR_OPTIONAL, MINOR_OBLIGATORY, MINOR_OPTIONAL,
+    public static String[] requirements(){
+        return new String[] {MAJOR_OBLIGATORY, MAJOR_OPTIONAL, MINOR_OBLIGATORY, MINOR_OPTIONAL,
                 DIVISIONAL_REQUIREMENT, GENERAL_REQUIREMENT, NONE};
     }
 
     public static String[] creditHours(){
-        return new String[]{"3", "4"};
+        return new String[] {"3", "4"};
+    }
+
+    public static String[] campuses(){
+        return new String[] {"Brikama", "Faraba", "Kanifing", "Banjul", "GTTI", "Online", Globals.UNKNOWN};
     }
 
     /**
      * Exhibits the contents of the given course on a dialog,
      * placed on the given base component.
-     * If the course is null, nothing is done; returns immediately.
      * Do not call this with {@link SwingUtilities#invokeLater(Runnable)},
      * {@link EventQueue#invokeLater(Runnable)}, etc.
      */
-    public static void exhibit(Component base, Course course){
-        if (course == null) {
-            return;
+    public void exhibit(Component base){
+        final KDialog exhibitor = new KDialog(this.name);
+        if (this.isMisc()) {
+            exhibitor.setTitle(exhibitor.getTitle()+" - Miscellaneous");
         }
-
-        final KDialog dialog = new KDialog(course.name);
-        if (course.isMisc()) {
-            dialog.setTitle(dialog.getTitle()+" - Miscellaneous");
-        }
-        dialog.setResizable(true);
-        dialog.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
+        exhibitor.setResizable(true);
+        exhibitor.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
 
         final Font hintFont = KFontFactory.createBoldFont(15);
         final Font valueFont = KFontFactory.createPlainFont(15);
 
         final KPanel codePanel = new KPanel(new BorderLayout());
         codePanel.add(new KPanel(new KLabel("Code:", hintFont)), BorderLayout.WEST);
-        codePanel.add(new KPanel(new KLabel(course.code, valueFont)), BorderLayout.CENTER);
+        codePanel.add(new KPanel(new KLabel(this.code, valueFont)), BorderLayout.CENTER);
 
         final KPanel namePanel = new KPanel(new BorderLayout());
         namePanel.add(new KPanel(new KLabel("Name:", hintFont)), BorderLayout.WEST);
-        namePanel.add(new KPanel(new KLabel(course.name, valueFont)), BorderLayout.CENTER);
+        namePanel.add(new KPanel(new KLabel(this.name, valueFont)), BorderLayout.CENTER);
 
         final KPanel lectPanel = new KPanel(new BorderLayout());
         lectPanel.add(new KPanel(new KLabel("Lecturer:", hintFont)), BorderLayout.WEST);
-        lectPanel.add(new KPanel(new KLabel(course.lecturer, valueFont)), BorderLayout.CENTER);
+        lectPanel.add(new KPanel(new KLabel(this.lecturer, valueFont)), BorderLayout.CENTER);
 
         final KPanel yearPanel = new KPanel(new BorderLayout());
         yearPanel.add(new KPanel(new KLabel("Academic Year:", hintFont)), BorderLayout.WEST);
-        yearPanel.add(new KPanel(new KLabel(course.year, valueFont)), BorderLayout.CENTER);
+        yearPanel.add(new KPanel(new KLabel(this.year, valueFont)), BorderLayout.CENTER);
 
         final KPanel semesterPanel = new KPanel(new BorderLayout());
         semesterPanel.add(new KPanel(new KLabel("Semester:", hintFont)), BorderLayout.WEST);
-        semesterPanel.add(new KPanel(new KLabel(course.semester,valueFont)), BorderLayout.CENTER);
+        semesterPanel.add(new KPanel(new KLabel(this.semester,valueFont)), BorderLayout.CENTER);
 
         final KPanel typePanel = new KPanel(new BorderLayout());
         typePanel.add(new KPanel(new KLabel("Requirement:", hintFont)), BorderLayout.WEST);
-        typePanel.add(new KPanel(new KLabel(course.requirement, valueFont)), BorderLayout.CENTER);
+        typePanel.add(new KPanel(new KLabel(this.requirement, valueFont)), BorderLayout.CENTER);
 
         final KPanel schedulePanel = new KPanel(new BorderLayout());
         schedulePanel.add(new KPanel(new KLabel("Schedule:", hintFont)), BorderLayout.WEST);
-        schedulePanel.add(new KPanel(new KLabel(course.getSchedule(), valueFont)), BorderLayout.CENTER);
+        schedulePanel.add(new KPanel(new KLabel(this.getSchedule(), valueFont)), BorderLayout.CENTER);
 
         final KPanel venuePanel = new KPanel(new BorderLayout());
         venuePanel.add(new KPanel(new KLabel("Venue:", hintFont)), BorderLayout.WEST);
-        venuePanel.add(new KPanel(new KLabel(course.venue, valueFont)), BorderLayout.CENTER);
+        venuePanel.add(new KPanel(new KLabel(this.getVenue(), valueFont)), BorderLayout.CENTER);
 
         final KPanel creditPanel = new KPanel(new BorderLayout());
         creditPanel.add(new KPanel(new KLabel("Credit Hours:", hintFont)), BorderLayout.WEST);
-        creditPanel.add(new KPanel(new KLabel(Integer.toString(course.creditHours), valueFont)), BorderLayout.CENTER);
+        creditPanel.add(new KPanel(new KLabel(Integer.toString(this.creditHours), valueFont)), BorderLayout.CENTER);
 
         final KPanel scorePanel = new KPanel(new BorderLayout());
         scorePanel.add(new KPanel(new KLabel("Final Score:", hintFont)), BorderLayout.WEST);
-        scorePanel.add(new KPanel(new KLabel(Double.toString(course.score), valueFont)), BorderLayout.CENTER);
+        scorePanel.add(new KPanel(new KLabel(Double.toString(this.score), valueFont)), BorderLayout.CENTER);
 
         final KPanel gradePanel = new KPanel(new BorderLayout());
         gradePanel.add(new KPanel(new KLabel("Grade:", hintFont)), BorderLayout.WEST);
-        gradePanel.add(new KPanel(new KLabel(course.getGrade()+"  ("+course.getGradeComment()+")", valueFont)), BorderLayout.CENTER);
+        gradePanel.add(new KPanel(new KLabel(this.getGrade()+"  ("+this.getGradeComment()+")", valueFont)), BorderLayout.CENTER);
 
         final KPanel gradeValuePanel = new KPanel(new BorderLayout());
         gradeValuePanel.add(new KPanel(new KLabel("Grade Value:", hintFont)), BorderLayout.WEST);
-        gradeValuePanel.add(new KPanel(new KLabel(Double.toString(course.getQualityPoint()), valueFont)), BorderLayout.CENTER);
+        gradeValuePanel.add(new KPanel(new KLabel(Double.toString(this.getQualityPoint()), valueFont)), BorderLayout.CENTER);
 
+        final KLabel statusLabel = new KLabel(this.status, valueFont, this.status.equals(CONFIRMED) ? Color.BLUE :
+                this.status.equals(Globals.UNKNOWN) ? Color.RED : Color.GRAY);
         final KPanel statusPanel = new KPanel(new BorderLayout());
         statusPanel.add(new KPanel(new KLabel("Status:", hintFont)), BorderLayout.WEST);
-        final KLabel vLabel = course.isVerified ? new KLabel("Confirmed", valueFont, Color.BLUE) :
-                new KLabel("Unknown", valueFont, Color.RED);
-        statusPanel.add(new KPanel(vLabel), BorderLayout.CENTER);
+        statusPanel.add(new KPanel(statusLabel), BorderLayout.CENTER);
 
         final KButton closeButton = new KButton("Close");
-        closeButton.addActionListener(e -> dialog.dispose());
+        closeButton.addActionListener(e -> exhibitor.dispose());
 
         final KPanel contentPanel = new KPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(codePanel, namePanel, lectPanel, yearPanel, semesterPanel, schedulePanel, venuePanel,
                 typePanel, creditPanel, scorePanel, gradePanel, gradeValuePanel, statusPanel,
                 MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), closeButton));
-        dialog.getRootPane().setDefaultButton(closeButton);
-        dialog.setContentPane(contentPanel);
-        dialog.pack();
-        dialog.setLocationRelativeTo(base == null ? Board.getRoot() : base);
-        SwingUtilities.invokeLater(()-> dialog.setVisible(true));
+        exhibitor.getRootPane().setDefaultButton(closeButton);
+        exhibitor.setContentPane(contentPanel);
+        exhibitor.pack();
+        exhibitor.setLocationRelativeTo(base);
+        SwingUtilities.invokeLater(()-> exhibitor.setVisible(true));
     }
 
     /**
      * Exhibits the contents of the given course on the Dashboard's instance.
-     * @see #exhibit(Component, Course)
+     * @see #exhibit(Component)
      */
-    public static void exhibit(Course c){
-        exhibit(null, c);
+    public void exhibit(){
+        exhibit(Board.getRoot());
     }
 
 }

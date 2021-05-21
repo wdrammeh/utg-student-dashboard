@@ -17,8 +17,11 @@
 
 >> Configurations (configs.ser) | String
 Contains the Dashboard's configuration data.
-    0: version <String>
+    0: isAuthentic <boolean>
     1: userName <String>
+    3: version <String>
+    4: deprecateTime <String> | MDate.format()
+
 
 
 >> Settings (settings.ser) | String
@@ -65,14 +68,15 @@ during build.
     2: code <String>
     3: name <String>
     4: lecturer <String>
-    5: venue <String>
-    6: day <String>
-    7: time <String>
-    8: score <double>
-    9: creditHours <int>
-    10: requirement <String>
-    11: isVerified <boolean>
-    12: lecturerNameChangeability <boolean>
+    5: campus <String>
+    6: room <String>
+    7: day <String>
+    8: time <String>
+    9: score <double>
+    10: creditHours <int>
+    11: requirement <String>
+    12: isVerified <boolean>
+    13: lecturerNameChangeability <boolean>
 
 >> User (user/ )
 It's specifically more difficult to deal with the user's data.
@@ -86,7 +90,7 @@ It's specifically more difficult to deal with the user's data.
      5: dateOfBirth <String>
      6: placeOfBirth <String>
      7: nameFormat <String>
-     8: isTrial <boolean>
+     8: isGuest <boolean>
      ...Student only details...
      9: monthOfAdmission <int>
      10: yearOfAdmission <int>
