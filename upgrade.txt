@@ -5,11 +5,8 @@
 - Remove static-orientation of task types
 - Student auditing tool
 - Improve the design for "Guest" users
-- Custom OptionPane dialogs
-- Do not ask me dialogs
-- Auto outdate feature
-- Manual check for updates
-- Custom user password; as defaults to the Mat. No
+- Custom OptionPane dialogs... (Do not ask me again)
+- Custom user password; as defaults to the Mat. Number
 - Lock Dashboard at startup
 - Research on the Selenium Driver
 - Flexible driver choices functionality

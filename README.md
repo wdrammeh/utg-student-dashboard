@@ -1,6 +1,6 @@
 # UTG Student Dashboard
 
-`v2021.2`
+`2021.2`
 
 A flexible and elegant student management system for the University of The Gambia.
 
@@ -81,7 +81,7 @@ Also, we wish to integrate the following features in a future release:
 
 ## Contribution
 If you are interested in contributing to this project, firstly,
-read our [Developers Guide](Develop.md).
+read our [Developers Guide](Contributing.md).
 
 ## Maintainers
 - [Muhammed W. Drammeh <md21712494@utg.edu.gm>](https://github.com/w-drammeh)

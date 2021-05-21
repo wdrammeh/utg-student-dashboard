@@ -62,7 +62,7 @@ public class Internet {
                 Dashboard.reportAuthenticationError();
             }
 
-            final Version latestVersion = new Version(verElement.text().replaceFirst("[v]", ""));
+            final Version latestVersion = new Version(verElement.text());
             final int comparison = Dashboard.VERSION.compare(latestVersion);
             if (comparison == Version.LESS) {
                 final Date lastDeprecateTime = Dashboard.VERSION.getDeprecateTime();
