@@ -904,7 +904,7 @@ public class ModuleHandler {
             }
             yearField.setPreferredSize(new Dimension(125, 30));
             yearField.setText(yearName);
-            yearField.setEditable(yearName == null);
+            yearField.setEditable(Globals.hasNoText(yearName));
             yearPanel = new KPanel(new BorderLayout());
             yearPanel.add(new KPanel(new KLabel("*Year:", hintFont)),  BorderLayout.WEST);
             yearPanel.add(new KPanel(yearField),BorderLayout.CENTER);
@@ -1102,7 +1102,7 @@ public class ModuleHandler {
                         return;
                     }
 
-                    //check for exclusive existence in this table first
+                    // check for exclusive existence in this table first
                     for (int row = 0; row < onModel.getRowCount(); row++) {
                         if (row == onModel.getSelectedRow()) {
                             continue;
