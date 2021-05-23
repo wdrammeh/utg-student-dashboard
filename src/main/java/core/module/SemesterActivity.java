@@ -39,19 +39,21 @@ public class SemesterActivity implements Activity {
     private static JPopupMenu modulePopupMenu;
     private static KLabel hintLabel;
     public static final ArrayList<RegisteredCourse> STARTUP_REGISTRATIONS = new ArrayList<>();
+    private static final String REGISTERED_HINT = "Right-click a row (or a course) on the table for more actions.";
+    private static final String UNREGISTERED_HINT = "Courses you register this semester will be shown here.";
     private static final ArrayList<RegisteredCourse> ACTIVE_COURSES = new ArrayList<>() {
         @Override
         public boolean add(RegisteredCourse course) {
             activeModel.addRow(new String[]{course.getCode(), course.getName(), course.getLecturer(),
                     course.getSchedule(), course.getStatus()});
-            hintLabel.setVisible(true);
+            hintLabel.setText(REGISTERED_HINT);
             return super.add(course);
         }
 
         @Override
         public boolean remove(Object o) {
             activeModel.removeRow(activeModel.getRowOf(((RegisteredCourse) o).getCode()));
-            hintLabel.setVisible(activeModel.getRowCount() > 0);
+            hintLabel.setText(activeModel.getRowCount() > 0 ? REGISTERED_HINT : UNREGISTERED_HINT);
             return super.remove(o);
         }
 
@@ -575,9 +577,8 @@ public class SemesterActivity implements Activity {
         addButton.setFont(KFontFactory.createPlainFont(16));
         addButton.addActionListener(additionAction());
 
-        hintLabel = new KLabel("Right-click a row (or a course) on the table for more actions.",
-                KFontFactory.createPlainFont(16), Color.GRAY);
-        hintLabel.setVisible(activeModel.getRowCount() > 0);
+        hintLabel = new KLabel(activeModel.getRowCount() > 0 ? REGISTERED_HINT : UNREGISTERED_HINT,
+                KFontFactory.createPlainFont(15), Color.GRAY);
 
         final KPanel bottomPanel = new KPanel(new BorderLayout());
         bottomPanel.add(new KPanel(new FlowLayout(FlowLayout.LEFT), hintLabel), BorderLayout.CENTER);
