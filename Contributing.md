@@ -5,7 +5,7 @@ If you are looking to get involved improving this project, this guide can help y
 ## Structure
 Major folders in the project and their purpose:
 
-Also, note that the project is managed by **Maven**, and hence the layout follows its convention.
+**Note**: you should be familiar with _Maven_ directory structure, because this project is managed by Maven for Java.
 
 [main/java/](src/main/java)
 
@@ -26,7 +26,7 @@ Also, note that the project is managed by **Maven**, and hence the layout follow
     Resources under this folder are for testing only. They do not count in building, or running the actual program.
 
 ## Skills
-- Core Java - OOP Concepts, and Serialization
+- Core Java: OOP Concepts, Serialization, etc.
 - Maven
 - HTML
 
@@ -34,3 +34,10 @@ Also, note that the project is managed by **Maven**, and hence the layout follow
 
 ## Logic
 Please make sure to read the [logic statement](Logic.md) as well.
+
+## Conventions
+- This project is strictly **platform-independent**. In case it became absolutely necessary to implement
+  some platform specific components, developer must clearly state it out.
+- All features (parts of the project) should be **easily tested, and independent** of each other.
+- Developer is encouraged to **document** as much as possible.
+- Developer must use "**clean-code**" approach.

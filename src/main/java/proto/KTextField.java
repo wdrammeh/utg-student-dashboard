@@ -15,7 +15,6 @@ import java.awt.event.KeyEvent;
  */
 public class KTextField extends JTextField implements Preference {
 
-
     public KTextField(){
         super();
         setPreferences();

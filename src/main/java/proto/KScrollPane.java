@@ -10,7 +10,6 @@ import java.awt.event.AdjustmentListener;
  */
 public class KScrollPane extends JScrollPane implements Preference {
 
-
     public KScrollPane(Component insider){
         super(insider);
         setPreferences();

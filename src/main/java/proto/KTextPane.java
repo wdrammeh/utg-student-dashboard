@@ -10,7 +10,6 @@ public class KTextPane extends JTextPane implements Preference {
     public static final String HTML_TYPE = "text/html";
     public static final ArrayList<KTextPane> TEXT_PANES = new ArrayList<>();
 
-
     public KTextPane(String type, String text){
         super();
         setContentType(type);
@@ -32,8 +31,6 @@ public class KTextPane extends JTextPane implements Preference {
     public void setPreferences(){
         setBackground(Settings.currentBackground());
         setEditable(false);
-        // Todo reconsider the following preference
-        //  Also, textPanes no longer needs to be placed on panel unless where absolutely required
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         TEXT_PANES.add(this);
     }

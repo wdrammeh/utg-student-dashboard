@@ -885,7 +885,7 @@ public class ModuleHandler {
         /**
          * Constructs a course addition dialog.
          * The yearName and semesterName are provided-set,
-         * fields of them are never editable.
+         * so fields of them are not editable unless for a misc. case.
          * Todo: 'Checkout Now' option to be added.
          */
         public ModuleAdder(String yearName, String semesterName){

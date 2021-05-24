@@ -152,7 +152,7 @@ public class MDriver {
     /**
      * This is necessary because drivers, instead of closing,
      * disconnect themselves from the program as it exits.
-     * Note that mostly classes do not explicitly quit drivers
+     * Note that most classes do not explicitly quit drivers
      * within runtime, as they reuse them over and over.
      */
     public static void stopAll(){

@@ -116,7 +116,7 @@ public class ProjectHandler {
         project.setDateCompleted(MDate.now());
         project.setLive(false);
         project.setUpDoneUI();
-        //Respect that order of sorting... since the project generator does not use clear-cut separator
+        // Respect that order of sorting... since the project generator does not use clear-cut separator
         projectsReside.remove(project.getLayer());
         projectsReside.add(project.getLayer());
         MComponent.ready(projectsReside);

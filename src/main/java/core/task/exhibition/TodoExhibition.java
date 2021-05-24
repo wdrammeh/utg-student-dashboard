@@ -12,7 +12,6 @@ import java.awt.*;
 
 public class TodoExhibition extends KDialog {
 
-
     public TodoExhibition(TodoSelf theTask){
         super("Task");
         setModalityType(KDialog.DEFAULT_MODALITY_TYPE);

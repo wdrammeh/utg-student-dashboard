@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 
 public class KMenuItem extends JMenuItem implements Preference {
 
-
     public KMenuItem(String text){
         super(text);
         setPreferences();

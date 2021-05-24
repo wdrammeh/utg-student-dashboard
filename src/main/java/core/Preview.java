@@ -11,11 +11,13 @@ import java.awt.*;
 
 public class Preview extends KDialog {
 
-
     /**
      * Creates a new preview dialog on the given root.
      * This dialog may be shown while waiting on some tasks to finish.
      * As of this implementation, the preview appears only at start up.
+     *
+     * The Preview is also intended for extended operations: for example,
+     * during "preparing grounds" on a version update.
      */
     public Preview(Component root){
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);

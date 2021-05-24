@@ -87,7 +87,7 @@ public class Welcome extends KDialog {
         final KPanel textPanel = new KPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.addAll(topPanel,
-                head("v"+Dashboard.VERSION),
+                head(String.valueOf(Dashboard.VERSION)),
                 write(broughtString, 70),
                 head("Dedication"), write(dedicationText, 90),
                 head("System Requirement"), write(requirementText, 190),

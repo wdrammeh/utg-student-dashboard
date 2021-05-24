@@ -181,14 +181,14 @@ public class NotificationActivity implements Activity {
     }
 
     /**
-     * For clearing dashboard notifications
+     * For clearing dashboard notifications.
      */
     private ActionListener clearAction() {
         return e-> {
             if (!Notification.NOTIFICATIONS.isEmpty()) {
-                if (App.showYesNoCancelDialog("Clear", "This action will clear the notifications. Continue?.\n" +
+                if (App.showYesNoCancelDialog("Clear", "This action will remove all the notifications. Continue?.\n" +
                                 (unreadCount == 0 ? "" : "You currently have "+ Globals.checkPlurality(unreadCount,
-                                        "notifications")+" that are unread."))) {
+                                        "notifications")+" that are not read."))) {
                     for (Notification notification : Notification.NOTIFICATIONS) {
                         dashboardPanel.remove(notification.getLayer());
                     }

@@ -220,7 +220,7 @@ public class SummerModule {
 
 
     public static class SummerModuleEditor extends SummerModuleAdder {
-        private Course target;
+        private final Course target;
 
         private SummerModuleEditor(Course summerCourse){
             super();

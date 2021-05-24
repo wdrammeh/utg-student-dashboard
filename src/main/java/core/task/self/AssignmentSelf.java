@@ -493,4 +493,5 @@ public class AssignmentSelf {
             SwingUtilities.invokeLater(()-> this.setVisible(true));
         }
     }
+
 }

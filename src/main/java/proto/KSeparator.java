@@ -5,7 +5,6 @@ import java.awt.*;
 
 public class KSeparator extends JSeparator implements Preference {
 
-
     public KSeparator(Dimension dimension) {
         super();
         setPreferences();

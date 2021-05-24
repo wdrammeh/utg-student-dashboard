@@ -264,8 +264,7 @@ public class App {
      * Convenient way of suppressing exceptions.
      * This prints the StackTrace of the exception.
      *
-     * Todo: should Dashboard implements report system,
-     *  this will be useful.
+     * Should Dashboard implement report system, this will be useful.
      */
     public static void silenceException(Exception e){
         e.printStackTrace();

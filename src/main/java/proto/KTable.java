@@ -13,7 +13,6 @@ import java.awt.*;
  */
 public class KTable extends JTable implements Preference {
 
-
     public KTable(KTableModel kTableModel){
         super();
         setModel(kTableModel);
