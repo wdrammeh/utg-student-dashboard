@@ -31,6 +31,7 @@ public class TodoSelf {
     private transient TodoExhibition exhibition;
     private transient KPanel layerPanel;
 
+
     public TodoSelf(String desc, int duration){
         this(desc, duration, MDate.now(), true);
         initializeTimer(Globals.DAY);

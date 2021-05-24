@@ -18,14 +18,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Or NotificationSelf
- * The serialization approach utilized by this class may not be compatible with
- * later versions of Dashboard.
+ * Note: The serialization approach utilized by this class
+ * may not be compatible with later versions of Dashboard.
  */
 public class Notification {
     private String heading;
     private String text;
-    private String information; // dialog parses this same text, if the description is null.
+    private String information; // dialog parses this same text, if the description has no text.
     private boolean isRead;
     private Date time;
     private transient Exhibitor shower;
@@ -70,12 +69,12 @@ public class Notification {
         return shower;
     }
 
-    //This is an enquiry
+    // This is an enquiry
     public boolean isRead(){
         return isRead;
     }
 
-    //This is an update
+    // This is an update
     private void justRead(){
         isRead = true;
         layer.innerLabel.setForeground(null);

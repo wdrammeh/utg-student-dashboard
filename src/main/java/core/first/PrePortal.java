@@ -30,7 +30,7 @@ import java.util.StringJoiner;
  */
 public class PrePortal {
     private static String email, password, temporaryName;
-    private static FirefoxDriver driver; // may be delivered to Portal after task
+    private static FirefoxDriver driver; // could be delivered to Portal after task?
     private static WebDriverWait loadWaiter;
     private static boolean isTerminated;
     public static final ArrayList<String> USER_DATA = new ArrayList<>();

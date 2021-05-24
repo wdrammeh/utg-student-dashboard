@@ -184,4 +184,5 @@ public class AssignmentCreator extends KDialog {
         final String sep = MDate.VAL_SEP;
         return dField.getText()+sep+mField.getText()+sep+yField.getText();
     }
+
 }

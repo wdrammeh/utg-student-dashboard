@@ -6,7 +6,6 @@ import javax.swing.*;
 
 public class KCheckBox extends JCheckBox implements Preference {
 
-
     public KCheckBox(String text){
         super(text);
         setPreferences();

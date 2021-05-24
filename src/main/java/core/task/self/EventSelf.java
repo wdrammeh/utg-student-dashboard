@@ -31,6 +31,7 @@ public class EventSelf {
     private transient KButton canceller;
     private transient KPanel eventLayer;
 
+
     // where deadline is in date only, and no time, as in the AssignmentSelf type above
     public EventSelf(String name, String deadline){
         this(name, deadline, true);

@@ -15,7 +15,6 @@ import java.awt.event.MouseEvent;
  */
 public class KLabel extends JLabel implements Preference {
 
-
     public KLabel(){
         super();
         setPreferences();

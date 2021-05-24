@@ -907,6 +907,9 @@ public class SettingsUI implements Activity {
         }
     }
 
+    /**
+     * Loads up default, developer, settings.
+     */
     public static void loadDefaults() {
         userChecking.setSelected(true);
         Settings.noVerifyNeeded = false;

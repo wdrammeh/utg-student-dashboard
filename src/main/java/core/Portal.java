@@ -189,6 +189,7 @@ public class Portal {
                 MDate.format(lastRegistrationNoticeUpdate);
     }
 
+    // Todo: Classes that delegate to this should catch a NullPointerException or some, return issuing a connection-lost report
     public static WebElement getTabElement(String elementText, List<WebElement> tabs){
         for (WebElement tab : tabs) {
             if (tab.getText().equalsIgnoreCase(elementText)) {

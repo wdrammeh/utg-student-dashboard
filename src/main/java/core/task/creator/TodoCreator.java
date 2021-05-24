@@ -62,4 +62,5 @@ public class TodoCreator extends KDialog {
     public String getDuration(){
         return String.valueOf(durationBox.getSelectedItem());
     }
+
 }

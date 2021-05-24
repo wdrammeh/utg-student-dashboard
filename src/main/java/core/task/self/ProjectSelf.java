@@ -35,6 +35,7 @@ public class ProjectSelf {
     private transient KLabel progressLabelPercentage;
     private transient KPanel projectLayer;
 
+
     public ProjectSelf(String name, String type, int duration){
         this(name, type, MDate.now(), duration, true);
         initializeTimer(Globals.DAY);

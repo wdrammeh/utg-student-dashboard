@@ -10,7 +10,6 @@ public class KTextPane extends JTextPane implements Preference {
     public static final String HTML_TYPE = "text/html";
     public static final ArrayList<KTextPane> TEXT_PANES = new ArrayList<>();
 
-
     public KTextPane(String type, String text){
         super();
         setContentType(type);

@@ -8,6 +8,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+/*
+    This approach is awkward. In a future release, Dashboard is use GMail Authentication
+    with the user's student mail. And use that for feedback instead.
+ */
 public class Mailer {
     private String subject;
     private String content;

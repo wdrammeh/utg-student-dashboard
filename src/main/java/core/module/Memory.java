@@ -25,7 +25,7 @@ public class Memory {
      * Never directly add or withdraw from this list - all such must be directed
      * by the monitor.
      */
-    private static final ArrayList<Course> VERIFIED_LIST = new ArrayList<Course>() {
+    private static final ArrayList<Course> VERIFIED_LIST = new ArrayList<>() {
         @Override
         public boolean add(Course course) {
             return course.isVerified() && super.add(course);

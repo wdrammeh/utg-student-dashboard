@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
  */
 public class KTextArea extends JTextArea implements Preference {
 
-
     public KTextArea(){
         super();
         setPreferences();
