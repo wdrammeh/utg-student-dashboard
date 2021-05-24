@@ -13,9 +13,9 @@ and communicates with it at the student's will.
 ## Install
 Download the standalone installation file per your operating system:
 
-| Target Platform | Download Link |
+| Operating System | Download Link |
 | ----- | ----- |
-| Microsoft Windows | _coming soon..._ |
+| Microsoft Windows | https://drive.google.com/file/d/1CTeMiF1MVIzeQeRGRt2E-EJ6N1kY2ISW/view?usp=sharing |
 | Linux | _coming soon..._ |
 | Mac iOS | _coming soon..._ |
 
