@@ -13,10 +13,10 @@ and communicates with it at the student's will.
 ## Install
 Download the standalone installation file per your operating system:
 
-| Operating System | Download Link |
+| Operating System | Download Dashboard |
 | ----- | ----- |
-| Microsoft Windows | https://drive.google.com/file/d/1CTeMiF1MVIzeQeRGRt2E-EJ6N1kY2ISW/view?usp=sharing |
-| Linux | _coming soon..._ |
+| Microsoft Windows (MSI Package) | https://drive.google.com/file/d/1CTeMiF1MVIzeQeRGRt2E-EJ6N1kY2ISW/view?usp=sharing |
+| Linux (Debian Package) | _coming soon..._ |
 | Mac iOS | _coming soon..._ |
 
 If you wish you may check out [what's new](ChangeLog.md) about this release.
