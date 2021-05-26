@@ -1,4 +1,5 @@
-import core.Board;
+package core;
+
 import utg.Dashboard;
 
 public class Tester {

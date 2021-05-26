@@ -1,3 +1,5 @@
+package core;
+
 import proto.KFrame;
 
 import java.awt.*;

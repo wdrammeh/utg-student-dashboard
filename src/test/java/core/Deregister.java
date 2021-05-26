@@ -1,3 +1,5 @@
+package core;
+
 public class Deregister {
 
     public static void main(String[] args) {

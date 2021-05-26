@@ -1,4 +1,5 @@
-import core.Portal;
+package core;
+
 import core.driver.MDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;

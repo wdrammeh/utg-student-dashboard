@@ -1,4 +1,5 @@
-import core.Portal;
+package core;
+
 import core.driver.MDriver;
 import core.module.RegisteredCourse;
 import org.openqa.selenium.By;
