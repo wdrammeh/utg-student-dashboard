@@ -16,7 +16,7 @@ Download the standalone installation file per your operating system:
 | Operating System | Download Dashboard |
 | ----- | ----- |
 | Microsoft Windows (MSI Package) | https://drive.google.com/file/d/1CTeMiF1MVIzeQeRGRt2E-EJ6N1kY2ISW/view?usp=sharing |
-| Linux (Debian Package) | _coming soon..._ |
+| Linux (Debian Package) | https://drive.google.com/file/d/1iksH4CdcTtbkyLm-B1WsO1DkjunOIMKC/view?usp=sharing |
 | Mac iOS | _coming soon..._ |
 
 If you wish you may check out [what's new](ChangeLog.md) about this release.
@@ -61,12 +61,7 @@ at every successful login.
 - And much more...
 
 ## System Requirements
-Presently, Dashboard depends on the traditional **Firefox Web Browser**
-for the "scrapping" functionality.
-Therefore, **Firefox** is a requirement for Dashboard to effectively
-communicate with the Portal.
-
-We wish to fix this soon.
+- Firefox Web Browser
 
 ## "A journey of thousand miles begins with a single step"
 Dashboard is an ambitious project, and this is only the beginning.
