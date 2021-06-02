@@ -1,16 +1,20 @@
+- Todo: ensure a 'single instance' of the program.
+        This particularly becomes an issue on Linux systems where a separate launch
+        icon is generated at runtime. And most importantly, contents are not serialized
+        on the go. This means multiple Dashboard instances may not be in sync.
 - Reindex resources completely without signing out (or re-signing in)
 - Option to maximize (and restore) the bodyLayer
 - Transcript export customization
-- Remove static-orientation of task types
+-* Remove static-orientation of task types
 - Student auditing tool
 - Improve the design for "Guest" users
 - Custom OptionPane dialogs... (Do not ask me again)
-- Custom user password; as defaults to the Mat. Number
-- Lock Dashboard at startup
+-* Custom user password; as defaults to the Mat. Number
+-* Lock Dashboard at startup
 - Research on the Selenium Driver
 - Flexible driver choices functionality
 - Minimize Portal wait time - remove unnecessary waitings
-- Registration functionality
-- Well documentation; generate javadoc
+-* Registration functionality
+-* Well documentation; generate javadoc
 - Student Forum
 - Student voting system

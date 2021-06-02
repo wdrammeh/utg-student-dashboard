@@ -1,6 +1,6 @@
 # Dashboard Logic
 
-`Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>`
+`(C) 2021  Muhammed W. Drammeh`
 
 The life process of Dashboard includes important series of sets of calls
 known as 'Sequences'.  These include **Verification**, **Launch**,

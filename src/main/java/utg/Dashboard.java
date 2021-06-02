@@ -2,7 +2,7 @@
 UTG Student Dashboard:
     "A student management system for the University of The Gambia"
 
-Copyright (C) 2021  Muhammed W. Drammeh <md21712494@utg.edu.gm>
+Copyright (C) 2021  Muhammed W. Drammeh. All rights reserved.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -36,15 +36,18 @@ import java.util.HashMap;
 /**
  * @author Muhammed W. Drammeh <md21712494@utg.edu.gm>
  *
- * This is the actual runner type of the program.
+ * This is the actual "runner" type of the program.
  * In a nutshell, it reads from a serializable state if existed,
  * or triggers a new instance if not - or otherwise found inconsistent.
  * This class defines the normal process-flow of the Dashboard.
- * Please read the logic file.
+ * Please read the "Logic" file.
+ * @see Serializer
+ * @see Transition
+ * @see Board
  */
 public class Dashboard {
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version("2021.2");
+    public static final Version VERSION = new Version("2021.6");
     private static boolean isAuthentic = true;
     private static boolean isFirst;
 
@@ -62,6 +65,7 @@ public class Dashboard {
                 } else {
                     final boolean isAuthentic = Boolean.parseBoolean(lastConfigs.get("isAuthentic"));
                     if (!isAuthentic) {
+                        PREVIEW.dispose();
                         reportAuthenticationError();
                     }
                     final Version recentVersion = new Version(lastConfigs.get("version"));
@@ -121,6 +125,11 @@ public class Dashboard {
         Serializer.toDisk(configs, Serializer.inPath("configs.ser"));
     }
 
+    /**
+     * Gets the configurations when Dashboard was last used.
+     * On a normal run, this should be invoked, but only once.
+     * @see #storeConfigs()
+     */
     private static HashMap<String, String> getLastConfigs(){
         final HashMap<String, String> map = new HashMap<>();
         final Object configObj = Serializer.fromDisk(Serializer.inPath("configs.ser"));
@@ -135,7 +144,7 @@ public class Dashboard {
     }
 
     /**
-     * Triggers a new Dashboard instance.
+     * Triggers a whole new Dashboard instance.
      * This happens, of course, if no data are found to deserialize.
      * The user might have signed out, or has actually never launched Dashboard.
      */
@@ -148,10 +157,10 @@ public class Dashboard {
     }
 
     /**
-     * This is a security measure invoked if the current userName does not matches
-     * the serialized userName.
-     * The user will be asked of the previous user's matriculation number.
-     * And Dashboard will not build until such mat. number is correct.
+     * This is a security measure invoked if the current userName
+     * does not matches the serialized userName.
+     * The user will be asked of the previous user's Matriculation Number.
+     * Dashboard should not build until such Mat. Number is correct.
      */
     private static void verifyUser(boolean initialize){
         if (initialize) {
@@ -159,6 +168,7 @@ public class Dashboard {
                 Student.initialize();
                 if (Student.isGuest()) {
                     rebuildNow(false);
+                    return;
                 }
             } catch (Exception e) {
                 App.silenceException("Failed to read user data. Launching a new instance...");
@@ -168,7 +178,7 @@ public class Dashboard {
         }
 
         PREVIEW.setVisible(false);
-        final String matNumber = requestMatNumber();
+        final String matNumber = requestPassword();
         if (matNumber.equals(Student.getMatNumber())) {
             PREVIEW.setVisible(true);
             rebuildNow(false);
@@ -180,7 +190,7 @@ public class Dashboard {
         }
     }
 
-    private static String requestMatNumber(){ // not necessarily - should be requestPassword() in a future implementation
+    private static String requestPassword(){
         final String studentName = Student.getFullNamePostOrder();
         final String input = App.requestInput(null, "Dashboard",
                 "This Dashboard belongs to '"+studentName+"'.\n" +
@@ -188,13 +198,13 @@ public class Dashboard {
         if (input == null) {
             System.exit(0);
         }
-        return Globals.hasText(input) ? input : requestMatNumber();
+        return Globals.hasText(input) ? input : requestPassword();
     }
 
     /**
      * Builds the Dashboard from a serializable state.
-     * initialize determines whether the user's data is to be loaded,
-     * if it was not already.
+     * Where initialize determines whether the user's data are to be loaded,
+     * if were not already.
      */
     private static void rebuildNow(boolean initialize){
         if (initialize) {
@@ -232,7 +242,7 @@ public class Dashboard {
 
     public static void reportAuthenticationError() {
         App.reportWarning("Authentication Error",
-                "This Dashboard is either not verified, or no longer supported.\n" +
+                "This program is either not verified, or no longer supported.\n" +
                         "For more info contact the developers: '"+ Mailer.DEVELOPER_MAIL +"'.");
         System.exit(0);
     }

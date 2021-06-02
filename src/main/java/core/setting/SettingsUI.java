@@ -827,9 +827,13 @@ public class SettingsUI implements Activity {
             @Override
             public void mouseClicked(MouseEvent e) {
                 new Thread(()-> {
-                    updateLabel.setEnabled(false);
-                    Internet.checkForUpdate(true);
-                    updateLabel.setEnabled(true);
+                    if (Internet.isInternetAvailable()) {
+                        updateLabel.setEnabled(false);
+                        Internet.checkForUpdate(true);
+                        updateLabel.setEnabled(true);
+                    } else {
+                        App.reportNoInternet();
+                    }
                 }).start();
             }
         });

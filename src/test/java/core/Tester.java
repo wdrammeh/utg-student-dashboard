@@ -5,8 +5,7 @@ import utg.Dashboard;
 public class Tester {
 
     public static void main(String[] args) {
-        Dashboard.storeConfigs();
-        System.exit(0);
+        run(false);
     }
 
     /**

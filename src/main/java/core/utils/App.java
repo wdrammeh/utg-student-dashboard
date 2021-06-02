@@ -25,9 +25,9 @@ public class App {
 
 
     /**
-     * This method is stagnant. Ans so for uniformity only.
-     * The given iconName must be a pre-existing name in the icons dir.,
-     * the URL-pointer to which is to be returned.
+     * This method is stagnant. And so for uniformity only.
+     * The given iconName must be a pre-existing name in the icons
+     * resource dir. - the URL-pointer to which is to be returned.
      */
     public static URL getIconURL(String iconName){
         return App.class.getResource("/icons/"+iconName);

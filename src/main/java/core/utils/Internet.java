@@ -1,6 +1,7 @@
 package core.utils;
 
 import core.alert.Notification;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +17,7 @@ import java.util.Date;
 
 public class Internet {
     public static final String REPO_URL = "https://github.com/w-drammeh/utg-student-dashboard";
-    public static final String DOWNLOAD_URL = REPO_URL+"#Install"; // Todo check these out
+    public static final String DOWNLOAD_URL = REPO_URL+"#install"; // Todo check these out
 
 
     /**
@@ -54,58 +55,63 @@ public class Internet {
     }
 
     public static void checkForUpdate(boolean requested){
+        Element verElement = null;
         try {
-            final Document doc = Jsoup.connect(REPO_URL).get();
-            final Element verElement = doc.selectFirst(".markdown-body > p:nth-child(2) > code:nth-child(1)");
-            if (verElement == null) {
-                Dashboard.setAuthentic(false);
-                Dashboard.reportAuthenticationError();
-            }
-
-            final Version latestVersion = new Version(verElement.text());
-            final int comparison = Dashboard.VERSION.compare(latestVersion);
-            if (comparison == Version.LESS) {
-                final Date lastDeprecateTime = Dashboard.VERSION.getDeprecateTime();
-                final String deprecateTime;
-                if (lastDeprecateTime == null) {
-                    deprecateTime = MDate.daysAfter(new Date(), Version.MAX_DEPRECATE_TIME);
-                    Notification.create("Update", "A new update is available",
-                            "<p>There is a new Dashboard release. Please <a href=" + DOWNLOAD_URL + ">download</a> it now.</p>" +
-                                    "<p><b>Please Note:</b> Your Dashboard will be outdated by '" + deprecateTime + "'.</p>");
-                } else {
-                    deprecateTime = MDate.format(lastDeprecateTime);
-                }
-
-                final boolean updateNow = App.showYesNoCancelDialog("Update Available",
-                        "A new version is available: '"+latestVersion+"'. Do you want to update now?");
-                if (updateNow) {
-                    try {
-                        visit(DOWNLOAD_URL);
-                    } catch (Exception e) {
-                        App.reportError(e);
-                    }
-                } else {
-                    App.reportWarning("Update Warning",
-                            "Please note that you must update to the latest version on, or before '"+deprecateTime+"'.");
-                }
-                Dashboard.VERSION.setDeprecateTime(MDate.parse(deprecateTime));
-            } else if (comparison == Version.EQUAL) {
-                if (requested) {
-                    App.reportInfo("Up to Date", "Your Dashboard is up to date. Check back later for updates.");
-                } else {
-                    App.silenceInfo("Dashboard is up to date.");
-                }
-            } else if (comparison == Version.GREATER) { // how possible?
-                App.reportWarning("Unexpected Version", "Your Dashboard Version - '"+Dashboard.VERSION+"' - " +
-                        "is over the latest version - '"+latestVersion+"'.\n" +
-                        "Please contact the developers for this issue.");
-            }
+            final Document document = Jsoup.connect(REPO_URL).get();
+            verElement = document.selectFirst(".markdown-body > p:nth-child(2) > code:nth-child(1)");
+        } catch (HttpStatusException httpStatusError) {
+            Dashboard.setAuthentic(false);
+            Dashboard.reportAuthenticationError();
         } catch (Exception e) {
             if (requested) {
                 App.reportError(e);
             } else {
                 App.silenceException(e);
             }
+            return;
+        }
+
+        if (verElement == null) {
+            return;
+        }
+
+        final Version latestVersion = new Version(verElement.text());
+        final int comparison = Dashboard.VERSION.compare(latestVersion);
+        if (comparison == Version.LESS) {
+            final Date lastDeprecateTime = Dashboard.VERSION.getDeprecateTime();
+            final String deprecateTime;
+            if (lastDeprecateTime == null) {
+                deprecateTime = MDate.daysAfter(new Date(), Version.MAX_DEPRECATE_TIME);
+                Notification.create("Update", "A new update is available",
+                        "<p>There is a new Dashboard release. Please <a href=" + DOWNLOAD_URL + ">download</a> it now.</p>" +
+                                "<p><b>Please Note:</b> Your Dashboard will be outdated by '" + deprecateTime + "'.</p>");
+            } else {
+                deprecateTime = MDate.format(lastDeprecateTime);
+            }
+
+            final boolean updateNow = App.showYesNoCancelDialog("Update Available",
+                    "A new version is available: '"+latestVersion+"'. Do you want to update now?");
+            if (updateNow) {
+                try {
+                    visit(DOWNLOAD_URL);
+                } catch (Exception e) {
+                    App.reportError(e);
+                }
+            } else {
+                App.reportWarning("Update Warning",
+                        "Please note that you must update to the latest version on, or before '"+deprecateTime+"'.");
+            }
+            Dashboard.VERSION.setDeprecateTime(MDate.parse(deprecateTime));
+        } else if (comparison == Version.EQUAL) {
+            if (requested) {
+                App.reportInfo("Up to Date", "Your Dashboard is up to date. Check back later for updates.");
+            } else {
+                App.silenceInfo("Dashboard is up to date.");
+            }
+        } else if (comparison == Version.GREATER) { // how possible?
+            App.reportWarning("Unexpected Version", "Your Dashboard Version - '"+Dashboard.VERSION+"' - " +
+                    "is over the latest version - '"+latestVersion+"'.\n" +
+                    "Please contact the developers for this issue.");
         }
     }
 
