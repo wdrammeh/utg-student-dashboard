@@ -32,6 +32,7 @@ import javax.swing.*;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Muhammed W. Drammeh <md21712494@utg.edu.gm>
@@ -53,6 +54,7 @@ public class Dashboard {
 
 
     public static void main(String[] args) {
+        statusCheck();
         PREVIEW.setVisible(true);
         final File rootDir = new File(Serializer.ROOT_DIR);
         if (rootDir.exists()) {
@@ -112,6 +114,21 @@ public class Dashboard {
             }
         } else {
             freshStart();
+        }
+    }
+
+    /**
+     * Programmatically employed to prevent Dashboard from running in parallel,
+     * this function may simply let this launch to proceed, or prevent it somehow.
+     */
+    private static void statusCheck(){
+        final List<ProcessHandle> handles = ProcessHandle.allProcesses().toList();
+        for (ProcessHandle handle : handles) {
+            final String command = handle.info().command().map(String::toString).orElse("");
+            if (command.contains("UTG Student Dashboard")) {
+                App.silenceInfo("Dashboard is already running.");
+                System.exit(0);
+            }
         }
     }
 

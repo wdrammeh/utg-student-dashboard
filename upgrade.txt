@@ -1,7 +1,3 @@
-- Todo: ensure a 'single instance' of the program.
-        This particularly becomes an issue on Linux systems where a separate launch
-        icon is generated at runtime. And most importantly, contents are not serialized
-        on the go. This means multiple Dashboard instances may not be in sync.
 - Reindex resources completely without signing out (or re-signing in)
 - Option to maximize (and restore) the bodyLayer
 - Transcript export customization
