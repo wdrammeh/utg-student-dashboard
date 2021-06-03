@@ -18,7 +18,7 @@ import java.io.*;
 import static core.utils.Globals.joinPaths;
 
 public class Serializer {
-    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), ".dashboard");
+    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), "Dashboard");
 
 
     /**
