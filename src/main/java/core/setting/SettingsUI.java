@@ -8,7 +8,6 @@ import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.Internet;
 import core.utils.MComponent;
 import proto.*;
 
@@ -823,20 +822,20 @@ public class SettingsUI implements Activity {
         });
 
         final KLabel updateLabel = newSignLabel("Check for Updates", Color.BLUE);
-        updateLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                new Thread(()-> {
-                    if (Internet.isInternetAvailable()) {
-                        updateLabel.setEnabled(false);
-                        Internet.checkForUpdate(true);
-                        updateLabel.setEnabled(true);
-                    } else {
-                        App.reportNoInternet();
-                    }
-                }).start();
-            }
-        });
+//        updateLabel.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                new Thread(()-> {
+//                    if (Internet.isInternetAvailable()) {
+//                        updateLabel.setEnabled(false);
+//                        Internet.checkForUpdate(true);
+//                        updateLabel.setEnabled(true);
+//                    } else {
+//                        App.reportNoInternet();
+//                    }
+//                }).start();
+//            }
+//        });
 
         final KPanel layoutPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
         layoutPanel.addAll(new KLabel("You may wish to:", H_FONT),

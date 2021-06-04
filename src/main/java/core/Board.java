@@ -386,7 +386,7 @@ public final class Board extends KFrame {
                 onlineTimer.stop();
             }
         }).start());
-        POST_PROCESSES.add(onlineTimer::start);
+//        POST_PROCESSES.add(onlineTimer::start);
     }
 
     @Override
