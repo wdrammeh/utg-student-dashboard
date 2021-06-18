@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Handles driver-related operations, including setting and donating them.
  * In a future release, Dashboard will be flexible with its driver specification,
- * which is currently restricted to only mozilla.
+ * which is currently restricted to only mozilla firefox.
  */
 public class MDriver {
     private static boolean isSetup;

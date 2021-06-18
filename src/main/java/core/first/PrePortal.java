@@ -25,7 +25,7 @@ import java.util.StringJoiner;
  * Todo: to save time, setting-up of the driver should begin (separately) since {@link utg.Dashboard}.
  *  And this type is to wait on that process, if not completed already.
  *
- * Also, Dashboard is to support multiple driver in a future release.
+ * Also, Dashboard is to support multiple drivers in a future release.
  * @see MDriver
  */
 public class PrePortal {

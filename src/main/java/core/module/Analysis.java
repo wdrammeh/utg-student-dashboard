@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.StringJoiner;
 
 /**
- * The Analysis type is stand-alone - it does the analysis, presents the analysis.
+ * The Analysis type is stand-alone: it does the analysis, presents the analysis.
  * By that, it subclasses its collaborators like the performance-sketch and present-dialogues.
  */
 public class Analysis implements Activity {

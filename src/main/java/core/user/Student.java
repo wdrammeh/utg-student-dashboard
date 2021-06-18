@@ -616,8 +616,9 @@ public class Student {
         final String homeDir = System.getProperty("user.home");
         final String picturesDir = Globals.joinPaths(homeDir, "Pictures");
         final JFileChooser fileChooser = new JFileChooser(new File(picturesDir).exists() ? picturesDir : homeDir);
-        fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setDialogTitle("Select Image");
+        fileChooser.setMultiSelectionEnabled(false);
         final int selection = fileChooser.showOpenDialog(actualParent);
         if (selection == JFileChooser.APPROVE_OPTION) {
             fireIconChange(fileChooser.getSelectedFile(), actualParent);

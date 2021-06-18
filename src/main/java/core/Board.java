@@ -28,39 +28,36 @@ import java.util.ArrayList;
 /**
  * @author Muhammed W. Drammeh <md21712494@utg.edu.gm>
  *
- * The ultimate class of UI.
+ * This is the ultimate class of User Interface.
  * When using Dashboard, the user actually interacts with an instance of this
- * child of KFrame, an hier to JFrame.
+ * child of {@link KFrame}, an hier to {@link JFrame}.
  *
- * I'll assume a height of about 20 - 30 pixels is consumed by the decoration of the platform.
- * thoraxPanel shall cover, at least, 230 pixels of height
- * bodyLayer (Panel), 450
- * Thus, the total dimension is roughly 1_000 x (680 - 700)
- *
- * It is important to explore the {@link Activity} interface, and implementing classes..
+ * @see Activity
  */
 public final class Board extends KFrame {
     /**
-     * The container onto which the 2 layers are placed.
+     * The container onto which the 2 layers
+     * (namely, thorax and body) are placed.
      * The contentPane is set to this.
      */
-    private static KPanel contentPanel;
+    private KPanel contentPanel;
     /**
-     * Has the cardLayout and responsible for bringing and discarding the main activities.
-     * it has a height of 450.
+     * Has the cardLayout, and responsible for bringing
+     * (and discarding) the main activities.
+     * Height: 450
      */
-    private static KPanel bodyLayer;
+    private KPanel bodyLayer;
     /**
      * The layout which shifts between the main activities:
-     * includes the outline buttons activities - 'Home', 'News', 'Tasks', 'Notifications';
+     * includes the outline-buttons activities - 'Home', 'News', 'Tasks', 'Notifications';
      * as well as the home-panel activities - 'Semester', 'Collection', 'Personalization',
      * 'Transcript', 'Analysis', 'FAQ', 'About'
      *
-     * Activities within the main activities are generally referred to as presents.
+     * Activities within the main activities are generally referred to as "presents".
      */
-    private static CardLayout cardLayout;
+    private CardLayout cardLayout;
     /**
-     * The runtime instance of Dashboard. Used for static access.
+     * The runtime instance of Dashboard. Used for public, static access.
      */
     private static Board instance;
     /**
@@ -88,12 +85,12 @@ public final class Board extends KFrame {
     private NotificationActivity alertActivity;
     public static final Thread SHUT_DOWN_HOOK = new Thread(Serializer::mountUserData);
     /**
-     * Some processes cannot be applied while Dashboard is building,
+     * Some processes cannot be applied while Dashboard is "building",
      * so they're packed here, and triggered simultaneously as soon as
-     * Dashboard is done building.
+     * Dashboard is done "building".
      * Do not misuse this by adding processes that can be done during build.
      */
-    public static final ArrayList<Runnable> POST_PROCESSES = new ArrayList<Runnable>() {
+    public static final ArrayList<Runnable> POST_PROCESSES = new ArrayList<>() {
         @Override
         public boolean add(Runnable runnable) {
             if (isReady) {
@@ -106,7 +103,7 @@ public final class Board extends KFrame {
 
 
     public Board() {
-        super("UTG Student Dashboard");
+        super(Globals.PROJECT_NAME);
         instance = Board.this;
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -140,7 +137,7 @@ public final class Board extends KFrame {
         }
 
         contentPanel = new KPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setLayout(new BorderLayout());
         setContentPane(contentPanel);
         setUpThorax();
         setUpBody();
@@ -386,7 +383,7 @@ public final class Board extends KFrame {
                 onlineTimer.stop();
             }
         }).start());
-//        POST_PROCESSES.add(onlineTimer::start);
+//        POST_PROCESSES.add(onlineTimer::start); Todo uncomment
     }
 
     @Override
@@ -434,7 +431,7 @@ public final class Board extends KFrame {
     /**
      * Generates the home-page (of the bodyLayer).
      * Consists of a series of panels referred to as the "home-panels";
-     * each of which provokes a main-activity.
+     * each of which provokes an activity shift.
      * @see #newHomePanel(String, String, int, int)
      */
     private JComponent generateHomePage(){
@@ -508,12 +505,13 @@ public final class Board extends KFrame {
      * It uses the given iconName and scales it to iWidth and iHeight.
      */
     private static KPanel newHomePanel(String text, String iconName, int iWidth, int iHeight){
-        final KLabel label = new KLabel(text, KFontFactory.createPlainFont(16));
-        final KPanel panel = new KPanel(new BorderLayout());
-        panel.add(new KPanel(new Dimension(225,30), label), BorderLayout.NORTH);
-        panel.add(KLabel.createIcon(iconName, iWidth, iHeight), BorderLayout.CENTER);
-        panel.setCursor(MComponent.HAND_CURSOR);
-        panel.addMouseListener(new MouseAdapter() {
+        final Font originalLabelFont = KFontFactory.createPlainFont(16);
+        final KLabel label = new KLabel(text, originalLabelFont);
+        final KPanel homePanel = new KPanel(new BorderLayout());
+        homePanel.add(new KPanel(new Dimension(225,30), label), BorderLayout.NORTH);
+        homePanel.add(KLabel.createIcon(iconName, iWidth, iHeight), BorderLayout.CENTER);
+        homePanel.setCursor(MComponent.HAND_CURSOR);
+        homePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 label.setFont(KFontFactory.createBoldFont(17));
@@ -521,10 +519,10 @@ public final class Board extends KFrame {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                label.setFont(KFontFactory.createPlainFont(16));
+                label.setFont(originalLabelFont);
             }
         });
-        return panel;
+        return homePanel;
     }
 
     /**
@@ -533,22 +531,21 @@ public final class Board extends KFrame {
      * @see #showCard(String)
      */
     public static void addCard(Component component, String name){
-        cardLayout.addLayoutComponent(bodyLayer.add(component), name);
+        instance.cardLayout.addLayoutComponent(instance.bodyLayer.add(component), name);
     }
 
     /**
-     * Requests to show a main-activity which on the bodyLayer with the given name.
+     * Requests to show a main-activity on the bodyLayer with the given name.
      * A component with the specified name must have been added  already.
      * @see #addCard(Component, String)
      */
     public static void showCard(String name){
-        cardLayout.show(bodyLayer, name);
+        instance.cardLayout.show(instance.bodyLayer, name);
     }
 
     /**
      * Returns the rootPane of the current instance of the Dashboard.
      * A shorthand way of calling Board.getInstance().getRootPane()
-     *
      * If the instance is null, returns null.
      */
     public static JRootPane getRoot(){

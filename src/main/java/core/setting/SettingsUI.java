@@ -46,15 +46,15 @@ public class SettingsUI implements Activity {
 
     public SettingsUI(){
         final JTabbedPane settingsTab = new JTabbedPane();
+        settingsTab.setFocusable(false);
         settingsTab.add(aboutComponent());
         settingsTab.add(profileComponent());
         settingsTab.add(settingsComponent());
 
         final Font tabFont = KFontFactory.createPlainFont(17);
-        final Color tabColor = Color.BLUE;
-        settingsTab.setTabComponentAt(0, new KLabel("About Me", tabFont, tabColor));
-        settingsTab.setTabComponentAt(1, new KLabel("Customize Profile", tabFont, tabColor));
-        settingsTab.setTabComponentAt(2, new KLabel("Customize Dashboard", tabFont, tabColor));
+        settingsTab.setTabComponentAt(0, new KLabel("About Me", tabFont));
+        settingsTab.setTabComponentAt(1, new KLabel("Customize Profile", tabFont));
+        settingsTab.setTabComponentAt(2, new KLabel("Customize Dashboard", tabFont));
 
         final KPanel settingsUI = new KPanel(new BorderLayout());
         settingsUI.add(new KPanel(new KLabel("Personalization", KFontFactory.BODY_HEAD_FONT, Color.BLUE)),
@@ -180,7 +180,7 @@ public class SettingsUI implements Activity {
         }
         final KButton contactButton = KButton.createIconifiedButton("plus.png", 20, 20);
         contactButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        contactButton.setToolTipText("Add Number");
+        contactButton.setToolTipText("Add");
         contactButton.addActionListener(e-> {
             final ArrayList<String> dialList = Student.getTelephones();
             if (dialList.size() >= 4) {
@@ -821,7 +821,8 @@ public class SettingsUI implements Activity {
             }
         });
 
-        final KLabel updateLabel = newSignLabel("Check for Updates", Color.BLUE);
+        final KLabel updateLabel = newSignLabel("Check for updates", Color.BLUE);
+//        Todo uncomment
 //        updateLabel.addMouseListener(new MouseAdapter() {
 //            @Override
 //            public void mouseClicked(MouseEvent e) {
@@ -878,20 +879,12 @@ public class SettingsUI implements Activity {
         for (UIManager.LookAndFeelInfo lookAndFeelInfo : Settings.allLooksInfo) {
             if (lookAndFeelInfo.getName().equals(lookName)) {
                 try {
-                    for (KFrame frame : KFrame.ALL_FRAMES) {
-                        UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                        SwingUtilities.updateComponentTreeUI(frame);
-                        frame.pack();
-                    }
-                    for (KDialog dialog : KDialog.ALL_DIALOGS) {
-                        UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                        SwingUtilities.updateComponentTreeUI(dialog);
-                        dialog.pack();
-                    }
+                    final KFrame instance = Board.getInstance();
+                    UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                    SwingUtilities.updateComponentTreeUI(instance);
+                    instance.pack();
                 } catch (Exception e1) {
-                    App.reportError(e1.getClass().getSimpleName(),
-                            "Unexpected error occurred setting the the UI to "+lookName+"\n" +
-                            "Error Message: "+e1.getMessage());
+                    App.reportError(e1);
                 }
                 break;
             }
@@ -899,15 +892,8 @@ public class SettingsUI implements Activity {
     }
 
     private static void effectBackgroundChanges() {
-        final Color background = Settings.currentBackground();
-        for (KPanel panel : KPanel.ALL_PANELS) {
-            if (panel.isReflectTheme()) {
-                panel.setBackground(background);
-            }
-        }
-        for (KTextPane textPane : KTextPane.TEXT_PANES) {
-            textPane.setBackground(background);
-        }
+        KPanel.effectBackgroundChanges();
+        KTextPane.effectBackgroundChanges();
     }
 
     /**

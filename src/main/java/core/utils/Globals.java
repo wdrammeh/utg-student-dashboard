@@ -13,7 +13,8 @@ public class Globals {
     public static final String NONE = "None";
     public static final String UNKNOWN = "Unknown";
     public static final String NEVER = "Never";
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String PROJECT_NAME = "UTG Student Dashboard";
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator"); // should be a field of App
 
 
 

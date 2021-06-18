@@ -24,7 +24,7 @@ public class FirstLaunch extends KDialog {
         @Override
         public void show(Container parent, String name) {
             super.show(parent, name);
-            setTitle("Startup Settings - "+name);
+            FirstLaunch.this.setTitle("Startup Settings - "+name);
         }
     };
 
@@ -209,7 +209,13 @@ public class FirstLaunch extends KDialog {
 
         final KButton skipButton = new KButton("Skip");
         skipButton.setStyle(KFontFactory.createPlainFont(15), Color.RED);
-        skipButton.addActionListener(e-> layout.show(contentPanel, "Image icon"));
+        skipButton.addActionListener(e-> {
+            Student.setStudentMail("");
+            SettingsUI.studentMailField.setText(Student.getVisibleStudentMail());
+            Student.setStudentPassword("");
+            SettingsUI.studentPsswdField.setText("");
+            layout.show(contentPanel, "Image icon");
+        });
 
         final KPanel emailPanel = new KPanel();
         emailPanel.setLayout(new BoxLayout(emailPanel, BoxLayout.Y_AXIS));

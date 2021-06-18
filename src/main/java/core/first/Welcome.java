@@ -34,7 +34,7 @@ public class Welcome extends KDialog {
     }
 
     private void addWelcomeActivity(){
-        final KPanel topPanel = new KPanel(new KLabel("UTG-STUDENT DASHBOARD", KFontFactory.createBoldFont(20)));
+        final KPanel topPanel = new KPanel(new KLabel("UTG STUDENT DASHBOARD", KFontFactory.createBoldFont(20)));
         topPanel.setBackground(Color.WHITE);
 
         final String broughtString = "Proudly brought to you by the <b>Dashboard Project</b>. Dashboard comes with solutions long-anticipated by the UTG Students, " +

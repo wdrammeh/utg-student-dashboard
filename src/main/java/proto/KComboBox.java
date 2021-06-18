@@ -4,7 +4,6 @@ import core.utils.MComponent;
 
 import javax.swing.*;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class KComboBox<E> extends JComboBox<E> implements Preference {
     private HashMap<String, Object> masks;
@@ -55,6 +54,7 @@ public class KComboBox<E> extends JComboBox<E> implements Preference {
     public void setPreferences() {
         setFont(KFontFactory.createPlainFont(15));
         setCursor(MComponent.HAND_CURSOR);
+        setFocusable(false);
     }
 
 }

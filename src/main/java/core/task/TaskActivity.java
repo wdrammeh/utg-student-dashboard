@@ -23,7 +23,6 @@ import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -61,14 +60,13 @@ public class TaskActivity implements Activity {
                 giveAssignmentsButton(), Box.createHorizontalStrut(25),
                 giveEventsButton());
 
-        final KButton returnButton = new KButton("Return");
+        final KButton returnButton = new KButton("Menu");
         returnButton.setFont(TASK_BUTTONS_FONT);
+        returnButton.setToolTipText("Tasks Menu");
         returnButton.addActionListener(e-> {
             cardLayout.show(inPanel,"Home");
             hintLabel.setText("");
         });
-        returnButton.setMnemonic(KeyEvent.VK_BACK_SPACE);
-        returnButton.setToolTipText("Back (Alt+Back_Space)");
 
         final KPanel upperPanel = new KPanel(new BorderLayout());
         upperPanel.add(new KPanel(hintLabel), BorderLayout.WEST);

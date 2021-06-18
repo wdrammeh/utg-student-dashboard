@@ -85,8 +85,8 @@ public class MComponent {
      */
     public static JToolTip preferredTip(){
         final JToolTip toolTip = new JToolTip();
-        toolTip.setFont(KFontFactory.createPlainFont(15));
-        toolTip.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
+        toolTip.setFont(KFontFactory.createPlainFont(14));
+        toolTip.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
         return toolTip;
     }
 

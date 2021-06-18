@@ -160,8 +160,7 @@ public class NotificationActivity implements Activity {
 
     /**
      * Do not call this method directly!
-     * Call Notification.create(#) instead.
-     * @see Notification#create(String, String, String)
+     * Call {@link Notification#create(String, String, String)} instead.
      */
     public static void join(Notification notification) {
         dashboardPanel.addAll(notification.getLayer(), Box.createVerticalStrut(5));
@@ -241,7 +240,7 @@ public class NotificationActivity implements Activity {
                 final boolean renew = Portal.startRenewingNotices(noticeDriver, userRequested);
                 if (renew) {
                     App.reportInfo("Successful",
-                            "The \"Admission\" and \"Registration\" Notices are been updated successfully.");
+                            "The 'Admission' and 'Registration' Notices are been updated successfully.");
                 } else {
                     App.reportError("Error", "Something went wrong while updating the Notices.\n" +
                             "Please try again.");

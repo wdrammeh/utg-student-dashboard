@@ -54,10 +54,6 @@ public class Dashboard {
 
 
     public static void main(String[] args) {
-        final String configs = Globals.joinLines(true, "Globals.userName()", VERSION,
-                MDate.format(VERSION.getDeprecateTime()));
-        Serializer.toDisk(configs, Serializer.inPath("configs.ser"));
-        System.exit(0);
         statusCheck();
         PREVIEW.setVisible(true);
         final File rootDir = new File(Serializer.ROOT_DIR);
@@ -122,7 +118,7 @@ public class Dashboard {
     }
 
     /**
-     * Programmatically employed to prevent Dashboard from running multiple
+     * Programmatically deployed to prevent Dashboard from running multiple
      * instances in parallel, this function may simply let this launch to proceed,
      * or prevent it somehow.
      */
@@ -130,7 +126,7 @@ public class Dashboard {
         final List<ProcessHandle> handles = ProcessHandle.allProcesses().toList();
         for (ProcessHandle handle : handles) {
             final String command = handle.info().command().map(String::toString).orElse("");
-            if (command.contains("UTG Student Dashboard")) {
+            if (command.contains(Globals.PROJECT_NAME)) {
                 App.silenceInfo("Dashboard is already running.");
                 System.exit(0);
             }
@@ -256,10 +252,6 @@ public class Dashboard {
 
     public static void setAuthentic(boolean authentic){
         isAuthentic = authentic;
-    }
-
-    public static boolean isAuthentic() {
-        return isAuthentic;
     }
 
     public static void reportAuthenticationError() {

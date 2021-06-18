@@ -79,9 +79,8 @@ public class TranscriptExporter {
 
     private void addMetaData(){
         document.addAuthor("Muhammed W. Drammeh");
-        document.addTitle("UTG Student Transcript");
-        document.addCreator("UTG-Student Dashboard");
-        document.addSubject("Unofficial UTG Transcript");
+        document.addTitle("UTG Transcript");
+        document.addCreator(Globals.PROJECT_NAME);
         document.addCreationDate();
     }
 

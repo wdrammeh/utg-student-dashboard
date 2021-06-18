@@ -362,7 +362,7 @@ public class About extends KDialog {
                 "academic penalty. In a nutshell, no part of this project may be modified or reproduced without the prior " +
                 "written permission of the authors. This product contains sensitive mechanisms, " +
                 "thus tampering with any can be detrimental to the students, or even burden the servers of the portal.</p>" +
-                "<p style='text-align: right;'><b>__Muhammed W Drammeh</b></p>";
+                "<p style='text-align: right;'><b>__Muhammed W. Drammeh</b></p>";
 
         final KPanel termsCard = new KPanel();
         termsCard.setLayout(new BoxLayout(termsCard, BoxLayout.Y_AXIS));
@@ -398,7 +398,7 @@ public class About extends KDialog {
 
             final KPanel lastNamePanel = new KPanel(new BorderLayout());
             lastNamePanel.add(new KPanel(new KLabel("Last Name:", hintFont)), BorderLayout.WEST);
-            lastNamePanel.add(new KPanel(new KLabel("Muhammed W", valueFont)), BorderLayout.CENTER);
+            lastNamePanel.add(new KPanel(new KLabel("Muhammed W.", valueFont)), BorderLayout.CENTER);
 
             final KPanel dobPanel = new KPanel(new BorderLayout());
             dobPanel.add(new KPanel(new KLabel("Date of Birth:", hintFont)), BorderLayout.WEST);

@@ -5,12 +5,8 @@ import core.utils.App;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class KFrame extends JFrame implements Preference {
-    public static final List<KFrame> ALL_FRAMES = new ArrayList<>();
-
 
     public KFrame(String title){
         super(title);
@@ -19,7 +15,7 @@ public class KFrame extends JFrame implements Preference {
 
     /**
      * Gets the icon used by frames and dialogs.
-     * Native systems use this as a launcher icon.
+     * Native systems might use this as a launcher icon.
      */
     public static Image getIcon() {
         final URL iPath = App.getIconURL("dashboard.png");
@@ -29,7 +25,6 @@ public class KFrame extends JFrame implements Preference {
     @Override
     public void setPreferences() {
         setIconImage(getIcon());
-        ALL_FRAMES.add(this);
     }
 
 }

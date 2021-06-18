@@ -3,12 +3,14 @@ package proto;
 import core.setting.Settings;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class KTextPane extends JTextPane implements Preference {
     public static final String PLAIN_TYPE = "text/plain";
     public static final String HTML_TYPE = "text/html";
-    public static final ArrayList<KTextPane> TEXT_PANES = new ArrayList<>();
+    private static final ArrayList<KTextPane> TEXT_PANES = new ArrayList<>();
+
 
     public KTextPane(String type, String text){
         super();
@@ -26,6 +28,13 @@ public class KTextPane extends JTextPane implements Preference {
                 "<body>" + htmlText + "</body>" +
                 "</html>";
         return new KTextPane(HTML_TYPE, formattedText);
+    }
+
+    public static void effectBackgroundChanges(){
+        final Color color = Settings.currentBackground();
+        for (KTextPane textPane : TEXT_PANES) {
+            textPane.setBackground(color);
+        }
     }
 
     public void setPreferences(){
