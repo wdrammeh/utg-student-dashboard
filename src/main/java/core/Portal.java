@@ -228,15 +228,29 @@ public class Portal {
      */
     public static void onPortal(FirefoxDriver driver){
         if (driver.getCurrentUrl().equals(CONTENTS_PAGE)) {
-            final List<WebElement> iGroup = driver.findElementsByClassName("info-group");
-            Student.setLevel(iGroup.get(2).getText().split("\n")[1]);
-            Student.setStatus(iGroup.get(3).getText().split("\n")[1]);
+            List<WebElement> iGroup = null;
+            try {
+                iGroup = driver.findElementsByClassName("info-group");
+                Student.setLevel(iGroup.get(2).getText().split("\n")[1]);
+                Student.setStatus(iGroup.get(3).getText().split("\n")[1]);
+            } catch (Exception ignored) {
+            }
 
-            final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
-            final String ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
-            Student.setSemester(ongoingSemester);
-            final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
-            Student.setCGPA(Double.parseDouble(CGPA));
+            if (iGroup != null) {
+                try {
+                    final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
+                    final String ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
+                    Student.setSemester(ongoingSemester);
+                } catch (Exception ignored) {
+                }
+            }
+
+            try {
+                final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+                Student.setCGPA(Double.parseDouble(CGPA));
+            } catch (Exception e) {
+                App.silenceWarning("Could not find CGPA.");
+            }
         }
         setLastLogin(new Date());
     }

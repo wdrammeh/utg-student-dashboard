@@ -7,12 +7,15 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Handles driver-related operations, including setting and donating them.
@@ -37,9 +40,12 @@ public class MDriver {
     public static synchronized FirefoxDriver forgeNew(boolean headless) {
         setup();
         try {
-            final FirefoxDriver foxDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(headless));
-            DRIVERS.add(foxDriver);
-            return foxDriver;
+            final FirefoxOptions options = new FirefoxOptions();
+            options.setHeadless(headless);
+            options.setLogLevel(FirefoxDriverLogLevel.fromLevel(Level.OFF));
+            final FirefoxDriver driver = new FirefoxDriver(options);
+            DRIVERS.add(driver);
+            return driver;
         } catch (Exception e) {
             App.silenceException(e);
             return null;
@@ -72,7 +78,7 @@ public class MDriver {
      * Attempts to log this driver in to the Portal using the given email and password.
      * A successful attempt leaves the driver at the {@link Portal#HOME_PAGE}.
      */
-    public static int attemptLogin(FirefoxDriver driver, String email, String password) {
+    public static int attemptLogin(RemoteWebDriver driver, String email, String password) {
         if (isOnPortal(driver)) {
             final int logoutAttempt = attemptLogout(driver);
             if (logoutAttempt == CONNECTION_LOST) {
@@ -107,7 +113,7 @@ public class MDriver {
 
     /**
      * Attempts a login to the Portal using the current user's credentials.
-     * @see #attemptLogin(FirefoxDriver, String, String)
+     * @see #attemptLogin(RemoteWebDriver, String, String)
      */
     public static int attemptLogin(FirefoxDriver driver) {
         return attemptLogin(driver, Student.getPortalMail(), Student.getPortalPassword());
@@ -117,7 +123,7 @@ public class MDriver {
      * Attempts to log this driver out of the Portal.
      * By the time this call returns, the driver will be at the {@link Portal#LOGIN_PAGE}
      */
-    public static int attemptLogout(FirefoxDriver driver) {
+    public static int attemptLogout(RemoteWebDriver driver) {
         if (isOnPortal(driver)) {
             try {
                 driver.navigate().to(Portal.LOGOUT_PAGE);
@@ -140,7 +146,7 @@ public class MDriver {
      * A driver is considered in the Portal if its url matches any of
      * {@link Portal#HOME_PAGE}, {@link Portal#CONTENTS_PAGE}, or {@link Portal#PROFILE_PAGE}
      */
-    public static boolean isOnPortal(FirefoxDriver driver) {
+    public static boolean isOnPortal(RemoteWebDriver driver) {
         final String url = driver.getCurrentUrl();
         return url.equals(Portal.HOME_PAGE) || url.equals(Portal.CONTENTS_PAGE) || url.equals(Portal.PROFILE_PAGE);
     }
@@ -159,8 +165,7 @@ public class MDriver {
         for (FirefoxDriver driver : DRIVERS) {
             try {
                 driver.quit();
-            } catch (Exception e) {
-                App.silenceException(e.getMessage());
+            } catch (Exception ignored) {
             }
         }
     }

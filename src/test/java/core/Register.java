@@ -2,8 +2,13 @@ package core;
 
 import core.driver.MDriver;
 import core.module.RegisteredCourse;
+import core.utils.App;
+import core.utils.Globals;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -19,9 +24,9 @@ public class Register {
     public static void main(String[] args) {
 //        This is a registration attempt
         final String email = "<address>@utg.edu.gm";
-        final String password = "<passwd>";
-        final String courseCode = ""; // to be provided
-        final String courseName = ""; // to be provided
+        final String password = "<psswd>";
+        final String courseCode = "mth101"; // to be provided
+        final String courseName = "Calculus 1"; // to be provided
         final String key = String.join(" ",
                 normalizeCode(courseCode), courseName.toLowerCase());
         final FirefoxDriver driver = MDriver.forgeNew(false);
@@ -68,7 +73,8 @@ public class Register {
                     nameJoiner.add(nameExt[i]);
                 }
                 final String[] dayTime = data.get(7).getText().split("[\s]");
-                final boolean registered = !data.get(data.size() - 1).getText().equalsIgnoreCase("Register");
+                final String action = data.get(data.size() - 1).getText();
+                final boolean registered = Globals.hasText(action) && !action.equalsIgnoreCase("Register");
                 foundRunningModules.add(new RunningCourse(data.get(1).getText(), nameJoiner.toString(), numbRegistered,
                         Integer.parseInt(data.get(3).getText()), data.get(4).getText(), data.get(5).getText(),
                         data.get(6).getText(), dayTime[0], dayTime[1].split("[-]")[0], registered));
@@ -83,7 +89,7 @@ public class Register {
                         "Class-Size<%d> Number-Registered<%d> Status<%s>%n", module.getCode(), module.getName(),
                         module.getLecturer(), module.getCampus(), module.getRoom(), module.getTime(), module.classSize,
                         module.numberRegistered, module.getStatus());
-                if (module.isConfirmed()) {
+                if (module.isRegistered) {
                     System.out.println("You've already registered this course.");
                     return;
                 } else if (module.isClassFull()) {
@@ -117,7 +123,7 @@ public class Register {
                     }
                     rIndex = i - 1;
                     final RunningCourse module = foundRunningModules.get(rIndex);
-                    if (module.isConfirmed()) {
+                    if (module.isRegistered) {
                         System.out.println("You've already registered that course.");
                         return;
                     } else if (module.isClassFull()) {
@@ -182,12 +188,14 @@ public class Register {
     public static class RunningCourse extends RegisteredCourse {
         private int classSize;
         private int numberRegistered;
+        private boolean isRegistered;
 
         public RunningCourse(String code, String name, int classSize, int numbRegistered, String lecturer,
                              String campus, String room, String day, String time, boolean registered) {
-            super(code, name, lecturer, campus, room, day, time, registered);
+            super(code, name, lecturer, campus, room, day, time, true);
             this.classSize = classSize;
             this.numberRegistered = numbRegistered;
+            this.isRegistered = registered;
         }
 
         public boolean isClassFull(){
@@ -195,7 +203,7 @@ public class Register {
         }
 
         public String getStatus(){
-            if (isConfirmed()) {
+            if (isRegistered) {
                 return "Registered";
             } else if (classSize == numberRegistered) {
                 return "Class full";
@@ -203,7 +211,19 @@ public class Register {
                 return "Not registered";
             }
         }
+    }
 
+    public static ChromeDriver forgeNew(boolean headless) {
+        try {
+            WebDriverManager.chromedriver().setup();
+            final ChromeOptions options = new ChromeOptions();
+            options.setHeadless(headless);
+            final ChromeDriver driver = new ChromeDriver(options);
+            return driver;
+        } catch (Exception e) {
+            App.silenceException(e);
+            return null;
+        }
     }
 
 }

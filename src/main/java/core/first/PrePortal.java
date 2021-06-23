@@ -113,7 +113,7 @@ public class PrePortal {
     private static void launchReading(){
         String firstName = "", lastName = "", matNumber = "", program = "", major = "",
                 school = "", division = "", nationality = "", MOA = "", YOA = "",
-                address = "", mStatus = "", DOB = "", tel = "", ongoingSemester, level, status;
+                address = "", mStatus = "", DOB = "", tel = "", ongoingSemester="", level="", status="";
 
 //        checking for busyness of the portal, i.e is Course Evaluation required?
         if (Portal.isEvaluationNeeded(driver)) {
@@ -149,7 +149,6 @@ public class PrePortal {
             Portal.setRegistrationNotice(registrationAlert.getText());
         } catch (Exception e) {
             App.silenceException("Failed to set 'Registration Notice'");
-            App.silenceException(e);
         }
 
         final String[] fullName = temporaryName.split(" ");
@@ -166,21 +165,32 @@ public class PrePortal {
         } catch (Exception e) {
             App.silenceException(e);
         }
-        final List<WebElement> iGroup = driver.findElementsByClassName("info-group");
-        level = iGroup.get(2).getText().split("\n")[1];
-        status = iGroup.get(3).getText().split("\n")[1];
+
+        List<WebElement> iGroup = null;
         try {
+            iGroup = driver.findElementsByClassName("info-group");
+            level = iGroup.get(2).getText().split("\n")[1];
+            status = iGroup.get(3).getText().split("\n")[1];
             school = iGroup.get(1).getText().split("\n")[1];
             school = school.replace("School of ", "");//if it's there
         } catch (Exception ignored) {
         }
-        try {
-            division = iGroup.get(0).getText().split("\n")[1];
-            division = division.replace("Division of ", "").replace("Department of", "");
-        } catch (Exception ignored) {
+
+        if (iGroup != null) {
+            try {
+                division = iGroup.get(0).getText().split("\n")[1];
+                division = division.replace("Division of ", "").replace("Department of", "");
+            } catch (Exception ignored) {
+            }
         }
-        final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
-        ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
+
+        if (iGroup != null) {
+            try {
+                final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
+                ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
+            } catch (Exception ignored) {
+            }
+        }
 
 //        going to the profile page
         if (isTerminated) {
@@ -277,7 +287,14 @@ public class PrePortal {
         final List<WebElement> tabs = loadWaiter.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
 //        Firstly, code, name, year, semester, and credit hours at transcript tab
 //        Addition to startupCourses is only here; all the following loops only updates the details. this eradicates the possibility of adding running courses at tab-4
-        Portal.getTabElement("Transcript", tabs).click();
+        final WebElement transcriptTap = Portal.getTabElement("Transcript", tabs);
+        if (transcriptTap == null) {
+            App.reportConnectionLost(Login.getRoot());
+            Login.setInputState(true);
+            return;
+        } else {
+            transcriptTap.click();
+        }
         final WebElement transcriptTable = driver.findElementByCssSelector(".table-bordered");
         final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
         final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
@@ -296,11 +313,22 @@ public class PrePortal {
                         Integer.parseInt(data.get(3).getText()),"",true));
             }
         }
-        final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
-        enlistDetail("cgpa", CGPA);
+        try {
+            final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+            enlistDetail("cgpa", CGPA);
+        } catch (Exception e) {
+            enlistDetail("cgpa", "-1");
+        }
 
 //        Secondly, add scores at grades tab
-        Portal.getTabElement("Grades", tabs).click();
+        final WebElement gradesTap = Portal.getTabElement("Grades", tabs);
+        if (gradesTap == null) {
+            App.reportConnectionLost(Login.getRoot());
+            Login.setInputState(true);
+            return;
+        } else {
+            gradesTap.click();
+        }
         final WebElement gradesTable = driver.findElementsByCssSelector(".table-warning").get(1);
         final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
         final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
@@ -314,7 +342,14 @@ public class PrePortal {
         }
 
 //        Finally, available lecturer names at all-registered tab
-        Portal.getTabElement("All Registered Courses", tabs).click();
+        final WebElement registeredTap = Portal.getTabElement("All Registered Courses", tabs);
+        if (registeredTap == null) {
+            App.reportConnectionLost(Login.getRoot());
+            Login.setInputState(true);
+            return;
+        } else {
+            registeredTap.click();
+        }
         final WebElement allRegisteredTable = driver.findElementByCssSelector(".table-warning");
         final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
         final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
@@ -367,7 +402,7 @@ public class PrePortal {
         if (Globals.hasNoText(value) || value.contains("Unknown")) {
             Login.appendToStatus("[Warning] '" + key + "' not found");
         } else if (key.equals("Email")) {
-            Login.appendToStatus("Email: "+ Student.getVisibleMail(value));
+            Login.appendToStatus("Email Address: "+ Student.getVisibleMail(value));
         } else if (!(key.equals("Mat#") || key.equals("psswd") || key.equals("cgpa"))) {
             Login.appendToStatus(key+": "+value);
         }

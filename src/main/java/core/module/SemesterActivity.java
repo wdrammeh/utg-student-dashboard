@@ -227,7 +227,18 @@ public class SemesterActivity implements Activity {
                 return;
             }
 
-            Portal.getTabElement("All Registered Courses", tabs).click();
+            final WebElement registeredTab = Portal.getTabElement("All Registered Courses", tabs);
+            if (registeredTab == null) {
+                App.reportConnectionLost();
+                final int targetRow = activeModel.getRowOf(targetCode);
+                if (targetRow >= 0) {
+                    activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                    targetCourse.setStatus(initialStatus);
+                }
+                return;
+            } else {
+                registeredTab.click();
+            }
             final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
             final WebElement tableBody = registrationTable.findElement(By.tagName("tbody"));
             final List<WebElement> captions = tableBody.findElements(By.cssSelector("b, strong"));
@@ -358,7 +369,16 @@ public class SemesterActivity implements Activity {
                         return;
                     }
 
-                    Portal.getTabElement("All Registered Courses", tabs).click();
+                    final WebElement registeredTab = Portal.getTabElement("All Registered Courses", tabs);
+                    if (registeredTab == null) {
+                        if (userRequested) {
+                            App.reportConnectionLost();
+                        }
+                        matchItem.setEnabled(true);
+                        return;
+                    } else {
+                        registeredTab.click();
+                    }
                     final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
                     final WebElement tableBody = registrationTable.findElement(By.tagName("tbody"));
                     final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
@@ -650,8 +670,7 @@ public class SemesterActivity implements Activity {
                     newHintLabel("Time:"), hoursBox);
 
             final KCheckBox instantCheck = new KCheckBox("Checkout now", true);
-            instantCheck.setFont(KFontFactory.createBoldFont(15));
-            instantCheck.setForeground(Color.BLUE);
+            instantCheck.setFont(KFontFactory.createPlainFont(15));
             instantCheck.setCursor(MComponent.HAND_CURSOR);
             checkPanel = new KPanel(instantCheck);
             ((FlowLayout) checkPanel.getLayout()).setVgap(10);

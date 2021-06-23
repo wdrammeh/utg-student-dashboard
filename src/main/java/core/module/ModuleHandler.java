@@ -297,7 +297,14 @@ public class ModuleHandler {
             final List<WebElement> tabs = loadWaiter.until(
                     ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
             //Firstly, the code, name, and score at grades tab
-            Portal.getTabElement("Grades", tabs).click();
+            final WebElement gradesTap = Portal.getTabElement("Grades", tabs);
+            if (gradesTap == null) {
+                App.reportConnectionLost();
+                target.setStatus(initialStatus);
+                return;
+            } else {
+                gradesTap.click();
+            }
             final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
             final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
             final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
@@ -322,7 +329,14 @@ public class ModuleHandler {
             }
 
             //Secondly, the code, year and semester at transcript tab
-            Portal.getTabElement("Transcript", tabs).click();
+            final WebElement transcriptTap = Portal.getTabElement("Transcript", tabs);
+            if (transcriptTap == null) {
+                App.reportConnectionLost();
+                target.setStatus(initialStatus);
+                return;
+            } else {
+                transcriptTap.click();
+            }
             final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
             final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
             final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
@@ -342,7 +356,14 @@ public class ModuleHandler {
             }
 
             //Finally, the lecturer name at registration tab - if there
-            Portal.getTabElement("All Registered Courses", tabs).click();
+            final WebElement registeredTab = Portal.getTabElement("All Registered Courses", tabs);
+            if (registeredTab == null) {
+                App.reportConnectionLost();
+                target.setStatus(initialStatus);
+                return;
+            } else {
+                registeredTab.click();
+            }
             final WebElement allCourseTable = modulesDriver.findElementByCssSelector(".table-warning");
             final WebElement tableBody = allCourseTable.findElement(By.tagName("tbody"));
             final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
@@ -446,7 +467,16 @@ public class ModuleHandler {
 //                Addition to startupCourses is only here; all the following loops only updates the details.
 //                this eradicates the possibility of adding running courses at tab-4
                 final ArrayList<Course> foundCourses = new ArrayList<>();
-                Portal.getTabElement("Transcript", tabs).click();
+                final WebElement transcriptTab = Portal.getTabElement("Transcript", tabs);
+                if (transcriptTab == null) {
+                    if (userRequested) {
+                        App.reportLoginAttemptFailed();
+                        triggerButton.setEnabled(true);
+                    }
+                    return;
+                } else {
+                    transcriptTab.click();
+                }
                 final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
                 final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
                 final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
@@ -469,7 +499,16 @@ public class ModuleHandler {
                 Student.setCGPA(Double.parseDouble(CGPA));
 
                 // Secondly, add scores at grades tab
-                Portal.getTabElement("Grades", tabs).click();
+                final WebElement gradesTab = Portal.getTabElement("Grades", tabs);
+                if (gradesTab == null) {
+                    if (userRequested) {
+                        App.reportLoginAttemptFailed();
+                        triggerButton.setEnabled(true);
+                    }
+                    return;
+                } else {
+                    gradesTab.click();
+                }
                 final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
                 final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
                 final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
@@ -483,7 +522,16 @@ public class ModuleHandler {
                 }
 
                 //Finally, available lecturer names at all-registered tab
-                Portal.getTabElement("All Registered Courses", tabs).click();
+                final WebElement registeredTab = Portal.getTabElement("All Registered Courses", tabs);
+                if (registeredTab == null) {
+                    if (userRequested) {
+                        App.reportLoginAttemptFailed();
+                        triggerButton.setEnabled(true);
+                    }
+                    return;
+                } else {
+                    registeredTab.click();
+                }
                 final WebElement allRegisteredTable = modulesDriver.findElementByCssSelector(".table-warning");
                 final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
                 final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
