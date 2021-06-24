@@ -215,7 +215,7 @@ public class News implements Activity {
                     final Document specificDocument = Jsoup.connect(associateLink).get();
                     allContent = specificDocument.select(".entry-content").outerHtml();
                     textPane.setText(allContent);
-                    primaryButton.setText("Continue reading...");
+                    primaryButton.setText("Continue reading");
                     primaryButton.setForeground(Color.BLUE);
                     primaryButton.removeActionListener(primaryButton.getActionListeners()[0]);
                     primaryButton.addActionListener(e-> setVisible(true));

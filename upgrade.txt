@@ -1,5 +1,4 @@
 - Reindex resources completely without signing out (or re-signing in)
-- Option to maximize (and restore) the bodyLayer
 - Transcript export customization
 -* Remove static-orientation of task types
 - Student auditing tool

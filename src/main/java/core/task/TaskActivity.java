@@ -50,7 +50,22 @@ public class TaskActivity implements Activity {
         hintLabel = KLabel.getPredefinedLabel("My Tasks", SwingConstants.LEFT);
         hintLabel.setStyle(KFontFactory.BODY_HEAD_FONT, Color.BLUE);
 
-        cardLayout = new CardLayout();
+        final KButton returnButton = new KButton("Menu");
+        returnButton.setFont(TASK_BUTTONS_FONT);
+        returnButton.setToolTipText("Tasks Menu");
+        returnButton.addActionListener(e-> {
+            cardLayout.show(inPanel,"Home");
+            hintLabel.setText("");
+        });
+        returnButton.setEnabled(false);
+
+        cardLayout = new CardLayout(){
+            @Override
+            public void show(Container parent, String name) {
+                super.show(parent, name);
+                returnButton.setEnabled(!"Home".equals(name));
+            }
+        };
         inPanel = new KPanel(cardLayout);
 
         final KPanel tasksHome = new KPanel(new FlowLayout(FlowLayout.LEFT));
@@ -59,14 +74,6 @@ public class TaskActivity implements Activity {
                 giveProjectsButton(), Box.createHorizontalStrut(25),
                 giveAssignmentsButton(), Box.createHorizontalStrut(25),
                 giveEventsButton());
-
-        final KButton returnButton = new KButton("Menu");
-        returnButton.setFont(TASK_BUTTONS_FONT);
-        returnButton.setToolTipText("Tasks Menu");
-        returnButton.addActionListener(e-> {
-            cardLayout.show(inPanel,"Home");
-            hintLabel.setText("");
-        });
 
         final KPanel upperPanel = new KPanel(new BorderLayout());
         upperPanel.add(new KPanel(hintLabel), BorderLayout.WEST);

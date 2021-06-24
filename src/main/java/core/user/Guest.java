@@ -54,11 +54,11 @@ public class Guest extends KDialog {
         startButton.setFont(KFontFactory.createPlainFont(15));
         startButton.addActionListener(e-> {
             if (!Globals.hasText(firstNameField.getText())) {
-                signalMissingInfo("First Name", firstNameField);
+                signalMissingInfo("first name", firstNameField);
             } else if (!Globals.hasText(lastNameField.getText())) {
-                signalMissingInfo("Last Name", lastNameField);
+                signalMissingInfo("last name", lastNameField);
             } else if (!Globals.hasText(nationalityField.getText())) {
-                signalMissingInfo("Nationality", nationalityField);
+                signalMissingInfo("nationality", nationalityField);
             } else {
                 dispose();
                 Student.setupTrial(new String[]{firstNameField.getText(), lastNameField.getText(),

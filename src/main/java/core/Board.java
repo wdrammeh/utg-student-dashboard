@@ -373,17 +373,17 @@ public final class Board extends KFrame {
         homeButton.setFocusable(true);
         rootPane.add(homeButton);
 
-        final Timer onlineTimer = new Timer(5 * Globals.SECOND, null);
+        final Timer onlineTimer = new Timer(Globals.MINUTE, null);
         onlineTimer.addActionListener(e-> new Thread(()-> {
             if (Internet.isInternetAvailable()) {
-                Internet.checkForUpdate(false);
+//                Internet.checkForUpdate(false); Todo uncomment
                 if (Portal.isAutoSynced() && !Student.isGuest()) {
                     syncAll();
                 }
                 onlineTimer.stop();
             }
         }).start());
-//        POST_PROCESSES.add(onlineTimer::start); Todo uncomment
+        POST_PROCESSES.add(onlineTimer::start);
     }
 
     @Override

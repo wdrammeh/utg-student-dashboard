@@ -54,7 +54,7 @@ public class Dashboard {
 
 
     public static void main(String[] args) {
-        statusCheck();
+//        statusCheck(); Todo uncomment
         PREVIEW.setVisible(true);
         final File rootDir = new File(Serializer.ROOT_DIR);
         if (rootDir.exists()) {
