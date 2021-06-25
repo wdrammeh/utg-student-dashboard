@@ -246,7 +246,7 @@ public class SemesterActivity implements Activity {
             if (!registered) {
                 App.reportWarning("Checkout Failed",
                         "The attempt to checkout '"+targetCourse.getName()+"' was unsuccessful.\n" +
-                        "It seems like you haven't registered any for this semester yet.");
+                        "It seems like you no registration for this semester yet.");
                 final int targetRow = activeModel.getRowOf(targetCode);
                 if (targetRow >= 0) {
                     activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
@@ -691,7 +691,7 @@ public class SemesterActivity implements Activity {
                     lecturerField.requestFocusInWindow();
                 } else {
                     final String givenCode = codeField.getText().toUpperCase();
-                    if (getByCode(givenCode) != null) {
+                    if (activeModel.getRowOf(givenCode) >= 0) {
                         App.reportError("Duplicate Code",
                                 "Cannot add code '"+givenCode+"'. It's already assigned to a course in the list.");
                         return;
