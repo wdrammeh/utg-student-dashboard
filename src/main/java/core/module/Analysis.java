@@ -801,18 +801,24 @@ public class Analysis implements Activity {
         }
 
         /**
-         * Adds the given course to the substancePanel;
+         * Adds the given course to the substancePanel.
          */
         public void join(int row, Course c) {
-            final KButton aButton = newAboutButton();
-            aButton.setCursor(MComponent.HAND_CURSOR);
-            aButton.addActionListener(e-> c.exhibit(getRootPane()));
-            final KLabel label = new KLabel(String.format(" %d. %s", row, c.getName()),
-                    KFontFactory.createPlainFont(15));
-            final KPanel joinPanel = new KPanel(new BorderLayout());
-            joinPanel.add(label, BorderLayout.WEST);
-            joinPanel.add(aButton, BorderLayout.EAST);
-            substancePanel.add(joinPanel);
+            final KLabel numericLabel = new KLabel(row+".", KFontFactory.createPlainFont(15));
+
+            final KLabel nameLabel = new KLabel(c.getName(), KFontFactory.createPlainFont(15));
+            nameLabel.underline(false);
+            nameLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    c.exhibit(getRootPane());
+                }
+            });
+            nameLabel.setCursor(MComponent.HAND_CURSOR);
+
+            final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
+                    numericLabel, nameLabel);
+            substancePanel.add(linearPanel);
         }
 
         /**
@@ -820,45 +826,47 @@ public class Analysis implements Activity {
          * This is year-bound as specified by the year-name.
          */
         private void join(int row, String tutorName, String year) {
-            final KButton aButton = newAboutButton();
-            aButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            aButton.addActionListener(e-> SwingUtilities.invokeLater(()->{
-                final ArrayList<Course> list = Memory.getFractionByLecturer(tutorName,year);
-                final String title = tutorName+" ["+ year +": "+list.size()+"]";
-                final GlassPrompt prompt = new GlassPrompt(title, list, getRootPane());
-                prompt.setVisible(true);
-            }));
-            final KLabel label = new KLabel(String.format(" %d. %s", row, tutorName),
-                    KFontFactory.createPlainFont(15));
-            final KPanel joinPanel = new KPanel(new BorderLayout());
-            joinPanel.add(label, BorderLayout.WEST);
-            joinPanel.add(Box.createRigidArea(new Dimension(30, 30)), BorderLayout.CENTER);
-            joinPanel.add(aButton, BorderLayout.EAST);
-            substancePanel.add(joinPanel);
+            final KLabel numericLabel = new KLabel(row+".", KFontFactory.createPlainFont(15));
+
+            final KLabel nameLabel = new KLabel(tutorName, KFontFactory.createPlainFont(15));
+            nameLabel.underline(false);
+            nameLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    final ArrayList<Course> list = Memory.getFractionByLecturer(tutorName,year);
+                    final String title = tutorName+" ["+ year +": "+list.size()+"]";
+                    final GlassPrompt prompt = new GlassPrompt(title, list, getRootPane());
+                    prompt.setVisible(true);
+                }
+            });
+            nameLabel.setCursor(MComponent.HAND_CURSOR);
+
+            final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
+                    numericLabel, nameLabel);
+            substancePanel.add(linearPanel);
         }
 
         /**
          * Adds the given lecturer-name to the substancePanel.
          */
         private void join(int row, String tutorName) {
-            final KButton aButton = newAboutButton();
-            aButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            aButton.addActionListener(e-> SwingUtilities.invokeLater(()-> {
-                final ArrayList<Course> list = Memory.getFractionByLecturer(tutorName);
-                final String title = tutorName+" ["+ Globals.checkPlurality(list.size(),"Courses")+"]";
-                new GlassPrompt(title, list, getRootPane()).setVisible(true);
-            }));
-            final KLabel label = new KLabel(String.format(" %d. %s", row, tutorName),
-                    KFontFactory.createPlainFont(15));
-            final KPanel joinPanel = new KPanel(new BorderLayout());
-            joinPanel.add(label, BorderLayout.WEST);
-            joinPanel.add(Box.createRigidArea(new Dimension(30, 30)), BorderLayout.CENTER);
-            joinPanel.add(aButton, BorderLayout.EAST);
-            substancePanel.add(joinPanel);
-        }
+            final KLabel numericLabel = new KLabel(row+".", KFontFactory.createPlainFont(15));
 
-        private KButton newAboutButton(){
-            return KButton.createIconifiedButton("warn.png",23,23);
+            final KLabel nameLabel = new KLabel(tutorName, KFontFactory.createPlainFont(15));
+            nameLabel.underline(false);
+            nameLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    final ArrayList<Course> list = Memory.getFractionByLecturer(tutorName);
+                    final String title = tutorName+" ["+ Globals.checkPlurality(list.size(),"Courses")+"]";
+                    new GlassPrompt(title, list, getRootPane()).setVisible(true);
+                }
+            });
+            nameLabel.setCursor(MComponent.HAND_CURSOR);
+
+            final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
+                    numericLabel, nameLabel);
+            substancePanel.add(linearPanel);
         }
     }
 
