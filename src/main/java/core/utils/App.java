@@ -1,6 +1,5 @@
 package core.utils;
 
-
 import core.Board;
 import core.setting.Settings;
 import core.user.Student;
@@ -22,6 +21,7 @@ public class App {
     public static final int INPUT_BLANK = 1;
     public static final int VERIFICATION_FALSE = 2;
     public static final int VERIFICATION_TRUE = 3;
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
 
     /**
@@ -85,8 +85,8 @@ public class App {
     /**
      * Prompts the user with a yes-no-cancel dialog on the given parent component.
      */
-    public static boolean showYesNoCancelDialog(Component parent, String title, String text){
-        final int consent = JOptionPane.showConfirmDialog(parent, dialogTextPanel(text), title,
+    public static boolean showYesNoCancelDialog(Component parent, String title, String text) {
+        final int consent = JOptionPane.showConfirmDialog(parent, dialogComponent(text), title,
                 JOptionPane.YES_NO_CANCEL_OPTION);
         return consent == JOptionPane.YES_OPTION;
     }
@@ -102,7 +102,7 @@ public class App {
      * Prompts the user with a ok-cancel dialog on the given parent component.
      */
     public static boolean showOkCancelDialog(Component parent, String title, String text){
-        final int consent = JOptionPane.showConfirmDialog(parent, dialogTextPanel(text), title,
+        final int consent = JOptionPane.showConfirmDialog(parent, dialogComponent(text), title,
                 JOptionPane.OK_CANCEL_OPTION);
         return consent == JOptionPane.OK_OPTION;
     }
@@ -119,7 +119,7 @@ public class App {
      * Seemingly gives null if the dialog is dismissed.
      */
     public static String requestInput(Component parent, String title, String text){
-        return JOptionPane.showInputDialog(parent, dialogTextPanel(text), title,
+        return JOptionPane.showInputDialog(parent, dialogComponent(text), title,
                 JOptionPane.PLAIN_MESSAGE);
     }
 
@@ -134,7 +134,7 @@ public class App {
      * Report the given error message on this parent component.
      */
     public static void reportError(Component parent, String title, String message){
-        JOptionPane.showMessageDialog(parent, dialogTextPanel(message), title, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(parent, dialogComponent(message), title, JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -167,7 +167,7 @@ public class App {
      * Reports an information message on this parent component.
      */
     public static void reportInfo(Component parent, String title, String information) {
-        JOptionPane.showMessageDialog(parent, dialogTextPanel(information), title,
+        JOptionPane.showMessageDialog(parent, dialogComponent(information), title,
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -182,7 +182,7 @@ public class App {
      * Reports a warning message on this parent component.
      */
     public static void reportWarning(Component parent, String title, String message){
-        JOptionPane.showMessageDialog(parent, dialogTextPanel(message), title,
+        JOptionPane.showMessageDialog(parent, dialogComponent(message), title,
                 JOptionPane.WARNING_MESSAGE);
     }
 
@@ -295,9 +295,9 @@ public class App {
      *
      * This is a control-point should Dashboard style messages
      * using HTML, on textPanes.
-     * Todo: joinLines, and unpack them here using splitLines
+     * Todo: use Globals.joinLines, and unpack them herein using splitLines
      */
-    public static KPanel dialogTextPanel(String text){
+    public static KPanel dialogComponent(String text){
         final KPanel panel = new KPanel();
         panel.setOpaque(false);
         panel.setReflectTheme(false);

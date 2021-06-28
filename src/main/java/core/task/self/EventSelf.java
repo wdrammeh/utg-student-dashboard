@@ -165,11 +165,7 @@ public class EventSelf {
     }
 
     public String export(){
-        return Globals.joinLines(title,
-                dateDue,
-                isPending,
-                eveIsAlerted,
-                timeupIsAlerted);
+        return Globals.joinLines(new Object[]{title, dateDue, isPending, eveIsAlerted, timeupIsAlerted});
     }
 
 }

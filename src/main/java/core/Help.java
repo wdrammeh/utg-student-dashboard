@@ -39,7 +39,7 @@ public class Help implements Activity {
         });
 
         final KPanel northPanel = new KPanel(new BorderLayout());
-        northPanel.add(new KPanel(showingLabel), BorderLayout.WEST);
+        northPanel.add(new KPanel(showingLabel), BorderLayout.CENTER);
         northPanel.add(new KPanel(helpBox), BorderLayout.EAST);
 
         helpCard.addLayoutComponent(centerPanel.add(getTips()), "tips");

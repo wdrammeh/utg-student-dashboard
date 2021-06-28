@@ -85,11 +85,8 @@ public class Notification {
     }
 
     private String export(){
-        return Globals.joinLines(heading,
-                text,
-                information,
-                MDate.format(time),
-                isRead);
+        return Globals.joinLines(new Object[]{heading, text, information,
+                MDate.format(time), isRead});
     }
 
 

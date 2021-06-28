@@ -8,6 +8,7 @@ import core.serial.Serializer;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
+import core.utils.Internet;
 import core.utils.MComponent;
 import proto.*;
 
@@ -822,21 +823,20 @@ public class SettingsUI implements Activity {
         });
 
         final KLabel updateLabel = newSignLabel("Check for updates", Color.BLUE);
-//        Todo uncomment
-//        updateLabel.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                new Thread(()-> {
-//                    if (Internet.isInternetAvailable()) {
-//                        updateLabel.setEnabled(false);
-//                        Internet.checkForUpdate(true);
-//                        updateLabel.setEnabled(true);
-//                    } else {
-//                        App.reportNoInternet();
-//                    }
-//                }).start();
-//            }
-//        });
+        updateLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new Thread(()-> {
+                    if (Internet.isInternetAvailable()) {
+                        updateLabel.setEnabled(false);
+                        Internet.checkForUpdate(true);
+                        updateLabel.setEnabled(true);
+                    } else {
+                        App.reportNoInternet();
+                    }
+                }).start();
+            }
+        });
 
         final KPanel layoutPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
         layoutPanel.addAll(new KLabel("You may wish to:", H_FONT),
@@ -904,8 +904,8 @@ public class SettingsUI implements Activity {
         Settings.noVerifyNeeded = false;
         exitChecking.setSelected(true);
         Settings.confirmExit = true;
-        instantToolTip.setSelected(true);
-        ToolTipManager.sharedInstance().setInitialDelay(0);
+        instantToolTip.setSelected(false);
+        ToolTipManager.sharedInstance().setInitialDelay(750);
         tipDismissible.setSelected(true);
         ToolTipManager.sharedInstance().setDismissDelay(4_000);
         syncChecking.setSelected(false);

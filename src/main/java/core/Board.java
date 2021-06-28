@@ -231,9 +231,10 @@ public final class Board extends KFrame {
         midPart.add(horizontalWrapper);//notice how the last space is automatically left blank.
         //besides, the height and the spaces do not seem to count
 
-        final KLabel aboutUTGLabel = new KLabel("About UTG", KFontFactory.createBoldFont(15), Color.BLUE);
-        aboutUTGLabel.setToolTipText("Learn more about UTG");
+        final KLabel aboutUTGLabel = new KLabel("About UTG", KFontFactory.createPlainFont(15));
+        aboutUTGLabel.setToolTipText("Learn more about UTG...");
         aboutUTGLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        aboutUTGLabel.underline(false);
         aboutUTGLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -376,7 +377,7 @@ public final class Board extends KFrame {
         final Timer onlineTimer = new Timer(Globals.MINUTE, null);
         onlineTimer.addActionListener(e-> new Thread(()-> {
             if (Internet.isInternetAvailable()) {
-//                Internet.checkForUpdate(false); Todo uncomment
+                Internet.checkForUpdate(false);
                 if (Portal.isAutoSynced() && !Student.isGuest()) {
                     syncAll();
                 }

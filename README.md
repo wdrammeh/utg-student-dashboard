@@ -18,7 +18,7 @@ Download the standalone installation file per your operating system:
 | ----- | ----- |
 | Microsoft Windows `(MSI Package)` | https://drive.google.com/file/d/1CTeMiF1MVIzeQeRGRt2E-EJ6N1kY2ISW/view?usp=sharing |
 | Linux `(Debian Package)` | https://drive.google.com/file/d/1iksH4CdcTtbkyLm-B1WsO1DkjunOIMKC/view?usp=sharing |
-| Mac iOS | _coming soon..._ |
+| Mac iOS | . |
 
 If you wish you may check out [what's new](ChangeLog.md) about this release.
 
@@ -61,10 +61,7 @@ at every successful login.
 - Real time performance analysis, and recommendation system
 - And much more...
 
-## System Requirements
-- Firefox Web Browser
-
-## "A journey of thousand miles begins with a single step"
+### "A journey of thousand miles begins with a single step"
 Dashboard is an ambitious project, and this is only the beginning.
 Also, we wish to integrate the following features in a future release:
 
@@ -74,6 +71,9 @@ Also, we wish to integrate the following features in a future release:
 - Student Forum
 - A mobile version
 - And much more...
+
+## System Requirements
+- Firefox Web Browser
 
 ## Contribution
 If you are interested in contributing to this project, firstly,

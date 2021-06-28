@@ -512,20 +512,8 @@ public class Course {
      * @see #create(String)
      */
     public String exportContent(){
-        return Globals.joinLines(year,
-                semester,
-                code,
-                name,
-                lecturer,
-                campus,
-                room,
-                day,
-                time,
-                score,
-                creditHours,
-                requirement,
-                isVerified,
-                isLecturerNameEditable);
+        return Globals.joinLines(new Object[]{year, semester, code, name, lecturer, campus, room, day,
+                time, score, creditHours, requirement, isVerified, isLecturerNameEditable});
     }
 
     /**
@@ -685,7 +673,7 @@ public class Course {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(codePanel, namePanel, lectPanel, yearPanel, semesterPanel, schedulePanel, venuePanel,
                 typePanel, creditPanel, scorePanel, gradePanel, gradeValuePanel, statusPanel,
-                MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), closeButton));
+                MComponent.contentBottomGap(), new KPanel(closeButton));
         exhibitor.getRootPane().setDefaultButton(closeButton);
         exhibitor.setContentPane(contentPanel);
         exhibitor.pack();

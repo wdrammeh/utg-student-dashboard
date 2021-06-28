@@ -66,12 +66,10 @@ public class Settings {
 
 
     public static void serialize(){
-        final String settings = Globals.joinLines(String.valueOf(noVerifyNeeded),
-                String.valueOf(confirmExit),
-                String.valueOf(ToolTipManager.sharedInstance().getInitialDelay()),
-                String.valueOf(ToolTipManager.sharedInstance().getDismissDelay()),
-                lookName,
-                backgroundName);
+        final String settings = Globals.joinLines(new Object[]{noVerifyNeeded, confirmExit,
+                ToolTipManager.sharedInstance().getInitialDelay(),
+                ToolTipManager.sharedInstance().getDismissDelay(),
+                lookName, backgroundName});
         Serializer.toDisk(settings, Serializer.inPath("settings.ser"));
     }
 

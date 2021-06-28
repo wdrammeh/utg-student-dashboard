@@ -278,15 +278,8 @@ public class AssignmentSelf {
     }
 
     public String export() {
-        return Globals.joinLines(courseName,
-                deadLine,
-                isGroup,
-                modeOfSubmission,
-                startDate,
-                isOn,
-                dateSubmitted,
-                eveIsAlerted,
-                submissionIsAlerted);
+        return Globals.joinLines(new Object[]{courseName, deadLine, isGroup, modeOfSubmission,
+                startDate, isOn, dateSubmitted, eveIsAlerted, submissionIsAlerted});
     }
 
     private static class MemberExhibitor extends KDialog {

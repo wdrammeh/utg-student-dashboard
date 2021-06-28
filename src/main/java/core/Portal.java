@@ -189,7 +189,6 @@ public class Portal {
                 MDate.format(lastRegistrationNoticeUpdate);
     }
 
-    // Todo: Classes that delegate to this should catch a NullPointerException or some, return issuing a connection-lost report
     public static WebElement getTabElement(String elementText, List<WebElement> tabs){
         for (WebElement tab : tabs) {
             if (tab.getText().equalsIgnoreCase(elementText)) {
@@ -289,12 +288,9 @@ public class Portal {
     }
 
     public static void serialize(){
-        final String data = Globals.joinLines(registrationNotice,
-                getLastRegistrationNoticeUpdate(),
-                admissionNotice,
-                getLastAdmissionNoticeUpdate(),
-                autoSync,
-                lastLogin == null ? Globals.NEVER : MDate.format(lastLogin));
+        final String data = Globals.joinLines(new Object[]{registrationNotice,
+                getLastRegistrationNoticeUpdate(), admissionNotice, getLastAdmissionNoticeUpdate(),
+                autoSync, lastLogin == null ? Globals.NEVER : MDate.format(lastLogin)});
         Serializer.toDisk(data, Serializer.inPath("portal.ser"));
     }
 

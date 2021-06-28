@@ -23,8 +23,11 @@ public class Register {
 
     public static void main(String[] args) {
 //        This is a registration attempt
-        final String email = "<address>@utg.edu.gm";
-        final String password = "<psswd>";
+        final Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter email: ");
+        final String email = scanner.nextLine();
+        System.out.print("Enter password: ");
+        final String password = scanner.nextLine();
         final String courseCode = "mth101"; // to be provided
         final String courseName = "Calculus 1"; // to be provided
         final String key = String.join(" ",
@@ -80,7 +83,6 @@ public class Register {
                         data.get(6).getText(), dayTime[0], dayTime[1].split("[-]")[0], registered));
             }
 
-            final Scanner scanner = new Scanner(System.in);
             final int rIndex;
             if (foundRunningModules.size() == 1) {
                 final RunningCourse module = foundRunningModules.get(0);

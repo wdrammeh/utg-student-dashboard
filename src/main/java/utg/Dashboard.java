@@ -54,7 +54,7 @@ public class Dashboard {
 
 
     public static void main(String[] args) {
-//        statusCheck(); Todo uncomment
+        parallelCheck();
         PREVIEW.setVisible(true);
         final File rootDir = new File(Serializer.ROOT_DIR);
         if (rootDir.exists()) {
@@ -122,13 +122,16 @@ public class Dashboard {
      * instances in parallel, this function may simply let this launch to proceed,
      * or prevent it somehow.
      */
-    private static void statusCheck(){
+    private static void parallelCheck(){
         final List<ProcessHandle> handles = ProcessHandle.allProcesses().toList();
         for (ProcessHandle handle : handles) {
             final String command = handle.info().command().map(String::toString).orElse("");
             if (command.contains(Globals.PROJECT_NAME)) {
-                App.silenceInfo("Dashboard is already running.");
+                App.silenceInfo("Dashboard is already running. Exiting this instance...");
                 System.exit(0);
+                // Todo: Give options to:
+                //  - Terminate the existing process (which is possibly hung) and continue with this.
+                //  - Or ignore this and continue using the existing.
             }
         }
     }
@@ -138,8 +141,8 @@ public class Dashboard {
      * usually during collapse.
      */
     public static void storeConfigs(){
-        final String configs = Globals.joinLines(isAuthentic, Globals.userName(), VERSION,
-                MDate.format(VERSION.getDeprecateTime()));
+        final String configs = Globals.joinLines(new Object[]{isAuthentic, Globals.userName(), VERSION,
+                MDate.format(VERSION.getDeprecateTime())});
         Serializer.toDisk(configs, Serializer.inPath("configs.ser"));
     }
 
@@ -228,7 +231,7 @@ public class Dashboard {
         if (initialize) {
             try {
                 Student.initialize();
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
                 App.silenceException("Failed to read user data. Launching a new instance...");
                 freshStart();
                 return;
@@ -257,7 +260,7 @@ public class Dashboard {
     public static void reportAuthenticationError() {
         App.reportWarning(null, "Authentication Error",
                 "This program is either not verified, or no longer supported.\n" +
-                        "For more info contact the developers: '"+ Mailer.DEVELOPER_MAIL +"'.");
+                        "Contact the developers: '"+ Mailer.DEVELOPER_MAIL +"'.");
         System.exit(0);
     }
 

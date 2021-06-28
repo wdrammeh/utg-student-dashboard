@@ -196,14 +196,8 @@ public class TodoSelf {
     }
 
     public String export(){
-        return Globals.joinLines(description,
-                startDate,
-                specifiedDuration,
-                totalTimeConsumed,
-                isActive,
-                dateCompleted,
-                eveIsAlerted,
-                doneIsAlerted);
+        return Globals.joinLines(new Object[]{description, startDate, specifiedDuration,
+                totalTimeConsumed, isActive, dateCompleted, eveIsAlerted, doneIsAlerted});
     }
 
 }

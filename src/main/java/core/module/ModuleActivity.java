@@ -24,9 +24,8 @@ public class ModuleActivity implements Activity {
         } else {
             indicator = new KLabel("First Year: "+Student.firstAcademicYear(), KFontFactory.BODY_HEAD_FONT);
 
-            final KButton tipButton = KButton.createIconifiedButton("warn.png", 25, 25);
+            final KButton tipButton = KButton.createIconifiedButton("warn.png", 30, 30);
             tipButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            tipButton.setToolTipText("Help");
             tipButton.addActionListener(e-> App.reportInfo("Module Collection", "For more options, simply right-click on the tables.\n" +
                     "To Edit, Remove, Verify, or Show the Details of a course, just right-click on it and choose the corresponding\n" +
                     "option from the Popup Menu.\n \n" +

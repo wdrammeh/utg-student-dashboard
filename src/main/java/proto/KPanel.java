@@ -111,16 +111,13 @@ public class KPanel extends JPanel implements Preference {
     }
 
     /**
-     * Adds the given component, second to last, on this panel.
-     * If this panel contains no children prior to this call,
-     * then this call is effectively equivalent to add(Component)
+     * Removes the first component from this panel's children.
+     * This does nothing if there are no children in its hierarchy.
      */
-    public Component addPenultimate(Component component){
+    public void removeFirst() {
         final int count = getComponentCount();
         if (count >= 1) {
-            return add(component, count - 1);
-        } else {
-            return add(component);
+            remove(0);
         }
     }
 

@@ -133,14 +133,8 @@ public class RegisteredCourse {
      * @see Course#exportContent()
      */
     public String exportContent(){
-        return Globals.joinLines(code,
-                name,
-                lecturer,
-                campus,
-                room,
-                day,
-                time,
-                isConfirmed);
+        return Globals.joinLines(new Object[]{code, name, lecturer, campus, room, day, time,
+                isConfirmed});
     }
 
     /**

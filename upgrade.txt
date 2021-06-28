@@ -13,4 +13,4 @@
 -* Well documentation; generate javadoc
 - Student Forum
 - Student voting system
--* Notification to be descending order sorted
+- Use customized time-labels

@@ -694,35 +694,12 @@ public class Student {
     }
 
     public static void serialize() {
-        String core = Globals.joinLines(firstName,
-                lastName,
-                nationality,
-                address,
-                maritalStatue,
-                dateOfBirth,
-                placeOfBirth,
-                nameFormat,
-                isGuest);
+        String core = Globals.joinLines(new Object[]{firstName, lastName, nationality, address,
+                maritalStatue, dateOfBirth, placeOfBirth, nameFormat, isGuest});
         if (!isGuest) {
-            core = Globals.joinLines(core,
-                    monthOfAdmission,
-                    yearOfAdmission,
-                    semester,
-                    matNumber,
-                    major,
-                    majorCode,
-                    minor,
-                    minorCode,
-                    program,
-                    school,
-                    division,
-                    portalMail,
-                    portalPassword,
-                    studentMail,
-                    studentPassword,
-                    level,
-                    status,
-                    CGPA);
+            core = Globals.joinLines(new Object[]{core, monthOfAdmission, yearOfAdmission, semester, matNumber,
+                    major, majorCode, minor, minorCode, program, school, division, portalMail,
+                    portalPassword, studentMail, studentPassword, level, status, CGPA});
         }
         Serializer.toDisk(core, Serializer.inPath("user", "core.ser"));
         Serializer.toDisk(telephones.toArray(new String[0]), Serializer.inPath("user", "dials.ser"));

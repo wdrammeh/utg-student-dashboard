@@ -254,15 +254,8 @@ public class ProjectSelf {
     }
 
     public String export() {
-        return Globals.joinLines(projectName,
-                type,
-                startDate,
-                specifiedDuration,
-                totalTimeConsumed,
-                isLive,
-                dateCompleted,
-                eveIsAlerted,
-                completionIsAlerted);
+        return Globals.joinLines(new Object[]{projectName, type, startDate, specifiedDuration,
+                totalTimeConsumed, isLive, dateCompleted, eveIsAlerted, completionIsAlerted});
     }
 
 }

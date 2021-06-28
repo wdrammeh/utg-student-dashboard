@@ -1,5 +1,5 @@
 - Create SNAPSHOT Tag
-- Cross-check TODOs
+- Cross-check TODOs (especially where "uncomment", "replace", )
 - Deal with all test-cases, as in the test file
 - Versions, Documentations in full-sync
     Documentation in source files := static files := README, logic, etc

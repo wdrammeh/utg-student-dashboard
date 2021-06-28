@@ -163,7 +163,8 @@ public class NotificationActivity implements Activity {
      * Call {@link Notification#create(String, String, String)} instead.
      */
     public static void join(Notification notification) {
-        dashboardPanel.addAll(notification.getLayer(), Box.createVerticalStrut(5));
+        dashboardPanel.add(notification.getLayer(), 2);
+        dashboardPanel.add(Box.createVerticalStrut(5), 3);
         MComponent.ready(dashboardPanel);
         if (!notification.isRead()) {
             effectCount(1);

@@ -68,7 +68,7 @@ public class KLabel extends JLabel implements Preference {
      * Underlines this label with a separator.
      * The separator is always shown beneath the label if alwaysVisible,
      * otherwise only on mouseFocus events.
-     * Notice this call sets the layout to Border, and puts the separator beneath the component.
+     * Notice this call sets the layout to Border, and puts a separator beneath the component.
      * Whence should not be called otherwise.
      * The separator uses the given foreground as its foreground, but if it's null, it will assume the
      * caller's foreground instead.

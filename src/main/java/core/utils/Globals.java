@@ -14,8 +14,6 @@ public class Globals {
     public static final String UNKNOWN = "Unknown";
     public static final String NEVER = "Never";
     public static final String PROJECT_NAME = "UTG Student Dashboard";
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator"); // should be a field of App
-
 
 
     /**
@@ -45,20 +43,20 @@ public class Globals {
         return String.join(File.separator, paths);
     }
 
-    /**
-     * When an object is null, the empty string
-     * is placed on that line instead.
-     */
-    public static String joinLines(Object... lines){
-        final StringJoiner joiner = new StringJoiner(LINE_SEPARATOR);
-        for (Object line : lines) {
-            joiner.add(line == null ? " " : String.valueOf(line));
+    public static String joinLines(String nullValue, Object[] objs){
+        final StringJoiner joiner = new StringJoiner(App.LINE_SEPARATOR);
+        for (Object obj : objs) {
+            joiner.add(obj == null ? nullValue : String.valueOf(obj));
         }
         return joiner.toString();
     }
 
+    public static String joinLines(Object[] objs){
+        return joinLines(" ", objs);
+    }
+
     public static String[] splitLines(String text){
-        return text.split(LINE_SEPARATOR);
+        return text.split(App.LINE_SEPARATOR);
     }
 
     public static String userName(){
