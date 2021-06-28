@@ -124,14 +124,18 @@ public class Dashboard {
      */
     private static void parallelCheck(){
         final List<ProcessHandle> handles = ProcessHandle.allProcesses().toList();
+        int found = 0;
         for (ProcessHandle handle : handles) {
             final String command = handle.info().command().map(String::toString).orElse("");
             if (command.contains(Globals.PROJECT_NAME)) {
-                App.silenceInfo("Dashboard is already running. Exiting this instance...");
-                System.exit(0);
-                // Todo: Give options to:
-                //  - Terminate the existing process (which is possibly hung) and continue with this.
-                //  - Or ignore this and continue using the existing.
+                found++;
+                if (found >= 2) {
+                    App.silenceInfo("Dashboard is already running. Exiting this instance...");
+                    System.exit(0);
+                    // Todo: Give options to:
+                    //  - Terminate the existing process (which is possibly hung) and continue with this.
+                    //  - Or ignore this and continue using the existing.
+                }
             }
         }
     }

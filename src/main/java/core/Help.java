@@ -1,6 +1,5 @@
 package core;
 
-import core.utils.App;
 import core.utils.Globals;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -8,8 +7,6 @@ import proto.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -187,13 +184,7 @@ public class Help implements Activity {
     private Component getFAQs(){
         final Yaml faqsYaml = new Yaml(new Constructor(ArrayList.class));
         final ArrayList<HashMap<String, String>> faqs;
-        try {
-            faqs = faqsYaml.load(new FileInputStream("faqs.yml"));
-        } catch (FileNotFoundException e) {
-            App.silenceException(e);
-            return new KPanel(new KLabel("Error: Cannot load FAQs file.",
-                    KFontFactory.createPlainFont(15), Color.RED));
-        }
+        faqs = faqsYaml.load(getClass().getResourceAsStream("/faqs.yml"));
         final StringBuilder faqsBuilder = new StringBuilder();
         for (HashMap<String, String> map : faqs) {
             faqsBuilder.append("<div style='border: thin solid blue; border-radius: 20px;" +
