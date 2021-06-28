@@ -98,8 +98,8 @@ public class Dashboard {
                         final String logAddress = String.join("/", Internet.REPO_URL, "blob", "master", "ChangeLog.md");
                         Board.POST_PROCESSES.add(()-> Notification.create("New Update", "Your Dashboard has been updated.",
                                 "<p>A version upgrade was detected: from <b>"+recentVersion+"</b> to <b>"+VERSION+"</b>.</p>" +
-                                        "<p>Kindly visit the official Dashboard repository on Github to <i>check out</i> " +
-                                        "<a href="+logAddress+">What's New</a> about this release.</p>"));
+                                        "<p>Kindly visit the official Dashboard repository on Github and <i>check out</i> " +
+                                        "<a href="+logAddress+">what's new</a> about this release.</p>"));
                         Transition.transit(recentVersion, VERSION);
                     }
                     if (Globals.userName().equals(lastConfigs.get("userName"))) {
