@@ -16,9 +16,8 @@ Download the standalone installation file per your operating system:
 
 | Operating System | Download Dashboard |
 | ----- | ----- |
-| Microsoft Windows `(MSI Package)` | https://drive.google.com/file/d/1CTeMiF1MVIzeQeRGRt2E-EJ6N1kY2ISW/view?usp=sharing |
-| Linux `(Debian Package)` | https://drive.google.com/file/d/1iksH4CdcTtbkyLm-B1WsO1DkjunOIMKC/view?usp=sharing |
-| Mac iOS | . |
+| Microsoft Windows `(msi package)` | https://drive.google.com/file/d/1CTeMiF1MVIzeQeRGRt2E-EJ6N1kY2ISW/view?usp=sharing |
+| Linux `(debian package)` | https://drive.google.com/file/d/1iksH4CdcTtbkyLm-B1WsO1DkjunOIMKC/view?usp=sharing |
 
 If you wish you may check out [what's new](ChangeLog.md) about this release.
 
