@@ -12,12 +12,14 @@ A student-specific desktop application, with dedicated student-related care wiza
 that functions independently of the ERP System, and communicates with it at the student's will.
 
 ## Install
-Download the standalone installation file per your operating system:
+Download the standalone installation file per your operating system
 
 | Operating System | Download Dashboard |
 | ----- | ----- |
-| Microsoft Windows `(msi package)` | https://drive.google.com/file/d/1CTeMiF1MVIzeQeRGRt2E-EJ6N1kY2ISW/view?usp=sharing |
-| Linux `(debian package)` | https://drive.google.com/file/d/1iksH4CdcTtbkyLm-B1WsO1DkjunOIMKC/view?usp=sharing |
+| Microsoft Windows `(msi package)` | https://github.com/w-drammeh/utg-student-dashboard/releases/download/v2021.6/UTG.Student.Dashboard-21.6.msi |
+| Linux `(debian package)` | https://github.com/w-drammeh/utg-student-dashboard/releases/download/v2021.6/utg-student-dashboard_21.6-1_amd64.deb |
+
+More download options are available on the [release page](https://github.com/w-drammeh/utg-student-dashboard/releases).
 
 If you wish you may check out [what's new](ChangeLog.md) about this release.
 
