@@ -8,9 +8,10 @@
 -* Lock Dashboard at startup
 - Research on the Selenium Driver
 - Flexible driver choices functionality
-- Minimize Portal wait time - remove unnecessary waitings
+- Minimize Portal wait time - remove unnecessary waiting
 -* Registration functionality
 -* Well documentation; generate javadoc
 - Student Forum
 - Student voting system
 - Use customized time-labels
+- Transcript activity modules not in thorough runtime-sync

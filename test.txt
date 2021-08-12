@@ -1,3 +1,0 @@
-- Checking for updates behaviour
-- Repo and Download URLs @utils.Internet
--
