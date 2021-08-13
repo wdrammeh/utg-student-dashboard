@@ -70,7 +70,7 @@ public class TaskActivity implements Activity {
 
         final KPanel activityPanel = new KPanel(new BorderLayout());
         activityPanel.add(upperPanel, BorderLayout.NORTH);
-        activityPanel.add(inPanel);
+        activityPanel.add(inPanel, BorderLayout.CENTER);
         Board.addCard(activityPanel, "Tasks");
     }
 

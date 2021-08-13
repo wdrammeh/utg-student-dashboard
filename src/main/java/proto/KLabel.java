@@ -61,6 +61,7 @@ public class KLabel extends JLabel implements Preference {
                     throw new IllegalArgumentException("[Error] position must be either " +
                             "SwingConstants.LEFT, or SwingConstants.RIGHT");
                 }
+                super.setText(text);
             }
         };
     }
