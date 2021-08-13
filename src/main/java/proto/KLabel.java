@@ -45,16 +45,22 @@ public class KLabel extends JLabel implements Preference {
     }
 
     /**
-     * Constructs a label which has the given permanentText appended anytime setText()
-     * is invoked.
+     * Constructs a label which has the given permanentText
+     * appended anytime setText() is invoked.
      * The position of the permanentText (left or right) is determined by the given position.
      */
     public static KLabel getPredefinedLabel(String permanentText, int position){
         return new KLabel() {
             @Override
             public void setText(String text) {
-                super.setText(position == SwingConstants.LEFT ? permanentText + text :
-                        text + permanentText);
+                if (position == SwingConstants.LEFT) {
+                    text = permanentText + text;
+                } else if (position == SwingConstants.RIGHT) {
+                    text += permanentText;
+                } else {
+                    throw new IllegalArgumentException("[Error] position must be either " +
+                            "SwingConstants.LEFT, or SwingConstants.RIGHT");
+                }
             }
         };
     }

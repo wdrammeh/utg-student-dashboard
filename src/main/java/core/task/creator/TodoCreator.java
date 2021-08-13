@@ -2,18 +2,21 @@ package core.task.creator;
 
 import core.Board;
 import core.task.handler.TodoHandler;
+import core.task.self.TodoSelf;
+import core.utils.App;
+import core.utils.Globals;
 import core.utils.MComponent;
 import proto.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Objects;
 
 public class TodoCreator extends KDialog {
     private KTextField descriptionField;
-    private JComboBox<Object> durationBox;
-    private KButton createButton;//The button which returns 'true' signaling that user provides all required inputs for a task to be joined
+    private KComboBox<Object> durationBox;
     public static final int DESCRIPTION_LIMIT = 50; // Note that this should be increased.
-    // It's only small because of irregular component arrangement, and fixed-layouts.
 
 
     public TodoCreator(){
@@ -31,7 +34,7 @@ public class TodoCreator extends KDialog {
         namePlate.add(new KPanel(new KLabel("Task Description:", labelsFont)), BorderLayout.WEST);
         namePlate.add(new KPanel(descriptionField), BorderLayout.CENTER);
 
-        durationBox = new JComboBox<>(new Object[] {"Five Days", "One Week", "Two Weeks", "Three Weeks", "One Month"});
+        durationBox = new KComboBox<>(new Object[] {"Five Days", "One Week", "Two Weeks", "Three Weeks", "One Month"});
         durationBox.setFont(KFontFactory.createPlainFont(15));
         durationBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         final KPanel durationPlate = new KPanel(new BorderLayout(), platesDimension);
@@ -40,9 +43,10 @@ public class TodoCreator extends KDialog {
 
         final KButton quitButton = new KButton("Cancel");
         quitButton.addActionListener(e -> dispose());
-        createButton = new KButton("Create");
+        //The button which returns 'true' signaling that user provides all required inputs for a task to be joined
+        final KButton createButton = new KButton("Create");
         createButton.setFocusable(true);
-        createButton.addActionListener(TodoHandler.additionWaiter());
+        createButton.addActionListener(listener());
 
         rootPane.setDefaultButton(createButton);
         final KPanel contentPlate = new KPanel();
@@ -55,12 +59,33 @@ public class TodoCreator extends KDialog {
         setLocationRelativeTo(Board.getRoot());
     }
 
-    public KTextField getDescriptionField(){
-        return descriptionField;
-    }
-
-    public String getDuration(){
-        return String.valueOf(durationBox.getSelectedItem());
+    private ActionListener listener(){
+        return e -> {
+            final String name = descriptionField.getText();
+            int givenDays = 0;
+            if (Globals.hasNoText(name)) {
+                App.reportError(getRootPane(), "No Name", "Please specify a name for the task.");
+                descriptionField.requestFocusInWindow();
+            } else if (name.length() > DESCRIPTION_LIMIT) {
+                App.reportError("Error", "Sorry, description of a task must be at most "+
+                        DESCRIPTION_LIMIT +" characters.");
+            } else {
+                final String span = durationBox.getSelectionText();
+                if (Objects.equals(span, "Five Days")) {
+                    givenDays = 5;
+                } else if (Objects.equals(span, "One Week")) {
+                    givenDays = 7;
+                } else if (Objects.equals(span, "Two Weeks")) {
+                    givenDays = 14;
+                } else if (Objects.equals(span, "Three Weeks")) {
+                    givenDays = 21;
+                } else if (Objects.equals(span, "One Month")) {
+                    givenDays = 30;
+                }
+                TodoHandler.newIncoming(new TodoSelf(name, givenDays));
+                dispose();
+            }
+        };
     }
 
 }

@@ -3,6 +3,7 @@ package core.task.creator;
 import core.Board;
 import core.module.SemesterActivity;
 import core.task.handler.AssignmentHandler;
+import core.task.self.AssignmentSelf;
 import core.utils.App;
 import core.utils.Globals;
 import core.utils.MComponent;
@@ -11,8 +12,11 @@ import proto.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.Objects;
 
 import static core.task.creator.TodoCreator.DESCRIPTION_LIMIT;
 
@@ -113,7 +117,7 @@ public class AssignmentCreator extends KDialog {
         final KButton cancelButton = new KButton("Cancel");
         cancelButton.addActionListener(e -> this.dispose());
         final KButton addButton = new KButton("Add");
-        addButton.addActionListener(AssignmentHandler.additionListener());
+        addButton.addActionListener(listener());
 
         final KPanel contentPlate = new KPanel();
         contentPlate.setLayout(new BoxLayout(contentPlate,BoxLayout.Y_AXIS));
@@ -183,6 +187,49 @@ public class AssignmentCreator extends KDialog {
         }
         final String sep = MDate.VAL_SEP;
         return dField.getText()+sep+mField.getText()+sep+yField.getText();
+    }
+
+    public ActionListener listener(){
+        return e -> {
+            final String name = nameField.getText();
+            if (Globals.hasNoText(name)) {
+                App.reportError(getRootPane(), "No Name", "Please provide the name of the course.");
+                nameField.requestFocusInWindow();
+            } else if (name.length() > DESCRIPTION_LIMIT) {
+                App.reportError(getRootPane(), "Error", "Sorry, the subject name cannot exceed "+
+                                DESCRIPTION_LIMIT +" characters.");
+                nameField.requestFocusInWindow();
+            } else if (Globals.hasNoText(getProvidedDeadLine())) {
+                App.reportError(getRootPane(), "Deadline Error",
+                        "Please fill out all the fields for the deadline. You can change them later.");
+            } else {
+                final String type = isGroup() ? "Group Assignment" : "Individual Assignment";
+                final String question = getQuestion();
+                final Date givenDate = Objects.requireNonNull(MDate.parse(getProvidedDeadLine()+" 0:0:0"));
+                if (givenDate.before(new Date())) {
+                    App.reportError(getRootPane(), "Past Deadline",
+                            "That deadline is already past. Enter a valid deadline.");
+                    return;
+                }
+                final String deadline = MDate.formatDateOnly(givenDate);
+                final String preMean = String.valueOf(getSelectedMode());
+                String mean;
+                if (preMean.contains("hard")) {
+                    mean = "A Hard Copy";
+                } else if (preMean.contains("soft")) {
+                    mean = "A Soft Copy";
+                } else if (preMean.contains("email")) {
+                    mean = "An Email Address - " + getMeanValue();
+                } else if (preMean.contains("web")) {
+                    mean = "A Webpage - " + getMeanValue();
+                } else {
+                    mean = "Other Means";
+                }
+
+                AssignmentHandler.newIncoming(new AssignmentSelf(name, deadline, question, isGroup(), mean));
+                dispose();
+            }
+        };
     }
 
 }

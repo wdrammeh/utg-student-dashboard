@@ -155,7 +155,6 @@ public class News implements Activity {
         final KPanel niceBox = new KPanel(new BorderLayout());
         niceBox.setBackground(Color.WHITE);
         niceBox.setPreferredSize(new Dimension(975, 160));
-        niceBox.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         niceBox.add(headerWrap, BorderLayout.NORTH);
         niceBox.add(textPane, BorderLayout.CENTER);
         niceBox.add(readerWrap, BorderLayout.SOUTH);
@@ -181,7 +180,6 @@ public class News implements Activity {
             textPane = KTextPane.htmlFormattedPane(allContent);
             textPane.setPreferredSize(new Dimension(665, 465));
             KScrollPane newsScrollPane = new KScrollPane(textPane);
-            newsScrollPane.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
             final KButton visitButton = new KButton("Visit site");
             visitButton.setMnemonic(KeyEvent.VK_V);
@@ -201,7 +199,8 @@ public class News implements Activity {
 
             final KPanel contentPanel = new KPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-            contentPanel.addAll(newsScrollPane, new KPanel(new FlowLayout(FlowLayout.RIGHT), visitButton, closeButton));
+            contentPanel.addAll(newsScrollPane,
+                    new KPanel(new FlowLayout(FlowLayout.RIGHT, 5, 10), visitButton, closeButton));
             setContentPane(contentPanel);
             getRootPane().setDefaultButton(closeButton);
             pack();

@@ -1,11 +1,10 @@
 # Development
-
 If you are looking to get involved improving this project, this guide can help you get started quickly.
 
 ## Structure
 Major folders in the project and their purpose:
 
-**Note**: you should be familiar with _Maven_ directory structure, because this project is managed by Maven for Java.
+**Note**: you should be familiar with _Maven_ directory structure.
 
 [main/java/](src/main/java)
 
@@ -26,20 +25,24 @@ Major folders in the project and their purpose:
     Resources under this folder are for testing only. They do not count in building, or running the actual program.
 
 ## Skills
-- Core Java: OOP Concepts, Serialization, etc.
+- Core Java: Object-Oriented Programming, Serialization
 - Maven
 - HTML
 
-`Knowledge about UTG, its programs, and courses is important.`
+_Knowledge about UTG, its programs, and courses is important._
 
 ## Logic
 Please make sure to read the [logic statement](Logic.md) as well.
 
 ## Conventions
-- This project is strictly **platform-independent**. In case it became absolutely necessary to implement
-  some platform specific components, developer must clearly state it out.
+- This project is strictly **platform-independent**.
+  In case it became absolutely necessary to implement some platform specific components,
+  developer must clearly state it out.
 - All features (parts of the project) should be **easily tested, and independent** of each other.
 - Developer is encouraged to **document** as much as possible.
 - Developer must use "**clean-code**" approach.
-- Running the *main* branch should technically be equivalent to running an installed version of the software
-  [This generally requires modification of types like [Serializer](src/main/java/core/serial/Serializer.java) and [Dashboard](src/main/java/utg/Dashboard.java)].
+- **Note** that Running the *main* branch (i.e. from sources) is technically equivalent
+  to running an installed version of the software.
+  Hence, developers are advised to modify the `ROOT_DIR` variable
+  from the [Serializer](src/main/java/core/serial/Serializer.java) type
+  in order to point to a temporary "test" directory until final compilation.

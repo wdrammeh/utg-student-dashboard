@@ -31,7 +31,7 @@ public class KComboBox<E> extends JComboBox<E> implements Preference {
     /**
      * Returns a string representation of whatever element
      * is currently selected from this comboBox.
-     * If this instance has specifies a mask for the item,
+     * If this instance has specified a mask for the item,
      * and the selected item is such, then the alternative
      * (actual) value will be returned instead.
      */

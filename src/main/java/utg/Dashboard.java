@@ -48,7 +48,7 @@ import java.util.List;
  */
 public class Dashboard {
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version("2021.6");
+    public static final Version VERSION = new Version("2021.6"); // Todo upgrade 2021.7; an in pom.xml
     private static boolean isAuthentic = true;
     private static boolean isFirst;
 

@@ -1,6 +1,6 @@
 # Dashboard Logic
 
-`(C) 2021  Muhammed W. Drammeh`
+`(C) 2021  Muhammed W. Drammeh. All rights reserved.`
 
 The life process of Dashboard includes important series of sets of calls
 known as 'Sequences'.  These include **Verification**, **Launch**,
@@ -69,6 +69,10 @@ charges. This can save memory and battery-life.
 
 To forestall any unexpected shutdown, Dashboard also adds the
 Collapse Sequence in the system's shutdown-hook.
-This can minimize loss of data due to abnormal termination of the VM.
+This can minimize (if not prevent) loss of data due to abnormal termination of the VM.
 
 See [Serializer](src/main/java/core/serial/Serializer.java).
+
+## Conventions
+For a complete understanding of the "Dashboard Logic", please read the
+[Conventions](Contributing.md#conventions) as well.

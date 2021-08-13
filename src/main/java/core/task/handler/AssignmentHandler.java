@@ -1,5 +1,6 @@
 package core.task.handler;
 
+import core.serial.Serializer;
 import core.task.creator.AssignmentCreator;
 import core.task.exhibition.AssignmentExhibition;
 import core.task.self.AssignmentSelf;
@@ -8,28 +9,29 @@ import core.utils.Globals;
 import core.utils.MComponent;
 import core.utils.MDate;
 import proto.*;
+import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Objects;
 
 import static core.task.TaskActivity.*;
-import static core.task.creator.TodoCreator.DESCRIPTION_LIMIT;
 
 public class AssignmentHandler {
+    private static int doingCount;
+    private static int doneCount;
+    private static KPanel activeReside;
+    private static KPanel doneReside;
+    private static KButton portalButton;
     public static final ArrayList<AssignmentSelf> ASSIGNMENTS = new ArrayList<>();
-    private static int doingCount, doneCount;
-    private static KPanel activeReside, doneReside;
-    private static AssignmentCreator assignmentCreator;
-    private static KButton bigButton;
 
 
-    public AssignmentHandler(KButton bigButton){
-        AssignmentHandler.bigButton = bigButton;
+    public static void initHandle(KButton portalButton){
+        AssignmentHandler.portalButton = portalButton;
         activeReside = new KPanel(){
             @Override
             public Component add(Component comp) {
@@ -67,55 +69,9 @@ public class AssignmentHandler {
             }
         };
         doneReside.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
-    }
-
-    public static ActionListener additionListener(){
-        return e -> {
-            final String name = assignmentCreator.getNameField().getText();
-            if (Globals.hasNoText(name)) {
-                App.reportError(assignmentCreator.getRootPane(), "No Name",
-                        "Please provide the name of the course.");
-                assignmentCreator.getNameField().requestFocusInWindow();
-            } else if (name.length() > DESCRIPTION_LIMIT) {
-                App.reportError(assignmentCreator.getRootPane(), "Error",
-                        "Sorry, the subject name cannot exceed "+
-                                DESCRIPTION_LIMIT +" characters.");
-                assignmentCreator.getNameField().requestFocusInWindow();
-            } else if (Globals.hasNoText(assignmentCreator.getProvidedDeadLine())) {
-                App.reportError(assignmentCreator.getRootPane(), "Deadline Error",
-                        "Please fill out all the fields for the deadline. You can change them later.");
-            } else {
-                final String type = assignmentCreator.isGroup() ? "Group Assignment" : "Individual Assignment";
-                final String question = assignmentCreator.getQuestion();
-                final Date givenDate = Objects.requireNonNull(MDate.parse(assignmentCreator.getProvidedDeadLine()+" 0:0:0"));
-                if (givenDate.before(new Date())) {
-                    App.reportError(assignmentCreator.getRootPane(), "Past Deadline",
-                            "That deadline is already past. Enter a valid deadline.");
-                    return;
-                }
-                final String deadline = MDate.formatDateOnly(givenDate);
-                final String preMean = String.valueOf(assignmentCreator.getSelectedMode());
-                String mean;
-                if (preMean.contains("hard")) {
-                    mean = "A Hard Copy";
-                } else if (preMean.contains("soft")) {
-                    mean = "A Soft Copy";
-                } else if (preMean.contains("email")) {
-                    mean = "An Email Address - " + assignmentCreator.getMeanValue();
-                } else if (preMean.contains("web")) {
-                    mean = "A Webpage - " + assignmentCreator.getMeanValue();
-                } else {
-                    mean = "Other Means";
-                }
-
-                final AssignmentSelf incomingAssignment = new AssignmentSelf(name, deadline,
-                        question, assignmentCreator.isGroup(), mean);
-                ASSIGNMENTS.add(incomingAssignment);
-                activeReside.add(incomingAssignment.getLayer());
-                MComponent.ready(activeReside);
-                assignmentCreator.dispose();
-            }
-        };
+        if (!Dashboard.isFirst()) {
+            deserialize();
+        }
     }
 
     public static void transferAssignment(AssignmentSelf assignmentSelf,
@@ -170,7 +126,13 @@ public class AssignmentHandler {
 
     private static void renewCount(int effect){
         doingCount += effect;
-        bigButton.setText(doingCount);
+        portalButton.setText(doingCount);
+    }
+
+    public static void newIncoming(AssignmentSelf assignment){
+        ASSIGNMENTS.add(assignment);
+        activeReside.add(assignment.getLayer());
+        MComponent.ready(activeReside);
     }
 
     public static void receiveFromSerials(AssignmentSelf aSelf){
@@ -182,20 +144,19 @@ public class AssignmentHandler {
         ASSIGNMENTS.add(aSelf);
     }
 
-    public JComponent getComponent(){
+    public static JComponent getComponent(){
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, activeAssignments(), doneAssignments());
         splitPane.setContinuousLayout(true);
         splitPane.setDividerLocation(275); // mathematically should be 3/4 or 75% of the consumable area
         return new KPanel(new BorderLayout(), splitPane);
     }
 
-    private JComponent activeAssignments() {
+    private static JComponent activeAssignments() {
         final KButton createButton = new KButton("New Assignment");
         createButton.setFont(TASK_BUTTONS_FONT);
         createButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         createButton.addActionListener(e-> {
-            assignmentCreator = new AssignmentCreator();
-            assignmentCreator.setVisible(true);
+            new AssignmentCreator().setVisible(true);
         });
 
         final KPanel labelPanelPlus = new KPanel(new BorderLayout());
@@ -208,7 +169,7 @@ public class AssignmentHandler {
         return upperReside;
     }
 
-    private JComponent doneAssignments() {
+    private static JComponent doneAssignments() {
         final KButton clearButton = new KButton("Clear");
         clearButton.setFont(TASK_BUTTONS_FONT);
         clearButton.setToolTipText("Remove all submissions");
@@ -243,6 +204,43 @@ public class AssignmentHandler {
 
     public static int getDoneCount(){
         return doneCount;
+    }
+
+    private static void deserialize(){
+        final Object assignObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments.ser"));
+        final Object groupsMembersObj = Serializer.fromDisk(Serializer.inPath("tasks", "groups.members.ser"));
+        final Object questionsObj = Serializer.fromDisk(Serializer.inPath("tasks", "questions.ser"));
+        if (assignObj == null || groupsMembersObj == null || questionsObj == null) {
+            App.silenceException("Failed to read assignments.");
+        } else {
+            final String[] assignments = (String[]) assignObj;
+            final String[] groupsMembers = (String[]) groupsMembersObj;
+            final String[] questions = (String[]) questionsObj;
+            for (int i = 0, j = 0; i < assignments.length; i++) {
+                final String[] lines = Globals.splitLines(assignments[i]);
+                final AssignmentSelf assignmentSelf = new AssignmentSelf(lines[0], lines[1], questions[i],
+                        Boolean.parseBoolean(lines[2]), lines[3], lines[4], Boolean.parseBoolean(lines[5]));
+                assignmentSelf.setSubmissionDate(lines[6]);
+                assignmentSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
+                assignmentSelf.submissionIsAlerted = Boolean.parseBoolean(lines[8]);
+                assignmentSelf.setUpUI(); // Todo consider recall
+                if (assignmentSelf.isGroup()) {
+                    final String[] memberLines = Globals.splitLines(groupsMembers[j]);
+                    Collections.addAll(assignmentSelf.members, memberLines);
+                    j++;
+                }
+                if (assignmentSelf.isOn()) {
+                    if (MDate.parse(MDate.formatDateOnly(new Date())+" 0:0:0").
+                            before(MDate.parse(assignmentSelf.getDeadLine()+" 0:0:0"))) {
+                        assignmentSelf.wakeAlive();
+                    } else {
+                        assignmentSelf.wakeDead();
+                    }
+                }
+                assignmentSelf.setUpUI();
+                receiveFromSerials(assignmentSelf);
+            }
+        }
     }
 
 }

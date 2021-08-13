@@ -1,5 +1,6 @@
 package core.task.handler;
 
+import core.serial.Serializer;
 import core.task.creator.ProjectCreator;
 import core.task.self.ProjectSelf;
 import core.utils.App;
@@ -10,26 +11,26 @@ import proto.KButton;
 import proto.KLabel;
 import proto.KPanel;
 import proto.KScrollPane;
+import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Date;
 
 import static core.task.TaskActivity.*;
-import static core.task.creator.TodoCreator.DESCRIPTION_LIMIT;
 
 public class ProjectHandler {
-    public static final ArrayList<ProjectSelf> PROJECTS = new ArrayList<>();
-    private static int liveCount, completeCount; // count - number of all, liveCount - number currently running
+    private static int liveCount; // count - number of all, liveCount - number currently running
+    private static int completeCount;
     private static KPanel projectsReside;
-    private static ProjectCreator projectCreator;
-    private static KButton bigButton;
+    private static KButton portalButton;
+    public static final ArrayList<ProjectSelf> PROJECTS = new ArrayList<>();
 
 
-    public ProjectHandler(KButton bigButton){
-        ProjectHandler.bigButton = bigButton;
+    public static void initHandle(KButton portalButton){
+        ProjectHandler.portalButton = portalButton;
         projectsReside = new KPanel(){
             @Override
             public Component add(Component comp) {
@@ -45,47 +46,9 @@ public class ProjectHandler {
             }
         };
         projectsReside.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
-    }
-
-    public static ActionListener additionWaiter(){
-        return e -> {
-            final String name = projectCreator.getNameField().getText();
-            int givenDays = 0;
-            if (Globals.hasNoText(name)) {
-                App.reportError("No Name","Please specify a name for the project.");
-                projectCreator.getNameField().requestFocusInWindow();
-            } else if (name.length() > DESCRIPTION_LIMIT) {
-                App.reportError("Error", "Sorry, name of a project must be at most "+
-                        DESCRIPTION_LIMIT +" characters.");
-            } else {
-                final String dDuration = projectCreator.getTheDuration();
-                if (Objects.equals(dDuration, "Five Days")) {
-                    givenDays = 5;
-                } else if (Objects.equals(dDuration, "One Week")) {
-                    givenDays = 7;
-                } else if (Objects.equals(dDuration, "Two Weeks")) {
-                    givenDays = 14;
-                } else if (Objects.equals(dDuration, "Three Weeks")) {
-                    givenDays = 21;
-                } else if (Objects.equals(dDuration, "One Month")) {
-                    givenDays = 30;
-                } else if (Objects.equals(dDuration, "Two Months")) {
-                    givenDays = 60;
-                } else if (Objects.equals(dDuration, "Three Months")) {
-                    givenDays = 90;
-                } else if (Objects.equals(dDuration, "Six Months")) {
-                    givenDays = 180;
-                }
-
-                final ProjectSelf incomingProject = new ProjectSelf(name,
-                        projectCreator.getTheType(), givenDays);
-                PROJECTS.add(incomingProject);
-                projectsReside.add(incomingProject.getLayer());
-                projectCreator.dispose();
-                MComponent.ready(projectsReside);
-                renewCount(1);
-            }
-        };
+        if (!Dashboard.isFirst()) {
+            deserialize();
+        }
     }
 
     public static void performIComplete(ProjectSelf project, boolean timeDue){
@@ -134,7 +97,14 @@ public class ProjectHandler {
 
     public static void renewCount(int value){
         liveCount += value;
-        bigButton.setText(liveCount);
+        portalButton.setText(liveCount);
+    }
+
+    public static void newIncoming(ProjectSelf project){
+        PROJECTS.add(project);
+        projectsReside.add(project.getLayer());
+        MComponent.ready(projectsReside);
+        renewCount(1);
     }
 
     public static void receiveFromSerials(ProjectSelf dProject){
@@ -147,14 +117,13 @@ public class ProjectHandler {
         }
     }
 
-    public JComponent getComponent(){
+    public static JComponent getComponent(){
         final KButton addButton = new KButton("New Project");
         addButton.setFont(TASK_BUTTONS_FONT);
         addButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         addButton.setToolTipText("Create Project");
         addButton.addActionListener(e-> {
-            projectCreator = new ProjectCreator();
-            projectCreator.setVisible(true);
+            new ProjectCreator().setVisible(true);
         });
 
         final KPanel labelPanelPlus = new KPanel(new BorderLayout());
@@ -173,6 +142,36 @@ public class ProjectHandler {
 
     public static int getLiveCount(){
         return liveCount;
+    }
+
+    private static void deserialize(){
+        final Object projectObj = Serializer.fromDisk(Serializer.inPath("tasks", "projects.ser"));
+        if (projectObj == null) {
+            App.silenceException("Failed to read Projects.");
+        } else {
+            final String[] projects = (String[]) projectObj;
+            for (String data : projects) {
+                final String[] lines = Globals.splitLines(data);
+                final ProjectSelf projectSelf = new ProjectSelf(lines[0], lines[1], lines[2],
+                        Integer.parseInt(lines[3]), Boolean.parseBoolean(lines[5]));
+                projectSelf.setTotalTimeConsumed(Integer.parseInt(lines[4]));
+                projectSelf.setDateCompleted(lines[6]);
+                projectSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
+                projectSelf.completionIsAlerted = Boolean.parseBoolean(lines[8]);
+                if (projectSelf.isLive()) {
+                    if (new Date().before(MDate.parse(projectSelf.getDateExpectedToComplete()))) {
+                        projectSelf.wakeLive();
+                        projectSelf.initializeUI();
+                    } else {
+                        projectSelf.wakeDead();
+                        projectSelf.setUpDoneUI();
+                    }
+                } else {
+                    projectSelf.setUpDoneUI();
+                }
+                receiveFromSerials(projectSelf);
+            }
+        }
     }
 
 }

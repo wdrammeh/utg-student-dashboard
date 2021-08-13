@@ -11,36 +11,26 @@ import core.task.self.AssignmentSelf;
 import core.task.self.EventSelf;
 import core.task.self.ProjectSelf;
 import core.task.self.TodoSelf;
-import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
 import proto.KButton;
 import proto.KFontFactory;
 import proto.KLabel;
 import proto.KPanel;
-import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 
 /**
  * This class packages all its data onto a panel, which is also added to the cardBoard Layout
  * in Board to make it come to sight at the corresponding big-button click.
- * It serves as the intermediary between all the so-called task helpers, like self, creator,
+ * It serves as an intermediary between all the so-called task helpers, like self, creator,
  * exhibitor, etc. and the Board.
  */
 public class TaskActivity implements Activity {
-    private CardLayout cardLayout;
+    private final KLabel hintLabel;
     private KPanel inPanel;
-    private static KButton todoBigButton;
-    private static KButton projectBigButton;
-    private static KButton assignmentBigButton;
-    private static KButton eventBigButton;
-    private static KLabel hintLabel;
+    private CardLayout cardLayout;
     public static final Font TASK_HEADERS_FONT = KFontFactory.createBoldFont(16);
     public static final Font TASK_BUTTONS_FONT = KFontFactory.createPlainFont(15);
     public static final int CONTENTS_POSITION = FlowLayout.CENTER;
@@ -52,7 +42,6 @@ public class TaskActivity implements Activity {
 
         final KButton returnButton = new KButton("< Menu");
         returnButton.setFont(TASK_BUTTONS_FONT);
-        returnButton.setToolTipText("Task Menu");
         returnButton.addActionListener(e-> {
             cardLayout.show(inPanel,"Home");
             hintLabel.setText("");
@@ -82,9 +71,6 @@ public class TaskActivity implements Activity {
         final KPanel activityPanel = new KPanel(new BorderLayout());
         activityPanel.add(upperPanel, BorderLayout.NORTH);
         activityPanel.add(inPanel);
-        if (!Dashboard.isFirst()) {
-            TaskActivity.deSerializeAll();
-        }
         Board.addCard(activityPanel, "Tasks");
     }
 
@@ -99,9 +85,9 @@ public class TaskActivity implements Activity {
      * The rest perform the same.
      */
     private KButton giveTodoButton(){
-        todoBigButton = newBigButton("TODO", TodoHandler.getActiveCount());
-        final TodoHandler todoHandler = new TodoHandler(todoBigButton);
-        cardLayout.addLayoutComponent(inPanel.add(todoHandler.getComponent()),"TODO");
+        final KButton todoBigButton = newBigButton("TODO");
+        TodoHandler.initHandle(todoBigButton);
+        cardLayout.addLayoutComponent(inPanel.add(TodoHandler.getComponent()),"TODO");
         todoBigButton.addActionListener(e-> {
             cardLayout.show(inPanel,"TODO");
             hintLabel.setText(" > TODO List");
@@ -110,9 +96,9 @@ public class TaskActivity implements Activity {
     }
 
     private KButton giveProjectsButton(){
-        projectBigButton = newBigButton("Projects", ProjectHandler.getLiveCount());
-        final ProjectHandler projectHandler = new ProjectHandler(projectBigButton);
-        cardLayout.addLayoutComponent(inPanel.add(projectHandler.getComponent()),"Projects");
+        final KButton projectBigButton = newBigButton("Projects");
+        ProjectHandler.initHandle(projectBigButton);
+        cardLayout.addLayoutComponent(inPanel.add(ProjectHandler.getComponent()),"Projects");
         projectBigButton.addActionListener(e-> {
             cardLayout.show(inPanel,"Projects");
             hintLabel.setText(" > Projects");
@@ -121,9 +107,9 @@ public class TaskActivity implements Activity {
     }
 
     private KButton giveAssignmentsButton(){
-        assignmentBigButton = newBigButton("Assignments", AssignmentHandler.getDoingCount());
-        final AssignmentHandler assignmentHandler = new AssignmentHandler(assignmentBigButton);
-        cardLayout.addLayoutComponent(inPanel.add(assignmentHandler.getComponent()),"Assignments");
+        final KButton assignmentBigButton = newBigButton("Assignments");
+        AssignmentHandler.initHandle(assignmentBigButton);
+        cardLayout.addLayoutComponent(inPanel.add(AssignmentHandler.getComponent()),"Assignments");
         assignmentBigButton.addActionListener(e-> {
             cardLayout.show(inPanel,"Assignments");
             hintLabel.setText(" > Assignments");
@@ -132,13 +118,13 @@ public class TaskActivity implements Activity {
     }
 
     private KButton giveEventsButton(){
-        eventBigButton = newBigButton("Events", EventHandler.getUpcomingCount());
-        final EventHandler eventHandler = new EventHandler(eventBigButton);
+        final KButton eventBigButton = newBigButton("Events");
+        EventHandler.initHandle(eventBigButton);
+        cardLayout.addLayoutComponent(inPanel.add(EventHandler.getComponent()),"Events");
         eventBigButton.addActionListener(e-> {
             cardLayout.show(inPanel,"Events");
             hintLabel.setText(" > Upcoming Events");
         });
-        cardLayout.addLayoutComponent(inPanel.add(eventHandler.getComponent()),"Events");
         return eventBigButton;
     }
 
@@ -147,29 +133,27 @@ public class TaskActivity implements Activity {
      * Note that the setText function of these buttons are forwarded to their inner-label
      * numberText, which indicates the number of tasks running on each.
      */
-    private KButton newBigButton(String label, int number){
+    private KButton newBigButton(String label){
         final KLabel lText = new KLabel(label, KFontFactory.createBoldFont(17));
         lText.setPreferredSize(new Dimension(175, 30));
         lText.setHorizontalAlignment(KLabel.CENTER);
 
-        final KLabel numberText = new KLabel(Integer.toString(number), KFontFactory.createBoldFont(50));
-        numberText.setHorizontalAlignment(KLabel.CENTER);
+        final KLabel numberLabel = new KLabel("0", KFontFactory.createBoldFont(50));
+        numberLabel.setHorizontalAlignment(KLabel.CENTER);
 
         final KButton lookButton = new KButton(){
             @Override
             public void setText(String text) {
-                numberText.setText(text);
-                MComponent.ready(numberText);
+                numberLabel.setText(text);
             }
         };
         lookButton.setPreferredSize(new Dimension(175, 150));
         lookButton.setLayout(new BorderLayout(0, 0));
         lookButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lookButton.add((lText), BorderLayout.NORTH);
-        lookButton.add(numberText, BorderLayout.CENTER);
+        lookButton.add(numberLabel, BorderLayout.CENTER);
         return lookButton;
     }
-
 
     public static void serializeAll(){
         final ArrayList<TodoSelf> todoList = TodoHandler.TODOS;
@@ -215,120 +199,6 @@ public class TaskActivity implements Activity {
             events[i] = eventsList.get(i).export();
         }
         Serializer.toDisk(events, Serializer.inPath("tasks", "events.ser"));
-    }
-
-    public static void deSerializeAll(){
-        final Object todoObj = Serializer.fromDisk(Serializer.inPath("tasks", "todos.ser"));
-        if (todoObj == null) {
-            App.silenceException("Failed to read TODO Tasks.");
-        } else {
-            final String[] todos = (String[]) todoObj;
-            for (String data : todos) {
-                final String[] lines = Globals.splitLines(data);
-                final TodoSelf todoSelf = new TodoSelf(lines[0], Integer.parseInt(lines[2]),
-                        lines[1], Boolean.parseBoolean(lines[4]));
-                todoSelf.setTotalTimeConsumed(Integer.parseInt(lines[3]));
-                todoSelf.setDateCompleted(lines[5]);
-                todoSelf.eveIsAlerted = Boolean.parseBoolean(lines[6]);
-                todoSelf.doneIsAlerted = Boolean.parseBoolean(lines[7]);
-                if (todoSelf.isActive()) { // This only means it slept alive - we're to check then if it's to wake alive or not
-                    if (new Date().before(MDate.parse(todoSelf.getDateExpectedToComplete()))) {
-                        todoSelf.wakeAlive();
-                    } else {
-                        todoSelf.wakeDead();
-                    }
-                }
-                todoSelf.setUpUI();
-                TodoHandler.receiveFromSerials(todoSelf);
-            }
-        }
-
-        final Object projectObj = Serializer.fromDisk(Serializer.inPath("tasks", "projects.ser"));
-        if (projectObj == null) {
-            App.silenceException("Failed to read Projects.");
-        } else {
-            final String[] projects = (String[]) projectObj;
-            for (String data : projects) {
-                final String[] lines = Globals.splitLines(data);
-                final ProjectSelf projectSelf = new ProjectSelf(lines[0], lines[1], lines[2],
-                        Integer.parseInt(lines[3]), Boolean.parseBoolean(lines[5]));
-                projectSelf.setTotalTimeConsumed(Integer.parseInt(lines[4]));
-                projectSelf.setDateCompleted(lines[6]);
-                projectSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
-                projectSelf.completionIsAlerted = Boolean.parseBoolean(lines[8]);
-                if (projectSelf.isLive()) {
-                    if (new Date().before(MDate.parse(projectSelf.getDateExpectedToComplete()))) {
-                        projectSelf.wakeLive();
-                        projectSelf.initializeUI();
-                    } else {
-                        projectSelf.wakeDead();
-                        projectSelf.setUpDoneUI();
-                    }
-                } else {
-                    projectSelf.setUpDoneUI();
-                }
-                ProjectHandler.receiveFromSerials(projectSelf);
-            }
-        }
-
-        final Object assignObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments.ser"));
-        final Object groupsMembersObj = Serializer.fromDisk(Serializer.inPath("tasks", "groups.members.ser"));
-        final Object questionsObj = Serializer.fromDisk(Serializer.inPath("tasks", "questions.ser"));
-        if (assignObj == null || groupsMembersObj == null || questionsObj == null) {
-            App.silenceException("Failed to read assignments.");
-        } else {
-            final String[] assignments = (String[]) assignObj;
-            final String[] groupsMembers = (String[]) groupsMembersObj;
-            final String[] questions = (String[]) questionsObj;
-            for (int i = 0, j = 0; i < assignments.length; i++) {
-                final String[] lines = Globals.splitLines(assignments[i]);
-                final AssignmentSelf assignmentSelf = new AssignmentSelf(lines[0], lines[1], questions[i],
-                        Boolean.parseBoolean(lines[2]), lines[3], lines[4], Boolean.parseBoolean(lines[5]));
-                assignmentSelf.setSubmissionDate(lines[6]);
-                assignmentSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
-                assignmentSelf.submissionIsAlerted = Boolean.parseBoolean(lines[8]);
-                assignmentSelf.setUpUI(); // Todo consider recall
-                if (assignmentSelf.isGroup()) {
-                    final String[] memberLines = Globals.splitLines(groupsMembers[j]);
-                    Collections.addAll(assignmentSelf.members, memberLines);
-                    j++;
-                }
-                if (assignmentSelf.isOn()) {
-                    if (MDate.parse(MDate.formatDateOnly(new Date())+" 0:0:0").
-                            before(MDate.parse(assignmentSelf.getDeadLine()+" 0:0:0"))) {
-                        assignmentSelf.wakeAlive();
-                    } else {
-                        assignmentSelf.wakeDead();
-                    }
-                }
-                assignmentSelf.setUpUI();
-                AssignmentHandler.receiveFromSerials(assignmentSelf);
-            }
-        }
-
-        final Object eventsObj = Serializer.fromDisk(Serializer.inPath("tasks", "events.ser"));
-        if (eventsObj == null) {
-            App.silenceException("Failed to read Events.");
-        } else {
-            final String[] events = (String[]) eventsObj;
-            for (String data : events){
-                final String[] lines = Globals.splitLines(data);
-                final EventSelf eventSelf = new EventSelf(lines[0], lines[1], Boolean.parseBoolean(lines[2]));
-                eventSelf.eveIsAlerted = Boolean.parseBoolean(lines[3]);
-                eventSelf.timeupIsAlerted = Boolean.parseBoolean(lines[4]);
-                eventSelf.setUpUI(); // Todo consider recall
-                if (eventSelf.isPending()) {
-                    if (MDate.parse(MDate.formatDateOnly(new Date()) + " 0:0:0").
-                            before(MDate.parse(eventSelf.getDateDue() + " 0:0:0"))) {
-                        eventSelf.wakeAlive();
-                    } else {
-                        eventSelf.endState();
-                    }
-                }
-                eventSelf.setUpUI();
-                EventHandler.receiveFromSerials(eventSelf);
-            }
-        }
     }
 
 }

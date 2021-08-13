@@ -1,5 +1,6 @@
 package core.task.handler;
 
+import core.serial.Serializer;
 import core.task.creator.EventCreator;
 import core.task.self.EventSelf;
 import core.utils.App;
@@ -10,23 +11,20 @@ import proto.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
 
 import static core.task.TaskActivity.*;
-import static core.task.creator.TodoCreator.DESCRIPTION_LIMIT;
 
 public class EventHandler {
-    public static final ArrayList<EventSelf> EVENTS = new ArrayList<>();
     private static int upcomingCount;
     private static KPanel eventsReside;
-    private static EventCreator testCreator, examCreator, othersCreator;
-    private static KButton bigButton;
+    private static KButton portalButton;
+    public static final ArrayList<EventSelf> EVENTS = new ArrayList<>();
 
 
-    public EventHandler(KButton bigButton){
-        EventHandler.bigButton = bigButton;
+    public static void initHandle(KButton portalButton){
+        EventHandler.portalButton = portalButton;
         eventsReside = new KPanel(){
             @Override
             public Component add(Component comp) {
@@ -43,64 +41,7 @@ public class EventHandler {
             }
         };
         eventsReside.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
-    }
-
-    public static ActionListener newListener(){
-        return e -> {
-            final EventCreator requiredCreator = getShowingCreator();
-            if (requiredCreator == null) {
-                return;
-            }
-            String tName = requiredCreator.getDescriptionField().getText();
-            if (Globals.hasNoText(tName)) {
-                App.reportError(requiredCreator.getRootPane(), "No Name",
-                        "Please specify a name for the event.");
-                requiredCreator.getDescriptionField().requestFocusInWindow();
-            } else if (tName.length() > DESCRIPTION_LIMIT) {
-                App.reportError(requiredCreator.getRootPane(), "Error",
-                        "Sorry, the event's name should be at most "+
-                                DESCRIPTION_LIMIT+" characters.");
-                requiredCreator.getDescriptionField().requestFocusInWindow();
-            } else if (Globals.hasNoText(requiredCreator.getProvidedDate())) {
-                App.reportError(requiredCreator.getRootPane(), "Error",
-                        "Please provide all the fields for the date of the "+
-                                (requiredCreator.type()));
-            } else {
-                final Date date = MDate.parse(requiredCreator.getProvidedDate() + " 0:0:0");
-                if (date == null) {
-                    return;
-                }
-                if (date.before(new Date())) {
-                    App.reportError(requiredCreator.getRootPane(),"Past Deadline",
-                            "Please consider the deadline. It's already past.");
-                    return;
-                }
-                if (requiredCreator.getTitle().contains("Test")) {
-                    tName = tName + " Test";
-                } else if (requiredCreator.getTitle().contains("Exam")) {
-                    tName = tName + " Examination";
-                }
-                final String dateString = MDate.formatDateOnly(date);
-                final EventSelf incomingEvent = new EventSelf(tName, dateString);
-                EVENTS.add(incomingEvent);
-                eventsReside.add(incomingEvent.getEventLayer());
-                MComponent.ready(eventsReside);
-                requiredCreator.dispose();
-                renewCount(1);
-            }
-        };
-    }
-
-    private static EventCreator getShowingCreator(){
-        if (testCreator != null && testCreator.isShowing()) {
-            return testCreator;
-        } else if (examCreator != null && examCreator.isShowing()) {
-            return examCreator;
-        } else if (othersCreator != null && othersCreator.isShowing()) {
-            return othersCreator;
-        } else {
-            return null;
-        }
+        deserialize();
     }
 
     public static void deleteEvent(EventSelf event){
@@ -114,7 +55,14 @@ public class EventHandler {
 
     public static void renewCount(int value){
         upcomingCount += value;
-        bigButton.setText(upcomingCount);
+        portalButton.setText(upcomingCount);
+    }
+
+    public static void newIncoming(EventSelf event){
+        EVENTS.add(event);
+        eventsReside.add(event.getEventLayer());
+        MComponent.ready(eventsReside);
+        renewCount(1);
     }
 
     public static void receiveFromSerials(EventSelf eventSelf) {
@@ -125,20 +73,17 @@ public class EventHandler {
         EVENTS.add(eventSelf);
     }
 
-    public JComponent getComponent(){
+    public static JComponent getComponent(){
         final KMenuItem testItem = new KMenuItem("Upcoming Test", e-> {
-            testCreator = new EventCreator(EventCreator.TEST);
-            testCreator.setVisible(true);
+            new EventCreator(EventCreator.TEST).setVisible(true);
         });
 
         final KMenuItem examItem = new KMenuItem("Upcoming Exam", e-> {
-            examCreator = new EventCreator(EventCreator.EXAM);
-            examCreator.setVisible(true);
+            new EventCreator(EventCreator.EXAM).setVisible(true);
         });
 
         final KMenuItem otherItem = new KMenuItem("Other", e-> {
-            othersCreator = new EventCreator(EventCreator.OTHER);
-            othersCreator.setVisible(true);
+            new EventCreator(EventCreator.OTHER).setVisible(true);
         });
 
         final JPopupMenu jPopup = new JPopupMenu();
@@ -164,6 +109,32 @@ public class EventHandler {
 
     public static int getUpcomingCount(){
         return upcomingCount;
+    }
+
+    private static void deserialize(){
+        final Object eventsObj = Serializer.fromDisk(Serializer.inPath("tasks", "events.ser"));
+        if (eventsObj == null) {
+            App.silenceException("Failed to read Events.");
+        } else {
+            final String[] events = (String[]) eventsObj;
+            for (String data : events){
+                final String[] lines = Globals.splitLines(data);
+                final EventSelf eventSelf = new EventSelf(lines[0], lines[1], Boolean.parseBoolean(lines[2]));
+                eventSelf.eveIsAlerted = Boolean.parseBoolean(lines[3]);
+                eventSelf.timeupIsAlerted = Boolean.parseBoolean(lines[4]);
+                eventSelf.setUpUI(); // Todo consider recall
+                if (eventSelf.isPending()) {
+                    if (MDate.parse(MDate.formatDateOnly(new Date()) + " 0:0:0").
+                            before(MDate.parse(eventSelf.getDateDue() + " 0:0:0"))) {
+                        eventSelf.wakeAlive();
+                    } else {
+                        eventSelf.endState();
+                    }
+                }
+                eventSelf.setUpUI();
+                receiveFromSerials(eventSelf);
+            }
+        }
     }
 
 }

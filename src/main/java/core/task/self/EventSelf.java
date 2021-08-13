@@ -83,7 +83,7 @@ public class EventSelf {
                 }
             });
         }
-        stateIndicator = new KLabel((isPending? "Due on" : "Past since") + dateDue, KFontFactory.createBoldFont(16));
+        stateIndicator = new KLabel((isPending? " Due on " : " Past since ") + dateDue, KFontFactory.createBoldFont(16));
 
         canceller.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         stateIndicator.setOpaque(false);

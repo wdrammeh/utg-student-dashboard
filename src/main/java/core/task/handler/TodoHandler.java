@@ -1,5 +1,6 @@
 package core.task.handler;
 
+import core.serial.Serializer;
 import core.task.creator.TodoCreator;
 import core.task.self.TodoSelf;
 import core.utils.App;
@@ -7,26 +8,30 @@ import core.utils.Globals;
 import core.utils.MComponent;
 import core.utils.MDate;
 import proto.*;
+import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Date;
 
 import static core.task.TaskActivity.*;
-import static core.task.creator.TodoCreator.DESCRIPTION_LIMIT;
 
+/**
+ * Provides activity interface, and general functionality for the TODO Task types.
+ */
 public class TodoHandler {
+    private static KPanel activeContainer;
+    private static KPanel dormantContainer;
+    private static int activeCount;
+    private static int dormantCount;
+    private static KButton portalButton;
     public static final ArrayList<TodoSelf> TODOS = new ArrayList<>();
-    private static int activeCount, dormantCount;
-    private static KPanel activeContainer, dormantContainer;
-    private static TodoCreator todoCreator;
-    private static KButton bigButton;
 
 
-    public TodoHandler(KButton bigButton){
-        TodoHandler.bigButton = bigButton;
+    public static void initHandle(KButton portalButton){
+        TodoHandler.portalButton = portalButton;
         activeContainer = new KPanel(){
             @Override
             public Component add(Component comp) {
@@ -64,38 +69,9 @@ public class TodoHandler {
             }
         };
         dormantContainer.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
-    }
-
-    public static ActionListener additionWaiter(){
-        return e -> {
-            final String name = todoCreator.getDescriptionField().getText();
-            int givenDays = 0;
-            if (Globals.hasNoText(name)) {
-                App.reportError(todoCreator.getRootPane(), "No Name", "Please specify a name for the task.");
-                todoCreator.getDescriptionField().requestFocusInWindow();
-            } else if (name.length() > DESCRIPTION_LIMIT) {
-                App.reportError("Error", "Sorry, description of a task must be at most "+
-                        DESCRIPTION_LIMIT +" characters.");
-            } else {
-                final String span = todoCreator.getDuration();
-                if (Objects.equals(span, "Five Days")) {
-                    givenDays = 5;
-                } else if (Objects.equals(span, "One Week")) {
-                    givenDays = 7;
-                } else if (Objects.equals(span, "Two Weeks")) {
-                    givenDays = 14;
-                } else if (Objects.equals(span, "Three Weeks")) {
-                    givenDays = 21;
-                } else if (Objects.equals(span, "One Month")) {
-                    givenDays = 30;
-                }
-                final TodoSelf incomingTodo = new TodoSelf(name, givenDays);
-                TODOS.add(incomingTodo);
-                activeContainer.add(incomingTodo.getLayer());
-                MComponent.ready(activeContainer);
-                todoCreator.dispose();
-            }
-        };
+        if (!Dashboard.isFirst()) {
+            deserialize();
+        }
     }
 
     public static void transferTask(TodoSelf oldSelf, KDialog dialog, boolean timeDue){
@@ -114,7 +90,7 @@ public class TodoHandler {
 
     private static void finalizeTransfer(TodoSelf oldSelf) {
         oldSelf.setDateCompleted(MDate.now());
-        oldSelf.getTogoLabel().setText("Completed "+oldSelf.getDateCompleted());//Which is that
+        oldSelf.getTogoLabel().setText("Completed "+oldSelf.getDateCompleted()); // Which is that
         oldSelf.getTogoLabel().setForeground(Color.BLUE);
         oldSelf.setActive(false);
 
@@ -144,7 +120,13 @@ public class TodoHandler {
 
     private static void renewCount(int valueEffected){
         activeCount += valueEffected;
-        bigButton.setText(activeCount);
+        portalButton.setText(activeCount);
+    }
+
+    public static void newIncoming(TodoSelf todo){
+        TODOS.add(todo);
+        activeContainer.add(todo.getLayer());
+        MComponent.ready(activeContainer);
     }
 
     public static void receiveFromSerials(TodoSelf dTodo){
@@ -156,21 +138,20 @@ public class TodoHandler {
         TODOS.add(dTodo);
     }
 
-    public JComponent getComponent(){
+    public static JComponent getComponent(){
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
-                runningTasks(), completedTasks());
+                runningTasksComponent(), completedTasksComponent());
         splitPane.setContinuousLayout(true);
         splitPane.setDividerLocation(275);
         return new KPanel(new BorderLayout(), splitPane);
     }
 
-    private JComponent runningTasks(){
+    private static JComponent runningTasksComponent(){
         final KButton addButton = new KButton("New Task");
         addButton.setFont(TASK_BUTTONS_FONT);
         addButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         addButton.addActionListener(e-> {
-            todoCreator = new TodoCreator();
-            todoCreator.setVisible(true);
+            new TodoCreator().setVisible(true);
         });
 
         final KPanel labelPanelPlus = new KPanel(new BorderLayout());
@@ -186,7 +167,7 @@ public class TodoHandler {
         return runningPanel;
     }
 
-    private JComponent completedTasks(){
+    private static JComponent completedTasksComponent(){
         final KButton clearButton = new KButton("Clear List");
         clearButton.setFont(TASK_BUTTONS_FONT);
         clearButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -220,6 +201,33 @@ public class TodoHandler {
 
     public static int getActiveCount(){
         return activeCount;
+    }
+
+    private static void deserialize(){
+        final Object todoObj = Serializer.fromDisk(Serializer.inPath("tasks", "todos.ser"));
+        if (todoObj == null) {
+            App.silenceException("Failed to read TODO Tasks.");
+        } else {
+            final String[] todos = (String[]) todoObj;
+            for (String data : todos) {
+                final String[] lines = Globals.splitLines(data);
+                final TodoSelf todoSelf = new TodoSelf(lines[0], Integer.parseInt(lines[2]),
+                        lines[1], Boolean.parseBoolean(lines[4]));
+                todoSelf.setTotalTimeConsumed(Integer.parseInt(lines[3]));
+                todoSelf.setDateCompleted(lines[5]);
+                todoSelf.eveIsAlerted = Boolean.parseBoolean(lines[6]);
+                todoSelf.doneIsAlerted = Boolean.parseBoolean(lines[7]);
+                if (todoSelf.isActive()) { // This only means it slept alive - we're to check then if it's to wake alive or not
+                    if (new Date().before(MDate.parse(todoSelf.getDateExpectedToComplete()))) {
+                        todoSelf.wakeAlive();
+                    } else {
+                        todoSelf.wakeDead();
+                    }
+                }
+                todoSelf.setUpUI();
+                receiveFromSerials(todoSelf);
+            }
+        }
     }
 
 }

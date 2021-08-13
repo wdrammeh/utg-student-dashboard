@@ -3,6 +3,8 @@ package core.task.creator;
 import core.Board;
 import core.module.SemesterActivity;
 import core.task.handler.EventHandler;
+import core.task.self.EventSelf;
+import core.utils.App;
 import core.utils.Globals;
 import core.utils.MComponent;
 import core.utils.MDate;
@@ -10,6 +12,8 @@ import proto.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.Date;
 
 import static core.task.creator.TodoCreator.DESCRIPTION_LIMIT;
 
@@ -90,7 +94,7 @@ public class EventCreator extends KDialog {
         cancelButton.addActionListener(e -> this.dispose());
 
         final KButton addButton = new KButton("Add");
-        addButton.addActionListener(EventHandler.newListener());//No fear - if value was not one of the specified 3, compiler won't reach this line
+        addButton.addActionListener(listener());//No fear - if value was not one of the specified 3, compiler won't reach this line
 
         rootPane.setDefaultButton(addButton);
         contentPanel.addAll(titleLayer, datesLayer, MComponent.contentBottomGap(),
@@ -101,10 +105,6 @@ public class EventCreator extends KDialog {
         setLocationRelativeTo(Board.getRoot());
     }
 
-    public KTextField getDescriptionField(){
-        return descriptionField;
-    }
-
     public String getProvidedDate() {
         if(Globals.hasNoText(dayField.getText()) || Globals.hasNoText(monthField.getText()) || Globals.hasNoText(yearField.getText())) {
             return "";
@@ -113,8 +113,40 @@ public class EventCreator extends KDialog {
         return dayField.getText()+sep+monthField.getText()+sep+yearField.getText();
     }
 
-    public String type(){
-        return eventType;
+    private ActionListener listener(){
+        return e -> {
+            String tName = descriptionField.getText();
+            if (Globals.hasNoText(tName)) {
+                App.reportError(getRootPane(), "No Name",
+                        "Please specify a name for the event.");
+                descriptionField.requestFocusInWindow();
+            } else if (tName.length() > DESCRIPTION_LIMIT) {
+                App.reportError(getRootPane(), "Error", "Sorry, the event's name should be at most "+
+                                DESCRIPTION_LIMIT+" characters.");
+                descriptionField.requestFocusInWindow();
+            } else if (Globals.hasNoText(getProvidedDate())) {
+                App.reportError(getRootPane(), "Error", "Please provide all the fields for the date of the "+
+                                (eventType));
+            } else {
+                final Date date = MDate.parse(getProvidedDate() + " 0:0:0");
+                if (date == null) {
+                    return;
+                }
+                if (date.before(new Date())) {
+                    App.reportError(getRootPane(),"Past Deadline",
+                            "Please consider the deadline. It's already past.");
+                    return;
+                }
+                if (getTitle().contains("Test")) {
+                    tName = tName + " Test";
+                } else if (getTitle().contains("Exam")) {
+                    tName = tName + " Examination";
+                }
+                final String dateString = MDate.formatDateOnly(date);
+                EventHandler.newIncoming(new EventSelf(tName, dateString));
+                dispose();
+            }
+        };
     }
 
 }
