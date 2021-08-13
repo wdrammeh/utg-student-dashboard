@@ -1,6 +1,5 @@
 - Reindex resources completely without signing out (or re-signing in)
 - Transcript export customization
--* Remove static-orientation of task types = eliminating Handlers?
 -* Remove greetings on locally-triggered alerts
 - Student auditing tool
 - Improve the design for "Guest" users
@@ -10,8 +9,7 @@
 - Research on the Selenium Driver
 - Flexible driver choices functionality
 - Minimize Portal wait time - remove unnecessary waiting
--* Registration functionality
--* Well documentation; generate javadoc
+- Registration functionality
 - Student Forum
 - Student voting system
 - Use customized time-labels
