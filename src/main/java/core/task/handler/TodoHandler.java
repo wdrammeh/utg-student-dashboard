@@ -44,7 +44,7 @@ public class TodoHandler {
                 renewCount(-1);
             }
         };
-        activeContainer.setLayout(new FlowLayout(CONTENTS_POSITION));
+        activeContainer.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
 
         dormantContainer = new KPanel(){
             @Override
@@ -63,7 +63,7 @@ public class TodoHandler {
                 dormantCount--;
             }
         };
-        dormantContainer.setLayout(new FlowLayout(CONTENTS_POSITION));
+        dormantContainer.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
     }
 
     public static ActionListener additionWaiter(){
@@ -89,17 +89,11 @@ public class TodoHandler {
                 } else if (Objects.equals(span, "One Month")) {
                     givenDays = 30;
                 }
-
-                if (App.showYesNoCancelDialog(todoCreator.getRootPane(), "Confirm",
-                        "Do you wish to add the following task?\n-\n" +
-                                "Name:  " + name + "\n" +
-                                "To be completed in:  " + span)) {
-                    final TodoSelf incomingTodo = new TodoSelf(name, givenDays);
-                    TODOS.add(incomingTodo);
-                    activeContainer.add(incomingTodo.getLayer());
-                    MComponent.ready(activeContainer);
-                    todoCreator.dispose();
-                }
+                final TodoSelf incomingTodo = new TodoSelf(name, givenDays);
+                TODOS.add(incomingTodo);
+                activeContainer.add(incomingTodo.getLayer());
+                MComponent.ready(activeContainer);
+                todoCreator.dispose();
             }
         };
     }
@@ -163,7 +157,8 @@ public class TodoHandler {
     }
 
     public JComponent getComponent(){
-        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, runningTasks(), completedTasks());
+        final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                runningTasks(), completedTasks());
         splitPane.setContinuousLayout(true);
         splitPane.setDividerLocation(275);
         return new KPanel(new BorderLayout(), splitPane);
@@ -184,7 +179,10 @@ public class TodoHandler {
 
         final KPanel runningPanel = new KPanel(new BorderLayout());
         runningPanel.add(labelPanelPlus, BorderLayout.NORTH);
-        runningPanel.add(new KScrollPane(activeContainer), BorderLayout.CENTER);
+
+        final KScrollPane scrollPane = new KScrollPane(activeContainer);
+        scrollPane.setBorder(null);
+        runningPanel.add(scrollPane, BorderLayout.CENTER);
         return runningPanel;
     }
 
@@ -210,7 +208,9 @@ public class TodoHandler {
 
         final KPanel completedTasksPanel = new KPanel(new BorderLayout());
         completedTasksPanel.add(labelPanelPlus, BorderLayout.NORTH);
-        completedTasksPanel.add(new KScrollPane(dormantContainer), BorderLayout.CENTER);
+        final KScrollPane scrollPane = new KScrollPane(dormantContainer);
+        scrollPane.setBorder(null);
+        completedTasksPanel.add(scrollPane, BorderLayout.CENTER);
         return completedTasksPanel;
     }
 

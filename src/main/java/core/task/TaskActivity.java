@@ -41,18 +41,18 @@ public class TaskActivity implements Activity {
     private static KButton assignmentBigButton;
     private static KButton eventBigButton;
     private static KLabel hintLabel;
-    public static final Font TASK_HEADERS_FONT = KFontFactory.createPlainFont(20);
+    public static final Font TASK_HEADERS_FONT = KFontFactory.createBoldFont(16);
     public static final Font TASK_BUTTONS_FONT = KFontFactory.createPlainFont(15);
-    public static final int CONTENTS_POSITION = FlowLayout.LEFT;
+    public static final int CONTENTS_POSITION = FlowLayout.CENTER;
 
 
     public TaskActivity(){
         hintLabel = KLabel.getPredefinedLabel("My Tasks", SwingConstants.LEFT);
         hintLabel.setStyle(KFontFactory.BODY_HEAD_FONT, Color.BLUE);
 
-        final KButton returnButton = new KButton("Menu");
+        final KButton returnButton = new KButton("< Menu");
         returnButton.setFont(TASK_BUTTONS_FONT);
-        returnButton.setToolTipText("Tasks Menu");
+        returnButton.setToolTipText("Task Menu");
         returnButton.addActionListener(e-> {
             cardLayout.show(inPanel,"Home");
             hintLabel.setText("");
@@ -132,7 +132,7 @@ public class TaskActivity implements Activity {
     }
 
     private KButton giveEventsButton(){
-        eventBigButton = newBigButton("Upcoming", EventHandler.getUpcomingCount());
+        eventBigButton = newBigButton("Events", EventHandler.getUpcomingCount());
         final EventHandler eventHandler = new EventHandler(eventBigButton);
         eventBigButton.addActionListener(e-> {
             cardLayout.show(inPanel,"Events");

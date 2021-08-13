@@ -44,7 +44,7 @@ public class ProjectHandler {
                         projectsReside.getPreferredSize().height-40));
             }
         };
-        projectsReside.setLayout(new FlowLayout(CONTENTS_POSITION));
+        projectsReside.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
     }
 
     public static ActionListener additionWaiter(){
@@ -77,19 +77,13 @@ public class ProjectHandler {
                     givenDays = 180;
                 }
 
-                if (App.showYesNoCancelDialog(projectCreator.getRootPane(), "Confirm",
-                        "Do you wish to add the following project?\n-\n" +
-                                "Name:  " + name + "\n" +
-                                "Type:  " + projectCreator.getTheType() + " Project" + "\n" +
-                                "Duration:  " + dDuration)) {
-                    final ProjectSelf incomingProject = new ProjectSelf(name,
-                            projectCreator.getTheType(), givenDays);
-                    PROJECTS.add(incomingProject);
-                    projectsReside.add(incomingProject.getLayer());
-                    projectCreator.dispose();
-                    MComponent.ready(projectsReside);
-                    renewCount(1);
-                }
+                final ProjectSelf incomingProject = new ProjectSelf(name,
+                        projectCreator.getTheType(), givenDays);
+                PROJECTS.add(incomingProject);
+                projectsReside.add(incomingProject.getLayer());
+                projectCreator.dispose();
+                MComponent.ready(projectsReside);
+                renewCount(1);
             }
         };
     }
@@ -102,7 +96,7 @@ public class ProjectHandler {
             completeCount++;
         } else {
             if (App.showYesNoCancelDialog("Confirm",
-                    "Are you sure you've completed this project before the specified time?")) {
+                    "Are you sure you've completed this project?")) {
                 project.setTotalTimeConsumed(project.getDaysTaken());
                 finalizeCompletion(project);
                 renewCount(-1);

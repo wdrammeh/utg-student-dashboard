@@ -15,7 +15,7 @@ import java.awt.event.WindowEvent;
 public class AssignmentExhibition extends KDialog {
 
     public AssignmentExhibition(AssignmentSelf assignment){
-        setTitle(assignment.getCourseName()+" - "+(assignment.isGroup() ? "Group Assignment" : "Personal Assignment"));
+        setTitle(assignment.getCourseName()+(assignment.isGroup() ? " Group " : " ") + "Assignment");
         setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
         setResizable(true);
 

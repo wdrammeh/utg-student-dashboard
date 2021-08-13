@@ -40,9 +40,9 @@ public final class Board extends KFrame {
      * (namely, thorax and body) are placed.
      * The contentPane is set to this.
      */
-    private KPanel contentPanel;
+    private final KPanel contentPanel;
     /**
-     * Has the cardLayout, and responsible for bringing
+     * Has the cardLayout; and thus, responsible for bringing
      * (and discarding) the main activities.
      * Height: 450
      */
@@ -232,7 +232,7 @@ public final class Board extends KFrame {
         //besides, the height and the spaces do not seem to count
 
         final KLabel aboutUTGLabel = new KLabel("About UTG", KFontFactory.createPlainFont(15));
-        aboutUTGLabel.setToolTipText("Learn more about UTG...");
+        aboutUTGLabel.setToolTipText("Learn more about UTG");
         aboutUTGLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         aboutUTGLabel.underline(false);
         aboutUTGLabel.addMouseListener(new MouseAdapter() {

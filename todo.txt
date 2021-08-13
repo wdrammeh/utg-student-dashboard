@@ -1,0 +1,22 @@
+- Reindex resources completely without signing out (or re-signing in)
+- Transcript export customization
+-* Remove static-orientation of task types
+-* Remove greetings on locally-triggered alerts
+- Student auditing tool
+- Improve the design for "Guest" users
+- Custom OptionPane dialogs... (Do not ask me again)
+-* Custom user password; as defaults to the Mat. Number
+-* Lock Dashboard at startup
+- Research on the Selenium Driver
+- Flexible driver choices functionality
+- Minimize Portal wait time - remove unnecessary waiting
+-* Registration functionality
+-* Well documentation; generate javadoc
+- Student Forum
+- Student voting system
+- Use customized time-labels
+- Transcript activity modules not in thorough runtime-sync?
+- Re-consider serialization mechanisms and implementations
+- Add backup functionality
+- More analysis
+- Sort tasks in descending order of creation-time

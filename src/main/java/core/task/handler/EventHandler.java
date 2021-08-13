@@ -42,7 +42,7 @@ public class EventHandler {
                         eventsReside.getPreferredSize().height-35));
             }
         };
-        eventsReside.setLayout(new FlowLayout(CONTENTS_POSITION));
+        eventsReside.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
     }
 
     public static ActionListener newListener(){
@@ -81,17 +81,12 @@ public class EventHandler {
                     tName = tName + " Examination";
                 }
                 final String dateString = MDate.formatDateOnly(date);
-                if (App.showYesNoCancelDialog(requiredCreator.getRootPane(),"Confirm",
-                        "Do you wish to add the following event?\n-\n" +
-                                "Title:  "+tName+"\n" +
-                                "Date:  "+dateString)) {
-                    final EventSelf incomingEvent = new EventSelf(tName, dateString);
-                    EVENTS.add(incomingEvent);
-                    eventsReside.add(incomingEvent.getEventLayer());
-                    MComponent.ready(eventsReside);
-                    requiredCreator.dispose();
-                    renewCount(1);
-                }
+                final EventSelf incomingEvent = new EventSelf(tName, dateString);
+                EVENTS.add(incomingEvent);
+                eventsReside.add(incomingEvent.getEventLayer());
+                MComponent.ready(eventsReside);
+                requiredCreator.dispose();
+                renewCount(1);
             }
         };
     }

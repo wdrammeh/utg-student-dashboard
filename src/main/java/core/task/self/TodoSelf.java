@@ -51,7 +51,7 @@ public class TodoSelf {
         timer.setInitialDelay(firstDelay);
         timer.addActionListener(e -> {
             togoLabel.setText(Globals.checkPlurality(getDaysLeft(), "days")+" to go");
-            if (getDaysLeft() == 1) {//Fire eve-day notification if was not fired already
+            if (getDaysLeft() == 1) { // Fire eve-day notification if was not fired already
                 togoLabel.setText("Less than a day to go");
                 signalEveNotice();
             } else if (getDaysLeft() <= 0) {
@@ -66,10 +66,7 @@ public class TodoSelf {
     }
 
     public void setUpUI(){
-        final KPanel namePanel = new KPanel(new BorderLayout());
-        namePanel.add(new KLabel(description, KFontFactory.createPlainFont(17), Color.BLUE), BorderLayout.SOUTH);
-
-        final KButton moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
+        final KButton moreOptions = KButton.createIconifiedButton("options.png", 15, 15);
         moreOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         moreOptions.addActionListener(e-> exhibition = new TodoExhibition(this));
 
@@ -83,18 +80,20 @@ public class TodoSelf {
             togoLabel.setForeground(Color.BLUE);
         }
 
-        final KPanel quantaPanel = new KPanel(new FlowLayout(FlowLayout.RIGHT));
-        quantaPanel.addAll(new KLabel(specifiedDuration+" days task", KFontFactory.createPlainFont(16)),
-                Box.createRigidArea(new Dimension(10, 10)), togoLabel,
-                Box.createRigidArea(new Dimension(15, 10)), moreOptions);
+        final KPanel quantaPanel = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        quantaPanel.addAll(new KLabel(specifiedDuration+" days task",
+                        KFontFactory.createPlainFont(16)), togoLabel, moreOptions);
 
         if (layerPanel == null) {
             layerPanel = new KPanel(1_000, 35);
         } else {
             MComponent.clear(layerPanel);
         }
-        layerPanel.setLayout(new BoxLayout(layerPanel, BoxLayout.X_AXIS));
-        layerPanel.addAll(namePanel, quantaPanel);
+        layerPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
+        layerPanel.setLayout(new BorderLayout());
+        layerPanel.add(new KPanel(new KLabel(description, KFontFactory.createPlainFont(17),
+                        Color.BLUE)), BorderLayout.WEST);
+        layerPanel.add(quantaPanel, BorderLayout.EAST);
         MComponent.ready(layerPanel);
     }
 

@@ -41,3 +41,5 @@ Please make sure to read the [logic statement](Logic.md) as well.
 - All features (parts of the project) should be **easily tested, and independent** of each other.
 - Developer is encouraged to **document** as much as possible.
 - Developer must use "**clean-code**" approach.
+- Running the *main* branch should technically be equivalent to running an installed version of the software
+  [This generally requires modification of types like [Serializer](src/main/java/core/serial/Serializer.java) and [Dashboard](src/main/java/utg/Dashboard.java)].

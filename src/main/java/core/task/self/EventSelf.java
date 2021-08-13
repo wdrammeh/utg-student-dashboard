@@ -65,8 +65,8 @@ public class EventSelf {
     }
 
     public void setUpUI(){
+        canceller = KButton.createIconifiedButton("terminate.png", 20, 20);
         if (isPending) {
-            canceller = KButton.createIconifiedButton("terminate.png", 20, 20);
             canceller.addActionListener(e -> {
                 if (App.showYesNoCancelDialog("Confirm",
                         "Do you really wish to cancel '"+title+"'?")) {
@@ -76,7 +76,6 @@ public class EventSelf {
                 }
             });
         } else {
-            canceller = KButton.createIconifiedButton("trash.png", 20, 20);
             canceller.addActionListener(e -> {
                 if (App.showYesNoCancelDialog("Confirm",
                         "Do you really wish to remove '"+title+"'?")) {
@@ -84,15 +83,15 @@ public class EventSelf {
                 }
             });
         }
-        stateIndicator = new KLabel((isPending? "Pending" : "Past") + " : " + dateDue, KFontFactory.createBoldFont(16));
+        stateIndicator = new KLabel((isPending? "Due on" : "Past since") + dateDue, KFontFactory.createBoldFont(16));
 
         canceller.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         stateIndicator.setOpaque(false);
 
-        eventLayer = new KPanel(1_000,30);//this is 30
-        eventLayer.setLayout(new BorderLayout());
-        eventLayer.add(new KPanel(new KLabel(getTitle(), KFontFactory.createPlainFont(17), Color.BLUE)),
-                BorderLayout.WEST);
+        eventLayer = new KPanel(new BorderLayout(), new Dimension(1_000,30)); // this is 30, unlike the others
+        eventLayer.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
+        eventLayer.add(new KPanel(new KLabel(getTitle(), KFontFactory.createPlainFont(17),
+                        Color.BLUE)), BorderLayout.WEST);
         eventLayer.add(new KPanel(stateIndicator), BorderLayout.CENTER);
         eventLayer.add(canceller, BorderLayout.EAST);
     }

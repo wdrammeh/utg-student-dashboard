@@ -47,7 +47,7 @@ public class AssignmentHandler {
                 renewCount(-1);
             }
         };
-        activeReside.setLayout(new FlowLayout(CONTENTS_POSITION));
+        activeReside.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
 
         doneReside = new KPanel(){
             @Override
@@ -66,7 +66,7 @@ public class AssignmentHandler {
                         doneReside.getPreferredSize().height-40));
             }
         };
-        doneReside.setLayout(new FlowLayout(CONTENTS_POSITION));
+        doneReside.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
     }
 
     public static ActionListener additionListener(){
@@ -107,19 +107,13 @@ public class AssignmentHandler {
                 } else {
                     mean = "Other Means";
                 }
-                if (App.showYesNoCancelDialog(assignmentCreator.getRootPane(), "Confirm",
-                        "Do you wish to add the following assignment?\n-\n" +
-                                "Subject:  " + name + "\n" +
-                                "Type:  " + type + "\n" +
-                                "Submission:  "+deadline+ "\n" +
-                                "Through:  "+mean)) {
-                    final AssignmentSelf incomingAssignment = new AssignmentSelf(name, deadline,
-                            question, assignmentCreator.isGroup(), mean);
-                    ASSIGNMENTS.add(incomingAssignment);
-                    activeReside.add(incomingAssignment.getLayer());
-                    MComponent.ready(activeReside);
-                    assignmentCreator.dispose();
-                }
+
+                final AssignmentSelf incomingAssignment = new AssignmentSelf(name, deadline,
+                        question, assignmentCreator.isGroup(), mean);
+                ASSIGNMENTS.add(incomingAssignment);
+                activeReside.add(incomingAssignment.getLayer());
+                MComponent.ready(activeReside);
+                assignmentCreator.dispose();
             }
         };
     }
@@ -191,7 +185,7 @@ public class AssignmentHandler {
     public JComponent getComponent(){
         final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, activeAssignments(), doneAssignments());
         splitPane.setContinuousLayout(true);
-        splitPane.setDividerLocation(275);
+        splitPane.setDividerLocation(275); // mathematically should be 3/4 or 75% of the consumable area
         return new KPanel(new BorderLayout(), splitPane);
     }
 
@@ -222,7 +216,7 @@ public class AssignmentHandler {
         clearButton.addActionListener(e -> {
             if (doneReside.getComponentCount() > 0) {
                 if (App.showYesNoCancelDialog("Confirm",
-                        "Are you sure you want to remove all the submitted assignments?")) {
+                        "Are you sure you want to remove all submitted assignments?")) {
                     for (Component c : doneReside.getComponents()) {
                         doneReside.remove(c);
                     }
@@ -234,7 +228,7 @@ public class AssignmentHandler {
 
         final KPanel labelPanelPlus = new KPanel(new BorderLayout());
         labelPanelPlus.add(clearButton, BorderLayout.WEST);
-        labelPanelPlus.add(new KPanel(new KLabel("Submitted Assignments", TASK_HEADERS_FONT)),
+        labelPanelPlus.add(new KPanel(new KLabel("Submitted", TASK_HEADERS_FONT)),
                 BorderLayout.CENTER);
 
         final KPanel lowerReside = new KPanel(new BorderLayout());

@@ -99,10 +99,6 @@ public class AssignmentSelf {
     }
 
     public void setUpUI(){
-        final KPanel namePanel = new KPanel(new BorderLayout());
-        namePanel.add(new KLabel(this.getCourseName(), KFontFactory.createPlainFont(17),
-                Color.BLUE), BorderLayout.SOUTH);
-
         deadlineIndicator = new KLabel();
         if (isOn) {
             deadlineIndicator.setText("Deadline: "+deadLine);
@@ -129,7 +125,7 @@ public class AssignmentSelf {
             groupLabel = KLabel.createIcon("group.png",20,20);
             groupLabel.setText(getMemberText(0));
             groupLabel.setFont(KFontFactory.createPlainFont(17));
-            groupLabel.setToolTipText("Participants");
+            groupLabel.setToolTipText("View participants");
             groupLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             groupLabel.addMouseListener(new MouseAdapter() {
                 @Override
@@ -153,17 +149,18 @@ public class AssignmentSelf {
         }
         groupLabel.setFont(KFontFactory.createPlainFont(16));
 
-        final KButton showButton = KButton.createIconifiedButton("options.png", 20, 20);
+        final KButton showButton = KButton.createIconifiedButton("options.png", 15, 15);
         showButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         showButton.addActionListener(e -> assignmentExhibitor = new AssignmentExhibition(AssignmentSelf.this));
 
-        final KPanel quantaPanel = new KPanel(new FlowLayout(FlowLayout.RIGHT));
-        quantaPanel.addAll(deadlineIndicator, Box.createRigidArea(new Dimension(10, 10)), groupLabel,
-                Box.createRigidArea(new Dimension(10, 15)), showButton);
+        final KPanel quantaPanel = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        quantaPanel.addAll(deadlineIndicator, groupLabel, showButton);
 
-        assignmentPanel = new KPanel(1_000, 35);
-        assignmentPanel.setLayout(new BoxLayout(assignmentPanel, BoxLayout.X_AXIS));
-        assignmentPanel.addAll(namePanel, quantaPanel);
+        assignmentPanel = new KPanel(new BorderLayout(), new Dimension(1_000, 35));
+        assignmentPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
+        assignmentPanel.add(new KPanel(new KLabel(this.getCourseName(), KFontFactory.createPlainFont(17),
+                Color.BLUE)), BorderLayout.WEST);
+        assignmentPanel.add(quantaPanel, BorderLayout.EAST);
     }
 
     private String getMemberText(int step){
@@ -294,7 +291,7 @@ public class AssignmentSelf {
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
             this.assignmentSelf = assignmentSelf;
             final KPanel upperBar = new KPanel(new FlowLayout(FlowLayout.CENTER));
-            upperBar.add(new KLabel(assignmentSelf.getCourseName()+" Assignment",
+            upperBar.add(new KLabel(assignmentSelf.getCourseName()+" Group Assignment",
                     KFontFactory.createPlainFont(15), Color.BLUE));
             upperBar.addMouseListener(new MouseAdapter() {
                 @Override
@@ -346,11 +343,10 @@ public class AssignmentSelf {
             membersPanel.setBackground(Color.WHITE);
             final KScrollPane midScroll = new KScrollPane(membersPanel);
 
-            final KButton closeButton = new KButton("Close");
+            final KButton closeButton = new KButton("Exit");
             closeButton.addActionListener(e-> dispose());
 
             memberAdder = new KButton("Add Member");
-            memberAdder.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             memberAdder.addActionListener(e -> {
                 final String newMemberName = App.requestInput(this.getRootPane(),
                         "New Member","Enter member's name:\n");
@@ -367,8 +363,8 @@ public class AssignmentSelf {
             });
             memberAdder.setEnabled(assignmentSelf.isOn);
 
-            final KPanel buttonsPanel = new KPanel(new BorderLayout());
-            buttonsPanel.add(new KPanel(memberAdder), BorderLayout.WEST);
+            final KPanel buttonsPanel = new KPanel(new FlowLayout(FlowLayout.RIGHT, 7, 5));
+            buttonsPanel.add(new KPanel(memberAdder), BorderLayout.CENTER);
             buttonsPanel.add(new KPanel(closeButton), BorderLayout.EAST);
 
             rootPane.setDefaultButton(closeButton);

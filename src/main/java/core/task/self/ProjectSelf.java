@@ -70,10 +70,6 @@ public class ProjectSelf {
     }
 
     public void initializeUI(){
-        final KPanel namePanel = new KPanel(new BorderLayout());
-        namePanel.add(new KLabel(projectName, KFontFactory.createPlainFont(17), Color.BLUE),
-                BorderLayout.CENTER);
-
         final Dimension optionsDim = new Dimension(30, 30);//the small-buttons actually
 
         progressLabelPercentage = new KLabel("", KFontFactory.createPlainFont(18), Color.BLUE);
@@ -102,26 +98,25 @@ public class ProjectSelf {
         completionButton.setToolTipText("Mark as Completed");
         completionButton.addActionListener(e-> ProjectHandler.performIComplete(this, false));
 
-        moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
+        moreOptions = KButton.createIconifiedButton("options.png", 15, 15);
         moreOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         moreOptions.setToolTipText("About");
         moreOptions.addActionListener(e -> exhibition = new ProjectExhibition(this));
 
-        final KPanel quanterLayer = new KPanel(new FlowLayout(FlowLayout.RIGHT));
-        quanterLayer.addAll(new KLabel(getType()+" Project", KFontFactory.createPlainFont(16)),
-                Box.createHorizontalStrut(15), projectProgression, progressLabelPercentage, terminationButton,
-                completionButton, Box.createHorizontalStrut(15), moreOptions);
+        final KPanel quantaLayer = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        quantaLayer.addAll(new KLabel("( "+getType()+" Project )", KFontFactory.createPlainFont(16)),
+                projectProgression, progressLabelPercentage, terminationButton,
+                completionButton, moreOptions);
 
         projectLayer = new KPanel(1_000, 35);
-        projectLayer.setLayout(new BoxLayout(projectLayer, BoxLayout.X_AXIS));
-        projectLayer.addAll(namePanel, quanterLayer);
+        projectLayer.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
+        projectLayer.setLayout(new BorderLayout());
+        projectLayer.add(new KPanel(new KLabel(projectName, KFontFactory.createPlainFont(17),
+                Color.BLUE)), BorderLayout.WEST);
+        projectLayer.add(quantaLayer, BorderLayout.EAST);
     }
 
     public void setUpDoneUI(){
-        final KPanel namePanel = new KPanel(new BorderLayout());
-        namePanel.add(new KLabel(this.projectName, KFontFactory.createPlainFont(17), Color.BLUE),
-                BorderLayout.CENTER);
-
         projectProgression = new JProgressBar(0, specifiedDuration);
         projectProgression.setValue(specifiedDuration);
         projectProgression.setPreferredSize(new Dimension(150, 20));
@@ -131,29 +126,30 @@ public class ProjectSelf {
                 KFontFactory.createPlainFont(18), Color.BLUE);
         progressLabelPercentage.setOpaque(false);
 
-        terminationButton = KButton.createIconifiedButton("trash.png", 20, 20);
+        terminationButton = KButton.createIconifiedButton("terminate.png", 20, 20);
         terminationButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        terminationButton.setPreferredSize(new Dimension(30, 30));
         terminationButton.setToolTipText("Remove");
         terminationButton.addActionListener(ProjectHandler.removalListener(this));
 
-        moreOptions = KButton.createIconifiedButton("options.png", 20, 20);
+        moreOptions = KButton.createIconifiedButton("options.png", 15, 15);
         moreOptions.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         moreOptions.setToolTipText("About");
         moreOptions.addActionListener(e -> exhibition = new ProjectExhibition(this));
 
-        final KPanel quantaLayer = new KPanel(new FlowLayout(FlowLayout.RIGHT));
-        quantaLayer.addAll(new KLabel(getType()+" Project", KFontFactory.createPlainFont(16)),
-                Box.createHorizontalStrut(15), projectProgression, progressLabelPercentage, terminationButton,
-                Box.createRigidArea(new Dimension(10, 10)), moreOptions);
+        final KPanel quantaLayer = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        quantaLayer.addAll(new KLabel("( "+getType()+" Project )", KFontFactory.createPlainFont(16)),
+                projectProgression, progressLabelPercentage, terminationButton, moreOptions);
 
         if (projectLayer == null) {
             projectLayer = new KPanel(1_000, 35);
-            projectLayer.setLayout(new BoxLayout(projectLayer, BoxLayout.X_AXIS));
+            projectLayer.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
+            projectLayer.setLayout(new BorderLayout());
         } else {
             MComponent.clear(projectLayer);
         }
-        projectLayer.addAll(namePanel, quantaLayer);
+        projectLayer.add(new KPanel(new KLabel(this.projectName, KFontFactory.createPlainFont(17),
+                Color.BLUE)), BorderLayout.WEST);
+        projectLayer.add(quantaLayer, BorderLayout.EAST);
         MComponent.ready(projectLayer);
     }
 
