@@ -12,6 +12,7 @@ A student-specific desktop application, with dedicated student-related care wiza
 that functions independently of the ERP System, and communicates with it at the student's will.
 
 ## Install
+
 Download the standalone installation file per your operating system
 
 | Operating System | Download Dashboard |
@@ -23,14 +24,51 @@ More download options are available on the [release page](https://github.com/w-d
 
 If you wish you may check out [what's new](ChangeLog.md) about this release.
 
+## Functionality
+
+- Offline content management capability
+- Unlimited **Transcript Exportation** in Portable Document Format (PDF)
+- News updates from UTG official news site (download once and for all)
+- Explore UTG Portal
+- Track semesters on the go
+- Course Collection, Classification, Organization, Analysis & Presentation
+- Semester to semester performance sketch
+- TODO, Tasks, and Projects management
+- Assignment management system with notification triggers
+- UTG FAQs and Answers
+- Real time performance analysis, and recommendation system
+- And much more...
+
+### "A journey of thousand miles begins with a single step"
+
+Dashboard is an ambitious project, and this is only the beginning.
+Also, we wish to integrate the following features in a future release:
+
+- Course Registration Functionality
+- Student Voting System
+- Student Auditing System
+- Student Forum
+- A mobile version
+- And much more...
+
+## System Requirements
+
+- Firefox Web Browser
+
+## Contribution
+
+If you are interested in contributing to this project, firstly,
+read our [Developers Guide](Contributing.md).
+
 ## UTG ERP System
+
 Dashboard uses the **UTG ERP System (Portal)** as a center of verification for users.
 The Portal is Dashboard's sole source of valid data. The data collected are used for,
 but not limited to, **verification**, **analysis**, and **presentation**.
 
 At every successful login, Dashboard grasps the fundamental details of the user.
 So students won't need to be specifying level, status on the go.
- 
+
 It is however important to note that the analysis provided by Dashboard
 is entirely _Portal-independent_. Therefore, inconsistent data from the Portal
 can induce misbehavior of your Dashboard.
@@ -47,38 +85,3 @@ are missing, or not readable somehow.
 The good news is that, all these, if occurred, can be fixed at any point in time,
 because even after launching, Dashboard effortlessly re-indexes user's resources
 at every successful login.
-
-## Functionality
-- Offline content management capability
-- Unlimited **Transcript Exportation** in Portable Document Format (PDF)
-- News updates from UTG official news site (download once and for all)
-- Explore UTG Portal
-- Track semesters on the go
-- Course Collection, Classification, Organization, Analysis & Presentation
-- Semester to semester performance sketch
-- TODO, Tasks, and Projects management
-- Assignment management system with notification triggers
-- UTG FAQs and Answers
-- Real time performance analysis, and recommendation system
-- And much more...
-
-### "A journey of thousand miles begins with a single step"
-Dashboard is an ambitious project, and this is only the beginning.
-Also, we wish to integrate the following features in a future release:
-
-- Course Registration Functionality
-- Student Voting System
-- Student Auditing System
-- Student Forum
-- A mobile version
-- And much more...
-
-## System Requirements
-- Firefox Web Browser
-
-## Contribution
-If you are interested in contributing to this project, firstly,
-read our [Developers Guide](Contributing.md).
-
-## Maintainers
-- [Muhammed W. Drammeh <md21712494@utg.edu.gm>](https://github.com/w-drammeh)
