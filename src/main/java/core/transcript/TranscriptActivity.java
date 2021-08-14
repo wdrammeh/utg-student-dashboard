@@ -23,7 +23,7 @@ import java.util.Objects;
  * The cgpa, the upperDivision, as well as other generated resources of this type
  * should be renewed anytime it answer activity.
  * And the cgpa is always set before the upperDivision is re-checked!
- * Feel free of what this class presents, because what's printed is independent of it.
+ * What this class presents (i.e. the Activity) is free off the printable transcript.
  */
 public class TranscriptActivity implements Activity {
     /**

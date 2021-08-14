@@ -3,7 +3,6 @@ package core.task.self;
 import core.alert.Notification;
 import core.task.exhibition.ProjectExhibition;
 import core.task.handler.ProjectHandler;
-import core.user.Student;
 import core.utils.Globals;
 import core.utils.MComponent;
 import core.utils.MDate;
@@ -155,8 +154,7 @@ public class ProjectSelf {
 
     private void signalEveNotice(){
         if (!eveIsAlerted) {
-            final String info = "Dear "+ Student.getLastName()+"," +
-                    "<p>Project "+getProjectName()+", created since "+getStartDate()+" is to be completed by tomorrow.</p>";
+            final String info = "<p>Project "+getProjectName()+", created since "+getStartDate()+" is to be completed by tomorrow.</p>";
             Notification.create("Project Reminder","Specified duration for the "+getType()+" Project "+
                     getProjectName()+" is running out.", info);
             eveIsAlerted = true;
@@ -165,8 +163,7 @@ public class ProjectSelf {
 
     private void signalCompletionNotice(){
         if (!completionIsAlerted) {
-            final String text = "Dear "+Student.getLastName()+"," +
-                    "<p>the specified period of the "+ getType()+" Project <b>"+getProjectName()+"</b> is now attained.</p>";
+            final String text = "<p>the specified period of the "+ getType()+" Project <b>"+getProjectName()+"</b> is now attained.</p>";
             Notification.create("Project Completed","Specified duration for the "+getType()+" Project "+
                     getProjectName()+" is reached.", text);
             completionIsAlerted = true;

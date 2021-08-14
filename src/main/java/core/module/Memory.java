@@ -7,6 +7,8 @@ import core.utils.Globals;
 
 import java.util.ArrayList;
 
+import static core.transcript.TranscriptActivity.TRANSCRIPT_MODEL;
+
 /**
  * This is the backbone of analysis, and transcript.
  * Among the things it does is to keep track of verified courses
@@ -39,7 +41,7 @@ public class Memory {
      */
     public static void add(Course c){
         if (VERIFIED_LIST.add(c)) {
-            TranscriptActivity.TRANSCRIPT_MODEL.addRow(new String[] {c.getCode(), c.getName(),
+            TRANSCRIPT_MODEL.addRow(new String[] {c.getCode(), c.getName(),
                     Integer.toString(c.getCreditHours()), c.getGrade(), Double.toString(c.getQualityPoint())});
         }
     }
@@ -49,7 +51,7 @@ public class Memory {
      */
     public static void remove(Course course){
         if (VERIFIED_LIST.remove(course)) {
-            TranscriptActivity.TRANSCRIPT_MODEL.removeRow(TranscriptActivity.TRANSCRIPT_MODEL.getRowOf(course.getCode()));
+            TRANSCRIPT_MODEL.removeRow(TRANSCRIPT_MODEL.getRowOf(course.getCode()));
         }
     }
 
@@ -62,6 +64,7 @@ public class Memory {
         final int i = indexOf(outgoing.getCode());
         if (i >= 0) {
             VERIFIED_LIST.set(i, incoming);
+            TRANSCRIPT_MODEL.setValueAt(incoming.getCreditHours(), i, 2); // only visible updatable value?
         }
     }
 

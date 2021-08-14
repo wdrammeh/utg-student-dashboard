@@ -128,7 +128,6 @@ public class Notification {
         private ActionListener closeListener(){
             return e-> dispose();
         }
-
     }
 
 

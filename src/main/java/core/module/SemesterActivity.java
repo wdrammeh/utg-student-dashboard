@@ -447,10 +447,9 @@ public class SemesterActivity implements Activity {
     }
 
     private static String generateNotificationWarning(String moduleName) {
-        return String.format("Dear %s,", Student.getLastName()) +
-                "<p>you've added <b>"+moduleName+"</b> to your list of registered courses.<br>" +
-                "However, this does not means that Dashboard has <b>registered</b> it on your Portal.</p>" +
-                "Dashboard does not <i>write</i> your portal.";
+        return "<p>You've added <b>"+moduleName+"</b> to your list of registered courses " +
+                "without <i>verifying</i> it. Please check it out now, so Dashboard could know " +
+                "it's on your Portal.</p>";
     }
 
     public static String[] names() {
@@ -706,7 +705,7 @@ public class SemesterActivity implements Activity {
                         new Thread(()-> startCheckout(addedCourse)).start();
                     } else {
                         Notification.create("Local Registration", nameField.getText()+
-                                " is locally added, and may not be on your portal.",
+                                " is locally added and may not be on your portal.",
                                 generateNotificationWarning(nameField.getText()));
                     }
                 }

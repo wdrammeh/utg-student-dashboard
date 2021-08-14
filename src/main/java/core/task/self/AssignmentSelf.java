@@ -174,8 +174,7 @@ public class AssignmentSelf {
 
     private void signalEveNotice(){
         if (!eveIsAlerted) {
-            final String text = "Dear, "+ Student.getLastName()+"," +
-                    "<p>"+courseName+ (isGroup ? " Group Assignment" : " Assignment")+" is to be submitted in 24 hours. Submission Mode is "+modeOfSubmission+". " +
+            final String text = "<p>"+courseName+ (isGroup ? " Group Assignment" : " Assignment")+" is to be submitted in 24 hours. Submission Mode is "+modeOfSubmission+". " +
                     "If you have already submitted this assignment, mark it as 'submitted' to prevent further-notifications.<p>";
             Notification.create("Assignment Reminder",courseName+" Assignment is due tomorrow!", text);
             eveIsAlerted = true;
@@ -184,8 +183,7 @@ public class AssignmentSelf {
 
     private void signalSubmissionNotice(){
         if (!submissionIsAlerted) {
-            final String text = "Dear, "+Student.getLastName()+"," +
-                    "<p>submission date for the "+courseName+(isGroup ? " Group Assignment" : " Assignment")+" is past. Submission Mode was "+modeOfSubmission+".</p>";
+            final String text = "<p>submission date for the "+courseName+(isGroup ? " Group Assignment" : " Assignment")+" is past. Submission Mode was "+modeOfSubmission+".</p>";
             Notification.create("Assignment Completed",courseName+" Assignment has reached submission date.", text);
             submissionIsAlerted = true;
         }

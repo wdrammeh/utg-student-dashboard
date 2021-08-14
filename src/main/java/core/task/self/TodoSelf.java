@@ -3,7 +3,6 @@ package core.task.self;
 import core.alert.Notification;
 import core.task.exhibition.TodoExhibition;
 import core.task.handler.TodoHandler;
-import core.user.Student;
 import core.utils.Globals;
 import core.utils.MComponent;
 import core.utils.MDate;
@@ -99,8 +98,7 @@ public class TodoSelf {
 
     private void signalEveNotice(){
         if (!eveIsAlerted) {
-            final String info = "Dear "+ Student.getLastName()+"," +
-                    "<p>Task <b>"+getDescription()+"</b> is to be completed in less than a day.</p>";
+            final String info = "<p>Task <b>"+getDescription()+"</b> is to be completed in less than a day.</p>";
             Notification.create("Task Reminder","Task "+getDescription()+" is due tomorrow.", info);
             eveIsAlerted = true;
         }
@@ -108,8 +106,7 @@ public class TodoSelf {
 
     private void signalDoneNotice(){
         if (!doneIsAlerted) {
-            final String info = "Dear "+Student.getLastName()+"," +
-                    "<p>Task <b>"+getDescription()+"</b> is now due. This Task is now considered done as per the given date limit.</p>";
+            final String info = "<p>Task <b>"+getDescription()+"</b> is now due. This Task is now considered done as per the given date limit.</p>";
             Notification.create("Task Completed","Task "+getDescription()+" is now completed.", info);
             doneIsAlerted = true;
         }

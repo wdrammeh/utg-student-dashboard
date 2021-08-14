@@ -98,8 +98,7 @@ public class EventSelf {
 
     private void signalEveNotice(){
         if (!eveIsAlerted) {
-            final String info = "Dear "+ Student.getLastName()+"," +
-                    "<p>"+title+" is just one day away from now.</p>";
+            final String info = "<p>"+title+" is just one day away from now.</p>";
             Notification.create("Event Reminder",Student.getLastName()+", "+getTitle()+" is at your door-step!", info);
             eveIsAlerted = true;
         }
@@ -107,8 +106,7 @@ public class EventSelf {
 
     private void signalTimeupNotice(){
         if (!timeupIsAlerted) {
-            final String info = "Dear "+Student.getLastName()+"," +
-                    "<p>time is up for the event "+title+".</p>";
+            final String info = "<p>time is up for the event "+title+".</p>";
             Notification.create("Event Time-up",Student.getLastName()+", "+getTitle()+" is due now!", info);
             timeupIsAlerted = true;
         }
