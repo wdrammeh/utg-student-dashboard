@@ -879,10 +879,16 @@ public class SettingsUI implements Activity {
         for (UIManager.LookAndFeelInfo lookAndFeelInfo : Settings.allLooksInfo) {
             if (lookAndFeelInfo.getName().equals(lookName)) {
                 try {
-                    final KFrame instance = Board.getInstance();
                     UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                    final KFrame instance = Board.getInstance();
                     SwingUtilities.updateComponentTreeUI(instance);
                     instance.pack();
+                    SwingUtilities.invokeLater(()-> {
+                        for (KDialog dialog : KDialog.ALL_DIALOGS) {
+                            SwingUtilities.updateComponentTreeUI(dialog);
+                            dialog.pack();
+                        }
+                    });
                 } catch (Exception e1) {
                     App.reportError(e1);
                 }

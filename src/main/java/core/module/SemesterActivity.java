@@ -103,9 +103,9 @@ public class SemesterActivity implements Activity {
             optionsButton = KButton.createIconifiedButton("options.png",25,25);
             optionsButton.setCursor(MComponent.HAND_CURSOR);
             optionsButton.setToolTipText("More options");
-            final int preferredHeight = optionsButton.getPreferredSize().height;
-            optionsButton.addActionListener(e-> popupMenu.show(optionsButton, optionsButton.getX(),
-                    optionsButton.getY() + preferredHeight));
+            optionsButton.addActionListener(e-> popupMenu.show(optionsButton,
+                    optionsButton.getX() + (int)(.75 * optionsButton.getPreferredSize().width),
+                    optionsButton.getY() - optionsButton.getPreferredSize().height/2));
 
             final KPanel upperPanel = new KPanel(new BorderLayout());
             upperPanel.add(optionsButton, BorderLayout.WEST);

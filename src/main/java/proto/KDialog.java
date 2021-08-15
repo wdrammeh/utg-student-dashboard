@@ -3,6 +3,8 @@ package proto;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The standard Dashboard Dialog all dialogs must inherit.
@@ -10,6 +12,8 @@ import java.awt.event.KeyEvent;
  * @see #setPreferences()
  */
 public class KDialog extends JDialog implements Preference {
+    public static final List<KDialog> ALL_DIALOGS = new ArrayList<>();
+
 
     public KDialog(){
         super();
@@ -32,6 +36,7 @@ public class KDialog extends JDialog implements Preference {
                 }
             }
         });
+        ALL_DIALOGS.add(this);
     }
 
 }

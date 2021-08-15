@@ -281,22 +281,22 @@ public final class Board extends KFrame {
         detailsPart.add(utgIcon, BorderLayout.CENTER);
         detailsPart.add(moreDetails, BorderLayout.SOUTH);
 
-        final int outlinesWidth = 215;
+        final Dimension outlineDim = new Dimension(215, 25);
         final Font outlinesFont = KFontFactory.createBoldFont(15);
 
         final KButton toHome = new KButton("HOME");
         toHome.setFont(outlinesFont);
-        toHome.setPreferredSize(new Dimension(outlinesWidth, toHome.getPreferredSize().height));
+        toHome.setPreferredSize(outlineDim);
         toHome.addActionListener(e-> showCard("Home"));
 
         final KButton toTasks = new KButton("MY TASKS+");
         toTasks.setFont(outlinesFont);
-        toTasks.setPreferredSize(new Dimension(outlinesWidth, toTasks.getPreferredSize().height));
+        toTasks.setPreferredSize(outlineDim);
         toTasks.addActionListener(e-> taskActivity.answerActivity());
 
         final KButton toNews = new KButton("NEWS");
         toNews.setFont(outlinesFont);
-        toNews.setPreferredSize(new Dimension(outlinesWidth, toNews.getPreferredSize().height));
+        toNews.setPreferredSize(outlineDim);
         toNews.addActionListener(e-> newsPresent.answerActivity());
 
         notificationButton = new KButton("NOTIFICATIONS"){
@@ -314,8 +314,7 @@ public final class Board extends KFrame {
             }
         };
         notificationButton.setFont(outlinesFont);
-        notificationButton.setPreferredSize(new Dimension(outlinesWidth,
-                notificationButton.getPreferredSize().height));
+        notificationButton.setPreferredSize(outlineDim);
         notificationButton.addActionListener(e-> alertActivity.answerActivity());
 
         final KPanel bigButtonsPanel = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5),

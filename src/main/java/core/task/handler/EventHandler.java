@@ -94,8 +94,9 @@ public class EventHandler {
         final KButton popUpButton = new KButton("New Event");
         popUpButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         popUpButton.setFont(TASK_BUTTONS_FONT);
-        popUpButton.addActionListener(e-> jPopup.show(popUpButton, popUpButton.getX(), popUpButton.getY() +
-                (popUpButton.getPreferredSize().height)));
+        popUpButton.addActionListener(e-> jPopup.show(popUpButton,
+                popUpButton.getX() + popUpButton.getPreferredSize().width,
+                popUpButton.getY() - popUpButton.getPreferredSize().height/2));
 
         final KPanel labelPanelPlus = new KPanel(new BorderLayout());
         labelPanelPlus.add(popUpButton, BorderLayout.WEST);

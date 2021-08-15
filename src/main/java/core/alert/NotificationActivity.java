@@ -71,10 +71,9 @@ public class NotificationActivity implements Activity {
     }
 
     private Component dashboardComponent() {
-        final KButton clearButton = new KButton("Remove all");
+        final KButton clearButton = new KButton("Clear Alerts");
         clearButton.setFont(KFontFactory.createPlainFont(15));
         clearButton.addActionListener(clearAction());
-        clearButton.setToolTipText("Clear Notifications");
 
         dashboardPanel = new KPanel();
         dashboardPanel.setLayout(new BoxLayout(dashboardPanel, BoxLayout.Y_AXIS));

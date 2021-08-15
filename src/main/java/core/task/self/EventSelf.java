@@ -106,7 +106,7 @@ public class EventSelf {
 
     private void signalTimeupNotice(){
         if (!timeupIsAlerted) {
-            final String info = "<p>time is up for the event "+title+".</p>";
+            final String info = "<p>Time is up for the event "+title+".</p>";
             Notification.create("Event Time-up",Student.getLastName()+", "+getTitle()+" is due now!", info);
             timeupIsAlerted = true;
         }
