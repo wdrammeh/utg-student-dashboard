@@ -154,7 +154,7 @@ public class Portal {
      */
     public static String getLastAdmissionNoticeUpdate(){
         return lastAdmissionNoticeUpdate == null ? Globals.NEVER :
-                MDate.format(lastAdmissionNoticeUpdate);
+                MDate.formatDayTime(lastAdmissionNoticeUpdate);
     }
 
     /**
@@ -186,7 +186,7 @@ public class Portal {
      */
     public static String getLastRegistrationNoticeUpdate(){
         return lastRegistrationNoticeUpdate == null ? Globals.NEVER :
-                MDate.format(lastRegistrationNoticeUpdate);
+                MDate.formatDayTime(lastRegistrationNoticeUpdate);
     }
 
     public static WebElement getTabElement(String elementText, List<WebElement> tabs){
@@ -289,8 +289,8 @@ public class Portal {
 
     public static void serialize(){
         final String data = Globals.joinLines(new Object[]{registrationNotice,
-                getLastRegistrationNoticeUpdate(), admissionNotice, getLastAdmissionNoticeUpdate(),
-                autoSync, lastLogin == null ? Globals.NEVER : MDate.format(lastLogin)});
+                MDate.toSerial(lastRegistrationNoticeUpdate), admissionNotice,
+                MDate.toSerial(lastAdmissionNoticeUpdate), autoSync, MDate.toSerial(lastLogin)});
         Serializer.toDisk(data, Serializer.inPath("portal.ser"));
     }
 
@@ -301,11 +301,11 @@ public class Portal {
         } else {
             final String[] data = Globals.splitLines((String) obj);
             registrationNotice = data[0];
-            lastRegistrationNoticeUpdate = data[1].equals(Globals.NEVER) ? null : MDate.parse(data[1]);
+            lastRegistrationNoticeUpdate = MDate.fromSerial(data[1]);
             admissionNotice = data[2];
-            lastAdmissionNoticeUpdate = data[3].equals(Globals.NEVER) ? null : MDate.parse(data[3]);
+            lastAdmissionNoticeUpdate = MDate.fromSerial(data[3]);
             autoSync = Boolean.parseBoolean(data[4]);
-            lastLogin = data[5].equals(Globals.NEVER) ? null : MDate.parse(data[5]);
+            lastLogin = MDate.fromSerial(data[5]);
         }
     }
 

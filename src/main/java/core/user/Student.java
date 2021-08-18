@@ -590,7 +590,7 @@ public class Student {
     }
 
     public static String getMonthOfAdmissionName(){
-        return MDate.getMonthByName(monthOfAdmission);
+        return MDate.getMonthName(monthOfAdmission);
     }
 
     public static boolean isUndergraduate(){

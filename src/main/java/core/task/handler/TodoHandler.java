@@ -89,7 +89,7 @@ public class TodoHandler {
     }
 
     private static void finalizeTransfer(TodoSelf oldSelf) {
-        oldSelf.setDateCompleted(MDate.now());
+        oldSelf.setDateCompleted(MDate.formatNow());
         oldSelf.getTogoLabel().setText("Completed "+oldSelf.getDateCompleted()); // Which is that
         oldSelf.getTogoLabel().setForeground(Color.BLUE);
         oldSelf.setActive(false);
@@ -212,13 +212,13 @@ public class TodoHandler {
             for (String data : todos) {
                 final String[] lines = Globals.splitLines(data);
                 final TodoSelf todoSelf = new TodoSelf(lines[0], Integer.parseInt(lines[2]),
-                        lines[1], Boolean.parseBoolean(lines[4]));
+                        MDate.formatDayTime(MDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[4]));
                 todoSelf.setTotalTimeConsumed(Integer.parseInt(lines[3]));
-                todoSelf.setDateCompleted(lines[5]);
+                todoSelf.setDateCompleted(MDate.formatDayTime(MDate.fromSerial(lines[5])));
                 todoSelf.eveIsAlerted = Boolean.parseBoolean(lines[6]);
                 todoSelf.doneIsAlerted = Boolean.parseBoolean(lines[7]);
                 if (todoSelf.isActive()) { // This only means it slept alive - we're to check then if it's to wake alive or not
-                    if (new Date().before(MDate.parse(todoSelf.getDateExpectedToComplete()))) {
+                    if (new Date().before(MDate.parseDayTime(todoSelf.getDateExpectedToComplete()))) {
                         todoSelf.wakeAlive();
                     } else {
                         todoSelf.wakeDead();

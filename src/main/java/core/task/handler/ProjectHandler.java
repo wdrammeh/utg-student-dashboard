@@ -70,7 +70,7 @@ public class ProjectHandler {
     }
 
     private static void finalizeCompletion(ProjectSelf project){
-        project.setDateCompleted(MDate.now());
+        project.setDateCompleted(MDate.formatNow());
         project.setLive(false);
         project.setUpDoneUI();
         // Respect that order of sorting... since the project generator does not use clear-cut separator
@@ -152,14 +152,15 @@ public class ProjectHandler {
             final String[] projects = (String[]) projectObj;
             for (String data : projects) {
                 final String[] lines = Globals.splitLines(data);
-                final ProjectSelf projectSelf = new ProjectSelf(lines[0], lines[1], lines[2],
-                        Integer.parseInt(lines[3]), Boolean.parseBoolean(lines[5]));
+                final ProjectSelf projectSelf = new ProjectSelf(lines[0], lines[1],
+                        MDate.formatDayTime(MDate.fromSerial(lines[2])), Integer.parseInt(lines[3]),
+                        Boolean.parseBoolean(lines[5]));
                 projectSelf.setTotalTimeConsumed(Integer.parseInt(lines[4]));
-                projectSelf.setDateCompleted(lines[6]);
+                projectSelf.setDateCompleted(MDate.formatDayTime(MDate.fromSerial(lines[6])));
                 projectSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
                 projectSelf.completionIsAlerted = Boolean.parseBoolean(lines[8]);
                 if (projectSelf.isLive()) {
-                    if (new Date().before(MDate.parse(projectSelf.getDateExpectedToComplete()))) {
+                    if (new Date().before(MDate.parseDayTime(projectSelf.getDateExpectedToComplete()))) {
                         projectSelf.wakeLive();
                         projectSelf.initializeUI();
                     } else {

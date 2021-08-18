@@ -81,7 +81,7 @@ public class Dashboard {
                     } else if (comparison == Version.EQUAL) {
                         final String deprecateTime = lastConfigs.get("deprecateTime");
                         if (Globals.hasText(deprecateTime)) {
-                            final Date deprecateDate = MDate.parse(deprecateTime);
+                            final Date deprecateDate = MDate.parseDayTime(deprecateTime);
                             VERSION.setDeprecateTime(deprecateDate);
                             if (new Date().after(deprecateDate)) {
                                 App.reportError(null, "Dashboard Outdated",
@@ -146,7 +146,7 @@ public class Dashboard {
      */
     public static void storeConfigs(){
         final String configs = Globals.joinLines(new Object[]{isAuthentic, Globals.userName(), VERSION,
-                MDate.format(VERSION.getDeprecateTime())});
+                MDate.toSerial(VERSION.getDeprecateTime())});
         Serializer.toDisk(configs, Serializer.inPath("configs.ser"));
     }
 
@@ -163,7 +163,7 @@ public class Dashboard {
             map.put("isAuthentic", lines[0]);
             map.put("userName", lines[1]);
             map.put("version", lines[2]);
-            map.put("deprecateTime", lines[3]);
+            map.put("deprecateTime", MDate.formatDayTime(MDate.fromSerial(lines[3])));
         }
         return map;
     }

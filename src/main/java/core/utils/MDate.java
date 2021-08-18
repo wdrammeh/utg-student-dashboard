@@ -1,80 +1,127 @@
 package core.utils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
+/**
+ * MDate is a remarkable utility class.
+ * To be specific, it provides a flexible, yet maintainable, framework
+ * for dealing with date and time.
+ */
 public class MDate {
-    /**
-     * Dashboard's date value separator.
-     */
-    public static final String VAL_SEP = "/";
-    /**
-     * The format-pattern. This is in the full-state.
-     */
-    private static final String pattern = String.join(VAL_SEP, "dd", "MM", "yyyy HH:mm:ss");
-    /**
-     * The standard date format.
-     * Changing this format has great consequences since some functions
-     * of this class rely on an anticipated output format; and thus,
-     * when changed, such functions must conform accordingly.
-     */
-    private static final SimpleDateFormat standardFormat = new SimpleDateFormat(pattern);
+    private static final DateFormat dayFormatter =
+            DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.US);
+    private static final DateFormat dayTimeFormatter =
+            DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.US);
 
 
-    /**
-     * Gets a String representation of the given date
-     * fully-formatted as specified by the standard format.
-     * This includes both the date and time, as per the current form.
-     */
-    public static String format(Date d){
-        return d == null ? null : standardFormat.format(d);
+    public static String formatDayTime(Date date){
+        return date == null ? null : dayTimeFormatter.format(date);
+    }
+
+    public static String formatDay(Date date){
+        return date == null ? null : dayFormatter.format(date);
     }
 
     /**
-     * Returns only the date (and not the time) of the given date instance.
+     * Where full is to be understood as dayTime.
      */
-    public static String formatDateOnly(Date d){
-        return d == null ? null : standardFormat.format(d).split(" ")[0];
+    public static String formatNow(boolean full){
+        final Date now = new Date();
+        return full ? formatDayTime(now) : formatDay(now);
     }
 
-    /**
-     * Constructs a date object from the given date-string
-     * which must be in accordance with the {@link #standardFormat}'s
-     * implementation. Method self-silent.
-     */
-    public static Date parse(String dateString){
-        try {
-            return standardFormat.parse(dateString);
-        } catch (ParseException e) {
-            App.silenceException(e);
+    public static String formatNow(){
+        return formatNow(true);
+    }
+
+    public static Date parseDayTime(String string){
+        if (string == null) {
             return null;
+        } else {
+            try {
+                return dayTimeFormatter.parse(string);
+            } catch (ParseException e) {
+                App.silenceException(e);
+            }
         }
+        return null;
+    }
+
+    public static Date parseDay(String string){
+        if (string == null) {
+            return null;
+        } else {
+            try {
+                return dayFormatter.parse(string);
+            } catch (ParseException e) {
+                App.silenceException(e);
+            }
+        }
+        return null;
     }
 
     /**
-     * Returns the current date and time.
-     * Convenient way of calling {@link #format(Date)} with a new Date.
+     * Note that deadlines are taken to be from the beginning of a day.
+     * So, this is technically different from a saying "isDatePast".
      */
-    public static String now(){
-        return format(new Date());
+    public static boolean isDeadlinePast(Date deadline){
+        final Date today = date(true);
+        return isSameDay(today, deadline) || today.after(deadline);
     }
 
-    /**
-     * Returns the current date only, excluding the time.
-     * Convenient way of calling {@link #formatDateOnly(Date)} with a new Date.
-     */
-    public static String today(){
-        return formatDateOnly(new Date());
+    public static Date date(int day, int month, int year, boolean dayBeginning){
+        month--;
+        final Calendar cal = Calendar.getInstance();
+        if (dayBeginning) {
+            cal.set(year, month, day, 0, 0, 0);
+        } else {
+            cal.set(year, month, day); // the time (i.e. h:m:s) will be this point
+        }
+        return cal.getTime();
     }
 
-    public static int currentYear(){
+    public static Date date(boolean dayBeginning){
+        final Calendar cal = Calendar.getInstance();
+        return date(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1,
+                cal.get(Calendar.YEAR), dayBeginning);
+    }
+
+    public static Date date(int day, int month, int year, int hour, int minute, int second){
+        month--;
+        final Calendar cal = Calendar.getInstance();
+        cal.set(year, month, day, hour, minute, second);
+        return cal.getTime();
+    }
+
+    public static long toSerial(Date date) {
+        return date == null ? -1 : date.getTime();
+    }
+
+    public static Date fromSerial(String string){
+        if (string == null) {
+            return null;
+        } else {
+            final long value;
+            try {
+                value = Long.parseLong(string);
+                return value == -1 ? null : new Date(value);
+            } catch (NumberFormatException e) {
+                App.silenceException("Cannot reconstruct date. '"+string+"' is not a number.");
+            }
+        }
+        return null;
+    }
+
+    public static int getYear(){
         return Calendar.getInstance().get(Calendar.YEAR);
     }
 
-    public static int currentMonth(){
+    public static int getMonth(){
         return Calendar.getInstance().get(Calendar.MONTH) + 1;
     }
 
@@ -83,20 +130,60 @@ public class MDate {
      * As for the property, please use the magic-constants defined
      * in the {@link Calendar} type.
      */
-    public static int getPropertyFrom(Date date, int property){
-        final Calendar c = Calendar.getInstance();
-        c.setTime(date);
+    public static int getProperty(Date date, int property){
+        final Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
         if (property == Calendar.MONTH) {
-            return c.get(Calendar.MONTH) + 1;
+            return cal.get(Calendar.MONTH) + 1;
         }
-        return c.get(property);
+        return cal.get(property);
+    }
+
+    /**
+     * Returns a Dashboard-formatted date by adding
+     * the given interval of days to the given date.
+     */
+    public static String daysAfter(Date date, int days) {
+        final Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, days);
+        return formatDayTime(cal.getTime());
+    }
+
+    /**
+     * Returns true if the values presented by date1 and date2 fall in the same day.
+     * The point of this method is to be time-ignorant.
+     * @see #formatDay(Date)
+     */
+    public static boolean isSameDay(Date d1, Date d2) {
+        return formatDay(d1).equals(formatDay(d2));
+    }
+
+    /**
+     * Calculates and returns the number of days difference between
+     * the given date instances; which are ordered.
+     * That means, if the d1 is before d2, then a negative value should be expected.
+     */
+    public static long getDifference(Date d1, Date d2){
+        return ChronoUnit.DAYS.between(d1.toInstant(), d2.toInstant());
+    }
+
+    /**
+     * Returns an integer representation of the given date's time.
+     * This method uses only the time values; i.e the hour, minute and seconds.
+     * @see #getProperty(Date, int)
+     */
+    public static int getTimeValue(Date d){
+        return  (getProperty(d, Calendar.HOUR) + 12) * Globals.HOUR +
+                getProperty(d, Calendar.MINUTE) * Globals.MINUTE +
+                getProperty(d, Calendar.SECOND) * Globals.SECOND;
     }
 
     /**
      * Returns the corresponding month name of n.
      * Returns null if n is such that 1 < n, or n > 12.
      */
-    public static String getMonthByName(int n){
+    public static String getMonthName(int n){
         switch (n) {
             case 1 -> {
                 return "January";
@@ -138,48 +225,6 @@ public class MDate {
                 return null;
             }
         }
-    }
-
-    /**
-     * Returns a Dashboard-formatted date by adding
-     * the given interval of days to the given date.
-     */
-    public static String daysAfter(Date date, int days) {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, days);
-        return format(calendar.getTime());
-    }
-
-    /**
-     * Returns true if the values presented by date1 and date2 fall in the same day.
-     * This method is time-ignorant.
-     * @see #formatDateOnly(Date)
-     */
-    public static boolean isSameDay(Date d1, Date d2) {
-        return formatDateOnly(d1).equals(formatDateOnly(d2));
-    }
-
-    /**
-     * Calculates and returns the number of days difference between
-     * the given date instances; which are ordered.
-     * That means, if the d2 is before d1, then a negative long value
-     * will be returned.
-     */
-    public static long actualDayDifference(Date d1, Date d2){
-        return ChronoUnit.DAYS.between(d1.toInstant(), d2.toInstant());
-    }
-
-    /**
-     * Returns an integer representation of the given date's time.
-     * This method uses only the time values; i.e the hour, minute and seconds.
-     * This method is to be referred.
-     * @see #getPropertyFrom(Date, int)
-     */
-    public static int getTimeValue(Date d){
-        return  (getPropertyFrom(d, Calendar.HOUR) + 12) * Globals.HOUR +
-                getPropertyFrom(d, Calendar.MINUTE) * Globals.MINUTE +
-                getPropertyFrom(d, Calendar.SECOND) * Globals.SECOND;
     }
 
 }

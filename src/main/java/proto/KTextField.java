@@ -103,8 +103,16 @@ public class KTextField extends JTextField implements Preference {
     public static KTextField yearField(){
         final KTextField yearField = digitRangeControlField(4);
         yearField.setPreferredSize(new Dimension(75, 30));
-        yearField.setText(String.valueOf(MDate.currentYear()));
+        yearField.setText(String.valueOf(MDate.getYear()));
         return yearField;
+    }
+
+    /**
+     * Wraps and returns the text as an integer.
+     * Especially useful for digitRangeControlledFields.
+     */
+    public int getTextAsInt(){
+        return Integer.parseInt(getText());
     }
 
     /**

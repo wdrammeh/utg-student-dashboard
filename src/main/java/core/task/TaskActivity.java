@@ -11,6 +11,7 @@ import core.task.self.AssignmentSelf;
 import core.task.self.EventSelf;
 import core.task.self.ProjectSelf;
 import core.task.self.TodoSelf;
+import core.utils.App;
 import core.utils.Globals;
 import proto.KButton;
 import proto.KFontFactory;
@@ -156,49 +157,65 @@ public class TaskActivity implements Activity {
     }
 
     public static void serializeAll(){
-        final ArrayList<TodoSelf> todoList = TodoHandler.TODOS;
-        final String[] todos = new String[todoList.size()];
-        for(int i = 0; i < todoList.size(); i++){
-            todos[i] = todoList.get(i).export();
-        }
-        Serializer.toDisk(todos, Serializer.inPath("tasks", "todos.ser"));
-
-        final ArrayList<ProjectSelf> projectList = ProjectHandler.PROJECTS;
-        final String[] projects = new String[projectList.size()];
-        for(int i = 0; i < projectList.size(); i++){
-            projects[i] = projectList.get(i).export();
-        }
-        Serializer.toDisk(projects, Serializer.inPath("tasks", "projects.ser"));
-
-        final ArrayList<AssignmentSelf> assignmentList = AssignmentHandler.ASSIGNMENTS;
-        final String[] assignments = new String[assignmentList.size()];
-        final String[] questions = new String[assignments.length];
-        final ArrayList<Integer> groupIndexes = new ArrayList<>();
-        for(int i = 0; i < assignments.length; i++){
-            final AssignmentSelf assignment = assignmentList.get(i);
-            assignments[i] = assignment.export();
-            questions[i] = assignment.getQuestion();
-            if (assignment.isGroup()) {
-                groupIndexes.add(i);
+        try {
+            final ArrayList<TodoSelf> todoList = TodoHandler.TODOS;
+            final String[] todos = new String[todoList.size()];
+            for (int i = 0; i < todoList.size(); i++) {
+                todos[i] = todoList.get(i).export();
             }
+            Serializer.toDisk(todos, Serializer.inPath("tasks", "todos.ser"));
+        } catch (Exception e) {
+            App.silenceException(e);
         }
-        Serializer.toDisk(assignments, Serializer.inPath("tasks", "assignments.ser"));
-        Serializer.toDisk(questions, Serializer.inPath("tasks", "questions.ser"));
-        final String[] groupsMembers = new String[groupIndexes.size()];
-        int j = 0;
-        for (int index : groupIndexes){
-            final AssignmentSelf assignment = assignmentList.get(index);
-            groupsMembers[j] = Globals.joinLines(assignment.members.toArray());
-            j++;
-        }
-        Serializer.toDisk(groupsMembers, Serializer.inPath("tasks", "groups.members.ser"));
 
-        final ArrayList<EventSelf> eventsList = EventHandler.EVENTS;
-        final String[] events = new String[eventsList.size()];
-        for(int i = 0; i < eventsList.size(); i++){
-            events[i] = eventsList.get(i).export();
+        try {
+            final ArrayList<ProjectSelf> projectList = ProjectHandler.PROJECTS;
+            final String[] projects = new String[projectList.size()];
+            for(int i = 0; i < projectList.size(); i++){
+                projects[i] = projectList.get(i).export();
+            }
+            Serializer.toDisk(projects, Serializer.inPath("tasks", "projects.ser"));
+        } catch (Exception e) {
+            App.silenceException(e);
         }
-        Serializer.toDisk(events, Serializer.inPath("tasks", "events.ser"));
+
+        try {
+            final ArrayList<AssignmentSelf> assignmentList = AssignmentHandler.ASSIGNMENTS;
+            final String[] assignments = new String[assignmentList.size()];
+            final String[] questions = new String[assignments.length];
+            final ArrayList<Integer> groupIndexes = new ArrayList<>();
+            for (int i = 0; i < assignments.length; i++) {
+                final AssignmentSelf assignment = assignmentList.get(i);
+                assignments[i] = assignment.export();
+                questions[i] = assignment.getQuestion();
+                if (assignment.isGroup()) {
+                    groupIndexes.add(i);
+                }
+            }
+            Serializer.toDisk(assignments, Serializer.inPath("tasks", "assignments.ser"));
+            Serializer.toDisk(questions, Serializer.inPath("tasks", "questions.ser"));
+            final String[] groupsMembers = new String[groupIndexes.size()];
+            int j = 0;
+            for (int index : groupIndexes) {
+                final AssignmentSelf assignment = assignmentList.get(index);
+                groupsMembers[j] = Globals.joinLines(assignment.members.toArray());
+                j++;
+            }
+            Serializer.toDisk(groupsMembers, Serializer.inPath("tasks", "groups.members.ser"));
+        } catch (Exception e) {
+            App.silenceException(e);
+        }
+
+        try {
+            final ArrayList<EventSelf> eventsList = EventHandler.EVENTS;
+            final String[] events = new String[eventsList.size()];
+            for (int i = 0; i < eventsList.size(); i++) {
+                events[i] = eventsList.get(i).export();
+            }
+            Serializer.toDisk(events, Serializer.inPath("tasks", "events.ser"));
+        } catch (Exception e) {
+            App.silenceException(e);
+        }
     }
 
 }

@@ -105,12 +105,11 @@ public class EventCreator extends KDialog {
         setLocationRelativeTo(Board.getRoot());
     }
 
-    public String getProvidedDate() {
+    public Date getProvidedDate() {
         if(Globals.hasNoText(dayField.getText()) || Globals.hasNoText(monthField.getText()) || Globals.hasNoText(yearField.getText())) {
-            return "";
+            return null;
         }
-        final String sep = MDate.VAL_SEP;
-        return dayField.getText()+sep+monthField.getText()+sep+yearField.getText();
+        return MDate.date(dayField.getTextAsInt(), monthField.getTextAsInt(), yearField.getTextAsInt(), true);
     }
 
     private ActionListener listener(){
@@ -124,14 +123,11 @@ public class EventCreator extends KDialog {
                 App.reportError(getRootPane(), "Error", "Sorry, the event's name should be at most "+
                                 DESCRIPTION_LIMIT+" characters.");
                 descriptionField.requestFocusInWindow();
-            } else if (Globals.hasNoText(getProvidedDate())) {
+            } else if (getProvidedDate() == null) {
                 App.reportError(getRootPane(), "Error", "Please provide all the fields for the date of the "+
                                 (eventType));
             } else {
-                final Date date = MDate.parse(getProvidedDate() + " 0:0:0");
-                if (date == null) {
-                    return;
-                }
+                final Date date = getProvidedDate();
                 if (date.before(new Date())) {
                     App.reportError(getRootPane(),"Past Deadline",
                             "Please consider the deadline. It's already past.");
@@ -142,7 +138,7 @@ public class EventCreator extends KDialog {
                 } else if (getTitle().contains("Exam")) {
                     tName = tName + " Examination";
                 }
-                final String dateString = MDate.formatDateOnly(date);
+                final String dateString = MDate.formatDay(date);
                 EventHandler.newIncoming(new EventSelf(tName, dateString));
                 dispose();
             }

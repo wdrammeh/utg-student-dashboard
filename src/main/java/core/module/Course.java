@@ -249,7 +249,7 @@ public class Course {
      * Returns a compound-string of the code and name of this course.
      */
     public String getAbsoluteName() {
-        return String.join(" ", "("+code+")", name);
+        return code+" - "+name;
     }
 
     /**

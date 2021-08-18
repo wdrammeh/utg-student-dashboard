@@ -105,7 +105,7 @@ public class News implements Activity {
                     MComponent.ready(present);
                 }
             }
-            accessTime = "Accessed: "+ MDate.now();
+            accessTime = "Accessed: "+ MDate.formatNow();
             accessLabel.setText(accessTime);
             present.add(accessResident); // will be sent to the bottom while trying to change its parent
             if (userRequest) {

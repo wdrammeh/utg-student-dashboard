@@ -32,7 +32,7 @@ public class TodoSelf {
 
 
     public TodoSelf(String desc, int duration){
-        this(desc, duration, MDate.now(), true);
+        this(desc, duration, MDate.formatNow(), true);
         initializeTimer(Globals.DAY);
         setUpUI();
     }
@@ -41,7 +41,7 @@ public class TodoSelf {
         description = desc;
         specifiedDuration = duration;
         startDate = start;
-        dateExpectedToComplete = MDate.daysAfter(MDate.parse(startDate), duration);
+        dateExpectedToComplete = MDate.daysAfter(MDate.parseDayTime(startDate), duration);
         this.isActive = isActive;
     }
 
@@ -125,7 +125,7 @@ public class TodoSelf {
     }
 
     public int getDaysTaken() {
-        return (int) MDate.actualDayDifference(MDate.parse(startDate), new Date());
+        return (int) MDate.getDifference(MDate.parseDayTime(startDate), new Date());
     }
 
     public int getTotalTimeConsumed(){
@@ -177,7 +177,7 @@ public class TodoSelf {
             togoLabel.setText("Less than a day to complete");
             signalEveNotice();
         }
-        int residue = MDate.getTimeValue(MDate.parse(dateExpectedToComplete)) - MDate.getTimeValue(new Date());
+        int residue = MDate.getTimeValue(MDate.parseDayTime(dateExpectedToComplete)) - MDate.getTimeValue(new Date());
         if (residue < 0) { // reverse it then...
             residue = Globals.DAY - Math.abs(residue);
         }
@@ -192,8 +192,9 @@ public class TodoSelf {
     }
 
     public String export(){
-        return Globals.joinLines(new Object[]{description, startDate, specifiedDuration,
-                totalTimeConsumed, isActive, dateCompleted, eveIsAlerted, doneIsAlerted});
+        return Globals.joinLines(new Object[]{description, MDate.toSerial(MDate.parseDayTime(startDate)),
+                specifiedDuration, totalTimeConsumed, isActive, MDate.toSerial(MDate.parseDayTime(dateCompleted)),
+                eveIsAlerted, doneIsAlerted});
     }
 
 }

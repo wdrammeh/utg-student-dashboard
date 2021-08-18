@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * This type deal with dates similar to AssignmentSelf
+ * This type deals with dates similar to AssignmentSelf
  */
 public class EventSelf {
     private String title;
@@ -50,11 +50,11 @@ public class EventSelf {
         timer.setInitialDelay(iDelay);
         timer.addActionListener(e-> {
             final Calendar eveCalendar = Calendar.getInstance();
-            eveCalendar.setTime(MDate.parse(this.dateDue+" 0:0:0"));
+            eveCalendar.setTime(MDate.parseDay(this.dateDue));
             eveCalendar.add(Calendar.DATE, -1);
             if (MDate.isSameDay(eveCalendar.getTime(), new Date())) {
                 signalEveNotice();
-            } else if (MDate.isSameDay(MDate.parse(dateDue+" 0:0:0"), new Date())) {
+            } else if (MDate.isSameDay(MDate.parseDay(dateDue), new Date())) {
                 endState();
                 setUpUI();
                 MComponent.ready(eventLayer);
@@ -83,7 +83,7 @@ public class EventSelf {
                 }
             });
         }
-        stateIndicator = new KLabel((isPending? " Due on " : " Past since ") + dateDue, KFontFactory.createBoldFont(16));
+        stateIndicator = new KLabel((isPending? " Due " : " Past since ") + dateDue, KFontFactory.createBoldFont(16));
 
         canceller.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         stateIndicator.setOpaque(false);
@@ -152,7 +152,7 @@ public class EventSelf {
 
     public void wakeAlive(){
         final Calendar eveCalendar = Calendar.getInstance();
-        eveCalendar.setTime(MDate.parse(this.dateDue+" 0:0:0"));
+        eveCalendar.setTime(MDate.parseDay(this.dateDue));
         eveCalendar.add(Calendar.DATE, -1);
         if (MDate.isSameDay(eveCalendar.getTime(), new Date())) {
             signalEveNotice();
@@ -162,7 +162,8 @@ public class EventSelf {
     }
 
     public String export(){
-        return Globals.joinLines(new Object[]{title, dateDue, isPending, eveIsAlerted, timeupIsAlerted});
+        return Globals.joinLines(new Object[]{title, MDate.toSerial(MDate.parseDay(dateDue)),
+                isPending, eveIsAlerted, timeupIsAlerted});
     }
 
 }

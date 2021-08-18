@@ -10,9 +10,9 @@
     saved in a separate serializable file. E.g Student.about.
     This, particularly a problem when dealing with the News type;
     or even question of an Assignment.
-- Leave primitive types as they are, but...
-- If the field is a date, format it using the implementation's standard formatter,
-    so it could be reconstructed safely by parsing by the same formatter.
+- Leave primitive types as they are.
+- A null Date instance is represented by -1. All Date objects must be serialized
+    by the Date.getTime() <long> value.
 
 
 >> Configurations (configs.ser) | String
@@ -20,8 +20,7 @@ Contains the Dashboard's configuration data.
     0: isAuthentic <boolean>
     1: userName <String>
     3: version <String>
-    4: deprecateTime <String> | MDate.format()
-
+    4: deprecateTime <long>
 
 
 >> Settings (settings.ser) | String
@@ -37,11 +36,11 @@ Contains all the settings at collapse.
 >> Portal (portal.ser) | String
 Contains all portal related data.
     0: registrationNotice <String>
-    1: lastRegistrationNoticeUpdate <String> | "Never", or MDate.format(Date)
+    1: lastRegistrationNoticeUpdate <long>
     2: admissionNotice <String>
-    3: lastAdmissionNoticeUpdate <String> | "Never", or MDate.format(Date)
+    3: lastAdmissionNoticeUpdate <long>
     4: isAutoSync <boolean>
-    5: lastLogin <String> | MDate.format(Date)
+    5: lastLogin <long>
 
 
 >> Modules (modules/ )
@@ -123,22 +122,22 @@ The tasks folder stores data regarding all the 4 main task types,
 each in a separate file therein. Every file is an array of String.
 --> Todo type (todos.ser) | String[]
     0: description <String>
-    1: startDate <String> | MDate.now()
-    2: specifiedDuration <int> | in days
+    1: startDate <long>
+    2: specifiedDuration <int>
     3: totalTimeConsumed <int>
     4: isActive <boolean>
-    5: dateCompleted <String>
+    5: dateCompleted <long>
     6: eveIsAlerted <boolean>
     7: doneIsAlerted <boolean>
 
 --> Project type (projects.ser) | String[]
     0: projectName <String>
     1: type <String>
-    2: startDate <String> | MDate.now()
+    2: startDate <long>
     3: specifiedDuration <int>
     4: totalTimeConsumed <int>
     5: isLive <boolean>
-    6: dateCompleted <String>
+    6: dateCompleted <long>
     7: eveIsAlerted <boolean>
     8: completionIsAlerted <boolean>
 
@@ -147,12 +146,12 @@ each in a separate file therein. Every file is an array of String.
         An array of all the assignments.
         Every entry is such that a line-separated value, excluding the members field.
         0: courseName <String>
-        1: deadLine <String> | MDate.formatDateOnly()
+        1: deadLine <long>
         2: isGroup
         3: modeOfSubmission <String>
-        4: startDate <String> | MDate.formatDateOnly()
+        4: startDate <long>
         5: isOn
-        6: dateSubmitted <String> | MDate.formatDateOnly()
+        6: dateSubmitted <long>
         7: eveIsAlerted <boolean>
         8: submissionIsAlerted <boolean>
 
@@ -167,8 +166,8 @@ each in a separate file therein. Every file is an array of String.
         The size of this array is equals the number of group assignments.
 
     --> Event type (events.ser) | String[]
-        0:title <String>
-        1: dateDue <String> | MDate.formatDateOnly()
+        0: title <String>
+        1: dateDue <long>
         2: isPending <boolean>
         3: eveIsAlerted <boolean>
         4: timeupIsAlerted <boolean>
@@ -179,14 +178,14 @@ Stores notifications and information on their read-state.
     0: heading <String>
     1: text <String>
     2: information <String>
-    3: time <String> | MDate.format()
+    3: time <long>
     4: isRead <boolean>
 
 
 >> News (news/ )
 Should store content of every news.
---> Heads (heads.ser) | String[]
---> Bodies (bodies.ser) | String[]
---> Links (links.ser) | String[]
---> Contents (contents.ser) | String[]
---> Access time (accessTime.ser) | String
+--> Heads (heads.ser) <String[]>
+--> Bodies (bodies.ser) <String[]>
+--> Links (links.ser) <String[]>
+--> Contents (contents.ser) <String[]>
+--> Access time (accessTime.ser) <String>

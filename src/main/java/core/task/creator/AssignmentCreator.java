@@ -16,7 +16,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Date;
-import java.util.Objects;
 
 import static core.task.creator.TodoCreator.DESCRIPTION_LIMIT;
 
@@ -181,12 +180,11 @@ public class AssignmentCreator extends KDialog {
         return meanValue;
     }
 
-    public String getProvidedDeadLine() {
+    public Date getProvidedDeadLine() {
         if (Globals.hasNoText(dField.getText()) || Globals.hasNoText(mField.getText()) || Globals.hasNoText(yField.getText())) {
-            return "";
+            return null;
         }
-        final String sep = MDate.VAL_SEP;
-        return dField.getText()+sep+mField.getText()+sep+yField.getText();
+        return MDate.date(dField.getTextAsInt(), mField.getTextAsInt(), yField.getTextAsInt(), true);
     }
 
     public ActionListener listener(){
@@ -199,19 +197,19 @@ public class AssignmentCreator extends KDialog {
                 App.reportError(getRootPane(), "Error", "Sorry, the subject name cannot exceed "+
                                 DESCRIPTION_LIMIT +" characters.");
                 nameField.requestFocusInWindow();
-            } else if (Globals.hasNoText(getProvidedDeadLine())) {
+            } else if (getProvidedDeadLine() == null) {
                 App.reportError(getRootPane(), "Deadline Error",
                         "Please fill out all the fields for the deadline. You can change them later.");
             } else {
                 final String type = isGroup() ? "Group Assignment" : "Individual Assignment";
                 final String question = getQuestion();
-                final Date givenDate = Objects.requireNonNull(MDate.parse(getProvidedDeadLine()+" 0:0:0"));
+                final Date givenDate = getProvidedDeadLine();
                 if (givenDate.before(new Date())) {
                     App.reportError(getRootPane(), "Past Deadline",
                             "That deadline is already past. Enter a valid deadline.");
                     return;
                 }
-                final String deadline = MDate.formatDateOnly(givenDate);
+                final String deadline = MDate.formatDay(givenDate);
                 final String preMean = String.valueOf(getSelectedMode());
                 String mean;
                 if (preMean.contains("hard")) {

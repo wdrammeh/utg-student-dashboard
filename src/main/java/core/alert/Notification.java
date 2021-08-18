@@ -86,7 +86,7 @@ public class Notification {
 
     private String export(){
         return Globals.joinLines(new Object[]{heading, text, information,
-                MDate.format(time), isRead});
+                MDate.toSerial(time), isRead});
     }
 
 
@@ -112,7 +112,7 @@ public class Notification {
             disposeButton.addActionListener(closeListener());
 
             final KPanel lowerPart = new KPanel(new BorderLayout());
-            lowerPart.add(new KPanel(new KLabel(MDate.format(notification.time), KFontFactory.createPlainFont(16))),
+            lowerPart.add(new KPanel(new KLabel(MDate.formatDayTime(notification.time), KFontFactory.createPlainFont(16))),
                     BorderLayout.WEST);
             lowerPart.add(new KPanel(deleteButton, disposeButton), BorderLayout.EAST);
 
@@ -145,7 +145,7 @@ public class Notification {
                     Color.BLUE)), BorderLayout.WEST);
             innerLabel = new KLabel(alert.text, KFontFactory.createPlainFont(16), alert.isRead ? null : Color.RED);
             add(new KPanel(innerLabel), BorderLayout.CENTER);
-            add(new KPanel(new KLabel(MDate.formatDateOnly(alert.time), KFontFactory.createPlainFont(16), Color.GRAY)),
+            add(new KPanel(new KLabel(MDate.formatDay(alert.time), KFontFactory.createPlainFont(16), Color.GRAY)),
                     BorderLayout.EAST);
         }
 
@@ -191,7 +191,7 @@ public class Notification {
             for (String data : alerts) {
                 final String[] content = Globals.splitLines(data);
                 final Notification alert = new Notification(content[0], content[1], content[2],
-                        MDate.parse(content[3]));
+                        MDate.fromSerial(content[3]));
                 alert.isRead = Boolean.parseBoolean(content[4]);
                 alert.shower = new Exhibitor(alert);
                 alert.layer = new NotificationLayer(alert);

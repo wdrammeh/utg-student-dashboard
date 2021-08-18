@@ -61,7 +61,7 @@ public class AssignmentSelf {
     // where deadline shall have no time
     public AssignmentSelf(String subject, String deadline, String question, boolean isGroup,
                           String submissionMode){
-        this(subject, deadline, question, isGroup, submissionMode, MDate.formatDateOnly(new Date()),
+        this(subject, deadline, question, isGroup, submissionMode, MDate.formatDay(new Date()),
                 true);
         setUpUI();
         initializeTimer(Globals.DAY);
@@ -250,8 +250,8 @@ public class AssignmentSelf {
     }
 
     public int getTimeRemaining(){
-        return (int) MDate.actualDayDifference(MDate.parse(MDate.formatDateOnly(new Date()) + " 0:0:0"),
-                MDate.parse(deadLine + " 0:0:0"));
+        return (int) MDate.getDifference(
+                MDate.parseDay(MDate.formatDay(new Date())), MDate.parseDay(deadLine));
     }
 
     public KPanel getLayer(){
@@ -273,8 +273,9 @@ public class AssignmentSelf {
     }
 
     public String export() {
-        return Globals.joinLines(new Object[]{courseName, deadLine, isGroup, modeOfSubmission,
-                startDate, isOn, dateSubmitted, eveIsAlerted, submissionIsAlerted});
+        return Globals.joinLines(new Object[]{courseName, MDate.toSerial(MDate.parseDay(deadLine)),
+                isGroup, modeOfSubmission, MDate.toSerial(MDate.parseDay(startDate)), isOn,
+                MDate.toSerial(MDate.parseDay(dateSubmitted)), eveIsAlerted, submissionIsAlerted});
     }
 
     private static class MemberExhibitor extends KDialog {
@@ -420,14 +421,14 @@ public class AssignmentSelf {
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
 
             final Font valsFont = KFontFactory.createPlainFont(16);
-            final Date assignmentDeadline = MDate.parse(assignmentSelf.deadLine+" 0:0:0");
+            final Date assignmentDeadline = MDate.parseDay(assignmentSelf.deadLine);
 
             final KTextField dField = KTextField.dayField();
-            dField.setText(MDate.getPropertyFrom(assignmentDeadline, Calendar.DATE));
+            dField.setText(MDate.getProperty(assignmentDeadline, Calendar.DATE));
             final KTextField mField = KTextField.monthField();
-            mField.setText(MDate.getPropertyFrom(assignmentDeadline, Calendar.MONTH));
+            mField.setText(MDate.getProperty(assignmentDeadline, Calendar.MONTH));
             final KTextField yField = KTextField.yearField();
-            yField.setText(MDate.getPropertyFrom(assignmentDeadline, Calendar.YEAR));
+            yField.setText(MDate.getProperty(assignmentDeadline, Calendar.YEAR));
             final KPanel datesPanel = new KPanel(new FlowLayout(FlowLayout.CENTER));
             datesPanel.addAll(new KLabel("D", valsFont), dField,
                     Box.createRigidArea(new Dimension(20, 30)), new KLabel("M", valsFont),
@@ -450,16 +451,13 @@ public class AssignmentSelf {
                     App.reportError(rootPane,"Error", "Please specify the year");
                     yField.requestFocusInWindow();
                 } else {
-                    final Date newDeadline = MDate.parse(
-                            dField.getText()+"/"+mField.getText()+"/"+yField.getText()+" 0:0:0");
-                    if (newDeadline == null) {
-                        return;
-                    }
+                    final Date newDeadline = MDate.date(dField.getTextAsInt(), mField.getTextAsInt(),
+                            yField.getTextAsInt(), true);
                     if (newDeadline.before(new Date())) {
                         App.reportError(rootPane, "Invalid Deadline",
-                                "That deadline is already past. Enter another dealine.");
+                                "That deadline is already past. Enter another date.");
                     } else {
-                        assignmentSelf.setDeadLine(MDate.formatDateOnly(newDeadline));
+                        assignmentSelf.setDeadLine(MDate.formatDay(newDeadline));
                         dispose();
                     }
                 }

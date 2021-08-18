@@ -57,5 +57,5 @@ Please make sure to read the [logic statement](Logic.md) as well.
 - **Note** that Running the *main* branch (i.e. from sources) is technically equivalent
   to running an installed version of the software.
   Hence, developers are advised to modify the `ROOT_DIR` variable
-  from the [Serializer](src/main/java/core/serial/Serializer.java) type
+  from the [Serializer](src/main/java/core/utils/Serializer.java) type
   in order to point to a temporary "test" directory until final compilation.

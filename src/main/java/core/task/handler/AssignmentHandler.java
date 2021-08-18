@@ -82,7 +82,7 @@ public class AssignmentHandler {
         } else {
             if (App.showYesNoCancelDialog(assignmentExhibition.getRootPane(),"Confirm",
                     "Are you sure you have submitted this assignment already?")) {
-                assignmentSelf.setSubmissionDate(MDate.formatDateOnly(new Date()));
+                assignmentSelf.setSubmissionDate(MDate.formatDay(new Date()));
                 completeTransfer(assignmentSelf);
                 assignmentExhibition.dispose();
             }
@@ -218,9 +218,11 @@ public class AssignmentHandler {
             final String[] questions = (String[]) questionsObj;
             for (int i = 0, j = 0; i < assignments.length; i++) {
                 final String[] lines = Globals.splitLines(assignments[i]);
-                final AssignmentSelf assignmentSelf = new AssignmentSelf(lines[0], lines[1], questions[i],
-                        Boolean.parseBoolean(lines[2]), lines[3], lines[4], Boolean.parseBoolean(lines[5]));
-                assignmentSelf.setSubmissionDate(lines[6]);
+                final AssignmentSelf assignmentSelf = new AssignmentSelf(lines[0],
+                        MDate.formatDay(MDate.fromSerial(lines[1])), questions[i],
+                        Boolean.parseBoolean(lines[2]), lines[3],
+                        MDate.formatDay(MDate.fromSerial(lines[4])), Boolean.parseBoolean(lines[5]));
+                assignmentSelf.setSubmissionDate(MDate.formatDay(MDate.fromSerial(lines[6])));
                 assignmentSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
                 assignmentSelf.submissionIsAlerted = Boolean.parseBoolean(lines[8]);
                 assignmentSelf.setUpUI(); // Todo consider recall
@@ -230,11 +232,10 @@ public class AssignmentHandler {
                     j++;
                 }
                 if (assignmentSelf.isOn()) {
-                    if (MDate.parse(MDate.formatDateOnly(new Date())+" 0:0:0").
-                            before(MDate.parse(assignmentSelf.getDeadLine()+" 0:0:0"))) {
-                        assignmentSelf.wakeAlive();
-                    } else {
+                    if (MDate.isDeadlinePast(MDate.parseDay(assignmentSelf.getDeadLine()))) {
                         assignmentSelf.wakeDead();
+                    } else {
+                        assignmentSelf.wakeAlive();
                     }
                 }
                 assignmentSelf.setUpUI();

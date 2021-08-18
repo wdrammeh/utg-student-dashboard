@@ -36,7 +36,7 @@ public class ProjectSelf {
 
 
     public ProjectSelf(String name, String type, int duration){
-        this(name, type, MDate.now(), duration, true);
+        this(name, type, MDate.formatNow(), duration, true);
         initializeTimer(Globals.DAY);
         initializeUI();
     }
@@ -210,7 +210,7 @@ public class ProjectSelf {
     }
 
     public int getDaysTaken() {
-        return (int) MDate.actualDayDifference(Objects.requireNonNull(MDate.parse(startDate)), new Date());
+        return (int) MDate.getDifference(Objects.requireNonNull(MDate.parseDayTime(startDate)), new Date());
     }
 
     public int getTotalTimeConsumed() {
@@ -233,7 +233,7 @@ public class ProjectSelf {
         if (getDaysLeft() == 1) {
             signalEveNotice();
         }
-        int residue = MDate.getTimeValue(MDate.parse(dateExpectedToComplete)) - MDate.getTimeValue(new Date());
+        int residue = MDate.getTimeValue(MDate.parseDayTime(dateExpectedToComplete)) - MDate.getTimeValue(new Date());
         if (residue < 0) {
             residue = Globals.DAY - Math.abs(residue);
         }
@@ -247,8 +247,9 @@ public class ProjectSelf {
     }
 
     public String export() {
-        return Globals.joinLines(new Object[]{projectName, type, startDate, specifiedDuration,
-                totalTimeConsumed, isLive, dateCompleted, eveIsAlerted, completionIsAlerted});
+        return Globals.joinLines(new Object[]{projectName, type, MDate.toSerial(MDate.parseDayTime(startDate)),
+                specifiedDuration, totalTimeConsumed, isLive, MDate.toSerial(MDate.parseDayTime(dateCompleted)),
+                eveIsAlerted, completionIsAlerted});
     }
 
 }

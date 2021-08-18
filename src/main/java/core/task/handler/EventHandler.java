@@ -12,7 +12,6 @@ import proto.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static core.task.TaskActivity.*;
 
@@ -120,16 +119,16 @@ public class EventHandler {
             final String[] events = (String[]) eventsObj;
             for (String data : events){
                 final String[] lines = Globals.splitLines(data);
-                final EventSelf eventSelf = new EventSelf(lines[0], lines[1], Boolean.parseBoolean(lines[2]));
+                final EventSelf eventSelf = new EventSelf(lines[0],
+                        MDate.formatDay(MDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[2]));
                 eventSelf.eveIsAlerted = Boolean.parseBoolean(lines[3]);
                 eventSelf.timeupIsAlerted = Boolean.parseBoolean(lines[4]);
                 eventSelf.setUpUI(); // Todo consider recall
                 if (eventSelf.isPending()) {
-                    if (MDate.parse(MDate.formatDateOnly(new Date()) + " 0:0:0").
-                            before(MDate.parse(eventSelf.getDateDue() + " 0:0:0"))) {
-                        eventSelf.wakeAlive();
-                    } else {
+                    if (MDate.isDeadlinePast(MDate.parseDay(eventSelf.getDateDue()))) {
                         eventSelf.endState();
+                    } else {
+                        eventSelf.wakeAlive();
                     }
                 }
                 eventSelf.setUpUI();
