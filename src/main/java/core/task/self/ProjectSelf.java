@@ -163,7 +163,7 @@ public class ProjectSelf {
 
     private void signalCompletionNotice(){
         if (!completionIsAlerted) {
-            final String text = "<p>the specified period of the "+ getType()+" Project <b>"+getProjectName()+"</b> is now attained.</p>";
+            final String text = "<p>The specified period of the "+ getType()+" Project <b>"+getProjectName()+"</b> is now attained.</p>";
             Notification.create("Project Completed","Specified duration for the "+getType()+" Project "+
                     getProjectName()+" is reached.", text);
             completionIsAlerted = true;

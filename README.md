@@ -2,7 +2,7 @@
 
 `2021.6`
 
-A **flexible** and **elegant** student management system for the University of The Gambia.
+A **flexible** and **elegant** student management system for the University of The Gambia ("UTG"").
 
 Dashboard is a **student management tool** (built by the students for the students).
 This project is focus on bringing to the palms of the students (of UTG)
@@ -13,7 +13,7 @@ that functions independently of the ERP System, and communicates with it at the 
 
 ## Install
 
-Download the standalone installation file per your operating system
+Get the standalone installation file for your operating system
 
 | Operating System | Download Dashboard |
 | ----- | ----- |
@@ -22,7 +22,7 @@ Download the standalone installation file per your operating system
 
 More download options are available on the [release page](https://github.com/w-drammeh/utg-student-dashboard/releases).
 
-If you wish you may check out [what's new](ChangeLog.md) about this release.
+If you wish, you may check out [what's new](ChangeLog.md) about this release.
 
 ## Functionality
 
@@ -60,7 +60,7 @@ Also, we wish to integrate the following features in a future release:
 If you are interested in contributing to this project, firstly,
 read our [Developers Guide](Contributing.md).
 
-## UTG ERP System
+## ERP Notice
 
 Dashboard uses the **UTG ERP System (Portal)** as a center of verification for users.
 The Portal is Dashboard's sole source of valid data. The data collected are used for,

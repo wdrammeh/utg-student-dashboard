@@ -183,7 +183,7 @@ public class AssignmentSelf {
 
     private void signalSubmissionNotice(){
         if (!submissionIsAlerted) {
-            final String text = "<p>submission date for the "+courseName+(isGroup ? " Group Assignment" : " Assignment")+" is past. Submission Mode was "+modeOfSubmission+".</p>";
+            final String text = "<p>Submission date for the "+courseName+(isGroup ? " Group Assignment" : " Assignment")+" is past. Submission Mode was "+modeOfSubmission+".</p>";
             Notification.create("Assignment Completed",courseName+" Assignment has reached submission date.", text);
             submissionIsAlerted = true;
         }
