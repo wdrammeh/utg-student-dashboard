@@ -243,13 +243,6 @@ public class Portal {
                 } catch (Exception ignored) {
                 }
             }
-
-            try {
-                final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
-                Student.setCGPA(Double.parseDouble(CGPA));
-            } catch (Exception e) {
-                App.silenceWarning("Could not find CGPA.");
-            }
         }
         setLastLogin(new Date());
     }
