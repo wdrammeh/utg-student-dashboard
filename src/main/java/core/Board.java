@@ -561,12 +561,8 @@ public final class Board extends KFrame {
         isReady = ready;
     }
 
-    /**
-     * Returns the outlined notification button.
-     * Used by NotificationActivity to adjust the toolTip on the go.
-     */
-    public static KButton getNotificationButton() {
-        return notificationButton;
+    public static void effectNotificationToolTip(String toolTipText){
+        notificationButton.setToolTipText(toolTipText);
     }
 
     /**

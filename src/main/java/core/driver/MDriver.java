@@ -32,7 +32,7 @@ public class MDriver {
 
     /**
      * Returns a fresh firefox driver as appropriate for the currently running OS.
-     * First, an attempt will be made to setup the driver, if it's not already.
+     * First, an attempt will be made to set up the driver, if it's not already.
      * This method may return null, if anything goes wrong in setting up the driver;
      * and it is self-silent.
      * @see #setup()
@@ -53,7 +53,7 @@ public class MDriver {
     }
 
     /**
-     * Sets up the firefox driver, if it's not already set.
+     * Sets up the firefox driver.
      * Always call this:
      * 1) at startup - to save time during runtime;
      * 2) on a different thread.

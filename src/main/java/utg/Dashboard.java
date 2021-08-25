@@ -75,7 +75,7 @@ public class Dashboard {
                     if (comparison == Version.LESS) {
                         PREVIEW.dispose();
                         App.reportError(null, "Version Error | Downgrade Detected",
-                                "You're trying to launch Dashboard with an older version than your configuration files.\n" +
+                                "You're trying to launch Dashboard from an unsupported configuration.\n" +
                                         "Please use Dashboard version '"+recentVersion+"', or later.");
                         System.exit(0);
                     } else if (comparison == Version.EQUAL) {

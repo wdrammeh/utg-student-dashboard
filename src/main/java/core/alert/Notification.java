@@ -59,12 +59,12 @@ public class Notification {
 
     /**
      * Readily creates a new notification, adding it to the presently
-     * unread notifications panel.
+     * unread notifications panel at the Activity.
      * Where the information is an HTML text.
      */
     public static void create(String heading, String summary, String information) {
         final Notification incoming = new Notification(heading, summary, information, new Date());
-        NotificationActivity.join(incoming);
+        NotificationActivity.receive(incoming);
         NOTIFICATIONS.add(incoming);
     }
 
@@ -73,13 +73,8 @@ public class Notification {
     }
 
     private void setRead(boolean isRead){
-        if (isRead) {
-            this.isRead = true;
-            innerLabel.setForeground(null);
-        } else {
-            this.isRead = false;
-            innerLabel.setForeground(Color.RED);
-        }
+        this.isRead = isRead;
+        innerLabel.setForeground(isRead ? null : Color.RED);
     }
 
     public KPanel getLayer(){
@@ -107,7 +102,7 @@ public class Notification {
 
             final KButton deleteButton = new KButton("Remove");
             deleteButton.addActionListener(e-> dispose());
-            deleteButton.addActionListener(NotificationActivity.deleteAction(alert));
+            deleteButton.addActionListener(e-> NotificationActivity.delete(alert));
 
             final KButton disposeButton = new KButton("Close");
             disposeButton.addActionListener(e-> dispose());
@@ -146,7 +141,7 @@ public class Notification {
                 final Notification alert = new Notification(content[0], content[1], content[2],
                         KDate.fromSerial(content[3]));
                 alert.setRead(Boolean.parseBoolean(content[4]));
-                NotificationActivity.join(alert);
+                NotificationActivity.receive(alert);
                 NOTIFICATIONS.add(alert);
             }
         }
