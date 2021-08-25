@@ -5,8 +5,8 @@ import core.task.creator.TodoCreator;
 import core.task.self.TodoSelf;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.KComponent;
+import core.utils.KDate;
 import proto.*;
 import utg.Dashboard;
 
@@ -89,7 +89,7 @@ public class TodoHandler {
     }
 
     private static void finalizeTransfer(TodoSelf oldSelf) {
-        oldSelf.setDateCompleted(MDate.formatNow());
+        oldSelf.setDateCompleted(KDate.formatNow());
         oldSelf.getTogoLabel().setText("Completed "+oldSelf.getDateCompleted()); // Which is that
         oldSelf.getTogoLabel().setForeground(Color.BLUE);
         oldSelf.setActive(false);
@@ -97,7 +97,7 @@ public class TodoHandler {
         final KPanel oldPanel = oldSelf.getLayer();
         activeContainer.remove(oldPanel);
         dormantContainer.add(oldPanel);
-        MComponent.ready(activeContainer, dormantContainer);
+        KComponent.ready(activeContainer, dormantContainer);
     }
 
     public static ActionListener removalWaiter(TodoSelf task, KDialog dialog){
@@ -111,7 +111,7 @@ public class TodoHandler {
                     dormantContainer.remove(outgoingPanel);
                 }
                 TODOS.remove(task);
-                MComponent.ready(activeContainer, dormantContainer);
+                KComponent.ready(activeContainer, dormantContainer);
                 task.setActive(false);
                 dialog.dispose();
             }
@@ -126,7 +126,7 @@ public class TodoHandler {
     public static void newIncoming(TodoSelf todo){
         TODOS.add(todo);
         activeContainer.add(todo.getLayer());
-        MComponent.ready(activeContainer);
+        KComponent.ready(activeContainer);
     }
 
     public static void receiveFromSerials(TodoSelf dTodo){
@@ -178,7 +178,7 @@ public class TodoHandler {
                         dormantContainer.remove(c);
                     }
                     TODOS.removeIf(t -> !t.isActive());
-                    MComponent.ready(dormantContainer);
+                    KComponent.ready(dormantContainer);
                 }
             }
         });
@@ -212,13 +212,13 @@ public class TodoHandler {
             for (String data : todos) {
                 final String[] lines = Globals.splitLines(data);
                 final TodoSelf todoSelf = new TodoSelf(lines[0], Integer.parseInt(lines[2]),
-                        MDate.formatDayTime(MDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[4]));
+                        KDate.formatDayTime(KDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[4]));
                 todoSelf.setTotalTimeConsumed(Integer.parseInt(lines[3]));
-                todoSelf.setDateCompleted(MDate.formatDayTime(MDate.fromSerial(lines[5])));
+                todoSelf.setDateCompleted(KDate.formatDayTime(KDate.fromSerial(lines[5])));
                 todoSelf.eveIsAlerted = Boolean.parseBoolean(lines[6]);
                 todoSelf.doneIsAlerted = Boolean.parseBoolean(lines[7]);
                 if (todoSelf.isActive()) { // This only means it slept alive - we're to check then if it's to wake alive or not
-                    if (new Date().before(MDate.parseDayTime(todoSelf.getDateExpectedToComplete()))) {
+                    if (new Date().before(KDate.parseDayTime(todoSelf.getDateExpectedToComplete()))) {
                         todoSelf.wakeAlive();
                     } else {
                         todoSelf.wakeDead();

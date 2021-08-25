@@ -1,5 +1,7 @@
 package proto;
 
+import core.utils.KFontFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;

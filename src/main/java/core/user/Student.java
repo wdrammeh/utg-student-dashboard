@@ -8,8 +8,8 @@ import core.serial.Serializer;
 import core.setting.SettingsUI;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.KComponent;
+import core.utils.KDate;
 import utg.Dashboard;
 
 import javax.swing.*;
@@ -82,7 +82,7 @@ public class Student {
     private static boolean isGuest;
     private static final int ICON_WIDTH = 275;
     private static final int ICON_HEIGHT = 200;
-    private static final ImageIcon DEFAULT_ICON = MComponent.scaleIcon(App.getIconURL("default-icon.png"),
+    private static final ImageIcon DEFAULT_ICON = KComponent.scaleIcon(App.getIconURL("default-icon.png"),
             ICON_WIDTH, ICON_HEIGHT);
     private static final String IMAGE_PATH = Serializer.inPath("user", "imageIcon");
     public static final String FIRST_SEMESTER = "First Semester";
@@ -590,7 +590,7 @@ public class Student {
     }
 
     public static String getMonthOfAdmissionName(){
-        return MDate.getMonthName(monthOfAdmission);
+        return KDate.getMonthName(monthOfAdmission);
     }
 
     public static boolean isUndergraduate(){
@@ -637,7 +637,7 @@ public class Student {
     private static void fireIconChange(File file, Component c){
         if (file != null) {
             try {
-                final ImageIcon newIcon = MComponent.scaleIcon(file.toURI().toURL(), ICON_WIDTH, ICON_HEIGHT);
+                final ImageIcon newIcon = KComponent.scaleIcon(file.toURI().toURL(), ICON_WIDTH, ICON_HEIGHT);
                 if (newIcon == null) {
                     App.reportError(c, "Error", "Could not set the image icon to '" + file.getAbsolutePath() + "'.\n" +
                             "Is that an image file? If it's not, try again with a valid image file, otherwise it is of an unsupported type.");
@@ -778,7 +778,7 @@ public class Student {
         final File imageFile = new File(IMAGE_PATH);
         if (imageFile.exists()) {
             try {
-                final ImageIcon icon = MComponent.scaleIcon(imageFile.toURI().toURL(), ICON_WIDTH, ICON_HEIGHT);
+                final ImageIcon icon = KComponent.scaleIcon(imageFile.toURI().toURL(), ICON_WIDTH, ICON_HEIGHT);
                 if (icon == null) {
                     App.silenceException("Failed to read/load the image icon.'");
                     Board.POST_PROCESSES.add(Student::fireIconReset);

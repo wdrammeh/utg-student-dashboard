@@ -3,12 +3,8 @@ package core.task.self;
 import core.alert.Notification;
 import core.task.handler.EventHandler;
 import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.*;
 import proto.KButton;
-import proto.KFontFactory;
 import proto.KLabel;
 import proto.KPanel;
 
@@ -50,14 +46,14 @@ public class EventSelf {
         timer.setInitialDelay(iDelay);
         timer.addActionListener(e-> {
             final Calendar eveCalendar = Calendar.getInstance();
-            eveCalendar.setTime(MDate.parseDay(this.dateDue));
+            eveCalendar.setTime(KDate.parseDay(this.dateDue));
             eveCalendar.add(Calendar.DATE, -1);
-            if (MDate.isSameDay(eveCalendar.getTime(), new Date())) {
+            if (KDate.isSameDay(eveCalendar.getTime(), new Date())) {
                 signalEveNotice();
-            } else if (MDate.isSameDay(MDate.parseDay(dateDue), new Date())) {
+            } else if (KDate.isSameDay(KDate.parseDay(dateDue), new Date())) {
                 endState();
                 setUpUI();
-                MComponent.ready(eventLayer);
+                KComponent.ready(eventLayer);
                 EventHandler.renewCount(-1);
             }
         });
@@ -152,17 +148,17 @@ public class EventSelf {
 
     public void wakeAlive(){
         final Calendar eveCalendar = Calendar.getInstance();
-        eveCalendar.setTime(MDate.parseDay(this.dateDue));
+        eveCalendar.setTime(KDate.parseDay(this.dateDue));
         eveCalendar.add(Calendar.DATE, -1);
-        if (MDate.isSameDay(eveCalendar.getTime(), new Date())) {
+        if (KDate.isSameDay(eveCalendar.getTime(), new Date())) {
             signalEveNotice();
         }
-        final int residue = Globals.DAY - MDate.getTimeValue(new Date());
+        final int residue = Globals.DAY - KDate.getTimeValue(new Date());
         initializeTimer(residue);
     }
 
     public String export(){
-        return Globals.joinLines(new Object[]{title, MDate.toSerial(MDate.parseDay(dateDue)),
+        return Globals.joinLines(new Object[]{title, KDate.toSerial(KDate.parseDay(dateDue)),
                 isPending, eveIsAlerted, timeupIsAlerted});
     }
 

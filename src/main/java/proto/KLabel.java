@@ -1,7 +1,7 @@
 package proto;
 
 import core.utils.App;
-import core.utils.MComponent;
+import core.utils.KComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,7 +41,7 @@ public class KLabel extends JLabel implements Preference {
     }
 
     public static KLabel createIcon(String name, int width, int height){
-        return new KLabel(MComponent.scaleIcon(App.getIconURL(name), width, height));
+        return new KLabel(KComponent.scaleIcon(App.getIconURL(name), width, height));
     }
 
     /**
@@ -110,7 +110,7 @@ public class KLabel extends JLabel implements Preference {
 
     @Override
     public JToolTip createToolTip() {
-        return MComponent.preferredTip();
+        return KComponent.preferredTip();
     }
 
     @Override

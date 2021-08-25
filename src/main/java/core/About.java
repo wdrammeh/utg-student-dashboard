@@ -104,7 +104,7 @@ public class About extends KDialog {
 
         final KLabel readLabel = new KLabel("Read more...", KFontFactory.createPlainFont(15), Color.BLUE);
         readLabel.underline(false);
-        readLabel.setCursor(MComponent.HAND_CURSOR);
+        readLabel.setCursor(KComponent.HAND_CURSOR);
         readLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -133,7 +133,7 @@ public class About extends KDialog {
         final KPanel creditsCard = new KPanel();
         creditsCard.setLayout(new BoxLayout(creditsCard, BoxLayout.Y_AXIS));
         creditsCard.addAll(authorLayer, new KPanel(new FlowLayout(FlowLayout.RIGHT, 25, 5), readLabel),
-                MComponent.contentBottomGap(), respectLayer);
+                KComponent.contentBottomGap(), respectLayer);
         return creditsCard;
     }
 
@@ -159,7 +159,7 @@ public class About extends KDialog {
             if (Globals.hasNoText(reviewTextArea.getText())) {
                 reportBlankReview(reviewTextArea);
             } else {
-                MComponent.toggleEnabled(reviewTextArea, reviewSender);
+                KComponent.toggleEnabled(reviewTextArea, reviewSender);
                 reviewSender.setText("Sending...");
                 if (Internet.isInternetAvailable()) {
                     final Mailer gMailer = new Mailer("Dashboard Feedback | Review | "+ Student.getFullNamePostOrder(),
@@ -170,7 +170,7 @@ public class About extends KDialog {
                 } else {
                     reportNoConnection();
                 }
-                MComponent.toggleEnabled(reviewTextArea, reviewSender);
+                KComponent.toggleEnabled(reviewTextArea, reviewSender);
                 reviewSender.setText("Send");
             }
         }).start());
@@ -194,7 +194,7 @@ public class About extends KDialog {
             if (Globals.hasNoText(suggestionTextArea.getText())) {
                 reportBlankReview(suggestionTextArea);
             } else {
-                MComponent.toggleEnabled(suggestionTextArea,suggestionSender);
+                KComponent.toggleEnabled(suggestionTextArea,suggestionSender);
                 suggestionSender.setText("Sending...");
                 if (Internet.isInternetAvailable()) {
                     final Mailer gMailer = new Mailer("Dashboard Feedback | Suggestion |"+
@@ -206,7 +206,7 @@ public class About extends KDialog {
                 } else {
                     reportNoConnection();
                 }
-                MComponent.toggleEnabled(suggestionTextArea,suggestionSender);
+                KComponent.toggleEnabled(suggestionTextArea,suggestionSender);
                 suggestionSender.setText("Send");
             }
         }).start());
@@ -242,7 +242,7 @@ public class About extends KDialog {
             }
 
             new Thread(()-> {
-                MComponent.toggleEnabled(answerTitleField, answerTextArea, answerSender);
+                KComponent.toggleEnabled(answerTitleField, answerTextArea, answerSender);
                 answerSender.setText("Sending...");
                 if (Internet.isInternetAvailable()) {
                     final Mailer gMailer = new Mailer("Dashboard Feedback | FAQ & Answer"+
@@ -255,7 +255,7 @@ public class About extends KDialog {
                 } else {
                     reportNoConnection();
                 }
-                MComponent.toggleEnabled(answerTitleField,answerTextArea,answerSender);
+                KComponent.toggleEnabled(answerTitleField,answerTextArea,answerSender);
                 answerSender.setText("Send");
             }).start();
         });
@@ -292,7 +292,7 @@ public class About extends KDialog {
             if (Globals.hasNoText(bugTextArea.getText())) {
                 reportBlankReview(bugTextArea);
             } else {
-                MComponent.toggleEnabled(bugTextArea,bugSender);
+                KComponent.toggleEnabled(bugTextArea,bugSender);
                 bugSender.setText("Sending...");
                 if (Internet.isInternetAvailable()) {
                     final Mailer gMailer = new Mailer("Dashboard Feedback | A Bug Report | "+
@@ -304,7 +304,7 @@ public class About extends KDialog {
                 } else {
                     reportNoConnection();
                 }
-                MComponent.toggleEnabled(bugTextArea,bugSender);
+                KComponent.toggleEnabled(bugTextArea,bugSender);
                 bugSender.setText("Send");
             }
         }).start());
@@ -431,7 +431,7 @@ public class About extends KDialog {
             final KPanel contentPanel = new KPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
             contentPanel.addAll(firstNamePanel, lastNamePanel, dobPanel, pobPanel, addressPanel, telephonePanel,
-                    emailPanel, nationalityPanel, MComponent.contentBottomGap(),
+                    emailPanel, nationalityPanel, KComponent.contentBottomGap(),
                     new KPanel(new FlowLayout(FlowLayout.RIGHT), closeButton));
 
             getRootPane().setDefaultButton(closeButton);

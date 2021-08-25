@@ -1,6 +1,7 @@
 package proto;
 
 import core.setting.Settings;
+import core.utils.KFontFactory;
 
 import javax.swing.*;
 import java.awt.*;

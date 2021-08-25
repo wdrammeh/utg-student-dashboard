@@ -13,8 +13,8 @@ import core.task.self.ProjectSelf;
 import core.task.self.TodoSelf;
 import core.utils.App;
 import core.utils.Globals;
+import core.utils.KFontFactory;
 import proto.KButton;
-import proto.KFontFactory;
 import proto.KLabel;
 import proto.KPanel;
 

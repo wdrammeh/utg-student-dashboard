@@ -1,7 +1,6 @@
 package core.utils;
 
 import core.first.Login;
-import proto.KFontFactory;
 import proto.KLabel;
 import proto.KPanel;
 
@@ -13,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
-public class MComponent {
+public class KComponent {
     public static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 
 

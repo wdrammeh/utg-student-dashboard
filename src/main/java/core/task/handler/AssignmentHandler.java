@@ -4,11 +4,11 @@ import core.serial.Serializer;
 import core.task.creator.AssignmentCreator;
 import core.task.exhibition.AssignmentExhibition;
 import core.task.self.AssignmentSelf;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
-import proto.*;
+import core.utils.*;
+import proto.KButton;
+import proto.KLabel;
+import proto.KPanel;
+import proto.KScrollPane;
 import utg.Dashboard;
 
 import javax.swing.*;
@@ -82,7 +82,7 @@ public class AssignmentHandler {
         } else {
             if (App.showYesNoCancelDialog(assignmentExhibition.getRootPane(),"Confirm",
                     "Are you sure you have submitted this assignment already?")) {
-                assignmentSelf.setSubmissionDate(MDate.formatDay(new Date()));
+                assignmentSelf.setSubmissionDate(KDate.formatDay(new Date()));
                 completeTransfer(assignmentSelf);
                 assignmentExhibition.dispose();
             }
@@ -99,7 +99,7 @@ public class AssignmentHandler {
         aSelf.setOn(false);
         activeReside.remove(aSelf.getLayer());
         doneReside.add(aSelf.getLayer());//come on... will only adding it in the 2nd not remove it from the first first?
-        MComponent.ready(activeReside,doneReside);
+        KComponent.ready(activeReside,doneReside);
     }
 
     public static ActionListener removalListener(AssignmentSelf assignmentSelf,
@@ -112,7 +112,7 @@ public class AssignmentHandler {
                 } else {
                     doneReside.remove(assignmentSelf.getLayer());
                 }
-                MComponent.ready(activeReside, doneReside);
+                KComponent.ready(activeReside, doneReside);
                 ASSIGNMENTS.remove(assignmentSelf);
                 assignmentSelf.setOn(false);
                 eDialog.dispose();
@@ -132,7 +132,7 @@ public class AssignmentHandler {
     public static void newIncoming(AssignmentSelf assignment){
         ASSIGNMENTS.add(assignment);
         activeReside.add(assignment.getLayer());
-        MComponent.ready(activeReside);
+        KComponent.ready(activeReside);
     }
 
     public static void receiveFromSerials(AssignmentSelf aSelf){
@@ -181,7 +181,7 @@ public class AssignmentHandler {
                     for (Component c : doneReside.getComponents()) {
                         doneReside.remove(c);
                     }
-                    MComponent.ready(doneReside);
+                    KComponent.ready(doneReside);
                     ASSIGNMENTS.removeIf(a -> !a.isOn());
                 }
             }
@@ -219,10 +219,10 @@ public class AssignmentHandler {
             for (int i = 0, j = 0; i < assignments.length; i++) {
                 final String[] lines = Globals.splitLines(assignments[i]);
                 final AssignmentSelf assignmentSelf = new AssignmentSelf(lines[0],
-                        MDate.formatDay(MDate.fromSerial(lines[1])), questions[i],
+                        KDate.formatDay(KDate.fromSerial(lines[1])), questions[i],
                         Boolean.parseBoolean(lines[2]), lines[3],
-                        MDate.formatDay(MDate.fromSerial(lines[4])), Boolean.parseBoolean(lines[5]));
-                assignmentSelf.setSubmissionDate(MDate.formatDay(MDate.fromSerial(lines[6])));
+                        KDate.formatDay(KDate.fromSerial(lines[4])), Boolean.parseBoolean(lines[5]));
+                assignmentSelf.setSubmissionDate(KDate.formatDay(KDate.fromSerial(lines[6])));
                 assignmentSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
                 assignmentSelf.submissionIsAlerted = Boolean.parseBoolean(lines[8]);
                 assignmentSelf.setUpUI(); // Todo consider recall
@@ -232,7 +232,7 @@ public class AssignmentHandler {
                     j++;
                 }
                 if (assignmentSelf.isOn()) {
-                    if (MDate.isDeadlinePast(MDate.parseDay(assignmentSelf.getDeadLine()))) {
+                    if (KDate.isDeadlinePast(KDate.parseDay(assignmentSelf.getDeadLine()))) {
                         assignmentSelf.wakeDead();
                     } else {
                         assignmentSelf.wakeAlive();

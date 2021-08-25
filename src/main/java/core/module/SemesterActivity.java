@@ -7,10 +7,7 @@ import core.alert.Notification;
 import core.driver.MDriver;
 import core.serial.Serializer;
 import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.Internet;
-import core.utils.MComponent;
+import core.utils.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -73,7 +70,7 @@ public class SemesterActivity implements Activity {
     public SemesterActivity() {
         final KPanel runningActivity = new KPanel(new BorderLayout());
         if (Student.isGuest()) {
-            runningActivity.add(MComponent.createUnavailableActivity("Semester"), BorderLayout.CENTER);
+            runningActivity.add(KComponent.createUnavailableActivity("Semester"), BorderLayout.CENTER);
         } else {
             semesterBigLabel = new KLabel(Student.getSemester(), KFontFactory.BODY_HEAD_FONT);
             semesterBigLabel.setPreferredSize(new Dimension(925, 35));
@@ -101,7 +98,7 @@ public class SemesterActivity implements Activity {
             popupMenu.add(visitItem);
 
             optionsButton = KButton.createIconifiedButton("options.png",25,25);
-            optionsButton.setCursor(MComponent.HAND_CURSOR);
+            optionsButton.setCursor(KComponent.HAND_CURSOR);
             optionsButton.setToolTipText("More options");
             optionsButton.addActionListener(e-> popupMenu.show(optionsButton,
                     optionsButton.getX() + (int)(.75 * optionsButton.getPreferredSize().width),
@@ -670,7 +667,7 @@ public class SemesterActivity implements Activity {
 
             final KCheckBox instantCheck = new KCheckBox("Checkout now", true);
             instantCheck.setFont(KFontFactory.createPlainFont(15));
-            instantCheck.setCursor(MComponent.HAND_CURSOR);
+            instantCheck.setCursor(KComponent.HAND_CURSOR);
             checkPanel = new KPanel(instantCheck);
             ((FlowLayout) checkPanel.getLayout()).setVgap(10);
 
@@ -715,7 +712,7 @@ public class SemesterActivity implements Activity {
             contentPanel = new KPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
             contentPanel.addAll(codeLayer, nameLayer, lecturerLayer, campusLayer, roomLayer, scheduleLayer, checkPanel,
-                    MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, doneButton));
+                    KComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, doneButton));
             setContentPane(contentPanel);
             pack();
             setMinimumSize(getPreferredSize());

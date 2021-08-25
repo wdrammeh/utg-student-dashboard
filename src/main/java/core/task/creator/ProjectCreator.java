@@ -5,7 +5,8 @@ import core.task.handler.ProjectHandler;
 import core.task.self.ProjectSelf;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -58,7 +59,7 @@ public class ProjectCreator extends KDialog {
 
         final KPanel contentPlate = new KPanel();
         contentPlate.setLayout(new BoxLayout(contentPlate,BoxLayout.Y_AXIS));
-        contentPlate.addAll(namePanelPlus,typePanelPlus, durationPanelPlus, MComponent.createRigidArea(400, 25),
+        contentPlate.addAll(namePanelPlus,typePanelPlus, durationPanelPlus, KComponent.createRigidArea(400, 25),
                 new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, createButton));
         setContentPane(contentPlate);
         pack();

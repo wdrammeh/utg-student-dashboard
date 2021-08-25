@@ -41,7 +41,7 @@ public class News implements Activity {
     public News() {
         refreshButton = new KButton("Refresh");
         refreshButton.setFont(KFontFactory.createPlainFont(15));
-        refreshButton.setCursor(MComponent.HAND_CURSOR);
+        refreshButton.setCursor(KComponent.HAND_CURSOR);
         refreshButton.addActionListener(e-> new Thread(()-> packAll(true)).start());
 
         final KPanel northPanel = new KPanel(new BorderLayout());
@@ -102,10 +102,10 @@ public class News implements Activity {
                         NEWS_DATA.add(0, savior);
                         present.add(packNews(head, body, link, null), 0);
                     }
-                    MComponent.ready(present);
+                    KComponent.ready(present);
                 }
             }
-            accessTime = "Accessed: "+ MDate.formatNow();
+            accessTime = "Accessed: "+ KDate.formatNow();
             accessLabel.setText(accessTime);
             present.add(accessResident); // will be sent to the bottom while trying to change its parent
             if (userRequest) {
@@ -119,7 +119,7 @@ public class News implements Activity {
             }
         } finally {
             refreshButton.setEnabled(true);
-            MComponent.ready(present);
+            KComponent.ready(present);
         }
     }
 
@@ -133,7 +133,7 @@ public class News implements Activity {
 
         final KButton extendedReader = new KButton();
         extendedReader.setFont(KFontFactory.createPlainFont(15));
-        extendedReader.setCursor(MComponent.HAND_CURSOR);
+        extendedReader.setCursor(KComponent.HAND_CURSOR);
         if (Globals.hasNoText(allContent)) {
             extendedReader.setText("Get full news");
             extendedReader.addActionListener(e-> newsDialog.primaryClick(extendedReader));
@@ -302,7 +302,7 @@ public class News implements Activity {
                 present.add(packNews(news.heading, news.body, news.link, news.content));
             }
             present.add(accessResident);
-            MComponent.ready(present);
+            KComponent.ready(present);
             final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "accessTime.ser"));
             accessTime = String.valueOf(accessObj);
             accessLabel.setText(accessTime);

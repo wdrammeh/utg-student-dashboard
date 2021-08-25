@@ -8,11 +8,11 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * MDate is a remarkable utility class.
+ * KDate is a remarkable utility class.
  * To be specific, it provides a flexible, yet maintainable, framework
  * for dealing with date and time.
  */
-public class MDate {
+public class KDate {
     private static final DateFormat dayFormatter =
             DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.US);
     private static final DateFormat dayTimeFormatter =

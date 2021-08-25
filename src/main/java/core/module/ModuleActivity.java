@@ -4,7 +4,8 @@ import core.Activity;
 import core.Board;
 import core.user.Student;
 import core.utils.App;
-import core.utils.MComponent;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -20,7 +21,7 @@ public class ModuleActivity implements Activity {
     public ModuleActivity() {
         final KPanel modulesActivity = new KPanel(new BorderLayout());
         if (Student.isGuest()) {
-            modulesActivity.add(MComponent.createUnavailableActivity("Modules"));
+            modulesActivity.add(KComponent.createUnavailableActivity("Modules"));
         } else {
             indicator = new KLabel("First Year: "+Student.firstAcademicYear(), KFontFactory.BODY_HEAD_FONT);
 

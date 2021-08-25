@@ -3,7 +3,6 @@ package core.utils;
 import core.Board;
 import core.setting.Settings;
 import core.user.Student;
-import proto.KFontFactory;
 import proto.KLabel;
 import proto.KPanel;
 

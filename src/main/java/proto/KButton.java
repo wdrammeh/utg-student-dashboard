@@ -1,7 +1,7 @@
 package proto;
 
 import core.utils.App;
-import core.utils.MComponent;
+import core.utils.KComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,11 +51,11 @@ public class KButton extends JButton implements Preference {
      * Creates an iconified button scaled to the given width and height.
      * The given name must be simple, and an existing file in the icons dir.
      * Instances created through this call are undressed-set before returning.
-     * @see MComponent#scaleIcon(URL, int, int)
+     * @see KComponent#scaleIcon(URL, int, int)
      * @see App#getIconURL(String)
      */
     public static KButton createIconifiedButton(String name, int width, int height){
-        final KButton button = new KButton(MComponent.scaleIcon(App.getIconURL(name), width, height));
+        final KButton button = new KButton(KComponent.scaleIcon(App.getIconURL(name), width, height));
         button.undress();
         return button;
     }
@@ -124,7 +124,7 @@ public class KButton extends JButton implements Preference {
 
     @Override
     public JToolTip createToolTip(){
-        return MComponent.preferredTip();
+        return KComponent.preferredTip();
     }
 
     @Override

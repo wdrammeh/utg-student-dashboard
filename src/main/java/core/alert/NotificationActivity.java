@@ -6,10 +6,7 @@ import core.Portal;
 import core.driver.MDriver;
 import core.module.SemesterActivity;
 import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.Internet;
-import core.utils.MComponent;
+import core.utils.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import proto.*;
 import utg.Dashboard;
@@ -60,7 +57,7 @@ public class NotificationActivity implements Activity {
         activityPanel.add(northPanel, BorderLayout.NORTH);
         activityPanel.add(centerPanel, BorderLayout.CENTER);
         if (!Dashboard.isFirst()) {
-            Notification.deSerialize();
+            Notification.deserialize();
         }
         Board.addCard(activityPanel, "Notifications");
     }
@@ -87,7 +84,7 @@ public class NotificationActivity implements Activity {
                 KFontFactory.createPlainFont(16));
         final KPanel admissionPanel = new KPanel(new BorderLayout());
         admissionPanel.setPreferredSize(new Dimension(1_000, 35));
-        admissionPanel.setCursor(MComponent.HAND_CURSOR);
+        admissionPanel.setCursor(KComponent.HAND_CURSOR);
         admissionPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -104,7 +101,7 @@ public class NotificationActivity implements Activity {
                 admissionLabel.setFont(KFontFactory.createPlainFont(16));
             }
         });
-        admissionPanel.add(new KPanel(new KLabel("ADMISSION ALERT:", KFontFactory.createBoldFont(16),
+        admissionPanel.add(new KPanel(new KLabel("ADMISSION ALERT:", KFontFactory.createBoldFont(15),
                 Color.BLUE)), BorderLayout.WEST);
         admissionPanel.add(new KPanel(admissionLabel), BorderLayout.CENTER);
 
@@ -112,7 +109,7 @@ public class NotificationActivity implements Activity {
                 KFontFactory.createPlainFont(16));
         final KPanel registrationPanel = new KPanel(new BorderLayout());
         registrationPanel.setPreferredSize(new Dimension(1_000, 35));
-        registrationPanel.setCursor(MComponent.HAND_CURSOR);
+        registrationPanel.setCursor(KComponent.HAND_CURSOR);
         registrationPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -130,7 +127,7 @@ public class NotificationActivity implements Activity {
                 registrationLabel.setFont(KFontFactory.createPlainFont(16));
             }
         });
-        registrationPanel.add(new KPanel(new KLabel("REGISTRATION ALERT:", KFontFactory.createBoldFont(16),
+        registrationPanel.add(new KPanel(new KLabel("REGISTRATION ALERT:", KFontFactory.createBoldFont(15),
                 Color.BLUE)), BorderLayout.WEST);
         registrationPanel.add(new KPanel(registrationLabel), BorderLayout.CENTER);
 
@@ -164,7 +161,7 @@ public class NotificationActivity implements Activity {
     public static void join(Notification notification) {
         dashboardPanel.add(notification.getLayer(), 2);
         dashboardPanel.add(Box.createVerticalStrut(5), 3);
-        MComponent.ready(dashboardPanel);
+        KComponent.ready(dashboardPanel);
         if (!notification.isRead()) {
             effectCount(1);
         }
@@ -172,9 +169,8 @@ public class NotificationActivity implements Activity {
 
     public static ActionListener deleteAction(Notification notification) {
         return e-> {
-            notification.getShower().dispose();
             dashboardPanel.remove(notification.getLayer());
-            MComponent.ready(dashboardPanel);
+            KComponent.ready(dashboardPanel);
             Notification.NOTIFICATIONS.remove(notification);
         };
     }
@@ -191,7 +187,7 @@ public class NotificationActivity implements Activity {
                     for (Notification notification : Notification.NOTIFICATIONS) {
                         dashboardPanel.remove(notification.getLayer());
                     }
-                    MComponent.ready(dashboardPanel);
+                    KComponent.ready(dashboardPanel);
                     Notification.NOTIFICATIONS.clear();
                     effectCount(-unreadCount);
                 }

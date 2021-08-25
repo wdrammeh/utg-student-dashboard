@@ -6,10 +6,7 @@ import core.Portal;
 import core.first.Login;
 import core.serial.Serializer;
 import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.Internet;
-import core.utils.MComponent;
+import core.utils.*;
 import proto.*;
 
 import javax.swing.*;
@@ -201,7 +198,7 @@ public class SettingsUI implements Activity {
             final int vInt = App.verifyUser(changeHint);
             if (vInt == App.VERIFICATION_TRUE) {
                 contactLabelsPanel.add(newContactLabel(incomingDial, contactLabelsPanel));
-                MComponent.ready(contactLabelsPanel);
+                KComponent.ready(contactLabelsPanel);
                 Student.addTelephone(incomingDial);
             } else if (vInt == App.VERIFICATION_FALSE) {
                 App.reportMatError();
@@ -232,7 +229,7 @@ public class SettingsUI implements Activity {
             aboutComponent.removeAll(schoolPanel, depPanel, progPanel, minPanel, yoaPanel, moaPanel, eygPanel,
                     levelPanel);
         }
-        aboutComponent.add(MComponent.contentBottomGap());
+        aboutComponent.add(KComponent.contentBottomGap());
         return new KScrollPane(aboutComponent);
     }
 
@@ -247,7 +244,7 @@ public class SettingsUI implements Activity {
                 if (App.showYesNoCancelDialog("Confirm",
                         "Are you sure you want to remove '"+text+"' from your contacts?")) {
                     resident.remove(label);
-                    MComponent.ready(resident);
+                    KComponent.ready(resident);
                     Student.removeTelephone(text);
                 }
             }
@@ -285,7 +282,7 @@ public class SettingsUI implements Activity {
         removeButton.addActionListener(e-> {
             if (App.showYesNoCancelDialog("Confirm", "Are you sure you want to remove '"+key+"'?")) {
                 aboutComponent.remove(panel);
-                MComponent.ready(aboutComponent);
+                KComponent.ready(aboutComponent);
                 Student.getAdditional().remove(key);
             }
         });
@@ -650,7 +647,7 @@ public class SettingsUI implements Activity {
         final KScrollPane descriptionScroll = descriptionArea.outerScrollPane(new Dimension(865,150));
         final KPanel aboutPanel = new KPanel(new KLabel("About Me:", V_FONT), descriptionScroll);
 
-        profileUI.addAll(msPanel, pobPanel, craftPanel, aboutPanel, MComponent.contentBottomGap());
+        profileUI.addAll(msPanel, pobPanel, craftPanel, aboutPanel, KComponent.contentBottomGap());
         return new KScrollPane(profileUI);
     }
 
@@ -734,7 +731,7 @@ public class SettingsUI implements Activity {
         nameFormatBox = new JComboBox<String>(new String[]{"First Name first", "Last Name first"}) {
             @Override
             public JToolTip createToolTip() {
-                return MComponent.preferredTip();
+                return KComponent.preferredTip();
             }
         };
         nameFormatBox.setFont(KFontFactory.createPlainFont(15));
@@ -751,7 +748,7 @@ public class SettingsUI implements Activity {
         looksBox = new JComboBox<String>(Settings.getLookNames()) {
             @Override
             public JToolTip createToolTip() {
-                return MComponent.preferredTip();
+                return KComponent.preferredTip();
             }
         };
         looksBox.setFont(KFontFactory.createPlainFont(15));
@@ -772,7 +769,7 @@ public class SettingsUI implements Activity {
         bgBox = new JComboBox<String>(Settings.backgroundNames()) {
             @Override
             public JToolTip createToolTip() {
-                return MComponent.preferredTip();
+                return KComponent.preferredTip();
             }
         };
         bgBox.setFont(KFontFactory.createPlainFont(15));

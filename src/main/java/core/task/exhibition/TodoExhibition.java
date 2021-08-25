@@ -4,8 +4,12 @@ import core.Board;
 import core.task.handler.TodoHandler;
 import core.task.self.TodoSelf;
 import core.utils.Globals;
-import core.utils.MComponent;
-import proto.*;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
+import proto.KButton;
+import proto.KDialog;
+import proto.KLabel;
+import proto.KPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,7 +90,7 @@ public class TodoExhibition extends KDialog {
             buttonsContainer.addAll(removeButton,closeButton);
         }
 
-        contentPanel.addAll(MComponent.contentBottomGap(), buttonsContainer);
+        contentPanel.addAll(KComponent.contentBottomGap(), buttonsContainer);
         getRootPane().setDefaultButton(closeButton);
         setContentPane(contentPanel);
         pack();

@@ -4,10 +4,7 @@ import core.Board;
 import core.module.SemesterActivity;
 import core.task.handler.AssignmentHandler;
 import core.task.self.AssignmentSelf;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.*;
 import proto.*;
 
 import javax.swing.*;
@@ -61,9 +58,9 @@ public class AssignmentCreator extends KDialog {
         yField = KTextField.yearField();
 
         final KPanel deadLinePanel = new KPanel(new FlowLayout(FlowLayout.CENTER));
-        deadLinePanel.addAll(new KLabel("Deadline:",labelsFont), MComponent.createRigidArea(50,30),new KLabel("Day",
-                        hintsFont),dField, MComponent.createRigidArea(20,30),
-                new KLabel("Month",hintsFont),mField, MComponent.createRigidArea(20,30),new KLabel("Year",hintsFont),yField);
+        deadLinePanel.addAll(new KLabel("Deadline:",labelsFont), KComponent.createRigidArea(50,30),new KLabel("Day",
+                        hintsFont),dField, KComponent.createRigidArea(20,30),
+                new KLabel("Month",hintsFont),mField, KComponent.createRigidArea(20,30),new KLabel("Year",hintsFont),yField);
 
         groupChoice = new JRadioButton("Group Work");
         groupChoice.setFont(KFontFactory.createPlainFont(15));
@@ -120,8 +117,8 @@ public class AssignmentCreator extends KDialog {
 
         final KPanel contentPlate = new KPanel();
         contentPlate.setLayout(new BoxLayout(contentPlate,BoxLayout.Y_AXIS));
-        contentPlate.addAll(importPanel, namePanel,deadLinePanel,groupPanel,modePanel,groupPanel, MComponent.createRigidArea(500,25),questionPanel,
-                MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, addButton));
+        contentPlate.addAll(importPanel, namePanel,deadLinePanel,groupPanel,modePanel,groupPanel, KComponent.createRigidArea(500,25),questionPanel,
+                KComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, addButton));
         setContentPane(contentPlate);
         rootPane.setDefaultButton(addButton);
         pack();
@@ -184,7 +181,7 @@ public class AssignmentCreator extends KDialog {
         if (Globals.hasNoText(dField.getText()) || Globals.hasNoText(mField.getText()) || Globals.hasNoText(yField.getText())) {
             return null;
         }
-        return MDate.date(dField.getTextAsInt(), mField.getTextAsInt(), yField.getTextAsInt(), true);
+        return KDate.date(dField.getTextAsInt(), mField.getTextAsInt(), yField.getTextAsInt(), true);
     }
 
     public ActionListener listener(){
@@ -209,7 +206,7 @@ public class AssignmentCreator extends KDialog {
                             "That deadline is already past. Enter a valid deadline.");
                     return;
                 }
-                final String deadline = MDate.formatDay(givenDate);
+                final String deadline = KDate.formatDay(givenDate);
                 final String preMean = String.valueOf(getSelectedMode());
                 String mean;
                 if (preMean.contains("hard")) {

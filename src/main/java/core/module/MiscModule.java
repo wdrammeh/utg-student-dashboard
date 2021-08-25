@@ -2,6 +2,7 @@ package core.module;
 
 import core.user.Student;
 import core.utils.App;
+import core.utils.KFontFactory;
 import proto.*;
 
 import javax.swing.*;

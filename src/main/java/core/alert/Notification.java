@@ -2,82 +2,84 @@ package core.alert;
 
 import core.Board;
 import core.serial.Serializer;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.*;
 import proto.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Note: The serialization approach utilized by this class
- * may not be compatible with later versions of Dashboard.
- */
 public class Notification {
     private String heading;
-    private String text;
-    private String information; // dialog parses this same text, if the description has no text.
+    private String summary;
+    private String information;
     private boolean isRead;
-    private Date time;
-    private transient Exhibitor shower;
-    private transient NotificationLayer layer;
+    private Date date;
+    private KPanel layer;
+    private KLabel innerLabel;
     public static final ArrayList<Notification> NOTIFICATIONS = new ArrayList<>();
 
 
-    private Notification(String heading, String vText, String information, Date date) {
+    private Notification(String heading, String summary, String information, Date date) {
         this.heading = heading;
-        this.text = vText;
+        this.summary = summary;
         this.information = information;
-        this.time = date;
-        this.shower = new Exhibitor(this);
-        this.layer = new NotificationLayer(this);
+        this.date = date;
+        this.layer = new KPanel(new BorderLayout(), new Dimension(975, 35));
+        layer.setCursor(KComponent.HAND_CURSOR);
+        layer.add(new KPanel(new KLabel(heading.toUpperCase(), KFontFactory.createBoldFont(15),
+                Color.BLUE)), BorderLayout.WEST);
+        innerLabel = new KLabel(summary, KFontFactory.createPlainFont(16), Color.RED);
+        layer.add(new KPanel(innerLabel), BorderLayout.CENTER);
+        layer.add(new KPanel(new KLabel(KDate.formatDay(date), KFontFactory.createPlainFont(15),
+                Color.GRAY)), BorderLayout.EAST);
+        layer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                innerLabel.setFont(KFontFactory.createBoldFont(16));
+            }
+
+            public void mouseClicked(MouseEvent e) {
+                SwingUtilities.invokeLater(()-> new Exhibitor(Notification.this).setVisible(true));
+                if (!isRead) {
+                    setRead(true);
+                    NotificationActivity.effectCount(-1);
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                innerLabel.setFont(KFontFactory.createPlainFont(16));
+            }
+        });
     }
 
     /**
-     * Creates a new notification.
-     * This call is complete, and must remain a central point for
-     * creating Dashboard specific alerts.
-     * Give the information as a HTML text.
+     * Readily creates a new notification, adding it to the presently
+     * unread notifications panel.
+     * Where the information is an HTML text.
      */
-    public static void create(String heading, String vText, String information) {
-        final Notification incoming = new Notification(heading, vText, information, new Date());
+    public static void create(String heading, String summary, String information) {
+        final Notification incoming = new Notification(heading, summary, information, new Date());
         NotificationActivity.join(incoming);
         NOTIFICATIONS.add(incoming);
     }
 
-    public String getHeading(){
-        return heading;
-    }
-
-    public String getText(){
-        return text;
-    }
-
-    public String getInformation(){
-        return information;
-    }
-
-    public KDialog getShower(){
-        return shower;
-    }
-
-    // This is an enquiry
     public boolean isRead(){
         return isRead;
     }
 
-    // This is an update
-    private void justRead(){
-        isRead = true;
-        layer.innerLabel.setForeground(null);
+    private void setRead(boolean isRead){
+        if (isRead) {
+            this.isRead = true;
+            innerLabel.setForeground(null);
+        } else {
+            this.isRead = false;
+            innerLabel.setForeground(Color.RED);
+        }
     }
 
     public KPanel getLayer(){
@@ -85,94 +87,45 @@ public class Notification {
     }
 
     private String export(){
-        return Globals.joinLines(new Object[]{heading, text, information,
-                MDate.toSerial(time), isRead});
+        return Globals.joinLines(new Object[]{heading, summary, information,
+                KDate.toSerial(date), isRead});
     }
-
 
     private static class Exhibitor extends KDialog {
 
-        private  Exhibitor(Notification notification){
-            super(notification.getHeading()+" - Notification");
+        private  Exhibitor(Notification alert) {
+            super(alert.heading+" - Notification");
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
             setResizable(true);
 
-            final String decidedText = notification.getInformation() == null ? notification.getText() :
-                    notification.getInformation();
+            final String decidedText = alert.information == null ? alert.summary :
+                    alert.information;
             final KTextPane noticePane = KTextPane.htmlFormattedPane(decidedText);
 
             final KScrollPane textScroll = new KScrollPane(noticePane);
-            textScroll.setPreferredSize(new Dimension(550,235));
+            textScroll.setPreferredSize(new Dimension(575,225));
 
             final KButton deleteButton = new KButton("Remove");
-            deleteButton.addActionListener(NotificationActivity.deleteAction(notification));
+            deleteButton.addActionListener(e-> dispose());
+            deleteButton.addActionListener(NotificationActivity.deleteAction(alert));
 
             final KButton disposeButton = new KButton("Close");
-            disposeButton.setFocusable(true);
-            disposeButton.addActionListener(closeListener());
+            disposeButton.addActionListener(e-> dispose());
 
             final KPanel lowerPart = new KPanel(new BorderLayout());
-            lowerPart.add(new KPanel(new KLabel(MDate.formatDayTime(notification.time), KFontFactory.createPlainFont(16))),
-                    BorderLayout.WEST);
+            lowerPart.add(new KPanel(new KLabel(KDate.formatDayTime(alert.date),
+                    KFontFactory.createPlainFont(15))), BorderLayout.WEST);
             lowerPart.add(new KPanel(deleteButton, disposeButton), BorderLayout.EAST);
 
             final KPanel contentPanel = new KPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-            contentPanel.addAll(textScroll, MComponent.contentBottomGap(), lowerPart);
+            contentPanel.addAll(textScroll, KComponent.contentBottomGap(), lowerPart);
             setContentPane(contentPanel);
             getRootPane().setDefaultButton(disposeButton);
             pack();
             setLocationRelativeTo(Board.getRoot());
         }
-
-        private ActionListener closeListener(){
-            return e-> dispose();
-        }
     }
-
-
-    private static class NotificationLayer extends KPanel {
-        private Notification notification;
-        private KLabel innerLabel;
-
-        private NotificationLayer(Notification alert) {
-            this.notification = alert;
-            setPreferredSize(new Dimension(975, 35));
-            setCursor(MComponent.HAND_CURSOR);
-            addMouseListener(forgeListener(this));
-            setLayout(new BorderLayout());
-            add(new KPanel(new KLabel(alert.heading.toUpperCase(), KFontFactory.createBoldFont(16),
-                    Color.BLUE)), BorderLayout.WEST);
-            innerLabel = new KLabel(alert.text, KFontFactory.createPlainFont(16), alert.isRead ? null : Color.RED);
-            add(new KPanel(innerLabel), BorderLayout.CENTER);
-            add(new KPanel(new KLabel(MDate.formatDay(alert.time), KFontFactory.createPlainFont(16), Color.GRAY)),
-                    BorderLayout.EAST);
-        }
-
-        private static MouseListener forgeListener(NotificationLayer layer){
-            return new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    layer.innerLabel.setFont(KFontFactory.createBoldFont(16));
-                }
-
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    SwingUtilities.invokeLater(()-> layer.notification.shower.setVisible(true));
-                    if (!layer.notification.isRead()) {
-                        layer.notification.justRead();
-                        NotificationActivity.effectCount(-1);
-                    }
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    layer.innerLabel.setFont(KFontFactory.createPlainFont(16));
-                }
-            };
-        }
-    }
-
 
     public static void serialize() {
         final String[] alerts = new String[NOTIFICATIONS.size()];
@@ -182,7 +135,7 @@ public class Notification {
         Serializer.toDisk(alerts, Serializer.inPath("alerts.ser"));
     }
 
-    public static void deSerialize(){
+    public static void deserialize(){
         final Object alertsObj = Serializer.fromDisk(Serializer.inPath("alerts.ser"));
         if (alertsObj == null) {
             App.silenceException("Failed to read Notifications.");
@@ -191,10 +144,8 @@ public class Notification {
             for (String data : alerts) {
                 final String[] content = Globals.splitLines(data);
                 final Notification alert = new Notification(content[0], content[1], content[2],
-                        MDate.fromSerial(content[3]));
-                alert.isRead = Boolean.parseBoolean(content[4]);
-                alert.shower = new Exhibitor(alert);
-                alert.layer = new NotificationLayer(alert);
+                        KDate.fromSerial(content[3]));
+                alert.setRead(Boolean.parseBoolean(content[4]));
                 NotificationActivity.join(alert);
                 NOTIFICATIONS.add(alert);
             }

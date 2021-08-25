@@ -7,7 +7,8 @@ import core.module.Course;
 import core.module.ModuleHandler;
 import core.user.Student;
 import core.utils.App;
-import core.utils.MComponent;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -41,7 +42,7 @@ public class TranscriptActivity implements Activity {
     public TranscriptActivity(){
         final KPanel activityPanel = new KPanel(new BorderLayout());
         if (Student.isGuest()) {
-            activityPanel.add(MComponent.createUnavailableActivity("Transcript"), BorderLayout.CENTER);
+            activityPanel.add(KComponent.createUnavailableActivity("Transcript"), BorderLayout.CENTER);
         } else {
             minorLabel = new KLabel("", KFontFactory.createBoldFont(15));
             CGPALabel = new KLabel("", KFontFactory.createBoldFont(16));
@@ -108,7 +109,7 @@ public class TranscriptActivity implements Activity {
 
         final KLabel exportLabel = new KLabel("Export", KFontFactory.createBoldFont(16), Color.BLUE);
         exportLabel.underline(false);
-        exportLabel.setCursor(MComponent.HAND_CURSOR);
+        exportLabel.setCursor(KComponent.HAND_CURSOR);
         exportLabel.setToolTipText("Export Transcript");
         exportLabel.addMouseListener(new MouseAdapter() {
             @Override

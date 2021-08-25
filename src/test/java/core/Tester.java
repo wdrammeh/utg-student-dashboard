@@ -1,11 +1,11 @@
 package core;
 
-import core.utils.MDate;
+import core.utils.KDate;
 
 public class Tester {
 
     public static void main(String[] args) {
-        System.out.println(MDate.formatNow());
+        System.out.println(KDate.formatNow());
     }
 
 }

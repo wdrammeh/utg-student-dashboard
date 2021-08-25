@@ -5,10 +5,7 @@ import core.alert.Notification;
 import core.serial.Serializer;
 import core.setting.SettingsUI;
 import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.Internet;
-import core.utils.MComponent;
+import core.utils.*;
 import proto.*;
 
 import javax.swing.*;
@@ -74,7 +71,7 @@ public class FirstLaunch extends KDialog {
         final KPanel majorPanel = new KPanel();
         majorPanel.setLayout(new BoxLayout(majorPanel, BoxLayout.Y_AXIS));
         majorPanel.addAll(new KPanel(new KLabel("What's Your Major Code?", bigFont)), textPane,
-                new KPanel(majorCodeField), MComponent.contentBottomGap(),
+                new KPanel(majorCodeField), KComponent.contentBottomGap(),
                 new KPanel(new FlowLayout(FlowLayout.RIGHT), nextButton));
         return majorPanel;
     }
@@ -154,7 +151,7 @@ public class FirstLaunch extends KDialog {
         final KPanel minorPanel = new KPanel();
         minorPanel.setLayout(new BoxLayout(minorPanel, BoxLayout.Y_AXIS));
         minorPanel.addAll(new KPanel(new KLabel("Do You Minor a Program?", bigFont)), kPanel,
-                MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), prevButton, nextButton));
+                KComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), prevButton, nextButton));
         return minorPanel;
     }
 
@@ -221,7 +218,7 @@ public class FirstLaunch extends KDialog {
         final KPanel emailPanel = new KPanel();
         emailPanel.setLayout(new BoxLayout(emailPanel, BoxLayout.Y_AXIS));
         emailPanel.addAll(new KPanel(new KLabel("Do you know you had a Student Mail?", bigFont)),
-                kPanel, MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT),
+                kPanel, KComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT),
                         prevButton, skipButton, setButton));
         return emailPanel;
     }
@@ -263,7 +260,7 @@ public class FirstLaunch extends KDialog {
         final KPanel imgPanel = new KPanel();
         imgPanel.setLayout(new BoxLayout(imgPanel, BoxLayout.Y_AXIS));
         imgPanel.addAll(new KPanel(new KLabel("You Look Nice!", bigFont)), nicePanel,
-                MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), prevButton, finishButton));
+                KComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), prevButton, finishButton));
         return imgPanel;
     }
 

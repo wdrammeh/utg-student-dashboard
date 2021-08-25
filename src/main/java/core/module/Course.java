@@ -5,8 +5,12 @@ import core.first.PrePortal;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
-import proto.*;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
+import proto.KButton;
+import proto.KDialog;
+import proto.KLabel;
+import proto.KPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -673,7 +677,7 @@ public class Course {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(codePanel, namePanel, lectPanel, yearPanel, semesterPanel, schedulePanel, venuePanel,
                 typePanel, creditPanel, scorePanel, gradePanel, gradeValuePanel, statusPanel,
-                MComponent.contentBottomGap(), new KPanel(closeButton));
+                KComponent.contentBottomGap(), new KPanel(closeButton));
         exhibitor.getRootPane().setDefaultButton(closeButton);
         exhibitor.setContentPane(contentPanel);
         exhibitor.pack();

@@ -4,7 +4,8 @@ import core.Activity;
 import core.Board;
 import core.user.Student;
 import core.utils.Globals;
-import core.utils.MComponent;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -48,13 +49,13 @@ public class Analysis implements Activity {
     private static final Font HINT_FONT = KFontFactory.createBoldFont(16);
     private static final Font VALUE_FONT = KFontFactory.createPlainFont(15);
     private static final Font FOCUS_FONT = KFontFactory.createPlainFont(18);
-    private static final Cursor FOCUS_CURSOR = MComponent.HAND_CURSOR;
+    private static final Cursor FOCUS_CURSOR = KComponent.HAND_CURSOR;
 
 
     public Analysis(){
         final KPanel analysisActivity = new KPanel(new BorderLayout());
         if (Student.isGuest()) {
-            analysisActivity.add(MComponent.createUnavailableActivity("Analysis"), BorderLayout.CENTER);
+            analysisActivity.add(KComponent.createUnavailableActivity("Analysis"), BorderLayout.CENTER);
         } else {
             cardLayout = new CardLayout();
             final KPanel analysisContents = new KPanel(cardLayout);
@@ -287,7 +288,7 @@ public class Analysis implements Activity {
      * @see #completeYearsBasement()
      */
     private void completeModulesBasement(){
-        MComponent.clear(modulesBasement);
+        KComponent.clear(modulesBasement);
         if (Memory.getList().isEmpty()) {
             modulesBasement.addAll(createNoAnalysisPanel());
         } else {
@@ -331,7 +332,7 @@ public class Analysis implements Activity {
             joiner.add(majorsCheck).add(minorsCheck).add(DERsCheck).add(GERsCheck).add(unknownsCheck);
             allModulesLabel.setText(totalCheck+" "+joiner);
         }
-        MComponent.ready(modulesBasement);
+        KComponent.ready(modulesBasement);
     }
 
     /**
@@ -350,7 +351,7 @@ public class Analysis implements Activity {
      */
     private void completeSemestersBasement(){
         semesterScores = new ArrayList<>();
-        MComponent.clear(semestersBasement);
+        KComponent.clear(semestersBasement);
         if (semestersList.isEmpty()) {
             semestersBasement.addAll(createNoAnalysisPanel());
         } else {
@@ -398,7 +399,7 @@ public class Analysis implements Activity {
                             VALUE_FONT, Color.BLUE)),
                     newAnalysisHeader("Performance Sketch"), new Sketch());
         }
-        MComponent.ready(semestersBasement);
+        KComponent.ready(semestersBasement);
     }
 
     /**
@@ -418,7 +419,7 @@ public class Analysis implements Activity {
     }
 
     private void completeYearsBasement(){
-        MComponent.clear(yearsBasement);
+        KComponent.clear(yearsBasement);
         if (yearsList.isEmpty()) {
             yearsBasement.addAll(createNoAnalysisPanel());
         } else {
@@ -506,7 +507,7 @@ public class Analysis implements Activity {
                     newAnalysisPlate("Current CGPA", new KLabel(Student.getCGPA() +
                             "    ["+Student.upperClassDivision()+"]", VALUE_FONT, Color.BLUE)));
         }
-        MComponent.ready(yearsBasement);
+        KComponent.ready(yearsBasement);
     }
 
     /**
@@ -814,7 +815,7 @@ public class Analysis implements Activity {
                     c.exhibit(getRootPane());
                 }
             });
-            nameLabel.setCursor(MComponent.HAND_CURSOR);
+            nameLabel.setCursor(KComponent.HAND_CURSOR);
 
             final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
                     numericLabel, nameLabel);
@@ -839,7 +840,7 @@ public class Analysis implements Activity {
                     prompt.setVisible(true);
                 }
             });
-            nameLabel.setCursor(MComponent.HAND_CURSOR);
+            nameLabel.setCursor(KComponent.HAND_CURSOR);
 
             final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
                     numericLabel, nameLabel);
@@ -862,7 +863,7 @@ public class Analysis implements Activity {
                     new GlassPrompt(title, list, getRootPane()).setVisible(true);
                 }
             });
-            nameLabel.setCursor(MComponent.HAND_CURSOR);
+            nameLabel.setCursor(KComponent.HAND_CURSOR);
 
             final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
                     numericLabel, nameLabel);

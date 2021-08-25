@@ -8,6 +8,7 @@ import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
 import core.utils.Internet;
+import core.utils.KFontFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;

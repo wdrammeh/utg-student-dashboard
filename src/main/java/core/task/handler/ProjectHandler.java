@@ -5,8 +5,8 @@ import core.task.creator.ProjectCreator;
 import core.task.self.ProjectSelf;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.KComponent;
+import core.utils.KDate;
 import proto.KButton;
 import proto.KLabel;
 import proto.KPanel;
@@ -70,13 +70,13 @@ public class ProjectHandler {
     }
 
     private static void finalizeCompletion(ProjectSelf project){
-        project.setDateCompleted(MDate.formatNow());
+        project.setDateCompleted(KDate.formatNow());
         project.setLive(false);
         project.setUpDoneUI();
         // Respect that order of sorting... since the project generator does not use clear-cut separator
         projectsReside.remove(project.getLayer());
         projectsReside.add(project.getLayer());
-        MComponent.ready(projectsReside);
+        KComponent.ready(projectsReside);
     }
 
     public static ActionListener removalListener(ProjectSelf project){
@@ -90,7 +90,7 @@ public class ProjectHandler {
                 project.setLive(false);
                 projectsReside.remove(project.getLayer());
                 PROJECTS.remove(project);
-                MComponent.ready(projectsReside);
+                KComponent.ready(projectsReside);
             }
         };
     }
@@ -103,7 +103,7 @@ public class ProjectHandler {
     public static void newIncoming(ProjectSelf project){
         PROJECTS.add(project);
         projectsReside.add(project.getLayer());
-        MComponent.ready(projectsReside);
+        KComponent.ready(projectsReside);
         renewCount(1);
     }
 
@@ -153,14 +153,14 @@ public class ProjectHandler {
             for (String data : projects) {
                 final String[] lines = Globals.splitLines(data);
                 final ProjectSelf projectSelf = new ProjectSelf(lines[0], lines[1],
-                        MDate.formatDayTime(MDate.fromSerial(lines[2])), Integer.parseInt(lines[3]),
+                        KDate.formatDayTime(KDate.fromSerial(lines[2])), Integer.parseInt(lines[3]),
                         Boolean.parseBoolean(lines[5]));
                 projectSelf.setTotalTimeConsumed(Integer.parseInt(lines[4]));
-                projectSelf.setDateCompleted(MDate.formatDayTime(MDate.fromSerial(lines[6])));
+                projectSelf.setDateCompleted(KDate.formatDayTime(KDate.fromSerial(lines[6])));
                 projectSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
                 projectSelf.completionIsAlerted = Boolean.parseBoolean(lines[8]);
                 if (projectSelf.isLive()) {
-                    if (new Date().before(MDate.parseDayTime(projectSelf.getDateExpectedToComplete()))) {
+                    if (new Date().before(KDate.parseDayTime(projectSelf.getDateExpectedToComplete()))) {
                         projectSelf.wakeLive();
                         projectSelf.initializeUI();
                     } else {

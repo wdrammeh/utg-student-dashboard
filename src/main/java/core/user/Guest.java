@@ -4,7 +4,8 @@ import core.Board;
 import core.first.Welcome;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -48,7 +49,7 @@ public class Guest extends KDialog {
         final KPanel contentPanel = new KPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(hintPanel, firstNameLayer, lastNameLayer, nationalityLayer,
-                MComponent.contentBottomGap());
+                KComponent.contentBottomGap());
 
         final KButton startButton = new KButton("Start Dashboard");
         startButton.setFont(KFontFactory.createPlainFont(15));

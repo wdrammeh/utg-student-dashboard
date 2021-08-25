@@ -1,7 +1,7 @@
 package proto;
 
 import core.utils.App;
-import core.utils.MComponent;
+import core.utils.KComponent;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -32,7 +32,7 @@ public class KTable extends JTable implements Preference {
         scrollPane.setPreferredSize(getProperSize());
         getModel().addTableModelListener(tableModelEvent-> {
             scrollPane.setPreferredSize(getProperSize());
-            MComponent.ready(scrollPane.getParent());
+            KComponent.ready(scrollPane.getParent());
         });
         return scrollPane;
     }

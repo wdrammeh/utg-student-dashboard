@@ -3,10 +3,7 @@ package core.first;
 import core.Board;
 import core.serial.Serializer;
 import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.Internet;
-import core.utils.MComponent;
+import core.utils.*;
 import proto.*;
 import utg.Dashboard;
 
@@ -63,7 +60,7 @@ public class Login extends JDialog {
         passwordField = new JPasswordField(){
             @Override
             public JToolTip createToolTip() {
-                return MComponent.preferredTip();
+                return KComponent.preferredTip();
             }
         };
         passwordField.setHorizontalAlignment(emailField.getHorizontalAlignment());
@@ -120,7 +117,7 @@ public class Login extends JDialog {
         final KLabel newLabel = new KLabel(update, KFontFactory.createPlainFont(15), Color.WHITE);
         newLabel.setOpaque(false);
         statusPanel.add(newLabel);
-        MComponent.ready(statusPanel);
+        KComponent.ready(statusPanel);
         try {
             Thread.sleep(250);
         } catch (InterruptedException e) {
@@ -134,7 +131,7 @@ public class Login extends JDialog {
     }
 
     public static void setInputState(boolean state){
-        MComponent.clear(statusPanel);
+        KComponent.clear(statusPanel);
         emailField.setEnabled(state);
         passwordField.setEnabled(state);
         loginButton.setEnabled(state);

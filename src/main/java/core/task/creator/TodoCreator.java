@@ -5,7 +5,8 @@ import core.task.handler.TodoHandler;
 import core.task.self.TodoSelf;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -51,7 +52,7 @@ public class TodoCreator extends KDialog {
         rootPane.setDefaultButton(createButton);
         final KPanel contentPlate = new KPanel();
         contentPlate.setLayout(new BoxLayout(contentPlate,BoxLayout.Y_AXIS));
-        contentPlate.addAll(namePlate,durationPlate, MComponent.contentBottomGap(),
+        contentPlate.addAll(namePlate,durationPlate, KComponent.contentBottomGap(),
                 new KPanel(new FlowLayout(FlowLayout.RIGHT), quitButton, createButton));
         setContentPane(contentPlate);
         pack();

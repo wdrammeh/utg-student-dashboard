@@ -4,7 +4,8 @@ import core.Board;
 import core.task.handler.AssignmentHandler;
 import core.task.self.AssignmentSelf;
 import core.utils.Globals;
-import core.utils.MComponent;
+import core.utils.KComponent;
+import core.utils.KFontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -95,7 +96,7 @@ public class AssignmentExhibition extends KDialog {
             buttonsContainer.addAll(removeButton, closeButton);
         }
 
-        contentPanel.addAll(MComponent.contentBottomGap(), buttonsContainer);
+        contentPanel.addAll(KComponent.contentBottomGap(), buttonsContainer);
 
         rootPane.setDefaultButton(closeButton);
         setContentPane(contentPanel);

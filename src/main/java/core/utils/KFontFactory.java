@@ -1,4 +1,4 @@
-package proto;
+package core.utils;
 
 import java.awt.*;
 
@@ -7,7 +7,7 @@ import java.awt.*;
  * Dashboard uses a single font style for all supporting-components
  * as defined by {@link #FONT_NAME} herein.
  */
-public abstract class KFontFactory implements Preference {
+public abstract class KFontFactory {
     /**
      * The universal Dashboard font style name.
      * All labels, and text-panes (of all kind) must use this for uniformity.

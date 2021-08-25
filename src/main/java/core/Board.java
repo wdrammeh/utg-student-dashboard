@@ -13,10 +13,7 @@ import core.setting.SettingsUI;
 import core.task.TaskActivity;
 import core.transcript.TranscriptActivity;
 import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.Internet;
-import core.utils.MComponent;
+import core.utils.*;
 import proto.*;
 import utg.Dashboard;
 
@@ -185,7 +182,7 @@ public final class Board extends KFrame {
         imagePart.addMouseListener(new MouseAdapter(){
             @Override
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) { // For unix-based systems
+                if (e.isPopupTrigger()) { // For Unix-based systems
                     resetOption.setEnabled(!Student.isDefaultIconSet());
                     imageOptionsPop.show(imagePart, e.getX(), e.getY());
                 }
@@ -308,7 +305,7 @@ public final class Board extends KFrame {
                     super.setCursor(null);
                 } else {
                     super.setForeground(Color.RED);
-                    super.setCursor(MComponent.HAND_CURSOR);
+                    super.setCursor(KComponent.HAND_CURSOR);
 //                    Todo signal a desktop notification here
                 }
             }
@@ -510,7 +507,7 @@ public final class Board extends KFrame {
         final KPanel homePanel = new KPanel(new BorderLayout());
         homePanel.add(new KPanel(new Dimension(225,30), label), BorderLayout.NORTH);
         homePanel.add(KLabel.createIcon(iconName, iWidth, iHeight), BorderLayout.CENTER);
-        homePanel.setCursor(MComponent.HAND_CURSOR);
+        homePanel.setCursor(KComponent.HAND_CURSOR);
         homePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {

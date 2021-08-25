@@ -3,7 +3,11 @@ package core.task.exhibition;
 import core.Board;
 import core.task.self.ProjectSelf;
 import core.utils.Globals;
-import proto.*;
+import core.utils.KFontFactory;
+import proto.KButton;
+import proto.KDialog;
+import proto.KLabel;
+import proto.KPanel;
 
 import javax.swing.*;
 import java.awt.*;

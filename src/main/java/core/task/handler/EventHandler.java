@@ -5,8 +5,8 @@ import core.task.creator.EventCreator;
 import core.task.self.EventSelf;
 import core.utils.App;
 import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.KComponent;
+import core.utils.KDate;
 import proto.*;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ public class EventHandler {
     public static void deleteEvent(EventSelf event){
         EVENTS.remove(event);
         eventsReside.remove(event.getEventLayer());
-        MComponent.ready(eventsReside);
+        KComponent.ready(eventsReside);
         if (event.isPending()) {
             EventHandler.renewCount(-1);
         }
@@ -60,7 +60,7 @@ public class EventHandler {
     public static void newIncoming(EventSelf event){
         EVENTS.add(event);
         eventsReside.add(event.getEventLayer());
-        MComponent.ready(eventsReside);
+        KComponent.ready(eventsReside);
         renewCount(1);
     }
 
@@ -120,12 +120,12 @@ public class EventHandler {
             for (String data : events){
                 final String[] lines = Globals.splitLines(data);
                 final EventSelf eventSelf = new EventSelf(lines[0],
-                        MDate.formatDay(MDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[2]));
+                        KDate.formatDay(KDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[2]));
                 eventSelf.eveIsAlerted = Boolean.parseBoolean(lines[3]);
                 eventSelf.timeupIsAlerted = Boolean.parseBoolean(lines[4]);
                 eventSelf.setUpUI(); // Todo consider recall
                 if (eventSelf.isPending()) {
-                    if (MDate.isDeadlinePast(MDate.parseDay(eventSelf.getDateDue()))) {
+                    if (KDate.isDeadlinePast(KDate.parseDay(eventSelf.getDateDue()))) {
                         eventSelf.endState();
                     } else {
                         eventSelf.wakeAlive();

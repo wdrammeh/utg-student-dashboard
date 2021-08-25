@@ -1,8 +1,8 @@
 package core;
 
 import core.utils.App;
+import core.utils.KFontFactory;
 import proto.KDialog;
-import proto.KFontFactory;
 import proto.KLabel;
 import proto.KPanel;
 

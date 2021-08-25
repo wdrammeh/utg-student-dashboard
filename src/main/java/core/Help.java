@@ -1,6 +1,7 @@
 package core;
 
 import core.utils.Globals;
+import core.utils.KFontFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import proto.*;

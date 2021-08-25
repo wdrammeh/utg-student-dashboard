@@ -4,10 +4,10 @@ import core.alert.Notification;
 import core.task.exhibition.ProjectExhibition;
 import core.task.handler.ProjectHandler;
 import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.KComponent;
+import core.utils.KDate;
+import core.utils.KFontFactory;
 import proto.KButton;
-import proto.KFontFactory;
 import proto.KLabel;
 import proto.KPanel;
 
@@ -36,7 +36,7 @@ public class ProjectSelf {
 
 
     public ProjectSelf(String name, String type, int duration){
-        this(name, type, MDate.formatNow(), duration, true);
+        this(name, type, KDate.formatNow(), duration, true);
         initializeTimer(Globals.DAY);
         initializeUI();
     }
@@ -46,7 +46,7 @@ public class ProjectSelf {
         this.type = type;
         startDate = startTime;
         specifiedDuration = duration;
-        dateExpectedToComplete = MDate.daysAfter(new Date(), duration);
+        dateExpectedToComplete = KDate.daysAfter(new Date(), duration);
         isLive = live;
     }
 
@@ -144,12 +144,12 @@ public class ProjectSelf {
             projectLayer.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
             projectLayer.setLayout(new BorderLayout());
         } else {
-            MComponent.clear(projectLayer);
+            KComponent.clear(projectLayer);
         }
         projectLayer.add(new KPanel(new KLabel(this.projectName, KFontFactory.createPlainFont(17),
                 Color.BLUE)), BorderLayout.WEST);
         projectLayer.add(quantaLayer, BorderLayout.EAST);
-        MComponent.ready(projectLayer);
+        KComponent.ready(projectLayer);
     }
 
     private void signalEveNotice(){
@@ -210,7 +210,7 @@ public class ProjectSelf {
     }
 
     public int getDaysTaken() {
-        return (int) MDate.getDifference(Objects.requireNonNull(MDate.parseDayTime(startDate)), new Date());
+        return (int) KDate.getDifference(Objects.requireNonNull(KDate.parseDayTime(startDate)), new Date());
     }
 
     public int getTotalTimeConsumed() {
@@ -233,7 +233,7 @@ public class ProjectSelf {
         if (getDaysLeft() == 1) {
             signalEveNotice();
         }
-        int residue = MDate.getTimeValue(MDate.parseDayTime(dateExpectedToComplete)) - MDate.getTimeValue(new Date());
+        int residue = KDate.getTimeValue(KDate.parseDayTime(dateExpectedToComplete)) - KDate.getTimeValue(new Date());
         if (residue < 0) {
             residue = Globals.DAY - Math.abs(residue);
         }
@@ -247,8 +247,8 @@ public class ProjectSelf {
     }
 
     public String export() {
-        return Globals.joinLines(new Object[]{projectName, type, MDate.toSerial(MDate.parseDayTime(startDate)),
-                specifiedDuration, totalTimeConsumed, isLive, MDate.toSerial(MDate.parseDayTime(dateCompleted)),
+        return Globals.joinLines(new Object[]{projectName, type, KDate.toSerial(KDate.parseDayTime(startDate)),
+                specifiedDuration, totalTimeConsumed, isLive, KDate.toSerial(KDate.parseDayTime(dateCompleted)),
                 eveIsAlerted, completionIsAlerted});
     }
 
