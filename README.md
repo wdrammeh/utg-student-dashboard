@@ -2,7 +2,7 @@
 
 `?`
 
-A **flexible** and **elegant** student management system for the University of The Gambia ("UTG"").
+A **flexible** and **elegant** student management system for the University of The Gambia ("UTG").
 
 Dashboard is a **student management tool** (built by the students for the students).
 This project is focus on bringing to the palms of the students (of UTG)
@@ -13,7 +13,7 @@ that functions independently of the ERP System, and communicates with it at the 
 
 ## Install
 
-Get the standalone installation file for your operating system
+Get the standalone installation file for your operating system:
 
 | Platform | Download Dashboard |
 | ----- | ----- |
@@ -39,17 +39,6 @@ If you wish, you may check out [what's new](ChangeLog.md) about this release.
 - Assignment management system with notification triggers
 - UTG FAQs and Answers
 - Real time performance analysis, and recommendation system
-- And much more...
-
-### "A journey of thousand miles begins with a single step"
-
-Dashboard is an ambitious project, and this is only the beginning.
-Also, we wish to integrate the following features in a future release:
-
-- Student Voting System
-- Student Auditing System
-- Student Forum
-- A mobile version
 - And much more...
 
 ## System Requirements
