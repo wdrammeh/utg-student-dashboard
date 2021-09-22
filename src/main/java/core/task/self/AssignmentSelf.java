@@ -58,7 +58,7 @@ public class AssignmentSelf {
     // where deadline shall have no time
     public AssignmentSelf(String subject, String deadline, String question, boolean isGroup,
                           String submissionMode){
-        this(subject, deadline, question, isGroup, submissionMode, KDate.formatDay(new Date()),
+        this(subject, deadline, question, isGroup, submissionMode, MDate.formatDay(new Date()),
                 true);
         setUpUI();
         initializeTimer(Globals.DAY);
@@ -99,7 +99,7 @@ public class AssignmentSelf {
         deadlineIndicator = new KLabel();
         if (isOn) {
             deadlineIndicator.setText("Deadline: "+deadLine);
-            deadlineIndicator.setStyle(KFontFactory.createItalicFont(17), Color.RED);
+            deadlineIndicator.setStyle(FontFactory.createItalicFont(17), Color.RED);
             deadlineIndicator.underline(false);
             deadlineIndicator.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             deadlineIndicator.addMouseListener(new MouseAdapter() {
@@ -110,7 +110,7 @@ public class AssignmentSelf {
             });
         } else {
             deadlineIndicator.setText("Submitted: "+dateSubmitted);
-            deadlineIndicator.setStyle(KFontFactory.createPlainFont(16), Color.BLUE);
+            deadlineIndicator.setStyle(FontFactory.createPlainFont(16), Color.BLUE);
             deadlineIndicator.setCursor(null);
             for (MouseListener l : deadlineIndicator.getMouseListeners()) {
                 deadlineIndicator.removeMouseListener(l);
@@ -121,7 +121,7 @@ public class AssignmentSelf {
         if (isGroup()) {
             groupLabel = KLabel.createIcon("group.png",20,20);
             groupLabel.setText(getMemberText(0));
-            groupLabel.setFont(KFontFactory.createPlainFont(17));
+            groupLabel.setFont(FontFactory.createPlainFont(17));
             groupLabel.setToolTipText("View participants");
             groupLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             groupLabel.addMouseListener(new MouseAdapter() {
@@ -144,7 +144,7 @@ public class AssignmentSelf {
             groupLabel = KLabel.createIcon("personal.png", 20, 20);
             groupLabel.setText("Personal");
         }
-        groupLabel.setFont(KFontFactory.createPlainFont(16));
+        groupLabel.setFont(FontFactory.createPlainFont(16));
 
         final KButton showButton = KButton.createIconifiedButton("options.png", 15, 15);
         showButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -155,7 +155,7 @@ public class AssignmentSelf {
 
         assignmentPanel = new KPanel(new BorderLayout(), new Dimension(1_000, 35));
         assignmentPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
-        assignmentPanel.add(new KPanel(new KLabel(this.getCourseName(), KFontFactory.createPlainFont(17),
+        assignmentPanel.add(new KPanel(new KLabel(this.getCourseName(), FontFactory.createPlainFont(17),
                 Color.BLUE)), BorderLayout.WEST);
         assignmentPanel.add(quantaPanel, BorderLayout.EAST);
     }
@@ -247,8 +247,8 @@ public class AssignmentSelf {
     }
 
     public int getTimeRemaining(){
-        return (int) KDate.getDifference(
-                KDate.parseDay(KDate.formatDay(new Date())), KDate.parseDay(deadLine));
+        return (int) MDate.getDifference(
+                MDate.parseDay(MDate.formatDay(new Date())), MDate.parseDay(deadLine));
     }
 
     public KPanel getLayer(){
@@ -259,7 +259,7 @@ public class AssignmentSelf {
         if (getTimeRemaining() == 1) {
             signalEveNotice();
         }
-        final int residue = Globals.DAY - KDate.getTimeValue(new Date());
+        final int residue = Globals.DAY - MDate.getTimeValue(new Date());
         initializeTimer(residue);
     }
 
@@ -270,9 +270,9 @@ public class AssignmentSelf {
     }
 
     public String export() {
-        return Globals.joinLines(new Object[]{courseName, KDate.toSerial(KDate.parseDay(deadLine)),
-                isGroup, modeOfSubmission, KDate.toSerial(KDate.parseDay(startDate)), isOn,
-                KDate.toSerial(KDate.parseDay(dateSubmitted)), eveIsAlerted, submissionIsAlerted});
+        return Globals.joinLines(new Object[]{courseName, MDate.toSerial(MDate.parseDay(deadLine)),
+                isGroup, modeOfSubmission, MDate.toSerial(MDate.parseDay(startDate)), isOn,
+                MDate.toSerial(MDate.parseDay(dateSubmitted)), eveIsAlerted, submissionIsAlerted});
     }
 
     private static class MemberExhibitor extends KDialog {
@@ -288,7 +288,7 @@ public class AssignmentSelf {
             this.assignmentSelf = assignmentSelf;
             final KPanel upperBar = new KPanel(new FlowLayout(FlowLayout.CENTER));
             upperBar.add(new KLabel(assignmentSelf.getCourseName()+" Group Assignment",
-                    KFontFactory.createPlainFont(15), Color.BLUE));
+                    FontFactory.createPlainFont(15), Color.BLUE));
             upperBar.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -383,7 +383,7 @@ public class AssignmentSelf {
 
         private void appendNewMember(String name, boolean myself){
             final KLabel nameLabel = new KLabel(myself ? name+" (me)" : name,
-                    KFontFactory.createPlainFont(18));
+                    FontFactory.createPlainFont(18));
 
             final KButton removeButton = KButton.createIconifiedButton("terminate.png", 17, 17);
 
@@ -394,14 +394,14 @@ public class AssignmentSelf {
             namePanel.getComponent(0).setBackground(Color.WHITE);
 
             membersPanel.add(namePanel);
-            KComponent.ready(membersPanel);
+            MComponent.ready(membersPanel);
 
             removeButton.setToolTipText("Remove "+name.split(" ")[0]);
             removeButton.addActionListener(e-> {
                 if (App.showYesNoCancelDialog(rootPane, "Confirm",
                         "Are you sure you want to remove '"+name+"' as a participant for this assignment?")) {
                     membersPanel.remove(namePanel);
-                    KComponent.ready(membersPanel);
+                    MComponent.ready(membersPanel);
                     assignmentSelf.members.remove(name);
                 }
             });
@@ -417,22 +417,22 @@ public class AssignmentSelf {
             setResizable(true);
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
 
-            final Font valsFont = KFontFactory.createPlainFont(16);
-            final Date assignmentDeadline = KDate.parseDay(assignmentSelf.deadLine);
+            final Font valsFont = FontFactory.createPlainFont(16);
+            final Date assignmentDeadline = MDate.parseDay(assignmentSelf.deadLine);
 
             final KTextField dField = KTextField.dayField();
-            dField.setText(KDate.getProperty(assignmentDeadline, Calendar.DATE));
+            dField.setText(MDate.getProperty(assignmentDeadline, Calendar.DATE));
             final KTextField mField = KTextField.monthField();
-            mField.setText(KDate.getProperty(assignmentDeadline, Calendar.MONTH));
+            mField.setText(MDate.getProperty(assignmentDeadline, Calendar.MONTH));
             final KTextField yField = KTextField.yearField();
-            yField.setText(KDate.getProperty(assignmentDeadline, Calendar.YEAR));
+            yField.setText(MDate.getProperty(assignmentDeadline, Calendar.YEAR));
             final KPanel datesPanel = new KPanel(new FlowLayout(FlowLayout.CENTER));
             datesPanel.addAll(new KLabel("D", valsFont), dField,
                     Box.createRigidArea(new Dimension(20, 30)), new KLabel("M", valsFont),
                     mField, Box.createRigidArea(new Dimension(20, 30)),
                     new KLabel("Y", valsFont), yField);
             final KPanel deadLinePanel = new KPanel(new BorderLayout(), new Dimension(465, 35));
-            deadLinePanel.add(new KPanel(new KLabel("New Deadline", KFontFactory.createBoldFont(15))),
+            deadLinePanel.add(new KPanel(new KLabel("New Deadline", FontFactory.createBoldFont(15))),
                     BorderLayout.WEST);
             deadLinePanel.add(datesPanel,BorderLayout.EAST);
 
@@ -448,13 +448,13 @@ public class AssignmentSelf {
                     App.reportError(rootPane,"Error", "Please specify the year");
                     yField.requestFocusInWindow();
                 } else {
-                    final Date newDeadline = KDate.date(dField.getTextAsInt(), mField.getTextAsInt(),
+                    final Date newDeadline = MDate.date(dField.getTextAsInt(), mField.getTextAsInt(),
                             yField.getTextAsInt(), true);
                     if (newDeadline.before(new Date())) {
                         App.reportError(rootPane, "Invalid Deadline",
                                 "That deadline is already past. Enter another date.");
                     } else {
-                        assignmentSelf.setDeadLine(KDate.formatDay(newDeadline));
+                        assignmentSelf.setDeadLine(MDate.formatDay(newDeadline));
                         dispose();
                     }
                 }

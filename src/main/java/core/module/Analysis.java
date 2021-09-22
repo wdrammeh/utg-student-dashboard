@@ -3,9 +3,9 @@ package core.module;
 import core.Activity;
 import core.Board;
 import core.user.Student;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
 import proto.*;
 
 import javax.swing.*;
@@ -46,16 +46,16 @@ public class Analysis implements Activity {
 
     private CardLayout cardLayout;
     private KPanel modulesBasement, semestersBasement, yearsBasement;
-    private static final Font HINT_FONT = KFontFactory.createBoldFont(16);
-    private static final Font VALUE_FONT = KFontFactory.createPlainFont(15);
-    private static final Font FOCUS_FONT = KFontFactory.createPlainFont(18);
-    private static final Cursor FOCUS_CURSOR = KComponent.HAND_CURSOR;
+    private static final Font HINT_FONT = FontFactory.createBoldFont(16);
+    private static final Font VALUE_FONT = FontFactory.createPlainFont(15);
+    private static final Font FOCUS_FONT = FontFactory.createPlainFont(18);
+    private static final Cursor FOCUS_CURSOR = MComponent.HAND_CURSOR;
 
 
     public Analysis(){
         final KPanel analysisActivity = new KPanel(new BorderLayout());
         if (Student.isGuest()) {
-            analysisActivity.add(KComponent.createUnavailableActivity("Analysis"), BorderLayout.CENTER);
+            analysisActivity.add(MComponent.createUnavailableActivity("Analysis"), BorderLayout.CENTER);
         } else {
             cardLayout = new CardLayout();
             final KPanel analysisContents = new KPanel(cardLayout);
@@ -78,10 +78,10 @@ public class Analysis implements Activity {
 
             final KPanel sensitivePanel = new KPanel(new FlowLayout(FlowLayout.RIGHT));
             sensitivePanel.addAll(new KLabel("Showing analysis based on:",
-                            KFontFactory.createPlainFont(15)), optionsCombo);
+                            FontFactory.createPlainFont(15)), optionsCombo);
 
             final KPanel northPanel = new KPanel(new BorderLayout());
-            northPanel.add(new KPanel(new KLabel("Analysis Center", KFontFactory.BODY_HEAD_FONT)),
+            northPanel.add(new KPanel(new KLabel("Analysis Center", FontFactory.BODY_HEAD_FONT)),
                     BorderLayout.WEST);
             northPanel.add(sensitivePanel, BorderLayout.EAST);
 
@@ -288,7 +288,7 @@ public class Analysis implements Activity {
      * @see #completeYearsBasement()
      */
     private void completeModulesBasement(){
-        KComponent.clear(modulesBasement);
+        MComponent.clear(modulesBasement);
         if (Memory.getList().isEmpty()) {
             modulesBasement.addAll(createNoAnalysisPanel());
         } else {
@@ -332,7 +332,7 @@ public class Analysis implements Activity {
             joiner.add(majorsCheck).add(minorsCheck).add(DERsCheck).add(GERsCheck).add(unknownsCheck);
             allModulesLabel.setText(totalCheck+" "+joiner);
         }
-        KComponent.ready(modulesBasement);
+        MComponent.ready(modulesBasement);
     }
 
     /**
@@ -351,7 +351,7 @@ public class Analysis implements Activity {
      */
     private void completeSemestersBasement(){
         semesterScores = new ArrayList<>();
-        KComponent.clear(semestersBasement);
+        MComponent.clear(semestersBasement);
         if (semestersList.isEmpty()) {
             semestersBasement.addAll(createNoAnalysisPanel());
         } else {
@@ -399,7 +399,7 @@ public class Analysis implements Activity {
                             VALUE_FONT, Color.BLUE)),
                     newAnalysisHeader("Performance Sketch"), new Sketch());
         }
-        KComponent.ready(semestersBasement);
+        MComponent.ready(semestersBasement);
     }
 
     /**
@@ -419,7 +419,7 @@ public class Analysis implements Activity {
     }
 
     private void completeYearsBasement(){
-        KComponent.clear(yearsBasement);
+        MComponent.clear(yearsBasement);
         if (yearsList.isEmpty()) {
             yearsBasement.addAll(createNoAnalysisPanel());
         } else {
@@ -507,7 +507,7 @@ public class Analysis implements Activity {
                     newAnalysisPlate("Current CGPA", new KLabel(Student.getCGPA() +
                             "    ["+Student.upperClassDivision()+"]", VALUE_FONT, Color.BLUE)));
         }
-        KComponent.ready(yearsBasement);
+        MComponent.ready(yearsBasement);
     }
 
     /**
@@ -567,7 +567,7 @@ public class Analysis implements Activity {
     }
 
     private KPanel newAnalysisHeader(String headerText){
-        return new KPanel(new KLabel(headerText, KFontFactory.createBoldFont(18), Color.RED));
+        return new KPanel(new KLabel(headerText, FontFactory.createBoldFont(18), Color.RED));
     }
 
     /**
@@ -691,9 +691,9 @@ public class Analysis implements Activity {
      * This may include an icon in a future release.
      */
     private KPanel createNoAnalysisPanel() {
-        final KLabel label1 = new KLabel("Analysis unavailable", KFontFactory.createBoldFont(30));
+        final KLabel label1 = new KLabel("Analysis unavailable", FontFactory.createBoldFont(30));
         final KLabel label2 = new KLabel("No verified courses detected for analysis",
-                KFontFactory.createPlainFont(20), Color.DARK_GRAY);
+                FontFactory.createPlainFont(20), Color.DARK_GRAY);
 
         final KPanel innerPanel = new KPanel();
         innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
@@ -805,9 +805,9 @@ public class Analysis implements Activity {
          * Adds the given course to the substancePanel.
          */
         public void join(int row, Course c) {
-            final KLabel numericLabel = new KLabel(row+".", KFontFactory.createPlainFont(15));
+            final KLabel numericLabel = new KLabel(row+".", FontFactory.createPlainFont(15));
 
-            final KLabel nameLabel = new KLabel(c.getName(), KFontFactory.createPlainFont(15));
+            final KLabel nameLabel = new KLabel(c.getName(), FontFactory.createPlainFont(15));
             nameLabel.underline(false);
             nameLabel.addMouseListener(new MouseAdapter() {
                 @Override
@@ -815,7 +815,7 @@ public class Analysis implements Activity {
                     c.exhibit(getRootPane());
                 }
             });
-            nameLabel.setCursor(KComponent.HAND_CURSOR);
+            nameLabel.setCursor(MComponent.HAND_CURSOR);
 
             final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
                     numericLabel, nameLabel);
@@ -827,9 +827,9 @@ public class Analysis implements Activity {
          * This is year-bound as specified by the year-name.
          */
         private void join(int row, String tutorName, String year) {
-            final KLabel numericLabel = new KLabel(row+".", KFontFactory.createPlainFont(15));
+            final KLabel numericLabel = new KLabel(row+".", FontFactory.createPlainFont(15));
 
-            final KLabel nameLabel = new KLabel(tutorName, KFontFactory.createPlainFont(15));
+            final KLabel nameLabel = new KLabel(tutorName, FontFactory.createPlainFont(15));
             nameLabel.underline(false);
             nameLabel.addMouseListener(new MouseAdapter() {
                 @Override
@@ -840,7 +840,7 @@ public class Analysis implements Activity {
                     prompt.setVisible(true);
                 }
             });
-            nameLabel.setCursor(KComponent.HAND_CURSOR);
+            nameLabel.setCursor(MComponent.HAND_CURSOR);
 
             final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
                     numericLabel, nameLabel);
@@ -851,9 +851,9 @@ public class Analysis implements Activity {
          * Adds the given lecturer-name to the substancePanel.
          */
         private void join(int row, String tutorName) {
-            final KLabel numericLabel = new KLabel(row+".", KFontFactory.createPlainFont(15));
+            final KLabel numericLabel = new KLabel(row+".", FontFactory.createPlainFont(15));
 
-            final KLabel nameLabel = new KLabel(tutorName, KFontFactory.createPlainFont(15));
+            final KLabel nameLabel = new KLabel(tutorName, FontFactory.createPlainFont(15));
             nameLabel.underline(false);
             nameLabel.addMouseListener(new MouseAdapter() {
                 @Override
@@ -863,7 +863,7 @@ public class Analysis implements Activity {
                     new GlassPrompt(title, list, getRootPane()).setVisible(true);
                 }
             });
-            nameLabel.setCursor(KComponent.HAND_CURSOR);
+            nameLabel.setCursor(MComponent.HAND_CURSOR);
 
             final KPanel linearPanel = new KPanel(new FlowLayout(FlowLayout.LEFT, 10, 5),
                     numericLabel, nameLabel);
@@ -890,7 +890,7 @@ public class Analysis implements Activity {
             super.paintComponent(g);
             final Graphics2D g2 = (Graphics2D)g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setFont(KFontFactory.createPlainFont(12));
+            g2.setFont(FontFactory.createPlainFont(12));
 
             final double xScale = ((double) (getWidth() - (2 * PADDING)) / (semesterScores.size() - 1));
             final double yScale = ((double) (getHeight() - (2 * PADDING)) / (Y_MAX - 1));
@@ -925,12 +925,12 @@ public class Analysis implements Activity {
                 g2.drawLine(x0, y0, x1, y1);
 
                 if (i == Y_COUNT - 1) {
-                    g2.setFont(KFontFactory.createBoldFont(14));
+                    g2.setFont(FontFactory.createBoldFont(14));
                     g2.drawString(String.valueOf(Y_MAX),25,y0 + 5);
                 }
             }
 
-            g2.setFont(KFontFactory.createPlainFont(12));
+            g2.setFont(FontFactory.createPlainFont(12));
             for (int i = 0; i < points.size() - 1; i++) {
                 int x1 = points.get(i).x;
                 int y1 = points.get(i).y;
@@ -940,7 +940,7 @@ public class Analysis implements Activity {
             }
 
             g2.setColor(Color.BLUE);
-            g2.setFont(KFontFactory.createPlainFont(14));
+            g2.setFont(FontFactory.createPlainFont(14));
             for (int i = 0; i < points.size(); i++) {
                 int x = points.get(i).x - POINTS_WIDTH / 2;
                 int y = points.get(i).y - POINTS_WIDTH / 2;

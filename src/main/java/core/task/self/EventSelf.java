@@ -46,14 +46,14 @@ public class EventSelf {
         timer.setInitialDelay(iDelay);
         timer.addActionListener(e-> {
             final Calendar eveCalendar = Calendar.getInstance();
-            eveCalendar.setTime(KDate.parseDay(this.dateDue));
+            eveCalendar.setTime(MDate.parseDay(this.dateDue));
             eveCalendar.add(Calendar.DATE, -1);
-            if (KDate.isSameDay(eveCalendar.getTime(), new Date())) {
+            if (MDate.isSameDay(eveCalendar.getTime(), new Date())) {
                 signalEveNotice();
-            } else if (KDate.isSameDay(KDate.parseDay(dateDue), new Date())) {
+            } else if (MDate.isSameDay(MDate.parseDay(dateDue), new Date())) {
                 endState();
                 setUpUI();
-                KComponent.ready(eventLayer);
+                MComponent.ready(eventLayer);
                 EventHandler.renewCount(-1);
             }
         });
@@ -79,14 +79,14 @@ public class EventSelf {
                 }
             });
         }
-        stateIndicator = new KLabel((isPending? " Due " : " Past since ") + dateDue, KFontFactory.createBoldFont(16));
+        stateIndicator = new KLabel((isPending? " Due " : " Past since ") + dateDue, FontFactory.createBoldFont(16));
 
         canceller.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         stateIndicator.setOpaque(false);
 
         eventLayer = new KPanel(new BorderLayout(), new Dimension(1_000,30)); // this is 30, unlike the others
         eventLayer.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
-        eventLayer.add(new KPanel(new KLabel(getTitle(), KFontFactory.createPlainFont(17),
+        eventLayer.add(new KPanel(new KLabel(getTitle(), FontFactory.createPlainFont(17),
                         Color.BLUE)), BorderLayout.WEST);
         eventLayer.add(new KPanel(stateIndicator), BorderLayout.CENTER);
         eventLayer.add(canceller, BorderLayout.EAST);
@@ -138,7 +138,7 @@ public class EventSelf {
 
     public void endState(){
         stateIndicator.setText("Past : "+dateDue);
-        stateIndicator.setFont(KFontFactory.createPlainFont(16));
+        stateIndicator.setFont(FontFactory.createPlainFont(16));
         isPending = false;
         if (timer != null) {
             timer.stop();
@@ -148,17 +148,17 @@ public class EventSelf {
 
     public void wakeAlive(){
         final Calendar eveCalendar = Calendar.getInstance();
-        eveCalendar.setTime(KDate.parseDay(this.dateDue));
+        eveCalendar.setTime(MDate.parseDay(this.dateDue));
         eveCalendar.add(Calendar.DATE, -1);
-        if (KDate.isSameDay(eveCalendar.getTime(), new Date())) {
+        if (MDate.isSameDay(eveCalendar.getTime(), new Date())) {
             signalEveNotice();
         }
-        final int residue = Globals.DAY - KDate.getTimeValue(new Date());
+        final int residue = Globals.DAY - MDate.getTimeValue(new Date());
         initializeTimer(residue);
     }
 
     public String export(){
-        return Globals.joinLines(new Object[]{title, KDate.toSerial(KDate.parseDay(dateDue)),
+        return Globals.joinLines(new Object[]{title, MDate.toSerial(MDate.parseDay(dateDue)),
                 isPending, eveIsAlerted, timeupIsAlerted});
     }
 

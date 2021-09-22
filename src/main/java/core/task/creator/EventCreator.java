@@ -29,15 +29,15 @@ public class EventCreator extends KDialog {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
         final KLabel typeLabel = new KLabel();
-        typeLabel.setFont(KFontFactory.createBoldFont(16));
+        typeLabel.setFont(FontFactory.createBoldFont(16));
         final KLabel dateLabel = new KLabel();
-        dateLabel.setFont(KFontFactory.createBoldFont(16));
+        dateLabel.setFont(FontFactory.createBoldFont(16));
 
         final KPanel importPanel = new KPanel();
-        final String[] activeNames = SemesterActivity.names();
+        final String[] activeNames = SemesterActivity.getNames();
         if (activeNames.length >= 1) {
             final KComboBox<String> importBox = new KComboBox<>(activeNames);
-            importBox.setFont(KFontFactory.createPlainFont(15));
+            importBox.setFont(FontFactory.createPlainFont(15));
             importBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             importBox.setFocusable(false);
             importBox.setToolTipText("Import");
@@ -67,7 +67,7 @@ public class EventCreator extends KDialog {
             eventType = "Event";
         }
 
-        final Font labelsFont = KFontFactory.createPlainFont(16);
+        final Font labelsFont = FontFactory.createPlainFont(16);
         final Dimension typicalPanelsDimension = new Dimension(465,35);
 
         descriptionField = KTextField.rangeControlField(DESCRIPTION_LIMIT);
@@ -81,8 +81,8 @@ public class EventCreator extends KDialog {
         yearField = KTextField.yearField();
 
         final KPanel dateFieldsPanel = new KPanel();
-        dateFieldsPanel.addAll(new KLabel("Day",labelsFont),dayField, KComponent.createRigidArea(10, 20),
-                new KLabel("Month",labelsFont),monthField, KComponent.createRigidArea(10, 20),new KLabel("Year",labelsFont),yearField);
+        dateFieldsPanel.addAll(new KLabel("Day",labelsFont),dayField, MComponent.createRigidArea(10, 20),
+                new KLabel("Month",labelsFont),monthField, MComponent.createRigidArea(10, 20),new KLabel("Year",labelsFont),yearField);
         final KPanel datesLayer = new KPanel(new BorderLayout(),typicalPanelsDimension);
         datesLayer.add(new KPanel(dateLabel),BorderLayout.WEST);
         datesLayer.add(dateFieldsPanel,BorderLayout.CENTER);
@@ -94,7 +94,7 @@ public class EventCreator extends KDialog {
         addButton.addActionListener(listener());//No fear - if value was not one of the specified 3, compiler won't reach this line
 
         rootPane.setDefaultButton(addButton);
-        contentPanel.addAll(titleLayer, datesLayer, KComponent.contentBottomGap(),
+        contentPanel.addAll(titleLayer, datesLayer, MComponent.contentBottomGap(),
                 new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, addButton));
         setContentPane(contentPanel);
         pack();
@@ -106,7 +106,7 @@ public class EventCreator extends KDialog {
         if(Globals.hasNoText(dayField.getText()) || Globals.hasNoText(monthField.getText()) || Globals.hasNoText(yearField.getText())) {
             return null;
         }
-        return KDate.date(dayField.getTextAsInt(), monthField.getTextAsInt(), yearField.getTextAsInt(), true);
+        return MDate.date(dayField.getTextAsInt(), monthField.getTextAsInt(), yearField.getTextAsInt(), true);
     }
 
     private ActionListener listener(){
@@ -135,7 +135,7 @@ public class EventCreator extends KDialog {
                 } else if (getTitle().contains("Exam")) {
                     tName = tName + " Examination";
                 }
-                final String dateString = KDate.formatDay(date);
+                final String dateString = MDate.formatDay(date);
                 EventHandler.newIncoming(new EventSelf(tName, dateString));
                 dispose();
             }

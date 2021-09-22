@@ -1,7 +1,7 @@
 package proto;
 
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
+import core.utils.MComponent;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -48,13 +48,13 @@ public class KComboBox<E> extends JComboBox<E> implements Preference {
 
     @Override
     public JToolTip createToolTip() {
-        return KComponent.preferredTip();
+        return MComponent.preferredTip();
     }
 
     @Override
     public void setPreferences() {
-        setFont(KFontFactory.createPlainFont(15));
-        setCursor(KComponent.HAND_CURSOR);
+        setFont(FontFactory.createPlainFont(15));
+        setCursor(MComponent.HAND_CURSOR);
         setFocusable(false);
     }
 

@@ -1,6 +1,6 @@
 package core.setting;
 
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.utils.App;
 import core.utils.Globals;
 

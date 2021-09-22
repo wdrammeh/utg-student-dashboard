@@ -8,7 +8,7 @@
     <description>A flexible and elegant student management system for the University of The Gambia.</description>
     <groupId>utg.edu</groupId>
     <artifactId>Dashboard</artifactId>
-    <version>2021.6</version>
+    <version>?</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>

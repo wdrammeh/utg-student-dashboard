@@ -302,7 +302,7 @@ public class App {
         panel.setReflectTheme(false);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         for (String line : text.split("\n")) {
-            final KLabel label = new KLabel(line, KFontFactory.createPlainFont(15));
+            final KLabel label = new KLabel(line, FontFactory.createPlainFont(15));
             label.setOpaque(false);
 //            label.setReflectTheme(false);
             panel.add(label);

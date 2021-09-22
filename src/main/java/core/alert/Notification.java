@@ -1,7 +1,7 @@
 package core.alert;
 
 import core.Board;
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.utils.*;
 import proto.*;
 
@@ -29,17 +29,17 @@ public class Notification {
         this.information = information;
         this.date = date;
         this.layer = new KPanel(new BorderLayout(), new Dimension(975, 35));
-        layer.setCursor(KComponent.HAND_CURSOR);
-        layer.add(new KPanel(new KLabel(heading.toUpperCase(), KFontFactory.createBoldFont(15),
+        layer.setCursor(MComponent.HAND_CURSOR);
+        layer.add(new KPanel(new KLabel(heading.toUpperCase(), FontFactory.createBoldFont(15),
                 Color.BLUE)), BorderLayout.WEST);
-        innerLabel = new KLabel(summary, KFontFactory.createPlainFont(16), Color.RED);
+        innerLabel = new KLabel(summary, FontFactory.createPlainFont(16), Color.RED);
         layer.add(new KPanel(innerLabel), BorderLayout.CENTER);
-        layer.add(new KPanel(new KLabel(KDate.formatDay(date), KFontFactory.createPlainFont(15),
+        layer.add(new KPanel(new KLabel(MDate.formatDay(date), FontFactory.createPlainFont(15),
                 Color.GRAY)), BorderLayout.EAST);
         layer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                innerLabel.setFont(KFontFactory.createBoldFont(16));
+                innerLabel.setFont(FontFactory.createBoldFont(16));
             }
 
             public void mouseClicked(MouseEvent e) {
@@ -52,7 +52,7 @@ public class Notification {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                innerLabel.setFont(KFontFactory.createPlainFont(16));
+                innerLabel.setFont(FontFactory.createPlainFont(16));
             }
         });
     }
@@ -83,7 +83,7 @@ public class Notification {
 
     private String export(){
         return Globals.joinLines(new Object[]{heading, summary, information,
-                KDate.toSerial(date), isRead});
+                MDate.toSerial(date), isRead});
     }
 
     private static class Exhibitor extends KDialog {
@@ -108,13 +108,13 @@ public class Notification {
             disposeButton.addActionListener(e-> dispose());
 
             final KPanel lowerPart = new KPanel(new BorderLayout());
-            lowerPart.add(new KPanel(new KLabel(KDate.formatDayTime(alert.date),
-                    KFontFactory.createPlainFont(15))), BorderLayout.WEST);
+            lowerPart.add(new KPanel(new KLabel(MDate.formatDayTime(alert.date),
+                    FontFactory.createPlainFont(15))), BorderLayout.WEST);
             lowerPart.add(new KPanel(deleteButton, disposeButton), BorderLayout.EAST);
 
             final KPanel contentPanel = new KPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-            contentPanel.addAll(textScroll, KComponent.contentBottomGap(), lowerPart);
+            contentPanel.addAll(textScroll, MComponent.contentBottomGap(), lowerPart);
             setContentPane(contentPanel);
             getRootPane().setDefaultButton(disposeButton);
             pack();
@@ -139,7 +139,7 @@ public class Notification {
             for (String data : alerts) {
                 final String[] content = Globals.splitLines(data);
                 final Notification alert = new Notification(content[0], content[1], content[2],
-                        KDate.fromSerial(content[3]));
+                        MDate.fromSerial(content[3]));
                 alert.setRead(Boolean.parseBoolean(content[4]));
                 NotificationActivity.receive(alert);
                 NOTIFICATIONS.add(alert);

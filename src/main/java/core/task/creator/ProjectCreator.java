@@ -4,9 +4,9 @@ import core.Board;
 import core.task.handler.ProjectHandler;
 import core.task.self.ProjectSelf;
 import core.utils.App;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
 import proto.*;
 
 import javax.swing.*;
@@ -27,8 +27,8 @@ public class ProjectCreator extends KDialog {
         setModalityType(TodoCreator.DEFAULT_MODALITY_TYPE);
         setResizable(true);
 
-        final Font labelsFont = KFontFactory.createBoldFont(16);
-        final Font boxFont = KFontFactory.createPlainFont(15);
+        final Font labelsFont = FontFactory.createBoldFont(16);
+        final Font boxFont = FontFactory.createPlainFont(15);
         final Dimension panelsDimension = new Dimension(465,35);
 
         nameField = KTextField.rangeControlField(DESCRIPTION_LIMIT);
@@ -59,7 +59,7 @@ public class ProjectCreator extends KDialog {
 
         final KPanel contentPlate = new KPanel();
         contentPlate.setLayout(new BoxLayout(contentPlate,BoxLayout.Y_AXIS));
-        contentPlate.addAll(namePanelPlus,typePanelPlus, durationPanelPlus, KComponent.createRigidArea(400, 25),
+        contentPlate.addAll(namePanelPlus,typePanelPlus, durationPanelPlus, MComponent.createRigidArea(400, 25),
                 new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, createButton));
         setContentPane(contentPlate);
         pack();

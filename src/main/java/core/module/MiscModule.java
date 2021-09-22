@@ -2,7 +2,7 @@ package core.module;
 
 import core.user.Student;
 import core.utils.App;
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -49,7 +49,7 @@ public class MiscModule {
      * has directed to miscellaneous-table.
      */
     public static void remove(Course summerCourse){
-        miscModel.removeRow(miscModel.getRowOf(summerCourse.getCode()));
+        miscModel.removeRow(miscModel.getRow(summerCourse.getCode()));
     }
 
     private void setupTable(){
@@ -60,8 +60,8 @@ public class MiscModule {
         miscTable = new KTable(miscModel);
         miscTable.setRowHeight(30);
         miscTable.setHeaderHeight(30);
-        miscTable.getTableHeader().setFont(KFontFactory.createBoldFont(16));
-        miscTable.setFont(KFontFactory.createPlainFont(15));
+        miscTable.getTableHeader().setFont(FontFactory.createBoldFont(16));
+        miscTable.setFont(FontFactory.createPlainFont(15));
         miscTable.centerAlignAllColumns();
         miscTable.addMouseListener(new MouseAdapter() {
             @Override

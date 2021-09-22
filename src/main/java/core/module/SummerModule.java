@@ -2,7 +2,7 @@ package core.module;
 
 import core.user.Student;
 import core.utils.App;
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class SummerModule {
     }
 
     public static void remove(Course summerCourse){
-        summerModel.removeRow(summerModel.getRowOf(summerCourse.getCode()));
+        summerModel.removeRow(summerModel.getRow(summerCourse.getCode()));
     }
 
     private void setupTable(){
@@ -40,8 +40,8 @@ public class SummerModule {
         summerTable = new KTable(summerModel);
         summerTable.setRowHeight(30);
         summerTable.setHeaderHeight(30);
-        summerTable.setFont(KFontFactory.createPlainFont(15));
-        summerTable.getTableHeader().setFont(KFontFactory.createBoldFont(16));
+        summerTable.setFont(FontFactory.createPlainFont(15));
+        summerTable.getTableHeader().setFont(FontFactory.createBoldFont(16));
         summerTable.centerAlignAllColumns();
         summerTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -166,7 +166,7 @@ public class SummerModule {
             setTitle("New Summer Course");
             availableYearsBox = new KComboBox<>(new String[] {Student.firstAcademicYear(),
                     Student.secondAcademicYear(), Student.thirdAcademicYear(), Student.fourthAcademicYear()});
-            availableYearsBox.setFont(KFontFactory.createPlainFont(15));
+            availableYearsBox.setFont(FontFactory.createPlainFont(15));
             yearPanel.removeLast();
             yearPanel.add(new KPanel(availableYearsBox), BorderLayout.CENTER);
 

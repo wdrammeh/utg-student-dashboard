@@ -1,10 +1,9 @@
 - Create SNAPSHOT Tag
-- Cross-check TODOs (especially where "uncomment", "replace", )
-- Deal with all test-cases, as in the test file
-- Versions, Documentations in full-sync
-    Documentation in source files := static files := README, logic, etc
+- Cross-check TODOs (especially where "uncomment", "replace", etc)
+- Deal with all test-cases, as in test.txt
+- Versions, Documentations to be in full-sync
+    Documentation in source files := static (txt,) files := README, Logic, etc
 - Extensive testing on the three (3) major platforms
 - Make backward-compatible
-- Replace Dashboard/ with .dashboard/ as ROOT_DIR
 - Fill Changelog
 - Create a RELEASE Tag. Deploy!

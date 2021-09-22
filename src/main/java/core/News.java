@@ -1,6 +1,6 @@
 package core;
 
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.utils.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -40,16 +40,16 @@ public class News implements Activity {
 
     public News() {
         refreshButton = new KButton("Refresh");
-        refreshButton.setFont(KFontFactory.createPlainFont(15));
-        refreshButton.setCursor(KComponent.HAND_CURSOR);
+        refreshButton.setFont(FontFactory.createPlainFont(15));
+        refreshButton.setCursor(MComponent.HAND_CURSOR);
         refreshButton.addActionListener(e-> new Thread(()-> packAll(true)).start());
 
         final KPanel northPanel = new KPanel(new BorderLayout());
-        northPanel.add(new KPanel(new KLabel("News Feeds", KFontFactory.BODY_HEAD_FONT)), BorderLayout.WEST);
+        northPanel.add(new KPanel(new KLabel("News Feeds", FontFactory.BODY_HEAD_FONT)), BorderLayout.WEST);
         northPanel.add(new KPanel(refreshButton), BorderLayout.EAST);
 
         accessTime = "News Feeds will be shown here... Refresh now to get updates.";
-        accessLabel = new KLabel(accessTime, KFontFactory.createPlainFont(14), Color.GRAY);
+        accessLabel = new KLabel(accessTime, FontFactory.createPlainFont(14), Color.GRAY);
 
         accessResident = new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 20), accessLabel);
 
@@ -102,10 +102,10 @@ public class News implements Activity {
                         NEWS_DATA.add(0, savior);
                         present.add(packNews(head, body, link, null), 0);
                     }
-                    KComponent.ready(present);
+                    MComponent.ready(present);
                 }
             }
-            accessTime = "Accessed: "+ KDate.formatNow();
+            accessTime = "Accessed: "+ MDate.formatNow();
             accessLabel.setText(accessTime);
             present.add(accessResident); // will be sent to the bottom while trying to change its parent
             if (userRequest) {
@@ -119,7 +119,7 @@ public class News implements Activity {
             }
         } finally {
             refreshButton.setEnabled(true);
-            KComponent.ready(present);
+            MComponent.ready(present);
         }
     }
 
@@ -127,13 +127,13 @@ public class News implements Activity {
      * Organizes a news in a panel.
      */
     private KPanel packNews(String header, String body, String link, String allContent) {
-        final KLabel hLabel = new KLabel(header, KFontFactory.createBoldFont(18), Color.BLUE);
+        final KLabel hLabel = new KLabel(header, FontFactory.createBoldFont(18), Color.BLUE);
         final KTextPane textPane = KTextPane.htmlFormattedPane(body.substring(0, body.length() - (header.length() + 13)));
         final NewsDialog newsDialog = new NewsDialog(header, body, link, allContent);
 
         final KButton extendedReader = new KButton();
-        extendedReader.setFont(KFontFactory.createPlainFont(15));
-        extendedReader.setCursor(KComponent.HAND_CURSOR);
+        extendedReader.setFont(FontFactory.createPlainFont(15));
+        extendedReader.setCursor(MComponent.HAND_CURSOR);
         if (Globals.hasNoText(allContent)) {
             extendedReader.setText("Get full news");
             extendedReader.addActionListener(e-> newsDialog.primaryClick(extendedReader));
@@ -302,7 +302,7 @@ public class News implements Activity {
                 present.add(packNews(news.heading, news.body, news.link, news.content));
             }
             present.add(accessResident);
-            KComponent.ready(present);
+            MComponent.ready(present);
             final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "accessTime.ser"));
             accessTime = String.valueOf(accessObj);
             accessLabel.setText(accessTime);

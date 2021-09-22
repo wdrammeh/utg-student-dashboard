@@ -1,6 +1,6 @@
 package core.task.handler;
 
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.task.creator.AssignmentCreator;
 import core.task.exhibition.AssignmentExhibition;
 import core.task.self.AssignmentSelf;
@@ -82,7 +82,7 @@ public class AssignmentHandler {
         } else {
             if (App.showYesNoCancelDialog(assignmentExhibition.getRootPane(),"Confirm",
                     "Are you sure you have submitted this assignment already?")) {
-                assignmentSelf.setSubmissionDate(KDate.formatDay(new Date()));
+                assignmentSelf.setSubmissionDate(MDate.formatDay(new Date()));
                 completeTransfer(assignmentSelf);
                 assignmentExhibition.dispose();
             }
@@ -91,7 +91,7 @@ public class AssignmentHandler {
 
     private static void completeTransfer(AssignmentSelf aSelf){
         aSelf.getDeadlineIndicator().setText("Submitted: "+aSelf.getSubmissionDate());
-        aSelf.getDeadlineIndicator().setStyle(KFontFactory.createPlainFont(16), Color.BLUE);
+        aSelf.getDeadlineIndicator().setStyle(FontFactory.createPlainFont(16), Color.BLUE);
         aSelf.getDeadlineIndicator().setCursor(null);
         for (MouseListener l : aSelf.getDeadlineIndicator().getMouseListeners()) {
             aSelf.getDeadlineIndicator().removeMouseListener(l);
@@ -99,7 +99,7 @@ public class AssignmentHandler {
         aSelf.setOn(false);
         activeReside.remove(aSelf.getLayer());
         doneReside.add(aSelf.getLayer());//come on... will only adding it in the 2nd not remove it from the first first?
-        KComponent.ready(activeReside,doneReside);
+        MComponent.ready(activeReside,doneReside);
     }
 
     public static ActionListener removalListener(AssignmentSelf assignmentSelf,
@@ -112,7 +112,7 @@ public class AssignmentHandler {
                 } else {
                     doneReside.remove(assignmentSelf.getLayer());
                 }
-                KComponent.ready(activeReside, doneReside);
+                MComponent.ready(activeReside, doneReside);
                 ASSIGNMENTS.remove(assignmentSelf);
                 assignmentSelf.setOn(false);
                 eDialog.dispose();
@@ -132,7 +132,7 @@ public class AssignmentHandler {
     public static void newIncoming(AssignmentSelf assignment){
         ASSIGNMENTS.add(assignment);
         activeReside.add(assignment.getLayer());
-        KComponent.ready(activeReside);
+        MComponent.ready(activeReside);
     }
 
     public static void receiveFromSerials(AssignmentSelf aSelf){
@@ -181,7 +181,7 @@ public class AssignmentHandler {
                     for (Component c : doneReside.getComponents()) {
                         doneReside.remove(c);
                     }
-                    KComponent.ready(doneReside);
+                    MComponent.ready(doneReside);
                     ASSIGNMENTS.removeIf(a -> !a.isOn());
                 }
             }
@@ -219,10 +219,10 @@ public class AssignmentHandler {
             for (int i = 0, j = 0; i < assignments.length; i++) {
                 final String[] lines = Globals.splitLines(assignments[i]);
                 final AssignmentSelf assignmentSelf = new AssignmentSelf(lines[0],
-                        KDate.formatDay(KDate.fromSerial(lines[1])), questions[i],
+                        MDate.formatDay(MDate.fromSerial(lines[1])), questions[i],
                         Boolean.parseBoolean(lines[2]), lines[3],
-                        KDate.formatDay(KDate.fromSerial(lines[4])), Boolean.parseBoolean(lines[5]));
-                assignmentSelf.setSubmissionDate(KDate.formatDay(KDate.fromSerial(lines[6])));
+                        MDate.formatDay(MDate.fromSerial(lines[4])), Boolean.parseBoolean(lines[5]));
+                assignmentSelf.setSubmissionDate(MDate.formatDay(MDate.fromSerial(lines[6])));
                 assignmentSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
                 assignmentSelf.submissionIsAlerted = Boolean.parseBoolean(lines[8]);
                 assignmentSelf.setUpUI(); // Todo consider recall
@@ -232,7 +232,7 @@ public class AssignmentHandler {
                     j++;
                 }
                 if (assignmentSelf.isOn()) {
-                    if (KDate.isDeadlinePast(KDate.parseDay(assignmentSelf.getDeadLine()))) {
+                    if (MDate.isDeadlinePast(MDate.parseDay(assignmentSelf.getDeadLine()))) {
                         assignmentSelf.wakeDead();
                     } else {
                         assignmentSelf.wakeAlive();

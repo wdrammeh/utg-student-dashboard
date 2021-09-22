@@ -4,9 +4,9 @@ import core.Board;
 import core.task.handler.TodoHandler;
 import core.task.self.TodoSelf;
 import core.utils.App;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
 import proto.*;
 
 import javax.swing.*;
@@ -27,7 +27,7 @@ public class TodoCreator extends KDialog {
 
         final Dimension platesDimension = new Dimension(475, 35);
         final Dimension fieldsDimension = new Dimension(310, 30);
-        final Font labelsFont = KFontFactory.createBoldFont(16);
+        final Font labelsFont = FontFactory.createBoldFont(16);
 
         descriptionField = KTextField.rangeControlField(DESCRIPTION_LIMIT);
         descriptionField.setPreferredSize(fieldsDimension);
@@ -36,7 +36,7 @@ public class TodoCreator extends KDialog {
         namePlate.add(new KPanel(descriptionField), BorderLayout.CENTER);
 
         durationBox = new KComboBox<>(new Object[] {"Five Days", "One Week", "Two Weeks", "Three Weeks", "One Month"});
-        durationBox.setFont(KFontFactory.createPlainFont(15));
+        durationBox.setFont(FontFactory.createPlainFont(15));
         durationBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         final KPanel durationPlate = new KPanel(new BorderLayout(), platesDimension);
         durationPlate.add(new KPanel(new KLabel("To be completed in:", labelsFont)), BorderLayout.WEST);
@@ -52,7 +52,7 @@ public class TodoCreator extends KDialog {
         rootPane.setDefaultButton(createButton);
         final KPanel contentPlate = new KPanel();
         contentPlate.setLayout(new BoxLayout(contentPlate,BoxLayout.Y_AXIS));
-        contentPlate.addAll(namePlate,durationPlate, KComponent.contentBottomGap(),
+        contentPlate.addAll(namePlate,durationPlate, MComponent.contentBottomGap(),
                 new KPanel(new FlowLayout(FlowLayout.RIGHT), quitButton, createButton));
         setContentPane(contentPlate);
         pack();

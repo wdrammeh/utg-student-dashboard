@@ -4,9 +4,9 @@ import core.Board;
 import core.first.PrePortal;
 import core.user.Student;
 import core.utils.App;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
 import proto.KButton;
 import proto.KDialog;
 import proto.KLabel;
@@ -302,7 +302,7 @@ public class Course {
     }
 
     public String getSchedule(){
-        return scheduleOf(day, time);
+        return schedule(day, time);
     }
 
     /**
@@ -410,7 +410,7 @@ public class Course {
         }
     }
 
-    public static String scheduleOf(String day, String time){
+    public static String schedule(String day, String time){
         if (Globals.hasText(day) && Globals.hasText(time)) {
             return day+" "+time;
         } else if (Globals.hasText(day) && Globals.hasNoText(time)) {
@@ -552,6 +552,7 @@ public class Course {
      * This ensures that the user's given details of the outgoing,
      * prior to verification, are not lost.
      * By the time this method returns, it's safe to substitute outgoing with incoming.
+     * Todo remove static
      */
     public static void merge(Course incoming, Course outgoing) {
         incoming.setDay(outgoing.day);
@@ -613,8 +614,8 @@ public class Course {
         exhibitor.setResizable(true);
         exhibitor.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
 
-        final Font hintFont = KFontFactory.createBoldFont(15);
-        final Font valueFont = KFontFactory.createPlainFont(15);
+        final Font hintFont = FontFactory.createBoldFont(15);
+        final Font valueFont = FontFactory.createPlainFont(15);
 
         final KPanel codePanel = new KPanel(new BorderLayout());
         codePanel.add(new KPanel(new KLabel("Code:", hintFont)), BorderLayout.WEST);
@@ -677,7 +678,7 @@ public class Course {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(codePanel, namePanel, lectPanel, yearPanel, semesterPanel, schedulePanel, venuePanel,
                 typePanel, creditPanel, scorePanel, gradePanel, gradeValuePanel, statusPanel,
-                KComponent.contentBottomGap(), new KPanel(closeButton));
+                MComponent.contentBottomGap(), new KPanel(closeButton));
         exhibitor.getRootPane().setDefaultButton(closeButton);
         exhibitor.setContentPane(contentPanel);
         exhibitor.pack();

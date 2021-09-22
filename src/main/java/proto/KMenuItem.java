@@ -1,6 +1,6 @@
 package proto;
 
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -19,7 +19,7 @@ public class KMenuItem extends JMenuItem implements Preference {
 
     @Override
     public void setPreferences() {
-        setFont(KFontFactory.createPlainFont(15));
+        setFont(FontFactory.createPlainFont(15));
     }
 
 }

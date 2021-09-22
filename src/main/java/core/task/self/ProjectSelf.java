@@ -4,9 +4,9 @@ import core.alert.Notification;
 import core.task.exhibition.ProjectExhibition;
 import core.task.handler.ProjectHandler;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KDate;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
+import core.utils.MDate;
+import core.utils.FontFactory;
 import proto.KButton;
 import proto.KLabel;
 import proto.KPanel;
@@ -36,7 +36,7 @@ public class ProjectSelf {
 
 
     public ProjectSelf(String name, String type, int duration){
-        this(name, type, KDate.formatNow(), duration, true);
+        this(name, type, MDate.formatNow(), duration, true);
         initializeTimer(Globals.DAY);
         initializeUI();
     }
@@ -46,7 +46,7 @@ public class ProjectSelf {
         this.type = type;
         startDate = startTime;
         specifiedDuration = duration;
-        dateExpectedToComplete = KDate.daysAfter(new Date(), duration);
+        dateExpectedToComplete = MDate.daysAfter(new Date(), duration);
         isLive = live;
     }
 
@@ -71,7 +71,7 @@ public class ProjectSelf {
     public void initializeUI(){
         final Dimension optionsDim = new Dimension(30, 30);//the small-buttons actually
 
-        progressLabelPercentage = new KLabel("", KFontFactory.createPlainFont(18), Color.BLUE);
+        progressLabelPercentage = new KLabel("", FontFactory.createPlainFont(18), Color.BLUE);
         progressLabelPercentage.setOpaque(false);
 
         projectProgression = new JProgressBar(0, specifiedDuration){
@@ -103,14 +103,14 @@ public class ProjectSelf {
         moreOptions.addActionListener(e -> exhibition = new ProjectExhibition(this));
 
         final KPanel quantaLayer = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        quantaLayer.addAll(new KLabel("( "+getType()+" Project )", KFontFactory.createPlainFont(16)),
+        quantaLayer.addAll(new KLabel("( "+getType()+" Project )", FontFactory.createPlainFont(16)),
                 projectProgression, progressLabelPercentage, terminationButton,
                 completionButton, moreOptions);
 
         projectLayer = new KPanel(1_000, 35);
         projectLayer.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
         projectLayer.setLayout(new BorderLayout());
-        projectLayer.add(new KPanel(new KLabel(projectName, KFontFactory.createPlainFont(17),
+        projectLayer.add(new KPanel(new KLabel(projectName, FontFactory.createPlainFont(17),
                 Color.BLUE)), BorderLayout.WEST);
         projectLayer.add(quantaLayer, BorderLayout.EAST);
     }
@@ -122,7 +122,7 @@ public class ProjectSelf {
         projectProgression.setForeground(Color.BLUE);
 
         progressLabelPercentage = new KLabel(projectProgression.getString(),
-                KFontFactory.createPlainFont(18), Color.BLUE);
+                FontFactory.createPlainFont(18), Color.BLUE);
         progressLabelPercentage.setOpaque(false);
 
         terminationButton = KButton.createIconifiedButton("terminate.png", 20, 20);
@@ -136,7 +136,7 @@ public class ProjectSelf {
         moreOptions.addActionListener(e -> exhibition = new ProjectExhibition(this));
 
         final KPanel quantaLayer = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-        quantaLayer.addAll(new KLabel("( "+getType()+" Project )", KFontFactory.createPlainFont(16)),
+        quantaLayer.addAll(new KLabel("( "+getType()+" Project )", FontFactory.createPlainFont(16)),
                 projectProgression, progressLabelPercentage, terminationButton, moreOptions);
 
         if (projectLayer == null) {
@@ -144,12 +144,12 @@ public class ProjectSelf {
             projectLayer.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
             projectLayer.setLayout(new BorderLayout());
         } else {
-            KComponent.clear(projectLayer);
+            MComponent.clear(projectLayer);
         }
-        projectLayer.add(new KPanel(new KLabel(this.projectName, KFontFactory.createPlainFont(17),
+        projectLayer.add(new KPanel(new KLabel(this.projectName, FontFactory.createPlainFont(17),
                 Color.BLUE)), BorderLayout.WEST);
         projectLayer.add(quantaLayer, BorderLayout.EAST);
-        KComponent.ready(projectLayer);
+        MComponent.ready(projectLayer);
     }
 
     private void signalEveNotice(){
@@ -210,7 +210,7 @@ public class ProjectSelf {
     }
 
     public int getDaysTaken() {
-        return (int) KDate.getDifference(Objects.requireNonNull(KDate.parseDayTime(startDate)), new Date());
+        return (int) MDate.getDifference(Objects.requireNonNull(MDate.parseDayTime(startDate)), new Date());
     }
 
     public int getTotalTimeConsumed() {
@@ -233,7 +233,7 @@ public class ProjectSelf {
         if (getDaysLeft() == 1) {
             signalEveNotice();
         }
-        int residue = KDate.getTimeValue(KDate.parseDayTime(dateExpectedToComplete)) - KDate.getTimeValue(new Date());
+        int residue = MDate.getTimeValue(MDate.parseDayTime(dateExpectedToComplete)) - MDate.getTimeValue(new Date());
         if (residue < 0) {
             residue = Globals.DAY - Math.abs(residue);
         }
@@ -247,8 +247,8 @@ public class ProjectSelf {
     }
 
     public String export() {
-        return Globals.joinLines(new Object[]{projectName, type, KDate.toSerial(KDate.parseDayTime(startDate)),
-                specifiedDuration, totalTimeConsumed, isLive, KDate.toSerial(KDate.parseDayTime(dateCompleted)),
+        return Globals.joinLines(new Object[]{projectName, type, MDate.toSerial(MDate.parseDayTime(startDate)),
+                specifiedDuration, totalTimeConsumed, isLive, MDate.toSerial(MDate.parseDayTime(dateCompleted)),
                 eveIsAlerted, completionIsAlerted});
     }
 

@@ -1,7 +1,7 @@
 package proto;
 
 import core.setting.Settings;
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,13 +19,13 @@ public class KTextPane extends JTextPane implements Preference {
         setText(text);
         setPreferences();
         if (type.equals(PLAIN_TYPE)) {
-            setFont(KFontFactory.createPlainFont(15));
+            setFont(FontFactory.createPlainFont(15));
         }
     }
 
     public static KTextPane htmlFormattedPane(String htmlText){
         final String formattedText = "<!DOCTYPE html> <html> <head> <style>" +
-                "body {font-size: 12px; font-family: "+KFontFactory.FONT_NAME+";} </style> </head>" +
+                "body {font-size: 12px; font-family: "+ FontFactory.FONT_NAME+";} </style> </head>" +
                 "<body>" + htmlText + "</body>" +
                 "</html>";
         return new KTextPane(HTML_TYPE, formattedText);

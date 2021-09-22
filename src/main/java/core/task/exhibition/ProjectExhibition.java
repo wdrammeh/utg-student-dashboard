@@ -2,8 +2,8 @@ package core.task.exhibition;
 
 import core.Board;
 import core.task.self.ProjectSelf;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KFontFactory;
 import proto.KButton;
 import proto.KDialog;
 import proto.KLabel;
@@ -85,11 +85,11 @@ public class ProjectExhibition extends KDialog {
     }
 
     private static KLabel newHintLabel(String text){
-        return new KLabel(text, KFontFactory.createBoldFont(16));
+        return new KLabel(text, FontFactory.createBoldFont(16));
     }
 
     private static KLabel newValueLabel(String text){
-        return new KLabel(text, KFontFactory.createPlainFont(16));
+        return new KLabel(text, FontFactory.createPlainFont(16));
     }
 
 }

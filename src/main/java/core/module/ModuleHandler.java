@@ -3,12 +3,13 @@ package core.module;
 import core.Board;
 import core.Portal;
 import core.driver.MDriver;
-import core.serial.Serializer;
+import core.first.PrePortal;
+import core.utils.Serializer;
 import core.user.Student;
 import core.utils.App;
+import core.utils.FontFactory;
 import core.utils.Globals;
 import core.utils.Internet;
-import core.utils.KFontFactory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -46,7 +47,6 @@ public class ModuleHandler {
     private ModuleYear yearThree;
     private ModuleYear yearFour;
     public static final ArrayList<KTableModel> ALL_MODELS = new ArrayList<>();
-    public static final ArrayList<Course> STARTUP_COURSES = new ArrayList<>();
     private static final String[] COLUMNS = new String[] { "CODE", "NAME", "LECTURER", "GRADE" };
     public static final String DETAILS = "Show Details";
     public static final String EDIT = "Edit";
@@ -139,7 +139,7 @@ public class ModuleHandler {
 
     private static void uploadModules() {
         if (Dashboard.isFirst()) {
-            for (Course c : STARTUP_COURSES) {
+            for (Course c : PrePortal.STARTUP_COURSES) {
                 modulesMonitor.add(c);
             }
         } else {
@@ -166,7 +166,7 @@ public class ModuleHandler {
      */
     public static boolean existsExcept(KTableModel targetModel, String code){
         for (KTableModel model : ALL_MODELS) {
-            if (model != targetModel && model.getRowOf(code) >= 0) {
+            if (model != targetModel && model.getRow(code) >= 0) {
                 return true;
             }
         }
@@ -194,7 +194,7 @@ public class ModuleHandler {
         }
 
         for (KTableModel defaultTableModel : ALL_MODELS) {
-            final int targetRow = defaultTableModel.getRowOf(old.getCode());
+            final int targetRow = defaultTableModel.getRow(old.getCode());
             if (targetRow >= 0) {
                 defaultTableModel.setValueAt(recent.getCode(), targetRow, 0);
                 defaultTableModel.setValueAt(recent.getName(), targetRow, 1);
@@ -814,12 +814,12 @@ public class ModuleHandler {
          */
         private void remove(Course course){
             if (course.getSemester().equals(Student.FIRST_SEMESTER)) {
-                final int i = model1.getRowOf(course.getCode());
+                final int i = model1.getRow(course.getCode());
                 if (i >= 0) {
                     model1.removeRow(i);
                 }
             } else if (course.getSemester().equals(Student.SECOND_SEMESTER)) {
-                final int i = model2.getRowOf(course.getCode());
+                final int i = model2.getRow(course.getCode());
                 if (i >= 0) {
                     model2.removeRow(i);
                 }
@@ -828,11 +828,11 @@ public class ModuleHandler {
 
         private KTable getSemesterTable(KTableModel model){
             final KTable table = new KTable(model);
-            table.setFont(KFontFactory.createPlainFont(15));
+            table.setFont(FontFactory.createPlainFont(15));
             table.setRowHeight(30);
             table.setHeaderHeight(30);
             table.centerAlignAllColumns();
-            table.getTableHeader().setFont(KFontFactory.createBoldFont(16));
+            table.getTableHeader().setFont(FontFactory.createBoldFont(16));
             table.getColumnModel().getColumn(0).setPreferredWidth(70);
             table.getColumnModel().getColumn(1).setPreferredWidth(280);
             table.getColumnModel().getColumn(2).setPreferredWidth(250);
@@ -916,7 +916,7 @@ public class ModuleHandler {
         }
 
         private KLabel semesterHead(String semester){
-            return new KLabel(yearName+" "+semester, KFontFactory.createPlainFont(17), Color.BLUE);
+            return new KLabel(yearName+" "+semester, FontFactory.createPlainFont(17), Color.BLUE);
         }
     }
 
@@ -944,7 +944,7 @@ public class ModuleHandler {
             this.yearName = yearName;
             this.semesterName = semesterName;
 
-            final Font hintFont = KFontFactory.createBoldFont(16);
+            final Font hintFont = FontFactory.createBoldFont(16);
 
             if (this instanceof MiscModule.MiscModuleAdder) {
                 yearField = KTextField.rangeControlField(9);

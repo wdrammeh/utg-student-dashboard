@@ -3,7 +3,7 @@ package proto;
 /**
  * All classes of the proto package must implement the Preference interface
  * even if component-modifications are not compulsory on them -
- * as the case of the KFontFactory which is abstract, relieving itself of this duty.
+ * as the case of the FontFactory which is abstract, relieving itself of this duty.
  */
 interface Preference {
 

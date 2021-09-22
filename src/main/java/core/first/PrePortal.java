@@ -30,12 +30,15 @@ import java.util.StringJoiner;
  */
 public class PrePortal {
     private static String email, password, temporaryName;
-    private static FirefoxDriver driver; // could be delivered to Portal after task?
+    private static FirefoxDriver driver;
     private static WebDriverWait loadWaiter;
     private static boolean isTerminated;
     public static final ArrayList<String> USER_DATA = new ArrayList<>();
-    public static final ActionListener CANCEL_LISTENER = e-> {
-        if (App.showYesNoCancelDialog(Login.getRoot(), "Confirm", "Do you really want to cancel the process?")) {
+    public static final ArrayList<RegisteredCourse> STARTUP_REGISTRATIONS = new ArrayList<>();
+    public static final ArrayList<Course> STARTUP_COURSES = new ArrayList<>();
+
+    public static final ActionListener CANCEL_ACTION = e-> {
+        if (App.showYesNoCancelDialog(Login.getRoot(), "Confirm", "Do you really want to terminate the process?")) {
             isTerminated = true;
             Login.getInstance().dispose();
             if (driver != null) {
@@ -62,7 +65,7 @@ public class PrePortal {
         Login.replaceLastUpdate("Setting up the driver....... Successful");
         Login.appendToStatus("Now contacting utg.gm.......");
         loadWaiter = new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME);
-//        make sure we are at the login page
+//        Make sure we are at the login page
         if (MDriver.isOnPortal(driver)) {
             final int logoutAttempt = MDriver.attemptLogout(driver);
             if (logoutAttempt != MDriver.ATTEMPT_SUCCEEDED) {
@@ -115,7 +118,7 @@ public class PrePortal {
                 school = "", division = "", nationality = "", MOA = "", YOA = "",
                 address = "", mStatus = "", DOB = "", tel = "", ongoingSemester="", level="", status="";
 
-//        checking for busyness of the portal, i.e is Course Evaluation required?
+//        Checking for busyness of the portal, i.e. is Course Evaluation required?
         if (Portal.isEvaluationNeeded(driver)) {
             if (!isTerminated) {
                 Login.appendToStatus("Busy portal: Course Evaluation needed");
@@ -124,17 +127,19 @@ public class PrePortal {
             }
             return;
         }
-//        extract the admission notice herein the home-page
+//        Extract the admission notice herein the home-page
         try {
-            final WebElement admissionAlert = loadWaiter.until(ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
+            final WebElement admissionAlert = loadWaiter.until(
+                    ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             Portal.setAdmissionNotice(admissionAlert.getText());
         } catch (Exception e) {
             App.silenceException("Failed to set 'Admission Notice'");
         }
 
         Login.appendToStatus("Now processing details.......");
-        Login.appendToStatus("Operation may take longer based on your internet signal or temporary server issues");
-//        going to the contents page
+        Login.appendToStatus("Operation may take longer based on your internet signal or " +
+                "temporary server issues");
+//        Going to the contents page
         try {
             driver.navigate().to(Portal.CONTENTS_PAGE);
         } catch (Exception e1) {
@@ -144,8 +149,9 @@ public class PrePortal {
             }
             return;
         }
-        try { // extracting the Registration Notice...
-            final WebElement registrationAlert = loadWaiter.until(ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
+        try { // Extracting the Registration Notice...
+            final WebElement registrationAlert = loadWaiter.until(
+                    ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             Portal.setRegistrationNotice(registrationAlert.getText());
         } catch (Exception e) {
             App.silenceException("Failed to set 'Registration Notice'");
@@ -160,7 +166,8 @@ public class PrePortal {
         lastName = nameJoiner.toString();
 
         try {
-            program = driver.findElementByXPath("/html/body/section/div[2]/div/div[1]/div/div[2]/div[2]/div[1]/div/h4").getText();
+            program = driver.findElementByXPath(
+                    "/html/body/section/div[2]/div/div[1]/div/div[2]/div[2]/div[1]/div/h4").getText();
             major = program.contains("Unknown") ? "Unknown" : program.split(" ")[4];
         } catch (Exception e) {
             App.silenceException(e);
@@ -172,14 +179,15 @@ public class PrePortal {
             level = iGroup.get(2).getText().split("\n")[1];
             status = iGroup.get(3).getText().split("\n")[1];
             school = iGroup.get(1).getText().split("\n")[1];
-            school = school.replace("School of ", "");//if it's there
+            school = school.replace("School of ", ""); // if it's there!
         } catch (Exception ignored) {
         }
 
         if (iGroup != null) {
             try {
                 division = iGroup.get(0).getText().split("\n")[1];
-                division = division.replace("Division of ", "").replace("Department of", "");
+                division = division.replace("Division of ", "").
+                        replace("Department of", "");
             } catch (Exception ignored) {
             }
         }
@@ -192,7 +200,7 @@ public class PrePortal {
             }
         }
 
-//        going to the profile page
+//        To the profile page
         if (isTerminated) {
             return;
         }
@@ -241,11 +249,11 @@ public class PrePortal {
             MOA = admissionDate[1].split("-")[1];
         } catch (Exception ignored) {
         }
-//        adding in predefined order... CGPA will be added with transcript later on
+//        Adding in predefined order... CGPA will be added with transcript later on
         enlistDetail("First Name", firstName);
         enlistDetail("Last Name", lastName);
         enlistDetail("Program", program);
-        enlistDetail("Mat#", matNumber); // silenced
+        enlistDetail("Mat#", matNumber);
         enlistDetail("Major", major);
         enlistDetail("School", school);
         enlistDetail("Division", division);
@@ -257,14 +265,14 @@ public class PrePortal {
         enlistDetail("Birth Day", DOB);
         enlistDetail("Telephone", tel);
         enlistDetail("Email", email);
-        enlistDetail("psswd", password); // silenced
+        enlistDetail("psswd", password);
         enlistDetail("Current Semester", ongoingSemester);
         enlistDetail("Level", level);
         enlistDetail("Status", status);
 
         Login.appendToStatus("#####");
         Login.appendToStatus("Collecting up all your courses....... This may take a while");
-//        back to the contents to generate modules
+//        Back to the contents to generate modules
         if (isTerminated) {
             return;
         }
@@ -284,7 +292,8 @@ public class PrePortal {
             return;
         }
 
-        final List<WebElement> tabs = loadWaiter.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
+        final List<WebElement> tabs = loadWaiter.until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
 //        Firstly, code, name, year, semester, and credit hours at transcript tab
 //        Addition to startupCourses is only here; all the following loops only updates the details. this eradicates the possibility of adding running courses at tab-4
         final WebElement transcriptTap = Portal.getTabElement("Transcript", tabs);
@@ -308,13 +317,14 @@ public class PrePortal {
                 vSemester = hintParts[1]+" Semester";
             } else {
                 final List<WebElement> data = transRow.findElements(By.tagName("td"));
-                ModuleHandler.STARTUP_COURSES.add(new Course(vYear, vSemester, data.get(1).getText(),
+                STARTUP_COURSES.add(new Course(vYear, vSemester, data.get(1).getText(),
                         data.get(2).getText(), "", "", "","", "", 0,
                         Integer.parseInt(data.get(3).getText()),"",true));
             }
         }
         try {
-            final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+            final String CGPA = driver.findElementByXPath(
+                    "//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
             enlistDetail("cgpa", CGPA);
         } catch (Exception e) {
             enlistDetail("cgpa", "-1");
@@ -334,7 +344,7 @@ public class PrePortal {
         final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
         for(WebElement t : rows){
             final List<WebElement> data = t.findElements(By.tagName("td"));
-            for (Course c : ModuleHandler.STARTUP_COURSES) {
+            for (Course c : STARTUP_COURSES) {
                 if (c.getCode().equals(data.get(0).getText())) {
                     c.setScore(Double.parseDouble(data.get(6).getText()));
                 }
@@ -356,7 +366,7 @@ public class PrePortal {
         int t = 0;
         while (t < allRows.size()) {
             final List<WebElement> instantRow = allRows.get(t).findElements(By.tagName("td"));
-            for (Course c : ModuleHandler.STARTUP_COURSES) {
+            for (Course c : STARTUP_COURSES) {
                 if (c.getCode().equals(instantRow.get(0).getText())) {
                     c.setLecturer(instantRow.get(2).getText());
                     c.setLecturerNameEditable(false);
@@ -365,7 +375,7 @@ public class PrePortal {
             t++;
         }
 
-//        Available running courses? add
+//        Available running courses? Add
         final List<WebElement> captions = tableBody.findElements(By.cssSelector("b, strong"));
         final boolean running = captions.get(captions.size() - 1).getText().equalsIgnoreCase(ongoingSemester);
         int runningCount = 0;
@@ -373,7 +383,7 @@ public class PrePortal {
             int match = allRows.size() - 1;
             while (!allRows.get(match).getText().equalsIgnoreCase(ongoingSemester)){
                 final List<WebElement> data = allRows.get(match).findElements(By.tagName("td"));
-                SemesterActivity.STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(),
+                STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(),
                         data.get(1).getText(), data.get(2).getText(), data.get(3).getText(), data.get(4).getText(),
                         "", "", true));
                 match--;

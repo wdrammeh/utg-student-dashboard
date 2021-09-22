@@ -1,7 +1,7 @@
 package core.first;
 
 import core.Board;
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.user.Student;
 import core.utils.*;
 import proto.*;
@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-// Todo: user having difficulty logging in? suggest 'Try Dashboard'
+// Todo: User having difficulty logging in? suggest 'Try Dashboard'
 public class Login extends JDialog {
     private Component parent;
     private static KTextField emailField;
@@ -23,19 +23,19 @@ public class Login extends JDialog {
     private static JRootPane rootPane;
     private static KScrollPane statusHolder;
     private static Login instance;
-    private static final ActionListener CLOSE_LISTENER = e-> instance.dispose();
+    private static final ActionListener CLOSE_ACTION = e-> instance.dispose();
 
 
     public Login(Component parent){
-        instance = Login.this;
-        rootPane = getRootPane();
+        Login.instance = Login.this;
+        Login.rootPane = getRootPane();
         this.parent = parent;
         setSize(720, 425);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setUndecorated(true);
 
-        final KLabel bigText = new KLabel("LOGIN TO GET THE MOST OUT OF YOUR STUDENTHOOD",
-                KFontFactory.createPlainFont(18), Color.WHITE);
+        final KLabel bigText = new KLabel("LOGIN TO GET THE MOST OUT OF YOUR STUDENT-HOOD",
+                FontFactory.createPlainFont(18), Color.WHITE);
         bigText.setBounds(15, 10, 625, 30);
         bigText.setOpaque(false);
 
@@ -43,7 +43,7 @@ public class Login extends JDialog {
         utgLogo.setBounds(645, 0, 100, 50);
         utgLogo.setOpaque(false);
 
-        final KLabel loginHint = new KLabel("LOGIN", KFontFactory.createBoldFont(20), Color.BLACK);
+        final KLabel loginHint = new KLabel("LOGIN", FontFactory.createBoldFont(20), Color.BLACK);
         loginHint.setBounds(205, 5, 100, 30);
 
         final KLabel studentLogo = KLabel.createIcon("student.png",30,30);
@@ -60,7 +60,7 @@ public class Login extends JDialog {
         passwordField = new JPasswordField(){
             @Override
             public JToolTip createToolTip() {
-                return KComponent.preferredTip();
+                return MComponent.preferredTip();
             }
         };
         passwordField.setHorizontalAlignment(emailField.getHorizontalAlignment());
@@ -70,7 +70,7 @@ public class Login extends JDialog {
         passwordField.addActionListener(e-> loginTriggered());
 
         loginButton = new KButton("LOGIN");
-        loginButton.setStyle(KFontFactory.createPlainFont(15), Color.BLUE);
+        loginButton.setStyle(FontFactory.createPlainFont(15), Color.BLUE);
         loginButton.setBounds(270, 150, 100, 30);
         loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         loginButton.addActionListener(e-> loginTriggered());
@@ -78,7 +78,7 @@ public class Login extends JDialog {
         closeButton = new KButton("CLOSE");
         closeButton.setFont(loginButton.getFont());
         closeButton.setBounds(155, 150, 100, 30);
-        closeButton.addActionListener(CLOSE_LISTENER);
+        closeButton.addActionListener(CLOSE_ACTION);
 
         final KPanel smallPanel = new KPanel();
         smallPanel.setBackground(new Color(240, 240, 240));
@@ -114,12 +114,12 @@ public class Login extends JDialog {
     }
 
     public static void appendToStatus(String update){
-        final KLabel newLabel = new KLabel(update, KFontFactory.createPlainFont(15), Color.WHITE);
+        final KLabel newLabel = new KLabel(update, FontFactory.createPlainFont(15), Color.WHITE);
         newLabel.setOpaque(false);
         statusPanel.add(newLabel);
-        KComponent.ready(statusPanel);
+        MComponent.ready(statusPanel);
         try {
-            Thread.sleep(250);
+            Thread.sleep(Globals.SECOND/4);
         } catch (InterruptedException e) {
             App.silenceException(e);
         }
@@ -131,19 +131,19 @@ public class Login extends JDialog {
     }
 
     public static void setInputState(boolean state){
-        KComponent.clear(statusPanel);
+        MComponent.clear(statusPanel);
         emailField.setEnabled(state);
         passwordField.setEnabled(state);
         loginButton.setEnabled(state);
         if (state) {
-            closeButton.removeActionListener(PrePortal.CANCEL_LISTENER);
-            closeButton.addActionListener(CLOSE_LISTENER);
+            closeButton.removeActionListener(PrePortal.CANCEL_ACTION);
+            closeButton.addActionListener(CLOSE_ACTION);
             closeButton.setText("CLOSE");
             closeButton.setForeground(null);
             appendToStatus(initialHint);
         } else {
-            closeButton.removeActionListener(CLOSE_LISTENER);
-            closeButton.addActionListener(PrePortal.CANCEL_LISTENER);
+            closeButton.removeActionListener(CLOSE_ACTION);
+            closeButton.addActionListener(PrePortal.CANCEL_ACTION);
             closeButton.setText("CANCEL");
             closeButton.setForeground(Color.RED);
             appendToStatus("Please hang on while you're verified");
@@ -204,6 +204,7 @@ public class Login extends JDialog {
 
     /**
      * PrePortal should call this after it's done all its tasks.
+     * Prepares the grounds for building, launching Dashboard.
      */
     public static void notifyCompletion(){
         appendToStatus("Now running Pre-Dashboard builds....... Please wait");

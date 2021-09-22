@@ -2,9 +2,9 @@ package core.module;
 
 import core.Board;
 import core.utils.App;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
 import proto.KButton;
 import proto.KDialog;
 import proto.KLabel;
@@ -14,8 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * A model for registered (active) courses.
- * Todo: add requirement field
+ * A model for registered (running) courses.
+ * Todo: Add requirement field
  */
 public class RegisteredCourse {
     private String code;
@@ -30,17 +30,33 @@ public class RegisteredCourse {
     public static final String REGISTERED = "Registered";
 
 
-    public RegisteredCourse(String code, String name, String lecturer, String campus, String room,
-                            String day, String time, boolean onPortal){
-        this.code = code.toUpperCase();
+    public RegisteredCourse(String code, String name, String lecturer, String campus,
+                            String room, String day, String time, boolean confirmed){
+        this.code = code;
         this.name = name;
         this.lecturer = lecturer;
         this.campus = campus;
         this.room = room;
         this.day = day;
         this. time = time;
-        this.isConfirmed = onPortal;
-        this.status = onPortal ? REGISTERED : Globals.UNKNOWN;
+        this.isConfirmed = confirmed;
+        this.status = confirmed ? REGISTERED : Globals.UNKNOWN;
+    }
+
+    public void refract(String code, String name, String lecturer, String campus,
+                        String room, String day, String time, boolean confirmed){
+        this.code = code;
+        this.name = name;
+        this.lecturer = lecturer;
+        this.campus = campus;
+        this.room = room;
+        this.day = day;
+        this. time = time;
+        this.isConfirmed = confirmed;
+    }
+
+    public void refract(RegisteredCourse c){
+        refract(c.code, c.name, c.lecturer, c.campus, c.room, c.day, c.time, c.isConfirmed);
     }
 
     public String getCode(){
@@ -103,8 +119,8 @@ public class RegisteredCourse {
         return isConfirmed;
     }
 
-    public void setConfirmed(boolean onPortal){
-        this.isConfirmed = onPortal;
+    public void setConfirmed(boolean confirmed){
+        this.isConfirmed = confirmed;
     }
 
     public String getStatus() {
@@ -113,12 +129,6 @@ public class RegisteredCourse {
 
     public void setStatus(String status) {
         this.status = status;
-
-//        if this course was edited while being verified, then it was replaced in the list, then this is just an unintended pointer
-        final RegisteredCourse any = SemesterActivity.getByCode(this.code);
-        if (any != null) {
-            any.status = status;
-        }
     }
 
     public String getAbsoluteName(){
@@ -126,10 +136,10 @@ public class RegisteredCourse {
     }
 
     public String getSchedule(){
-        return Course.scheduleOf(day, time);
+        return Course.schedule(day, time);
     }
 
-    public String getVenue(){
+    public String getVenue() {
         return Course.venueOf(campus, room);
     }
 
@@ -137,8 +147,7 @@ public class RegisteredCourse {
      * @see Course#exportContent()
      */
     public String exportContent(){
-        return Globals.joinLines(new Object[]{code, name, lecturer, campus, room, day, time,
-                isConfirmed});
+        return Globals.joinLines(new Object[]{code, name, lecturer, campus, room, day, time, isConfirmed});
     }
 
     /**
@@ -150,7 +159,7 @@ public class RegisteredCourse {
         try {
             validity = Boolean.parseBoolean(lines[7]);
         } catch (Exception e) {
-            App.silenceException(String.format("Failed to read validity of registered course '%s'.", lines[3]));
+            App.silenceException(String.format("Cannot determine status of registered course '%s'.", lines[3]));
         }
         return new RegisteredCourse(lines[0], lines[1], lines[2], lines[3], lines[4], lines[5], lines[6], validity);
     }
@@ -159,12 +168,12 @@ public class RegisteredCourse {
      * @see Course#exhibit(Component)
      */
     public void exhibit(Component base) {
-        final KDialog exhibitor = new KDialog(this.name);
+        final KDialog exhibitor = new KDialog(name);
         exhibitor.setResizable(true);
         exhibitor.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
 
-        final Font hintFont = KFontFactory.createBoldFont(15);
-        final Font valueFont = KFontFactory.createPlainFont(15);
+        final Font hintFont = FontFactory.createBoldFont(15);
+        final Font valueFont = FontFactory.createPlainFont(15);
 
         final KPanel codePanel = new KPanel(new BorderLayout());
         codePanel.add(new KPanel(new KLabel("Code:", hintFont)), BorderLayout.WEST);
@@ -198,7 +207,7 @@ public class RegisteredCourse {
         final KPanel contentPanel = new KPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(codePanel, namePanel, lectPanel, venuePanel, schedulePanel, statusPanel,
-                KComponent.contentBottomGap(), new KPanel(closeButton));
+                MComponent.contentBottomGap(), new KPanel(closeButton));
 
         exhibitor.getRootPane().setDefaultButton(closeButton);
         exhibitor.setContentPane(contentPanel);

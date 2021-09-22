@@ -2,7 +2,7 @@ package core.first;
 
 import core.Board;
 import core.alert.Notification;
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.setting.SettingsUI;
 import core.user.Student;
 import core.utils.*;
@@ -17,7 +17,7 @@ import java.awt.event.ItemEvent;
  */
 public class FirstLaunch extends KDialog {
     private KPanel contentPanel;
-    private Font bigFont = KFontFactory.createBoldFont(18);
+    private Font bigFont = FontFactory.createBoldFont(18);
     private CardLayout layout = new CardLayout(){
         @Override
         public void show(Container parent, String name) {
@@ -60,7 +60,7 @@ public class FirstLaunch extends KDialog {
         majorCodeField.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2, true));
         majorCodeField.addActionListener(e-> nextButton.doClick());
 
-        nextButton.setFont(KFontFactory.createPlainFont(15));
+        nextButton.setFont(FontFactory.createPlainFont(15));
         nextButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         nextButton.addActionListener(e-> {
             final String majorCode = majorCodeField.getText().toUpperCase();
@@ -71,7 +71,7 @@ public class FirstLaunch extends KDialog {
         final KPanel majorPanel = new KPanel();
         majorPanel.setLayout(new BoxLayout(majorPanel, BoxLayout.Y_AXIS));
         majorPanel.addAll(new KPanel(new KLabel("What's Your Major Code?", bigFont)), textPane,
-                new KPanel(majorCodeField), KComponent.contentBottomGap(),
+                new KPanel(majorCodeField), MComponent.contentBottomGap(),
                 new KPanel(new FlowLayout(FlowLayout.RIGHT), nextButton));
         return majorPanel;
     }
@@ -104,14 +104,14 @@ public class FirstLaunch extends KDialog {
         });
 
         final JRadioButton iDoButton = new JRadioButton("Am doing Minor");
-        iDoButton.setFont(KFontFactory.createPlainFont(15));
+        iDoButton.setFont(FontFactory.createPlainFont(15));
         iDoButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         iDoButton.addItemListener(e -> {
             minorNameField.setEditable(e.getStateChange() == ItemEvent.SELECTED);
             minorCodeField.setEditable(e.getStateChange() == ItemEvent.SELECTED);
         });
         final JRadioButton iDontButton = new JRadioButton("Am not doing a Minor", true);
-        iDontButton.setFont(KFontFactory.createPlainFont(15));
+        iDontButton.setFont(FontFactory.createPlainFont(15));
         iDontButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         final ButtonGroup choicesGroup = new ButtonGroup();
         choicesGroup.add(iDoButton);
@@ -120,14 +120,14 @@ public class FirstLaunch extends KDialog {
         final KPanel kPanel = new KPanel();
         kPanel.setLayout(new BoxLayout(kPanel, BoxLayout.Y_AXIS));
         kPanel.addAll(textPane, new KPanel(iDoButton, iDontButton),
-                new KPanel(new KLabel("Minor Program: ", KFontFactory.createBoldFont(16)), minorNameField),
-                new KPanel(new KLabel("Code: ", KFontFactory.createBoldFont(16)), minorCodeField));
+                new KPanel(new KLabel("Minor Program: ", FontFactory.createBoldFont(16)), minorNameField),
+                new KPanel(new KLabel("Code: ", FontFactory.createBoldFont(16)), minorCodeField));
 
         final KButton prevButton = new KButton("Back");
-        prevButton.setFont(KFontFactory.createPlainFont(15));
+        prevButton.setFont(FontFactory.createPlainFont(15));
         prevButton.addActionListener(e-> layout.show(contentPanel, "Major code"));
 
-        nextButton.setFont(KFontFactory.createPlainFont(15));
+        nextButton.setFont(FontFactory.createPlainFont(15));
         nextButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         nextButton.addActionListener(e-> {
             if (iDoButton.isSelected()) {
@@ -151,7 +151,7 @@ public class FirstLaunch extends KDialog {
         final KPanel minorPanel = new KPanel();
         minorPanel.setLayout(new BoxLayout(minorPanel, BoxLayout.Y_AXIS));
         minorPanel.addAll(new KPanel(new KLabel("Do You Minor a Program?", bigFont)), kPanel,
-                KComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), prevButton, nextButton));
+                MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), prevButton, nextButton));
         return minorPanel;
     }
 
@@ -174,7 +174,7 @@ public class FirstLaunch extends KDialog {
         psswdField.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2, true));
 
         final KButton setButton = new KButton("Set");
-        setButton.setStyle(KFontFactory.createPlainFont(15), Color.BLUE);
+        setButton.setStyle(FontFactory.createPlainFont(15), Color.BLUE);
         setButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setButton.addActionListener(e-> {
             if (!emailField.hasText()) {
@@ -197,16 +197,16 @@ public class FirstLaunch extends KDialog {
 
         final KPanel kPanel = new KPanel();
         kPanel.setLayout(new BoxLayout(kPanel, BoxLayout.Y_AXIS));
-        kPanel.addAll(textPane, new KPanel(new KLabel("Email: ", KFontFactory.createBoldFont(16)),
-                        emailField), new KPanel(new KLabel("Password: " , KFontFactory.createBoldFont(16)),
+        kPanel.addAll(textPane, new KPanel(new KLabel("Email: ", FontFactory.createBoldFont(16)),
+                        emailField), new KPanel(new KLabel("Password: " , FontFactory.createBoldFont(16)),
                 psswdField));
 
         final KButton prevButton = new KButton("Back");
-        prevButton.setFont(KFontFactory.createPlainFont(15));
+        prevButton.setFont(FontFactory.createPlainFont(15));
         prevButton.addActionListener(e-> layout.show(contentPanel, "Minor"));
 
         final KButton skipButton = new KButton("Skip");
-        skipButton.setStyle(KFontFactory.createPlainFont(15), Color.RED);
+        skipButton.setStyle(FontFactory.createPlainFont(15), Color.RED);
         skipButton.addActionListener(e-> {
             Student.setStudentMail("");
             SettingsUI.studentMailField.setText(Student.getVisibleStudentMail());
@@ -218,7 +218,7 @@ public class FirstLaunch extends KDialog {
         final KPanel emailPanel = new KPanel();
         emailPanel.setLayout(new BoxLayout(emailPanel, BoxLayout.Y_AXIS));
         emailPanel.addAll(new KPanel(new KLabel("Do you know you had a Student Mail?", bigFont)),
-                kPanel, KComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT),
+                kPanel, MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT),
                         prevButton, skipButton, setButton));
         return emailPanel;
     }
@@ -226,7 +226,7 @@ public class FirstLaunch extends KDialog {
     private Component imageComponent(){
         final String imgText = "With such a nice look, you cannot wait to behold your glittering face right at the top-left " +
                 "of your dashboard. Set an optional image icon now to get started with your <b>Personal Dashboard</b>, or anytime later " +
-                "under Settings.<br>You can also change your image by simply right-clicking the blue-bordered box at the top-left.";
+                "in Settings.<br>You can also change your image by simply right-clicking the image-box at the top-left.";
         final KTextPane textPane = KTextPane.htmlFormattedPane(imgText);
         textPane.setBackground(Color.WHITE);
 
@@ -234,7 +234,7 @@ public class FirstLaunch extends KDialog {
 
         final KButton setButton = new KButton("Set Now");
         setButton.setFocusable(true);
-        setButton.setFont(KFontFactory.createPlainFont(14));
+        setButton.setFont(FontFactory.createPlainFont(14));
         setButton.setForeground(Color.BLUE);
         setButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setButton.addActionListener(e-> {
@@ -247,10 +247,10 @@ public class FirstLaunch extends KDialog {
         nicePanel.addAll(textPane, new KPanel(iconLabel), new KPanel(setButton));
 
         final KButton prevButton = new KButton("Back");
-        prevButton.setFont(KFontFactory.createPlainFont(15));
+        prevButton.setFont(FontFactory.createPlainFont(15));
         prevButton.addActionListener(e-> layout.show(contentPanel, "Student mail"));
         final KButton finishButton = new KButton("Finish");
-        finishButton.setFont(KFontFactory.createPlainFont(15));
+        finishButton.setFont(FontFactory.createPlainFont(15));
         finishButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         finishButton.addActionListener(e-> {
             new Thread(FirstLaunch::mountDataPlus).start();
@@ -260,7 +260,7 @@ public class FirstLaunch extends KDialog {
         final KPanel imgPanel = new KPanel();
         imgPanel.setLayout(new BoxLayout(imgPanel, BoxLayout.Y_AXIS));
         imgPanel.addAll(new KPanel(new KLabel("You Look Nice!", bigFont)), nicePanel,
-                KComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), prevButton, finishButton));
+                MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), prevButton, finishButton));
         return imgPanel;
     }
 
@@ -281,9 +281,9 @@ public class FirstLaunch extends KDialog {
                 "<p>You're highly welcome to <b>UTG Student Dashboard</b> - your personal management " +
                 "tool for all academic-related stuff at the UTG.</p>" +
                 "<p>Dashboard is a 'FOSS' (Free and Open-Source Software). This means, " +
-                "everyone can contribute to its development, including you.</p>" +
+                "everyone can contribute to its development, including you!</p>" +
                 "If you are interested, visit this link: <i>"+ Internet.REPO_URL +"</i>.</p>" +
-                "<p>Even if you are not a programmer, you can provide an answer to a " +
+                "<p>Yes, even if you are not a programmer, you can provide an answer to a " +
                 "Frequently Asked Question (<b>FAQ</b>), and help your brothers and " +
                 "sisters learn from you.</p>";
         Notification.create("Welcome",

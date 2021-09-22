@@ -11,7 +11,7 @@
     8="REFUNDS"
 }
 
-# Course Codes on the Portal have whitespace between the Program Code and the Number
+# Course Codes
 - E.g. MTH101 := 'MTH 101'
 
 #

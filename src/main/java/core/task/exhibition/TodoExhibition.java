@@ -3,9 +3,9 @@ package core.task.exhibition;
 import core.Board;
 import core.task.handler.TodoHandler;
 import core.task.self.TodoSelf;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
 import proto.KButton;
 import proto.KDialog;
 import proto.KLabel;
@@ -90,7 +90,7 @@ public class TodoExhibition extends KDialog {
             buttonsContainer.addAll(removeButton,closeButton);
         }
 
-        contentPanel.addAll(KComponent.contentBottomGap(), buttonsContainer);
+        contentPanel.addAll(MComponent.contentBottomGap(), buttonsContainer);
         getRootPane().setDefaultButton(closeButton);
         setContentPane(contentPanel);
         pack();
@@ -100,11 +100,11 @@ public class TodoExhibition extends KDialog {
     }
 
     private static KLabel newHintLabel(String text){
-        return new KLabel(text, KFontFactory.createBoldFont(16));
+        return new KLabel(text, FontFactory.createBoldFont(16));
     }
 
     private static KLabel newValueLabel(String text){
-        return new KLabel(text, KFontFactory.createPlainFont(16));
+        return new KLabel(text, FontFactory.createPlainFont(16));
     }
 
 }

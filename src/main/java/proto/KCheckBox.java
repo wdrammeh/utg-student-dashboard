@@ -1,6 +1,6 @@
 package proto;
 
-import core.utils.KComponent;
+import core.utils.MComponent;
 
 import javax.swing.*;
 
@@ -18,7 +18,7 @@ public class KCheckBox extends JCheckBox implements Preference {
 
     @Override
     public JToolTip createToolTip(){
-        return KComponent.preferredTip();
+        return MComponent.preferredTip();
     }
 
     @Override

@@ -1,4 +1,4 @@
->> In-depth sight of the serials directory tree.
+>> In-depth sight of the serials directory tree. [In conformity with serialDir.txt]
     May be valid for this version only.
 
 - Every serializable file is either an array of Strings, or simply a String.

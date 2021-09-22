@@ -7,8 +7,8 @@ import core.module.Course;
 import core.module.ModuleHandler;
 import core.user.Student;
 import core.utils.App;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
+import core.utils.MComponent;
 import proto.*;
 
 import javax.swing.*;
@@ -42,11 +42,11 @@ public class TranscriptActivity implements Activity {
     public TranscriptActivity(){
         final KPanel activityPanel = new KPanel(new BorderLayout());
         if (Student.isGuest()) {
-            activityPanel.add(KComponent.createUnavailableActivity("Transcript"), BorderLayout.CENTER);
+            activityPanel.add(MComponent.createUnavailableActivity("Transcript"), BorderLayout.CENTER);
         } else {
-            minorLabel = new KLabel("", KFontFactory.createBoldFont(15));
-            CGPALabel = new KLabel("", KFontFactory.createBoldFont(16));
-            classificationLabel = new KLabel("", KFontFactory.createPlainFont(15));
+            minorLabel = new KLabel("", FontFactory.createBoldFont(15));
+            CGPALabel = new KLabel("", FontFactory.createBoldFont(16));
+            classificationLabel = new KLabel("", FontFactory.createPlainFont(15));
 
             buildDetailsPanelPlus();
 
@@ -54,10 +54,10 @@ public class TranscriptActivity implements Activity {
 
             table = new KTable(TRANSCRIPT_MODEL);
             table.setRowHeight(30);
-            table.setFont(KFontFactory.createBoldFont(15));
+            table.setFont(FontFactory.createBoldFont(15));
             table.getColumnModel().getColumn(1).setPreferredWidth(350);
             table.getColumnModel().getColumn(3).setPreferredWidth(40);
-            table.getTableHeader().setFont(KFontFactory.createBoldFont(16));
+            table.getTableHeader().setFont(FontFactory.createBoldFont(16));
             table.getTableHeader().setPreferredSize(new Dimension(table.getPreferredSize().width,35));
             table.centerAlignColumns(2, 3, 4);
             table.addMouseListener(new MouseAdapter() {
@@ -103,13 +103,13 @@ public class TranscriptActivity implements Activity {
 //    all the components needed at the top. may be a label to the left, buttons to the right
     private static KPanel topLayer() {
         final KCheckBox detailsCheck = new KCheckBox("Show Details", false);
-        detailsCheck.setFont(KFontFactory.createPlainFont(15));
+        detailsCheck.setFont(FontFactory.createPlainFont(15));
         detailsCheck.setFocusable(false);
         detailsCheck.addItemListener(itemEvent -> detailPanel.setVisible(itemEvent.getStateChange() == ItemEvent.SELECTED));
 
-        final KLabel exportLabel = new KLabel("Export", KFontFactory.createBoldFont(16), Color.BLUE);
+        final KLabel exportLabel = new KLabel("Export", FontFactory.createBoldFont(16), Color.BLUE);
         exportLabel.underline(false);
-        exportLabel.setCursor(KComponent.HAND_CURSOR);
+        exportLabel.setCursor(MComponent.HAND_CURSOR);
         exportLabel.setToolTipText("Export Transcript");
         exportLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -123,14 +123,14 @@ public class TranscriptActivity implements Activity {
         });
 
         final KPanel topPanel = new KPanel(new BorderLayout());
-        topPanel.add(new KPanel(new KLabel("My Transcript", KFontFactory.BODY_HEAD_FONT)), BorderLayout.WEST);
+        topPanel.add(new KPanel(new KLabel("My Transcript", FontFactory.BODY_HEAD_FONT)), BorderLayout.WEST);
         topPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 20, 5), detailsCheck, exportLabel),
                 BorderLayout.EAST);
         return topPanel;
     }
 
     private static void buildDetailsPanelPlus(){
-        final KLabel l1 = new KLabel("THE UNIVERSITY OF THE GAMBIA", KFontFactory.createBoldFont(25));
+        final KLabel l1 = new KLabel("THE UNIVERSITY OF THE GAMBIA", FontFactory.createBoldFont(25));
         final KLabel l2 = new KLabel("STUDENT ACADEMIC RECORDS", l1.getFont());
 
         final KPanel l1l2Panel = new KPanel(new Dimension(500, 100), l1, l2);
@@ -171,7 +171,7 @@ public class TranscriptActivity implements Activity {
     }
 
     private static KPanel newRectangularPanel(int leftMostWidth, int leftMostHeight, String... parts){
-        final Font hereFont = KFontFactory.createBoldFont(15);
+        final Font hereFont = FontFactory.createBoldFont(15);
 
         final KPanel leftMost = new KPanel(leftMostWidth, leftMostHeight);
         final KPanel rightMost = new KPanel(275, leftMostHeight);
@@ -199,8 +199,8 @@ public class TranscriptActivity implements Activity {
     private static KPanel getPointPanel(){
         final KPanel leftHand = new KPanel();
         leftHand.setLayout(new BoxLayout(leftHand, BoxLayout.Y_AXIS));
-        leftHand.addAll(new KPanel(new KLabel("AVERAGE", KFontFactory.createBoldFont(15))),
-                new KPanel(new KLabel("QUALITY POINT", KFontFactory.createBoldFont(15))));
+        leftHand.addAll(new KPanel(new KLabel("AVERAGE", FontFactory.createBoldFont(15))),
+                new KPanel(new KLabel("QUALITY POINT", FontFactory.createBoldFont(15))));
 
         final KPanel avgPanel = new KPanel(255,55);
         avgPanel.setLayout(new BoxLayout(avgPanel, BoxLayout.X_AXIS));

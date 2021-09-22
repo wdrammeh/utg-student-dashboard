@@ -72,7 +72,3 @@ Collapse Sequence in the system's shutdown-hook.
 This can minimize (if not prevent) loss of data due to abnormal termination of the VM.
 
 See [Serializer](src/main/java/core/utils/Serializer.java).
-
-## Conventions
-For a complete understanding of the "Dashboard Logic", please read the
-[Conventions](Contributing.md#conventions) as well.

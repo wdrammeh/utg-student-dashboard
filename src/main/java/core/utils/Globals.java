@@ -19,7 +19,6 @@ public class Globals {
     /**
      * Checks plurality of the given count,
      * and assigns a compound string with text based on the count.
-     * 
      * This is only compatible with Regular Nouns, and the given text
      * must be in the plural format already => must be ending in letter "s".
      */
@@ -61,6 +60,10 @@ public class Globals {
 
     public static String userName(){
         return System.getProperty("user.name");
+    }
+
+    public static String userHome(){
+        return System.getProperty("user.home");
     }
 
     /**

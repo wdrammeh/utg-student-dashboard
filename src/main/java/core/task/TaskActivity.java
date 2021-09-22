@@ -2,7 +2,7 @@ package core.task;
 
 import core.Activity;
 import core.Board;
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.task.handler.AssignmentHandler;
 import core.task.handler.EventHandler;
 import core.task.handler.ProjectHandler;
@@ -12,8 +12,8 @@ import core.task.self.EventSelf;
 import core.task.self.ProjectSelf;
 import core.task.self.TodoSelf;
 import core.utils.App;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KFontFactory;
 import proto.KButton;
 import proto.KLabel;
 import proto.KPanel;
@@ -32,16 +32,16 @@ public class TaskActivity implements Activity {
     private final KLabel hintLabel;
     private KPanel inPanel;
     private CardLayout cardLayout;
-    public static final Font TASK_HEADERS_FONT = KFontFactory.createBoldFont(16);
-    public static final Font TASK_BUTTONS_FONT = KFontFactory.createPlainFont(15);
+    public static final Font TASK_HEADERS_FONT = FontFactory.createBoldFont(16);
+    public static final Font TASK_BUTTONS_FONT = FontFactory.createPlainFont(15);
     public static final int CONTENTS_POSITION = FlowLayout.CENTER;
 
 
     public TaskActivity(){
         hintLabel = KLabel.getPredefinedLabel("My Tasks", SwingConstants.LEFT);
-        hintLabel.setStyle(KFontFactory.BODY_HEAD_FONT, Color.BLUE);
+        hintLabel.setStyle(FontFactory.BODY_HEAD_FONT, Color.BLUE);
 
-        final KButton returnButton = new KButton("< Menu");
+        final KButton returnButton = new KButton("Task Menu");
         returnButton.setFont(TASK_BUTTONS_FONT);
         returnButton.addActionListener(e-> {
             cardLayout.show(inPanel,"Home");
@@ -135,11 +135,11 @@ public class TaskActivity implements Activity {
      * numberText, which indicates the number of tasks running on each.
      */
     private KButton newBigButton(String label){
-        final KLabel lText = new KLabel(label, KFontFactory.createBoldFont(17));
+        final KLabel lText = new KLabel(label, FontFactory.createBoldFont(17));
         lText.setPreferredSize(new Dimension(175, 30));
         lText.setHorizontalAlignment(KLabel.CENTER);
 
-        final KLabel numberLabel = new KLabel("0", KFontFactory.createBoldFont(50));
+        final KLabel numberLabel = new KLabel("0", FontFactory.createBoldFont(50));
         numberLabel.setHorizontalAlignment(KLabel.CENTER);
 
         final KButton lookButton = new KButton(){

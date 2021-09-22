@@ -35,7 +35,7 @@ public class NotificationActivity implements Activity {
         cardLayout.addLayoutComponent(centerPanel.add(getPortalComponent()), "Portal");
 
         final KLabel hintLabel = KLabel.getPredefinedLabel("Notifications ", SwingConstants.LEFT);
-        hintLabel.setFont(KFontFactory.BODY_HEAD_FONT);
+        hintLabel.setFont(FontFactory.BODY_HEAD_FONT);
         hintLabel.setText("[Showing Local Dashboard Alerts]");
 
         final KComboBox<String> alertBox = new KComboBox<>(new String[] {"Dashboard", "Portal"});
@@ -70,7 +70,7 @@ public class NotificationActivity implements Activity {
 
     private Component getDashboardComponent() {
         final KButton clearButton = new KButton("Clear Alerts");
-        clearButton.setFont(KFontFactory.createPlainFont(15));
+        clearButton.setFont(FontFactory.createPlainFont(15));
         clearButton.addActionListener(e-> {
             if (!NOTIFICATIONS.isEmpty()) {
                 if (App.showOkCancelDialog("Confirm", "This action will remove all the notifications.\n" +
@@ -78,7 +78,7 @@ public class NotificationActivity implements Activity {
                                 "notifications")+" that are not read."))) {
                     for (Notification notification : NOTIFICATIONS) {
                         dashboardAlertsPanel.remove(notification.getLayer());
-                        KComponent.ready(dashboardAlertsPanel);
+                        MComponent.ready(dashboardAlertsPanel);
                     }
                     NOTIFICATIONS.clear();
                     effectCount(-unreadCount);
@@ -102,7 +102,7 @@ public class NotificationActivity implements Activity {
     public static void receive(Notification alert) {
         dashboardAlertsPanel.add(alert.getLayer(), 2);
         dashboardAlertsPanel.add(Box.createVerticalStrut(5), 3);
-        KComponent.ready(dashboardAlertsPanel);
+        MComponent.ready(dashboardAlertsPanel);
         if (!alert.isRead()) {
             effectCount(1);
         }
@@ -110,7 +110,7 @@ public class NotificationActivity implements Activity {
 
     public static void delete(Notification alert) {
         dashboardAlertsPanel.remove(alert.getLayer());
-        KComponent.ready(dashboardAlertsPanel);
+        MComponent.ready(dashboardAlertsPanel);
         NOTIFICATIONS.remove(alert);
     }
 
@@ -128,14 +128,14 @@ public class NotificationActivity implements Activity {
 
     private Component getPortalComponent() {
         admissionLabel = new KLabel(Student.isGuest() ? "Not available" : Portal.getAdmissionNotice(),
-                KFontFactory.createPlainFont(16));
+                FontFactory.createPlainFont(16));
         final KPanel admissionPanel = new KPanel(new BorderLayout());
         admissionPanel.setPreferredSize(new Dimension(1_000, 35));
-        admissionPanel.setCursor(KComponent.HAND_CURSOR);
+        admissionPanel.setCursor(MComponent.HAND_CURSOR);
         admissionPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                admissionLabel.setFont(KFontFactory.createBoldFont(16));
+                admissionLabel.setFont(FontFactory.createBoldFont(16));
             }
 
             @Override
@@ -146,22 +146,22 @@ public class NotificationActivity implements Activity {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                admissionLabel.setFont(KFontFactory.createPlainFont(16));
+                admissionLabel.setFont(FontFactory.createPlainFont(16));
             }
         });
-        admissionPanel.add(new KPanel(new KLabel("ADMISSION ALERT:", KFontFactory.createBoldFont(15),
+        admissionPanel.add(new KPanel(new KLabel("ADMISSION ALERT:", FontFactory.createBoldFont(15),
                 Color.BLUE)), BorderLayout.WEST);
         admissionPanel.add(new KPanel(admissionLabel), BorderLayout.CENTER);
 
         registrationLabel = new KLabel(Student.isGuest() ? "Not available" : Portal.getRegistrationNotice(),
-                KFontFactory.createPlainFont(16));
+                FontFactory.createPlainFont(16));
         final KPanel registrationPanel = new KPanel(new BorderLayout());
         registrationPanel.setPreferredSize(new Dimension(1_000, 35));
-        registrationPanel.setCursor(KComponent.HAND_CURSOR);
+        registrationPanel.setCursor(MComponent.HAND_CURSOR);
         registrationPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                registrationLabel.setFont(KFontFactory.createBoldFont(16));
+                registrationLabel.setFont(FontFactory.createBoldFont(16));
             }
 
             @Override
@@ -172,15 +172,15 @@ public class NotificationActivity implements Activity {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                registrationLabel.setFont(KFontFactory.createPlainFont(16));
+                registrationLabel.setFont(FontFactory.createPlainFont(16));
             }
         });
-        registrationPanel.add(new KPanel(new KLabel("REGISTRATION ALERT:", KFontFactory.createBoldFont(15),
+        registrationPanel.add(new KPanel(new KLabel("REGISTRATION ALERT:", FontFactory.createBoldFont(15),
                 Color.BLUE)), BorderLayout.WEST);
         registrationPanel.add(new KPanel(registrationLabel), BorderLayout.CENTER);
 
         refreshButton = new KButton("Update Alerts");
-        refreshButton.setFont(KFontFactory.createPlainFont(15));
+        refreshButton.setFont(FontFactory.createPlainFont(15));
         refreshButton.addActionListener(e-> {
             if (Student.isGuest()) {
                 App.reportInfo("Unavailable",
@@ -304,9 +304,9 @@ public class NotificationActivity implements Activity {
             final KPanel lowerPart = new KPanel();
             lowerPart.setLayout(new BoxLayout(lowerPart, BoxLayout.Y_AXIS));
             if (!Student.isGuest()) {
-                lowerPart.add(new KPanel(new KLabel("Last updated: ", KFontFactory.createBoldFont(15)),
+                lowerPart.add(new KPanel(new KLabel("Last updated: ", FontFactory.createBoldFont(15)),
                         new KLabel(type.equals(ADMISSION_NOTICE) ? Portal.getLastAdmissionNoticeUpdate() :
-                                Portal.getLastRegistrationNoticeUpdate(), KFontFactory.createPlainFont(15))));
+                                Portal.getLastRegistrationNoticeUpdate(), FontFactory.createPlainFont(15))));
             }
             lowerPart.add(new KPanel(disposeButton));
 

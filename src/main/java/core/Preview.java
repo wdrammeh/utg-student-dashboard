@@ -1,7 +1,7 @@
 package core;
 
 import core.utils.App;
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
 import proto.KDialog;
 import proto.KLabel;
 import proto.KPanel;
@@ -28,7 +28,7 @@ public class Preview extends KDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.addAll(new KPanel(new KLabel(new ImageIcon(App.getIconURL("splash.gif")))),
                 new KPanel(new FlowLayout(FlowLayout.LEFT), new KLabel("Dashboard is starting... Please wait.",
-                        KFontFactory.createPlainFont(15))));
+                        FontFactory.createPlainFont(15))));
         setContentPane(panel);
         pack();
         setLocationRelativeTo(root);

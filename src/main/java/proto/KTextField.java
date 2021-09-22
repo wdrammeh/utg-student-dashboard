@@ -1,9 +1,9 @@
 package proto;
 
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KDate;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
+import core.utils.MDate;
 
 import javax.swing.*;
 import java.awt.*;
@@ -104,7 +104,7 @@ public class KTextField extends JTextField implements Preference {
     public static KTextField yearField(){
         final KTextField yearField = digitRangeControlField(4);
         yearField.setPreferredSize(new Dimension(75, 30));
-        yearField.setText(String.valueOf(KDate.getYear()));
+        yearField.setText(String.valueOf(MDate.getYear()));
         return yearField;
     }
 
@@ -136,11 +136,11 @@ public class KTextField extends JTextField implements Preference {
 
     @Override
     public JToolTip createToolTip() {
-        return KComponent.preferredTip();
+        return MComponent.preferredTip();
     }
 
     public void setPreferences() {
-        setFont(KFontFactory.createPlainFont(15));
+        setFont(FontFactory.createPlainFont(15));
         setHorizontalAlignment(SwingConstants.CENTER);
         setAutoscrolls(true);
     }

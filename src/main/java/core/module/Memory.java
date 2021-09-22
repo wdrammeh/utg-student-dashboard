@@ -51,7 +51,7 @@ public class Memory {
      */
     public static void remove(Course course){
         if (VERIFIED_LIST.remove(course)) {
-            TRANSCRIPT_MODEL.removeRow(TRANSCRIPT_MODEL.getRowOf(course.getCode()));
+            TRANSCRIPT_MODEL.removeRow(TRANSCRIPT_MODEL.getRow(course.getCode()));
         }
     }
 

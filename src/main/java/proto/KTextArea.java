@@ -1,6 +1,6 @@
 package proto;
 
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +54,7 @@ public class KTextArea extends JTextArea implements Preference {
     }
 
     public void setPreferences() {
-        setFont(KFontFactory.createPlainFont(15));
+        setFont(FontFactory.createPlainFont(15));
         setLineWrap(true);
         setWrapStyleWord(true);
         setAutoscrolls(true);

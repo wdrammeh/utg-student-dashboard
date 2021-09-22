@@ -1,6 +1,6 @@
 # UTG Student Dashboard
 
-`2021.6`
+`?`
 
 A **flexible** and **elegant** student management system for the University of The Gambia ("UTG"").
 
@@ -15,12 +15,14 @@ that functions independently of the ERP System, and communicates with it at the 
 
 Get the standalone installation file for your operating system
 
-| Operating System | Download Dashboard |
+| Platform | Download Dashboard |
 | ----- | ----- |
-| Microsoft Windows `(msi package)` | https://github.com/w-drammeh/utg-student-dashboard/releases/download/v2021.6/UTG.Student.Dashboard-21.6.msi |
-| Linux `(debian package)` | https://github.com/w-drammeh/utg-student-dashboard/releases/download/v2021.6/utg-student-dashboard_21.6-1_amd64.deb |
+| Microsoft Windows `(msi package)` | . |
+| Linux `(debian package)` | . |
+| Mac iOS `(?)` | . |
+| Any `(jar)` | . |
 
-More download options are available on the [release page](https://github.com/w-drammeh/utg-student-dashboard/releases).
+More download options (including jar builds) are available on the [release page](https://github.com/w-drammeh/utg-student-dashboard/releases).
 
 If you wish, you may check out [what's new](ChangeLog.md) about this release.
 
@@ -44,7 +46,6 @@ If you wish, you may check out [what's new](ChangeLog.md) about this release.
 Dashboard is an ambitious project, and this is only the beginning.
 Also, we wish to integrate the following features in a future release:
 
-- Course Registration Functionality
 - Student Voting System
 - Student Auditing System
 - Student Forum
@@ -66,12 +67,9 @@ Dashboard uses the **UTG ERP System (Portal)** as a center of verification for u
 The Portal is Dashboard's sole source of valid data. The data collected are used for,
 but not limited to, **verification**, **analysis**, and **presentation**.
 
-At every successful login, Dashboard grasps the fundamental details of the user.
-So students won't need to be specifying level, status on the go.
-
 It is however important to note that the analysis provided by Dashboard
-is entirely _Portal-independent_. Therefore, inconsistent data from the Portal
-can induce misbehavior of your Dashboard.
+is not entirely _Portal-independent_. Therefore, inconsistent data from the Portal
+can induce misbehavior of your Dashboard. At every successful login, Dashboard grasps the fundamental details of the user. So students won't need to be specifying level, status on the go.
 
 It is strongly advisable for students victim of wrong, or incomplete details
 on their Portals to refer to their respective departments for help before,
@@ -82,6 +80,6 @@ but cannot afford to lose core details like student's name,
 or matriculation number. Dashboard may halt build, if such details
 are missing, or not readable somehow.
 
-The good news is that, all these, if occurred, can be fixed at any point in time,
+The good news is that, all of these, if occurred, can be fixed at any point in time,
 because even after launching, Dashboard effortlessly re-indexes user's resources
 at every successful login.

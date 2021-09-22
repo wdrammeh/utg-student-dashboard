@@ -3,9 +3,9 @@ package core.user;
 import core.Board;
 import core.first.Welcome;
 import core.utils.App;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
 import proto.*;
 
 import javax.swing.*;
@@ -23,9 +23,9 @@ public class Guest extends KDialog {
 
         final KPanel hintPanel = new KPanel();
         hintPanel.setLayout(new BoxLayout(hintPanel, BoxLayout.Y_AXIS));
-        hintPanel.add(new KPanel(new KLabel("Welcome!", KFontFactory.createBoldFont(25))));
+        hintPanel.add(new KPanel(new KLabel("Welcome!", FontFactory.createBoldFont(25))));
         hintPanel.add(new KPanel(new KLabel("Kindly fill out the following fields to get started.",
-                KFontFactory.createPlainFont(20), Color.GRAY)));
+                FontFactory.createPlainFont(20), Color.GRAY)));
         hintPanel.add(Box.createRigidArea(new Dimension(450, 25)));
 
         final Dimension fieldDim = new Dimension(235, 30);
@@ -49,10 +49,10 @@ public class Guest extends KDialog {
         final KPanel contentPanel = new KPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(hintPanel, firstNameLayer, lastNameLayer, nationalityLayer,
-                KComponent.contentBottomGap());
+                MComponent.contentBottomGap());
 
         final KButton startButton = new KButton("Start Dashboard");
-        startButton.setFont(KFontFactory.createPlainFont(15));
+        startButton.setFont(FontFactory.createPlainFont(15));
         startButton.addActionListener(e-> {
             if (!Globals.hasText(firstNameField.getText())) {
                 signalMissingInfo("first name", firstNameField);
@@ -69,7 +69,7 @@ public class Guest extends KDialog {
         });
 
         final KButton backButton = new KButton("Cancel");
-        backButton.setFont(KFontFactory.createPlainFont(15));
+        backButton.setFont(FontFactory.createPlainFont(15));
         backButton.addActionListener(e-> {
             dispose();
             welcome.setVisible(true);
@@ -85,7 +85,7 @@ public class Guest extends KDialog {
     }
 
     private static KLabel newHintLabel(String string) {
-        return new KLabel(string, KFontFactory.createBoldFont(16));
+        return new KLabel(string, FontFactory.createBoldFont(16));
     }
 
     private void signalMissingInfo(String info, Component c){

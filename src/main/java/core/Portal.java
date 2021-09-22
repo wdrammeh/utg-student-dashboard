@@ -2,12 +2,12 @@ package core;
 
 import core.driver.MDriver;
 import core.module.SemesterActivity;
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
 import core.utils.Internet;
-import core.utils.KDate;
+import core.utils.MDate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -150,11 +150,11 @@ public class Portal {
      * Returns the last time the admissionNotice was updated;
      * or "Never" if it has never been.
      * This is specified by the standard formatter.
-     * @see KDate
+     * @see MDate
      */
     public static String getLastAdmissionNoticeUpdate(){
         return lastAdmissionNoticeUpdate == null ? Globals.NEVER :
-                KDate.formatDayTime(lastAdmissionNoticeUpdate);
+                MDate.formatDayTime(lastAdmissionNoticeUpdate);
     }
 
     /**
@@ -182,11 +182,11 @@ public class Portal {
      * Returns the last time the registrationNotice was updated;
      * or "Never" if it has never been.
      * This is specified by the standard formatter.
-     * @see KDate
+     * @see MDate
      */
     public static String getLastRegistrationNoticeUpdate(){
         return lastRegistrationNoticeUpdate == null ? Globals.NEVER :
-                KDate.formatDayTime(lastRegistrationNoticeUpdate);
+                MDate.formatDayTime(lastRegistrationNoticeUpdate);
     }
 
     public static WebElement getTabElement(String elementText, List<WebElement> tabs){
@@ -282,8 +282,8 @@ public class Portal {
 
     public static void serialize(){
         final String data = Globals.joinLines(new Object[]{registrationNotice,
-                KDate.toSerial(lastRegistrationNoticeUpdate), admissionNotice,
-                KDate.toSerial(lastAdmissionNoticeUpdate), autoSync, KDate.toSerial(lastLogin)});
+                MDate.toSerial(lastRegistrationNoticeUpdate), admissionNotice,
+                MDate.toSerial(lastAdmissionNoticeUpdate), autoSync, MDate.toSerial(lastLogin)});
         Serializer.toDisk(data, Serializer.inPath("portal.ser"));
     }
 
@@ -294,11 +294,11 @@ public class Portal {
         } else {
             final String[] data = Globals.splitLines((String) obj);
             registrationNotice = data[0];
-            lastRegistrationNoticeUpdate = KDate.fromSerial(data[1]);
+            lastRegistrationNoticeUpdate = MDate.fromSerial(data[1]);
             admissionNotice = data[2];
-            lastAdmissionNoticeUpdate = KDate.fromSerial(data[3]);
+            lastAdmissionNoticeUpdate = MDate.fromSerial(data[3]);
             autoSync = Boolean.parseBoolean(data[4]);
-            lastLogin = KDate.fromSerial(data[5]);
+            lastLogin = MDate.fromSerial(data[5]);
         }
     }
 

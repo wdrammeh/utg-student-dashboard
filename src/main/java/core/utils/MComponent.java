@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 
-public class KComponent {
+public class MComponent {
     public static final Cursor HAND_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
 
 
@@ -84,7 +84,7 @@ public class KComponent {
      */
     public static JToolTip preferredTip(){
         final JToolTip toolTip = new JToolTip();
-        toolTip.setFont(KFontFactory.createPlainFont(15));
+        toolTip.setFont(FontFactory.createPlainFont(15));
         return toolTip;
     }
 
@@ -100,12 +100,12 @@ public class KComponent {
      * Returns a component in place of an activity which is restricted for the current user.
      */
     public static Component createUnavailableActivity(String activityName){
-        final KLabel label1 = new KLabel(activityName, KFontFactory.createBoldFont(30));
+        final KLabel label1 = new KLabel(activityName, FontFactory.createBoldFont(30));
         final KLabel label2 = new KLabel("This activity is not supported for \"Guest Users\"",
-                KFontFactory.createPlainFont(20), Color.DARK_GRAY);
+                FontFactory.createPlainFont(20), Color.DARK_GRAY);
         final KLabel label3 = new KLabel("If you are a student of the University of The Gambia, you may...",
-                KFontFactory.createPlainFont(20), Color.GRAY);
-        final KLabel loginLabel = new KLabel("Login now", KFontFactory.createPlainFont(20), Color.BLUE);
+                FontFactory.createPlainFont(20), Color.GRAY);
+        final KLabel loginLabel = new KLabel("Login now", FontFactory.createPlainFont(20), Color.BLUE);
         loginLabel.underline(false);
         loginLabel.setCursor(HAND_CURSOR);
         loginLabel.addMouseListener(new MouseAdapter() {

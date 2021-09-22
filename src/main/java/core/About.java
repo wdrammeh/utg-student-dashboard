@@ -58,7 +58,7 @@ public class About extends KDialog {
      */
     private KButton newCardButton(String buttonText, String activityTitle, String component){
         final KButton cardButton = new KButton(buttonText);
-        cardButton.setFont(KFontFactory.createPlainFont(15));
+        cardButton.setFont(FontFactory.createPlainFont(15));
         cardButton.addActionListener(e-> {
             midCard.show(midLayer, component);
             setTitle(activityTitle); // which is hereby overridden
@@ -70,7 +70,7 @@ public class About extends KDialog {
         final KPanel dashboardLayer = new KPanel(new BorderLayout());
         dashboardLayer.add(KLabel.createIcon("dashboard.png", 150, 135), BorderLayout.CENTER);
         dashboardLayer.add(new KPanel(new KLabel("A flexible and elegant student management system for the UTG",
-                KFontFactory.createPlainFont(16))), BorderLayout.SOUTH);
+                FontFactory.createPlainFont(16))), BorderLayout.SOUTH);
 
         final KPanel javaLayer = new KPanel(new BorderLayout());
         javaLayer.add(new KLabel(new ImageIcon(App.getIconURL("splash.gif"))), BorderLayout.CENTER);
@@ -81,12 +81,12 @@ public class About extends KDialog {
 
         final KPanel bottomLayer = new KPanel();
         bottomLayer.setLayout(new BoxLayout(bottomLayer, BoxLayout.Y_AXIS));
-        bottomLayer.addAll(new KLabel("Release: "+ Dashboard.VERSION, KFontFactory.createPlainFont(15)),
-                new KLabel("Email: "+ Mailer.DEVELOPER_MAIL, KFontFactory.createPlainFont(15)),
-                new KLabel("Contact: +220 3413910", KFontFactory.createPlainFont(15)));
+        bottomLayer.addAll(new KLabel("Release: "+ Dashboard.VERSION, FontFactory.createPlainFont(15)),
+                new KLabel("Email: "+ Mailer.DEVELOPER_MAIL, FontFactory.createPlainFont(15)),
+                new KLabel("Contact: +220 3413910", FontFactory.createPlainFont(15)));
 
         final KPanel aboutCard = new KPanel(new BorderLayout());
-        aboutCard.add(new KPanel(new KLabel("University Student Dashboard", KFontFactory.createBoldFont(18))),
+        aboutCard.add(new KPanel(new KLabel("University Student Dashboard", FontFactory.createBoldFont(18))),
                 BorderLayout.NORTH);
         aboutCard.add(iconsLayer, BorderLayout.CENTER);
         aboutCard.add(bottomLayer, BorderLayout.SOUTH);
@@ -98,13 +98,13 @@ public class About extends KDialog {
 
         final KPanel authorNamesPanel = new KPanel();
         authorNamesPanel.setLayout(new BoxLayout(authorNamesPanel,BoxLayout.Y_AXIS));
-        authorNamesPanel.addAll(new KLabel("MUHAMMED W. DRAMMEH", KFontFactory.createBoldFont(16)),
-                new KLabel("(B.Sc) Mathematics & Computer Science", KFontFactory.createPlainFont(15)),
-                new KLabel("The University of The Gambia (2016 - 2020)", KFontFactory.createPlainFont(15)));
+        authorNamesPanel.addAll(new KLabel("MUHAMMED W. DRAMMEH", FontFactory.createBoldFont(16)),
+                new KLabel("(B.Sc) Mathematics & Computer Science", FontFactory.createPlainFont(15)),
+                new KLabel("The University of The Gambia (2016 - 2020)", FontFactory.createPlainFont(15)));
 
-        final KLabel readLabel = new KLabel("Read more...", KFontFactory.createPlainFont(15), Color.BLUE);
+        final KLabel readLabel = new KLabel("Read more...", FontFactory.createPlainFont(15), Color.BLUE);
         readLabel.underline(false);
-        readLabel.setCursor(KComponent.HAND_CURSOR);
+        readLabel.setCursor(MComponent.HAND_CURSOR);
         readLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -115,7 +115,7 @@ public class About extends KDialog {
         final KPanel authorLayer = new KPanel();
         authorLayer.addAll(new KPanel(authorIconLabel), authorNamesPanel);
 
-        final Font specialNameFont = KFontFactory.createPlainFont(15);
+        final Font specialNameFont = FontFactory.createPlainFont(15);
         final KPanel specialNamesLayer = new KPanel();
         specialNamesLayer.setLayout(new BoxLayout(specialNamesLayer, BoxLayout.Y_AXIS));
         specialNamesLayer.addAll(new KLabel("Mr. Fred Sangol Uche  [Lecturer, UTG]", specialNameFont),
@@ -125,15 +125,15 @@ public class About extends KDialog {
         final KPanel respectLayer = new KPanel();
         respectLayer.setLayout(new BoxLayout(respectLayer, BoxLayout.Y_AXIS));
         respectLayer.add(new KPanel(new FlowLayout(FlowLayout.LEFT),
-                new KLabel("Special thanks to:", KFontFactory.createBoldFont(15))));
+                new KLabel("Special thanks to:", FontFactory.createBoldFont(15))));
         respectLayer.add(new KPanel(specialNamesLayer));
         respectLayer.add(new KPanel(new KLabel("And all the students whose details were used during the \"Testing\"",
-                KFontFactory.createPlainFont(14), Color.GRAY)));
+                FontFactory.createPlainFont(14), Color.GRAY)));
 
         final KPanel creditsCard = new KPanel();
         creditsCard.setLayout(new BoxLayout(creditsCard, BoxLayout.Y_AXIS));
         creditsCard.addAll(authorLayer, new KPanel(new FlowLayout(FlowLayout.RIGHT, 25, 5), readLabel),
-                KComponent.contentBottomGap(), respectLayer);
+                MComponent.contentBottomGap(), respectLayer);
         return creditsCard;
     }
 
@@ -145,7 +145,7 @@ public class About extends KDialog {
 
         final Border lineBorder = BorderFactory.createLineBorder(Color.BLUE, 1,true);
         final Border spaceBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
-        final Font feedHeadFont = KFontFactory.createBoldFont(16);
+        final Font feedHeadFont = FontFactory.createBoldFont(16);
 
         final KTextArea reviewTextArea = KTextArea.getLimitedEntryArea(500);
         final KScrollPane reviewTextAreaScroll = reviewTextArea.outerScrollPane(new Dimension(500, 100));
@@ -159,7 +159,7 @@ public class About extends KDialog {
             if (Globals.hasNoText(reviewTextArea.getText())) {
                 reportBlankReview(reviewTextArea);
             } else {
-                KComponent.toggleEnabled(reviewTextArea, reviewSender);
+                MComponent.toggleEnabled(reviewTextArea, reviewSender);
                 reviewSender.setText("Sending...");
                 if (Internet.isInternetAvailable()) {
                     final Mailer gMailer = new Mailer("Dashboard Feedback | Review | "+ Student.getFullNamePostOrder(),
@@ -170,7 +170,7 @@ public class About extends KDialog {
                 } else {
                     reportNoConnection();
                 }
-                KComponent.toggleEnabled(reviewTextArea, reviewSender);
+                MComponent.toggleEnabled(reviewTextArea, reviewSender);
                 reviewSender.setText("Send");
             }
         }).start());
@@ -194,7 +194,7 @@ public class About extends KDialog {
             if (Globals.hasNoText(suggestionTextArea.getText())) {
                 reportBlankReview(suggestionTextArea);
             } else {
-                KComponent.toggleEnabled(suggestionTextArea,suggestionSender);
+                MComponent.toggleEnabled(suggestionTextArea,suggestionSender);
                 suggestionSender.setText("Sending...");
                 if (Internet.isInternetAvailable()) {
                     final Mailer gMailer = new Mailer("Dashboard Feedback | Suggestion |"+
@@ -206,7 +206,7 @@ public class About extends KDialog {
                 } else {
                     reportNoConnection();
                 }
-                KComponent.toggleEnabled(suggestionTextArea,suggestionSender);
+                MComponent.toggleEnabled(suggestionTextArea,suggestionSender);
                 suggestionSender.setText("Send");
             }
         }).start());
@@ -242,7 +242,7 @@ public class About extends KDialog {
             }
 
             new Thread(()-> {
-                KComponent.toggleEnabled(answerTitleField, answerTextArea, answerSender);
+                MComponent.toggleEnabled(answerTitleField, answerTextArea, answerSender);
                 answerSender.setText("Sending...");
                 if (Internet.isInternetAvailable()) {
                     final Mailer gMailer = new Mailer("Dashboard Feedback | FAQ & Answer"+
@@ -255,18 +255,18 @@ public class About extends KDialog {
                 } else {
                     reportNoConnection();
                 }
-                KComponent.toggleEnabled(answerTitleField,answerTextArea,answerSender);
+                MComponent.toggleEnabled(answerTitleField,answerTextArea,answerSender);
                 answerSender.setText("Send");
             }).start();
         });
 
         final KPanel titleSubstance = new KPanel(new BorderLayout());
-        titleSubstance.add(new KPanel(new KLabel("Question:", KFontFactory.createPlainFont(15))),
+        titleSubstance.add(new KPanel(new KLabel("Question:", FontFactory.createPlainFont(15))),
                 BorderLayout.WEST);
         titleSubstance.add(new KPanel(answerTitleField), BorderLayout.CENTER);
 
         final KPanel bodySubstance = new KPanel(new BorderLayout());
-        bodySubstance.add(new KPanel(new KLabel("Answer:", KFontFactory.createPlainFont(15))),
+        bodySubstance.add(new KPanel(new KLabel("Answer:", FontFactory.createPlainFont(15))),
                 BorderLayout.WEST);
         bodySubstance.add(answerTextAreaScroll, BorderLayout.CENTER);
 
@@ -292,7 +292,7 @@ public class About extends KDialog {
             if (Globals.hasNoText(bugTextArea.getText())) {
                 reportBlankReview(bugTextArea);
             } else {
-                KComponent.toggleEnabled(bugTextArea,bugSender);
+                MComponent.toggleEnabled(bugTextArea,bugSender);
                 bugSender.setText("Sending...");
                 if (Internet.isInternetAvailable()) {
                     final Mailer gMailer = new Mailer("Dashboard Feedback | A Bug Report | "+
@@ -304,7 +304,7 @@ public class About extends KDialog {
                 } else {
                     reportNoConnection();
                 }
-                KComponent.toggleEnabled(bugTextArea,bugSender);
+                MComponent.toggleEnabled(bugTextArea,bugSender);
                 bugSender.setText("Send");
             }
         }).start());
@@ -330,7 +330,7 @@ public class About extends KDialog {
      */
     private KButton newReviewSender(){
         final KButton button = new KButton("Send");
-        button.setStyle(KFontFactory.createPlainFont(14), Color.BLUE);
+        button.setStyle(FontFactory.createPlainFont(14), Color.BLUE);
         return button;
     }
 
@@ -389,8 +389,8 @@ public class About extends KDialog {
             setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
             setResizable(true);
 
-            final Font hintFont = KFontFactory.createBoldFont(15);
-            final Font valueFont = KFontFactory.createPlainFont(16);
+            final Font hintFont = FontFactory.createBoldFont(15);
+            final Font valueFont = FontFactory.createPlainFont(16);
 
             final KPanel firstNamePanel = new KPanel(new BorderLayout());
             firstNamePanel.add(new KPanel(new KLabel("First Name:", hintFont)), BorderLayout.WEST);
@@ -431,7 +431,7 @@ public class About extends KDialog {
             final KPanel contentPanel = new KPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
             contentPanel.addAll(firstNamePanel, lastNamePanel, dobPanel, pobPanel, addressPanel, telephonePanel,
-                    emailPanel, nationalityPanel, KComponent.contentBottomGap(),
+                    emailPanel, nationalityPanel, MComponent.contentBottomGap(),
                     new KPanel(new FlowLayout(FlowLayout.RIGHT), closeButton));
 
             getRootPane().setDefaultButton(closeButton);

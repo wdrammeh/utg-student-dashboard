@@ -3,9 +3,9 @@ package core.task.exhibition;
 import core.Board;
 import core.task.handler.AssignmentHandler;
 import core.task.self.AssignmentSelf;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
 import proto.*;
 
 import javax.swing.*;
@@ -67,7 +67,7 @@ public class AssignmentExhibition extends KDialog {
                 }
             });
             questionPanel.add(new KLabel("Question(s) won't be editable after assignments are submitted.",
-                    KFontFactory.createPlainFont(15), Color.RED), BorderLayout.SOUTH);
+                    FontFactory.createPlainFont(15), Color.RED), BorderLayout.SOUTH);
             contentPanel.addAll(subjectPanel, statusPanel, startPanel, deadlinePanel, remainPanel, modePanel,
                     questionPanel);
         } else {
@@ -96,7 +96,7 @@ public class AssignmentExhibition extends KDialog {
             buttonsContainer.addAll(removeButton, closeButton);
         }
 
-        contentPanel.addAll(KComponent.contentBottomGap(), buttonsContainer);
+        contentPanel.addAll(MComponent.contentBottomGap(), buttonsContainer);
 
         rootPane.setDefaultButton(closeButton);
         setContentPane(contentPanel);
@@ -107,11 +107,11 @@ public class AssignmentExhibition extends KDialog {
     }
 
     private static KLabel newHintLabel(String text){
-        return new KLabel(text, KFontFactory.createBoldFont(16));
+        return new KLabel(text, FontFactory.createBoldFont(16));
     }
 
     private static KLabel newValueLabel(String text){
-        return new KLabel(text, KFontFactory.createPlainFont(16));
+        return new KLabel(text, FontFactory.createPlainFont(16));
     }
 
 }

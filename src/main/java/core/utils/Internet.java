@@ -81,12 +81,12 @@ public class Internet {
             final Date lastDeprecateTime = Dashboard.VERSION.getDeprecateTime();
             final String deprecateTime;
             if (lastDeprecateTime == null) {
-                deprecateTime = KDate.daysAfter(new Date(), Version.MAX_DEPRECATE_TIME);
+                deprecateTime = MDate.daysAfter(new Date(), Version.MAX_DEPRECATE_TIME);
                 Notification.create("Update", "A new update is available",
                         "<p>There is a new Dashboard release. Please <a href=" + DOWNLOAD_URL + ">download</a> it now.</p>" +
                                 "<p><b>Please Note:</b> Your Dashboard will be outdated by '" + deprecateTime + "'.</p>");
             } else {
-                deprecateTime = KDate.formatDayTime(lastDeprecateTime);
+                deprecateTime = MDate.formatDayTime(lastDeprecateTime);
             }
 
             final boolean updateNow = App.showYesNoCancelDialog("Update Available",
@@ -101,7 +101,7 @@ public class Internet {
                 App.reportWarning("Update Warning",
                         "Please note that you must update to the latest version on, or before '"+deprecateTime+"'.");
             }
-            Dashboard.VERSION.setDeprecateTime(KDate.parseDayTime(deprecateTime));
+            Dashboard.VERSION.setDeprecateTime(MDate.parseDayTime(deprecateTime));
         } else if (comparison == Version.EQUAL) {
             if (requested) {
                 App.reportInfo("Up to Date", "Your Dashboard is up to date. Check back later for updates.");

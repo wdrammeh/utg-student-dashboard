@@ -1,7 +1,7 @@
 package core.first;
 
 import core.user.Guest;
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
 import proto.*;
 import utg.Dashboard;
 
@@ -35,7 +35,7 @@ public class Welcome extends KDialog {
     }
 
     private void addWelcomeActivity(){
-        final KPanel topPanel = new KPanel(new KLabel("UTG STUDENT DASHBOARD", KFontFactory.createBoldFont(20)));
+        final KPanel topPanel = new KPanel(new KLabel("UTG STUDENT DASHBOARD", FontFactory.createBoldFont(20)));
         topPanel.setBackground(Color.WHITE);
 
         final String broughtString = "Proudly brought to you by the <b>Dashboard Project</b>. Dashboard comes with solutions long-anticipated by the UTG Students, " +
@@ -63,16 +63,16 @@ public class Welcome extends KDialog {
         final String nextText = "<br>To continue, acknowledge adherence to these terms by selecting the <b>Checkbox</b> below.";
 
         final KButton exitButton = new KButton("Exit");
-        exitButton.setFont(KFontFactory.createPlainFont(15));
+        exitButton.setFont(FontFactory.createPlainFont(15));
         exitButton.addActionListener(e-> System.exit(0));
 
         final KButton nextButton = new KButton("Continue");
-        nextButton.setFont(KFontFactory.createPlainFont(15));
+        nextButton.setFont(FontFactory.createPlainFont(15));
         nextButton.addActionListener(e-> cardLayout.show(welcomeActivity, "Choose"));
         nextButton.setEnabled(false);
 
         final KCheckBox nextCheckBox = new KCheckBox("I hereby READ, UNDERSTOOD, and CONSENT to these terms.");
-        nextCheckBox.setFont(KFontFactory.createBoldFont(15));
+        nextCheckBox.setFont(FontFactory.createBoldFont(15));
         nextCheckBox.setForeground(Color.DARK_GRAY);
         nextCheckBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         nextCheckBox.setFocusable(false);
@@ -104,7 +104,7 @@ public class Welcome extends KDialog {
     private KPanel head(String head){
         final KPanel headerPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
         headerPanel.setBackground(Color.WHITE);
-        headerPanel.add(new KLabel(head, KFontFactory.createBoldFont(17), Color.BLUE));
+        headerPanel.add(new KLabel(head, FontFactory.createBoldFont(17), Color.BLUE));
         return headerPanel;
     }
 
@@ -122,9 +122,9 @@ public class Welcome extends KDialog {
     private void addSelectionActivity(){
         final KPanel hintPanel = new KPanel();
         hintPanel.setLayout(new BoxLayout(hintPanel, BoxLayout.Y_AXIS));
-        hintPanel.add(new KPanel(new KLabel("Select User Type", KFontFactory.createBoldFont(25))));
+        hintPanel.add(new KPanel(new KLabel("Select User Type", FontFactory.createBoldFont(25))));
         hintPanel.add(new KPanel(new KLabel("How do you want to use Dashboard?",
-                KFontFactory.createPlainFont(20), Color.GRAY)));
+                FontFactory.createPlainFont(20), Color.GRAY)));
 
         final Dimension optionPanelDimension = new Dimension(200, 165);
         final Border selectedBorder = BorderFactory.createLineBorder(Color.BLUE, 2, true);
@@ -133,7 +133,7 @@ public class Welcome extends KDialog {
         final KPanel studentOptionPanel = new KPanel(new BorderLayout(0, 5), optionPanelDimension);
 
         final JRadioButton studentOption = new JRadioButton("UTG Student", true);
-        studentOption.setFont(KFontFactory.createPlainFont(17));
+        studentOption.setFont(FontFactory.createPlainFont(17));
         studentOption.setFocusable(false);
         studentOption.addItemListener(e-> studentOptionPanel.setBorder(e.getStateChange() == ItemEvent.SELECTED ?
                 selectedBorder : unselectedBorder));
@@ -174,7 +174,7 @@ public class Welcome extends KDialog {
         final KPanel trialOptionPanel = new KPanel(new BorderLayout(0, 5), optionPanelDimension);
 
         final JRadioButton trylOption = new JRadioButton("Non-UTG Student");
-        trylOption.setFont(KFontFactory.createPlainFont(17));
+        trylOption.setFont(FontFactory.createPlainFont(17));
         trylOption.setFocusable(false);
         trylOption.addItemListener(e-> trialOptionPanel.setBorder(e.getStateChange() == ItemEvent.SELECTED ?
                 selectedBorder : unselectedBorder));
@@ -214,7 +214,7 @@ public class Welcome extends KDialog {
         buttonGroup.add(trylOption);
 
         final KButton nextButton = new KButton("Continue");
-        nextButton.setFont(KFontFactory.createPlainFont(15));
+        nextButton.setFont(FontFactory.createPlainFont(15));
         nextButton.setFocusable(true);
         nextButton.addActionListener(e-> {
             setVisible(false);
@@ -226,7 +226,7 @@ public class Welcome extends KDialog {
         });
 
         final KButton backButton = new KButton("Back");
-        backButton.setFont(KFontFactory.createPlainFont(15));
+        backButton.setFont(FontFactory.createPlainFont(15));
         backButton.addActionListener(e-> cardLayout.show(welcomeActivity, "Welcome"));
 
         final KPanel choosePanel = new KPanel(new BorderLayout());

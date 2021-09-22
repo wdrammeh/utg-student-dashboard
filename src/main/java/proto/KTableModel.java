@@ -1,6 +1,7 @@
 package proto;
 
 import javax.swing.table.DefaultTableModel;
+import java.util.function.Function;
 
 /**
  * This is an extension of javax.swing.table.DefaultTableModel.
@@ -31,18 +32,26 @@ public class KTableModel extends DefaultTableModel implements Preference {
     }
 
     /**
-     * Gets the row-index of the row (more formally, the first row found) holding this string
-     * in its first column.
-     * A return of -1 signals absence of such a row in this model.
+     * Checking only the first column, returns the index of the row
+     * (more formally, the first row found) having the given key.
      * This call is case-insensitive.
      */
-    public int getRowOf(String key) {
+    public int getRow(String key) {
         for (int i = 0; i < getRowCount(); i++) {
-            if (key.equalsIgnoreCase(String.valueOf(getValueAt(i, 0)))) {
+            final String cell = String.valueOf(getValueAt(i, 0));
+            if (cell.equalsIgnoreCase(key)) {
                 return i;
             }
         }
         return -1;
+    }
+
+    public String getSelectedId() {
+        final int selectedRow = getSelectedRow();
+        if (selectedRow >= 0) {
+            return String.valueOf(getValueAt(selectedRow, 0));
+        }
+        return null;
     }
 
     @Override

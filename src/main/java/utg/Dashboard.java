@@ -24,7 +24,7 @@ import core.Board;
 import core.Preview;
 import core.alert.Notification;
 import core.first.Welcome;
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.user.Student;
 import core.utils.*;
 
@@ -47,16 +47,22 @@ import java.util.List;
  * @see Board
  */
 public class Dashboard {
+    private static String path;
+    private static boolean isFirst;
+    private static boolean isAuthentic = true;
     private static final Preview PREVIEW = new Preview(null);
     public static final Version VERSION = new Version("2021.6");
-    private static boolean isAuthentic = true;
-    private static boolean isFirst;
 
 
     public static void main(String[] args) {
         parallelCheck();
         PREVIEW.setVisible(true);
-        final File rootDir = new File(Serializer.ROOT_DIR);
+        if (args != null && args.length >= 1) {
+            path = args[0];
+        } else {
+            path = getDefaultPath();
+        }
+        final File rootDir = new File(path);
         if (rootDir.exists()) {
             final File configFile = new File(Serializer.inPath("configs.ser"));
             if (configFile.exists()) {
@@ -81,7 +87,7 @@ public class Dashboard {
                     } else if (comparison == Version.EQUAL) {
                         final String deprecateTime = lastConfigs.get("deprecateTime");
                         if (Globals.hasText(deprecateTime)) {
-                            final Date deprecateDate = KDate.parseDayTime(deprecateTime);
+                            final Date deprecateDate = MDate.parseDayTime(deprecateTime);
                             VERSION.setDeprecateTime(deprecateDate);
                             if (new Date().after(deprecateDate)) {
                                 App.reportError(null, "Dashboard Outdated",
@@ -146,7 +152,7 @@ public class Dashboard {
      */
     public static void storeConfigs(){
         final String configs = Globals.joinLines(new Object[]{isAuthentic, Globals.userName(), VERSION,
-                KDate.toSerial(VERSION.getDeprecateTime())});
+                MDate.toSerial(VERSION.getDeprecateTime())});
         Serializer.toDisk(configs, Serializer.inPath("configs.ser"));
     }
 
@@ -163,7 +169,7 @@ public class Dashboard {
             map.put("isAuthentic", lines[0]);
             map.put("userName", lines[1]);
             map.put("version", lines[2]);
-            map.put("deprecateTime", KDate.formatDayTime(KDate.fromSerial(lines[3])));
+            map.put("deprecateTime", MDate.formatDayTime(MDate.fromSerial(lines[3])));
         }
         return map;
     }
@@ -243,9 +249,9 @@ public class Dashboard {
         }
 
         SwingUtilities.invokeLater(()-> {
-            final Board lastBoard = new Board();
+            final Board board = new Board();
             PREVIEW.dispose();
-            lastBoard.setVisible(true);
+            board.setVisible(true);
         });
     }
 
@@ -259,6 +265,14 @@ public class Dashboard {
 
     public static void setAuthentic(boolean authentic){
         isAuthentic = authentic;
+    }
+
+    public static String getPath(){
+        return path;
+    }
+
+    public static String getDefaultPath(){
+        return Globals.joinPaths(System.getProperty("user.home"), ".dashboard");
     }
 
     public static void reportAuthenticationError() {

@@ -32,7 +32,7 @@ Major folders in the project and their purpose:
 
 [test/](src/test)
 
-  `Resources under this folder are for testing only. They do not count in building, or running the actual program.`
+  `Resources under this folder are for testing only. They should not count in building, or running the actual program.`
 
 ## Skills
 
@@ -42,20 +42,13 @@ Major folders in the project and their purpose:
 
 _Knowledge about UTG, its programs, and courses is important._
 
-## Logic
+## Furthermore
 
-Please make sure to read the [logic statement](Logic.md) as well.
+Please make sure to read the [Logic statement](Logic.md),
+the [Convention](Convention.md) as well as the [Glossary](Glossary.md).
 
-## Conventions
+## Serialization
 
-- This project is strictly **platform-independent**.
-  In case it became absolutely necessary to implement some platform specific components,
-  developer must clearly state it out.
-- All features (parts of the project) should be **easily tested, and independent** of each other.
-- Developer is encouraged to **document** as much as possible.
-- Developer must use "**clean-code**" approach.
-- **Note** that Running the *main* branch (i.e. from sources) is technically equivalent
-  to running an installed version of the software.
-  Hence, developers are advised to modify the `ROOT_DIR` variable
-  from the [Serializer](src/main/java/core/utils/Serializer.java) type
-  in order to point to a temporary "test" directory until final compilation.
+Dashboard uses serialization/deserialization to save/retrieve user's data as s/he uses the program.
+The serialization approach ("what" & "how") is very tentative, and forms a key part in making releases backward-compatibile. Thus, developer must take great care regarding this component of the project.
+More information about serialization per-implementation is discussed in the [serialDir.txt](serialDir.txt) and [serialInfo.txt](serialInfo.txt) files.

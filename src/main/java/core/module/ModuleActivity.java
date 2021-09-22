@@ -4,8 +4,8 @@ import core.Activity;
 import core.Board;
 import core.user.Student;
 import core.utils.App;
-import core.utils.KComponent;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
+import core.utils.FontFactory;
 import proto.*;
 
 import javax.swing.*;
@@ -21,9 +21,9 @@ public class ModuleActivity implements Activity {
     public ModuleActivity() {
         final KPanel modulesActivity = new KPanel(new BorderLayout());
         if (Student.isGuest()) {
-            modulesActivity.add(KComponent.createUnavailableActivity("Modules"));
+            modulesActivity.add(MComponent.createUnavailableActivity("Modules"));
         } else {
-            indicator = new KLabel("First Year: "+Student.firstAcademicYear(), KFontFactory.BODY_HEAD_FONT);
+            indicator = new KLabel("First Year: "+Student.firstAcademicYear(), FontFactory.BODY_HEAD_FONT);
 
             final KButton tipButton = KButton.createIconifiedButton("warn.png", 30, 30);
             tipButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -37,7 +37,7 @@ public class ModuleActivity implements Activity {
                     "For more information about this activity, refer to the Tips."));
 
             refreshButton = new KButton("Sync");
-            refreshButton.setFont(KFontFactory.createPlainFont(15));
+            refreshButton.setFont(FontFactory.createPlainFont(15));
             refreshButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             refreshButton.setToolTipText("Synchronize Courses");
             refreshButton.addActionListener(e-> ModuleHandler.launchThoroughSync(true, refreshButton));
@@ -131,7 +131,7 @@ public class ModuleActivity implements Activity {
 
     private KButton getControlButton(String text) {
         final KButton button = new KButton(text);
-        button.setStyle(KFontFactory.createPlainFont(15), Color.BLUE);
+        button.setStyle(FontFactory.createPlainFont(15), Color.BLUE);
         button.setPreferredSize(new Dimension(150,30));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.undress();

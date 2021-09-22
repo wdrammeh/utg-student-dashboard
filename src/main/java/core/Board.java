@@ -7,7 +7,7 @@ import core.module.Analysis;
 import core.module.ModuleActivity;
 import core.module.ModuleHandler;
 import core.module.SemesterActivity;
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.setting.Settings;
 import core.setting.SettingsUI;
 import core.task.TaskActivity;
@@ -195,24 +195,24 @@ public final class Board extends KFrame {
         });
 
         levelLabel = new KLabel(Student.isGuest() ? "" : Student.getLevel().toUpperCase(),
-                KFontFactory.createPlainFont(15), Color.BLUE);
+                FontFactory.createPlainFont(15), Color.BLUE);
         final KPanel levelPanel = new KPanel(new FlowLayout(FlowLayout.LEFT), new Dimension(325,25));
         if (!Student.isGuest()) {
-            levelPanel.addAll(new KLabel("Level:", KFontFactory.createPlainFont(15)), levelLabel);
+            levelPanel.addAll(new KLabel("Level:", FontFactory.createPlainFont(15)), levelLabel);
         }
 
-        nameLabel = new KLabel(Student.requiredNameForFormat().toUpperCase(), KFontFactory.createBoldFont(20));
+        nameLabel = new KLabel(Student.requiredNameForFormat().toUpperCase(), FontFactory.createBoldFont(20));
         if (!Student.isGuest()) {
             nameLabel.setToolTipText(Student.getMajor()+" Major");
         }
 
         final KLabel programLabel = new KLabel(Student.isGuest() ? "" : Student.getProgram(),
-                KFontFactory.createPlainFont(17));
+                FontFactory.createPlainFont(17));
 
         final KButton toPortalButton = KButton.createIconifiedButton("go-arrow.png",25,25);
         toPortalButton.setText("Go Portal");
         toPortalButton.setMaximumSize(new Dimension(145, 35));
-        toPortalButton.setFont(KFontFactory.createBoldItalic(15));
+        toPortalButton.setFont(FontFactory.createBoldItalic(15));
         toPortalButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         toPortalButton.setToolTipText(String.format("Visit %s Portal", Student.isGuest() ? "UTG" : "your"));
         toPortalButton.addActionListener(actionEvent-> new Thread(()-> Portal.openPortal(toPortalButton)).start());
@@ -228,7 +228,7 @@ public final class Board extends KFrame {
         midPart.add(horizontalWrapper);//notice how the last space is automatically left blank.
         //besides, the height and the spaces do not seem to count
 
-        final KLabel aboutUTGLabel = new KLabel("About UTG", KFontFactory.createPlainFont(15));
+        final KLabel aboutUTGLabel = new KLabel("About UTG", FontFactory.createPlainFont(15));
         aboutUTGLabel.setToolTipText("Learn more about UTG");
         aboutUTGLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         aboutUTGLabel.underline(false);
@@ -249,12 +249,12 @@ public final class Board extends KFrame {
         });
 
         statusLabel = new KLabel(Student.isGuest() ? "" : Student.getStatus().toUpperCase(),
-                KFontFactory.createBoldFont(15));
+                FontFactory.createBoldFont(15));
         statusLabel.setForeground(Color.GRAY);
 
         final KPanel statePanel = new KPanel();
         if (!Student.isGuest()) {
-            statePanel.addAll(new KLabel("Status:", KFontFactory.createPlainFont(15)), statusLabel);
+            statePanel.addAll(new KLabel("Status:", FontFactory.createPlainFont(15)), statusLabel);
         }
 
         final KPanel upperDetails = new KPanel(new BorderLayout());
@@ -266,7 +266,7 @@ public final class Board extends KFrame {
         final KLabel schoolLabel = createLabelFor("School of", Student.getSchool());
         final KLabel divLabel = createLabelFor("Division of", Student.getDivision());
         semesterLabel = new KLabel(Student.isGuest() ? "" : Student.getSemester(),
-                KFontFactory.createBoldFont(17));
+                FontFactory.createBoldFont(17));
 
         final KPanel moreDetails = new KPanel();
         moreDetails.setLayout(new BoxLayout(moreDetails, BoxLayout.Y_AXIS));
@@ -279,7 +279,7 @@ public final class Board extends KFrame {
         detailsPart.add(moreDetails, BorderLayout.SOUTH);
 
         final Dimension outlineDim = new Dimension(215, 25);
-        final Font outlinesFont = KFontFactory.createBoldFont(15);
+        final Font outlinesFont = FontFactory.createBoldFont(15);
 
         final KButton toHome = new KButton("HOME");
         toHome.setFont(outlinesFont);
@@ -305,7 +305,7 @@ public final class Board extends KFrame {
                     super.setCursor(null);
                 } else {
                     super.setForeground(Color.RED);
-                    super.setCursor(KComponent.HAND_CURSOR);
+                    super.setCursor(MComponent.HAND_CURSOR);
 //                    Todo signal a desktop notification here
                 }
             }
@@ -340,7 +340,7 @@ public final class Board extends KFrame {
      */
     private KLabel createLabelFor(String h, String t){
         final String text = Globals.hasNoText(t) ? "" : t.contains("Unknown") ? t : h+" "+t;
-        return new KLabel(text, KFontFactory.createBoldFont(17));
+        return new KLabel(text, FontFactory.createBoldFont(17));
     }
 
     /**
@@ -364,7 +364,7 @@ public final class Board extends KFrame {
      * have their own key-bindings as well.
      * @see KButton
      */
-    private void attachListeners(){
+    private void attachListeners() {
         final KButton homeButton = KButton.createRootPaneButton(KeyEvent.VK_H,
                 e-> cardLayout.show(bodyLayer, "Home"));
         homeButton.setFocusable(true);
@@ -502,16 +502,16 @@ public final class Board extends KFrame {
      * It uses the given iconName and scales it to iWidth and iHeight.
      */
     private static KPanel newHomePanel(String text, String iconName, int iWidth, int iHeight){
-        final Font originalLabelFont = KFontFactory.createPlainFont(16);
+        final Font originalLabelFont = FontFactory.createPlainFont(16);
         final KLabel label = new KLabel(text, originalLabelFont);
         final KPanel homePanel = new KPanel(new BorderLayout());
         homePanel.add(new KPanel(new Dimension(225,30), label), BorderLayout.NORTH);
         homePanel.add(KLabel.createIcon(iconName, iWidth, iHeight), BorderLayout.CENTER);
-        homePanel.setCursor(KComponent.HAND_CURSOR);
+        homePanel.setCursor(MComponent.HAND_CURSOR);
         homePanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                label.setFont(KFontFactory.createBoldFont(17));
+                label.setFont(FontFactory.createBoldFont(17));
             }
 
             @Override
@@ -543,7 +543,7 @@ public final class Board extends KFrame {
     /**
      * Returns the rootPane of the current instance of the Dashboard.
      * A shorthand way of calling Board.getInstance().getRootPane()
-     * If the instance is null, returns null.
+     * This method is null-safer because if the instance is null, returns null.
      */
     public static JRootPane getRoot(){
         return instance == null ? null : instance.rootPane;

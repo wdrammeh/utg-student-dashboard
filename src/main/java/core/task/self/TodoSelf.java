@@ -3,10 +3,10 @@ package core.task.self;
 import core.alert.Notification;
 import core.task.exhibition.TodoExhibition;
 import core.task.handler.TodoHandler;
+import core.utils.FontFactory;
 import core.utils.Globals;
-import core.utils.KComponent;
-import core.utils.KDate;
-import core.utils.KFontFactory;
+import core.utils.MComponent;
+import core.utils.MDate;
 import proto.KButton;
 import proto.KLabel;
 import proto.KPanel;
@@ -32,7 +32,7 @@ public class TodoSelf {
 
 
     public TodoSelf(String desc, int duration){
-        this(desc, duration, KDate.formatNow(), true);
+        this(desc, duration, MDate.formatNow(), true);
         initializeTimer(Globals.DAY);
         setUpUI();
     }
@@ -41,7 +41,7 @@ public class TodoSelf {
         description = desc;
         specifiedDuration = duration;
         startDate = start;
-        dateExpectedToComplete = KDate.daysAfter(KDate.parseDayTime(startDate), duration);
+        dateExpectedToComplete = MDate.daysAfter(MDate.parseDayTime(startDate), duration);
         this.isActive = isActive;
     }
 
@@ -70,7 +70,7 @@ public class TodoSelf {
         moreOptions.addActionListener(e-> exhibition = new TodoExhibition(this));
 
         togoLabel = new KLabel(Globals.checkPlurality(getDaysLeft(), "days") + " to complete",
-                KFontFactory.createPlainFont(16));
+                FontFactory.createPlainFont(16));
         togoLabel.setOpaque(false);
         if (isActive) {
             togoLabel.setForeground(Color.RED);
@@ -81,19 +81,19 @@ public class TodoSelf {
 
         final KPanel quantaPanel = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         quantaPanel.addAll(new KLabel(specifiedDuration+" days task",
-                        KFontFactory.createPlainFont(16)), togoLabel, moreOptions);
+                        FontFactory.createPlainFont(16)), togoLabel, moreOptions);
 
         if (layerPanel == null) {
             layerPanel = new KPanel(1_000, 35);
         } else {
-            KComponent.clear(layerPanel);
+            MComponent.clear(layerPanel);
         }
         layerPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true));
         layerPanel.setLayout(new BorderLayout());
-        layerPanel.add(new KPanel(new KLabel(description, KFontFactory.createPlainFont(17),
+        layerPanel.add(new KPanel(new KLabel(description, FontFactory.createPlainFont(17),
                         Color.BLUE)), BorderLayout.WEST);
         layerPanel.add(quantaPanel, BorderLayout.EAST);
-        KComponent.ready(layerPanel);
+        MComponent.ready(layerPanel);
     }
 
     private void signalEveNotice(){
@@ -125,7 +125,7 @@ public class TodoSelf {
     }
 
     public int getDaysTaken() {
-        return (int) KDate.getDifference(KDate.parseDayTime(startDate), new Date());
+        return (int) MDate.getDifference(MDate.parseDayTime(startDate), new Date());
     }
 
     public int getTotalTimeConsumed(){
@@ -177,7 +177,7 @@ public class TodoSelf {
             togoLabel.setText("Less than a day to complete");
             signalEveNotice();
         }
-        int residue = KDate.getTimeValue(KDate.parseDayTime(dateExpectedToComplete)) - KDate.getTimeValue(new Date());
+        int residue = MDate.getTimeValue(MDate.parseDayTime(dateExpectedToComplete)) - MDate.getTimeValue(new Date());
         if (residue < 0) { // reverse it then...
             residue = Globals.DAY - Math.abs(residue);
         }
@@ -192,8 +192,8 @@ public class TodoSelf {
     }
 
     public String export(){
-        return Globals.joinLines(new Object[]{description, KDate.toSerial(KDate.parseDayTime(startDate)),
-                specifiedDuration, totalTimeConsumed, isActive, KDate.toSerial(KDate.parseDayTime(dateCompleted)),
+        return Globals.joinLines(new Object[]{description, MDate.toSerial(MDate.parseDayTime(startDate)),
+                specifiedDuration, totalTimeConsumed, isActive, MDate.toSerial(MDate.parseDayTime(dateCompleted)),
                 eveIsAlerted, doneIsAlerted});
     }
 

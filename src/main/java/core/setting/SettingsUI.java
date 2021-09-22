@@ -4,7 +4,7 @@ import core.Activity;
 import core.Board;
 import core.Portal;
 import core.first.Login;
-import core.serial.Serializer;
+import core.utils.Serializer;
 import core.user.Student;
 import core.utils.*;
 import proto.*;
@@ -31,8 +31,8 @@ public class SettingsUI implements Activity {
     private static KCheckBox syncChecking;
     private static JComboBox<String> nameFormatBox, bgBox, looksBox;
     private static final String changeHint = "Enter your Matriculation Number to effect this changes:";
-    private static final Font H_FONT = KFontFactory.createBoldFont(16);//generally for the hints
-    private static final Font V_FONT = KFontFactory.createPlainFont(17);//for the values
+    private static final Font H_FONT = FontFactory.createBoldFont(16);//generally for the hints
+    private static final Font V_FONT = FontFactory.createPlainFont(17);//for the values
     public static final KTextField minorField = new KTextField(new Dimension(320,30));
     public static final KLabel minorLabel = new KLabel(Student.getMinor(), V_FONT);
     public static final KTextField majorCodeField = KTextField.rangeControlField(3);
@@ -49,13 +49,13 @@ public class SettingsUI implements Activity {
         settingsTab.add(profileComponent());
         settingsTab.add(settingsComponent());
 
-        final Font tabFont = KFontFactory.createPlainFont(17);
+        final Font tabFont = FontFactory.createPlainFont(17);
         settingsTab.setTabComponentAt(0, new KLabel("About Me", tabFont));
         settingsTab.setTabComponentAt(1, new KLabel("Customize Profile", tabFont));
         settingsTab.setTabComponentAt(2, new KLabel("Customize Dashboard", tabFont));
 
         final KPanel settingsUI = new KPanel(new BorderLayout());
-        settingsUI.add(new KPanel(new KLabel("Personalization", KFontFactory.BODY_HEAD_FONT, Color.BLUE)),
+        settingsUI.add(new KPanel(new KLabel("Personalization", FontFactory.BODY_HEAD_FONT, Color.BLUE)),
                 BorderLayout.NORTH);
         settingsUI.add(settingsTab, BorderLayout.CENTER);
 
@@ -69,7 +69,7 @@ public class SettingsUI implements Activity {
 
     private static JComponent aboutComponent(){
         final KButton changeButton = new KButton("Change");
-        changeButton.setFont(KFontFactory.createPlainFont(14));
+        changeButton.setFont(FontFactory.createPlainFont(14));
         changeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         changeButton.addActionListener(e-> Student.startSettingImage());
 
@@ -198,7 +198,7 @@ public class SettingsUI implements Activity {
             final int vInt = App.verifyUser(changeHint);
             if (vInt == App.VERIFICATION_TRUE) {
                 contactLabelsPanel.add(newContactLabel(incomingDial, contactLabelsPanel));
-                KComponent.ready(contactLabelsPanel);
+                MComponent.ready(contactLabelsPanel);
                 Student.addTelephone(incomingDial);
             } else if (vInt == App.VERIFICATION_FALSE) {
                 App.reportMatError();
@@ -229,7 +229,7 @@ public class SettingsUI implements Activity {
             aboutComponent.removeAll(schoolPanel, depPanel, progPanel, minPanel, yoaPanel, moaPanel, eygPanel,
                     levelPanel);
         }
-        aboutComponent.add(KComponent.contentBottomGap());
+        aboutComponent.add(MComponent.contentBottomGap());
         return new KScrollPane(aboutComponent);
     }
 
@@ -244,7 +244,7 @@ public class SettingsUI implements Activity {
                 if (App.showYesNoCancelDialog("Confirm",
                         "Are you sure you want to remove '"+text+"' from your contacts?")) {
                     resident.remove(label);
-                    KComponent.ready(resident);
+                    MComponent.ready(resident);
                     Student.removeTelephone(text);
                 }
             }
@@ -282,7 +282,7 @@ public class SettingsUI implements Activity {
         removeButton.addActionListener(e-> {
             if (App.showYesNoCancelDialog("Confirm", "Are you sure you want to remove '"+key+"'?")) {
                 aboutComponent.remove(panel);
-                KComponent.ready(aboutComponent);
+                MComponent.ready(aboutComponent);
                 Student.getAdditional().remove(key);
             }
         });
@@ -602,7 +602,7 @@ public class SettingsUI implements Activity {
         valueField.setPreferredSize(new Dimension(330, 30));
         final KTextField keyField = new KTextField();
         keyField.setPreferredSize(new Dimension(200, 30));
-        keyField.setFont(KFontFactory.createBoldFont(15));
+        keyField.setFont(FontFactory.createBoldFont(15));
         keyField.addActionListener(e -> {
             if (Globals.hasNoText(valueField.getText())) {
                 valueField.requestFocusInWindow();
@@ -647,7 +647,7 @@ public class SettingsUI implements Activity {
         final KScrollPane descriptionScroll = descriptionArea.outerScrollPane(new Dimension(865,150));
         final KPanel aboutPanel = new KPanel(new KLabel("About Me:", V_FONT), descriptionScroll);
 
-        profileUI.addAll(msPanel, pobPanel, craftPanel, aboutPanel, KComponent.contentBottomGap());
+        profileUI.addAll(msPanel, pobPanel, craftPanel, aboutPanel, MComponent.contentBottomGap());
         return new KScrollPane(profileUI);
     }
 
@@ -731,10 +731,10 @@ public class SettingsUI implements Activity {
         nameFormatBox = new JComboBox<String>(new String[]{"First Name first", "Last Name first"}) {
             @Override
             public JToolTip createToolTip() {
-                return KComponent.preferredTip();
+                return MComponent.preferredTip();
             }
         };
-        nameFormatBox.setFont(KFontFactory.createPlainFont(15));
+        nameFormatBox.setFont(FontFactory.createPlainFont(15));
         nameFormatBox.setSelectedItem(Student.currentNameFormat());
         nameFormatBox.setCursor(handCursor);
         nameFormatBox.addActionListener(e-> {
@@ -748,10 +748,10 @@ public class SettingsUI implements Activity {
         looksBox = new JComboBox<String>(Settings.getLookNames()) {
             @Override
             public JToolTip createToolTip() {
-                return KComponent.preferredTip();
+                return MComponent.preferredTip();
             }
         };
-        looksBox.setFont(KFontFactory.createPlainFont(15));
+        looksBox.setFont(FontFactory.createPlainFont(15));
         looksBox.setFocusable(false);
         looksBox.setSelectedItem(Settings.currentLookName());
         looksBox.setCursor(handCursor);
@@ -769,10 +769,10 @@ public class SettingsUI implements Activity {
         bgBox = new JComboBox<String>(Settings.backgroundNames()) {
             @Override
             public JToolTip createToolTip() {
-                return KComponent.preferredTip();
+                return MComponent.preferredTip();
             }
         };
-        bgBox.setFont(KFontFactory.createPlainFont(15));
+        bgBox.setFont(FontFactory.createPlainFont(15));
         bgBox.setSelectedItem(Settings.currentBackgroundName());
         bgBox.setCursor(handCursor);
         bgBox.addActionListener(e-> SwingUtilities.invokeLater(()-> {
@@ -850,7 +850,7 @@ public class SettingsUI implements Activity {
                 nameFormatPanel, lafPanel, bgPanel, layoutPanel);
 
         final KButton resetButton = new KButton("Reset Settings");
-        resetButton.setFont(KFontFactory.createPlainFont(15));
+        resetButton.setFont(FontFactory.createPlainFont(15));
         resetButton.setCursor(handCursor);
         resetButton.addActionListener(e-> {
             if (App.showYesNoCancelDialog("Reset",
@@ -866,7 +866,7 @@ public class SettingsUI implements Activity {
     }
 
     private static KLabel newSignLabel(String text, Color color){
-        final KLabel label = new KLabel(text, KFontFactory.createPlainFont(16), color);
+        final KLabel label = new KLabel(text, FontFactory.createPlainFont(16), color);
         label.underline(false);
         label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return label;

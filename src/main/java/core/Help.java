@@ -1,7 +1,7 @@
 package core;
 
 import core.utils.Globals;
-import core.utils.KFontFactory;
+import core.utils.FontFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import proto.*;
@@ -22,7 +22,7 @@ public class Help implements Activity {
         final CardLayout helpCard = new CardLayout();
         final KPanel centerPanel = new KPanel(helpCard);
 
-        final KLabel showingLabel = new KLabel("Dashboard Tips", KFontFactory.BODY_HEAD_FONT);
+        final KLabel showingLabel = new KLabel("Dashboard Tips", FontFactory.BODY_HEAD_FONT);
         final KComboBox<String> helpBox = new KComboBox<>(new String[] {"Dashboard Tips", "UTG FAQs"});
         helpBox.setFocusable(false);
         helpBox.addActionListener(e-> {

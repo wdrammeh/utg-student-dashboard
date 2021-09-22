@@ -1,4 +1,4 @@
-package core.serial;
+package core.utils;
 
 import core.News;
 import core.Portal;
@@ -18,12 +18,11 @@ import java.io.*;
 import static core.utils.Globals.joinPaths;
 
 public class Serializer {
-    public static final String ROOT_DIR = joinPaths(System.getProperty("user.home"), "Dashboard");
-
 
     /**
      * Serializes the given object to the given path.
-     * Classes that perform serialization eventually invoke this to do the ultimate writing.
+     * Classes that perform serialization eventually invoke this
+     * in order to do the ultimate writing.
      * This method is self-silent.
      */
     public static void toDisk(Object obj, String path){
@@ -65,7 +64,7 @@ public class Serializer {
     }
 
     public static String inPath(String... paths){
-        return String.join(File.separator, ROOT_DIR, joinPaths(paths));
+        return String.join(File.separator, Dashboard.getPath(), joinPaths(paths));
     }
 
     public static void mountUserData(){
@@ -85,7 +84,7 @@ public class Serializer {
 
     public static boolean unMountUserData(){
         try {
-            FileUtils.deleteDirectory(new File(ROOT_DIR));
+            FileUtils.deleteDirectory(new File(Dashboard.getPath()));
             return true;
         } catch (IOException e) {
             App.silenceException(e);
