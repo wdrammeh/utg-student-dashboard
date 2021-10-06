@@ -4,7 +4,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import core.Board;
 import core.module.Course;
-import core.module.Memory;
+import core.module.ModuleMemory;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
@@ -172,10 +172,10 @@ public class TranscriptExporter {
         }
         document.add(headTable);
 
-        final ArrayList<String> semesters = Memory.getSemesters();
+        final ArrayList<String> semesters = ModuleMemory.getSemesters();
         for (String semester : semesters) {
             document.add(newSemesterHeadTable(semester));
-            document.add(newSemesterBodyTable(Memory.getFractionBySemester(semester)));
+            document.add(newSemesterBodyTable(ModuleMemory.getFractionBySemester(semester)));
         }
 
         final PdfPTable gpaTable = new PdfPTable(3);

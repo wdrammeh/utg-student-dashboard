@@ -11,6 +11,10 @@ import proto.*;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * An activity end for the courses.
+ * ModuleActivity is for courses as SemesterActivity is for RegisteredCourses.
+ */
 public class ModuleActivity implements Activity {
     private KButton onButton;
     private KLabel indicator;
@@ -47,8 +51,8 @@ public class ModuleActivity implements Activity {
             headerPanel.add(new KPanel(tipButton), BorderLayout.CENTER);
             headerPanel.add(new KPanel(refreshButton), BorderLayout.EAST);
 
-            final SummerModule summerHandler = new SummerModule();
-            final MiscModule miscHandler = new MiscModule();
+            final SummerHandler summerHandler = new SummerHandler();
+            final MiscHandler miscHandler = new MiscHandler();
             final ModuleHandler handler = new ModuleHandler();
 
             residentLayout = new CardLayout();

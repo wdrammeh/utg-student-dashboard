@@ -12,12 +12,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
+ * Handles operations relating to Miscellaneous ("Misc.") courses.
+ * 
  * Deals with miscellaneous courses.
  * A module is considered misc. if its academic-year falls out
  * of the student's bachelors level specification.
  * @see Course#isMinor()
  */
-public class MiscModule {
+public class MiscHandler {
     private KMenuItem detailsItem;
     private KMenuItem editItem;
     private KMenuItem removeItem;
@@ -28,7 +30,7 @@ public class MiscModule {
     public static KTableModel miscModel;
 
 
-    public MiscModule(){
+    public MiscHandler(){
         setupTable();
         configurePopUp();
     }
@@ -292,7 +294,7 @@ public class MiscModule {
             codeField.setText(target.getCode());
             nameField.setText(target.getName());
             lecturerField.setText(target.getLecturer());
-            lecturerField.setEditable(target.isLecturerNameEditable());
+            lecturerField.setEditable(target.isLecturerEditable());
             dayBox.setSelectedItem(target.getDay());
             timeBox.setSelectedItem(target.getTime());
             campusBox.setSelectedItem(target.getCampus());
@@ -301,7 +303,7 @@ public class MiscModule {
             creditBox.setSelectedItem(target.getCreditHours());
             scoreField.setText(Double.toString(target.getScore()));
 
-            if (miscCourse.isVerified()) {
+            if (miscCourse.isConfirmed()) {
                 yearField.setEditable(false);
                 codeField.setEditable(false);
                 nameField.setEditable(false);
@@ -401,9 +403,9 @@ public class MiscModule {
                             codeField.getText().toUpperCase(), nameField.getText(), lecturerField.getText(),
                             campusBox.getSelectionText(), roomField.getText(), dayBox.getSelectionText(),
                             timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            requirementBox.getSelectionText(), target.isVerified());
+                            requirementBox.getSelectionText(), target.isConfirmed());
                     course.setStatus(target.getStatus());
-                    course.setLecturerNameEditable(target.isLecturerNameEditable());
+                    course.setLecturerEditable(target.isLecturerEditable());
                     ModuleHandler.substitute(target, course);
                     dispose();
                 }

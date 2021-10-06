@@ -13,11 +13,12 @@ import static core.transcript.TranscriptActivity.TRANSCRIPT_MODEL;
  * This is the backbone of analysis, and transcript.
  * Among the things it does is to keep track of verified courses
  * to be supplied to such types.
- * @see Analysis
+ * 
+ * @see ModuleAnalysis
  * @see TranscriptActivity
  * @see TranscriptExporter
  */
-public class Memory {
+public class ModuleMemory {
     /**
      * Keeps track of the verified-modules.
      * There should be no chance of adding unverified modules.
@@ -30,7 +31,7 @@ public class Memory {
     private static final ArrayList<Course> VERIFIED_LIST = new ArrayList<>() {
         @Override
         public boolean add(Course course) {
-            return course.isVerified() && super.add(course);
+            return course.isConfirmed() && super.add(course);
         }
     };
 
@@ -83,16 +84,6 @@ public class Memory {
 
     public static ArrayList<Course> getList(){
         return VERIFIED_LIST;
-    }
-
-    /**
-     * Returns a course purposely for experimentation by this class.
-     * This is mostly used by the tracer functions, and the convention
-     * is that they may not return it however.
-     */
-    private static Course newBlankModule(){
-        return new Course("", "", "", "", "", "", "", "", "",
-                0, 3, "", true);
     }
 
     /**
@@ -774,7 +765,7 @@ public class Memory {
                     bestSemester = semester;
                 }
             }
-            return bestSemester+"    [CGPA = "+ Analysis.toFourth(bestCGPA)+"]";
+            return bestSemester+"    [CGPA = "+ ModuleAnalysis.toFourth(bestCGPA)+"]";
         }
     }
 
@@ -797,7 +788,7 @@ public class Memory {
                     worstSemester = semester;
                 }
             }
-            return worstSemester+"    [CGPA = "+ Analysis.toFourth(worstCGPA)+"]";
+            return worstSemester+"    [CGPA = "+ ModuleAnalysis.toFourth(worstCGPA)+"]";
         }
     }
 
@@ -820,7 +811,7 @@ public class Memory {
                     bestYear = year;
                 }
             }
-            return bestYear+"    [CGPA = "+ Analysis.toFourth(bestCGPA)+"]";
+            return bestYear+"    [CGPA = "+ ModuleAnalysis.toFourth(bestCGPA)+"]";
         }
     }
 
@@ -843,7 +834,7 @@ public class Memory {
                     worstYear = year;
                 }
             }
-            return worstYear+"    [CGPA = "+ Analysis.toFourth(worstCGPA)+"]";
+            return worstYear+"    [CGPA = "+ ModuleAnalysis.toFourth(worstCGPA)+"]";
         }
     }
 

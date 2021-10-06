@@ -24,6 +24,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles operations relating to the currently running semester.
+ */
 public class SemesterActivity implements Activity {
     private static KTable activeTable;
     private static KTableModel activeModel;
@@ -39,8 +42,9 @@ public class SemesterActivity implements Activity {
     private static final ArrayList<RegisteredCourse> ACTIVE_COURSES = new ArrayList<>() {
         @Override
         public boolean add(RegisteredCourse course) {
-            activeModel.addRow(new String[]{course.getCode(), course.getName(), course.getLecturer(),
-                    course.getSchedule(), course.getStatus()});
+            final String[] rowData = new String[] { course.getCode(), course.getName(), course.getLecturer(),
+                    course.getSchedule(), course.getStatus() };
+            activeModel.addRow(rowData);
             hintLabel.setText(REGISTERED_HINT);
             return super.add(course);
         }
@@ -69,12 +73,17 @@ public class SemesterActivity implements Activity {
 
             matchItem = new KMenuItem("Match Portal", e-> startMatching(true));
 
-            final KMenuItem updateItem = new KMenuItem("Update Notice",
+            final KMenuItem visitItem = new KMenuItem("Visit Portal");
+            visitItem.addActionListener(e-> {
+                // Todo: Don't only open Portal here: Navigate to (the bottom) of "All Registered Courses" tab
+                new Thread(()-> {
+                    Portal.openPortal(visitItem);
+                }).start();
+            });
+
+            final KMenuItem updateItem = new KMenuItem("Update Registration Notice",
                     e-> App.reportInfo("Registration Alert",
                             "To update the Registration Notice, go to "+ Globals.reference("Notifications", "Portal Alerts", "Update Alerts") +"."));
-
-            final KMenuItem visitItem = new KMenuItem("Visit Portal");
-            visitItem.addActionListener(e-> new Thread(()-> Portal.openPortal(visitItem)).start());
 
             final JPopupMenu popupMenu = new JPopupMenu();
             popupMenu.add(matchItem);
@@ -254,17 +263,17 @@ public class SemesterActivity implements Activity {
      * If it's found, it shall be replaced; otherwise, unsuccessful.
      */
     private static void startCheckout(RegisteredCourse targetCourse) {
-        if (targetCourse.getStatus().equals(Course.VERIFYING)) {
+        if (targetCourse.getStatus().equals(Module.VERIFYING)) {
             App.silenceInfo(String.format("Already verifying '%s'.", targetCourse.getAbsoluteName()));
             return;
         }
 
         final String targetCode = targetCourse.getCode();
-        final String initialStatus = String.valueOf(activeModel.getValueAt(activeModel.getRow(targetCode),
-                activeModel.getColumnCount() - 1)); // any of 'confirmed', or 'unknown'
-        targetCourse.setStatus(Course.VERIFYING);
-        activeModel.setValueAt(Course.VERIFYING, activeModel.getRow(targetCode),
+        final String initialStatus = targetCourse.getStatus();
+        targetCourse.setStatus(Module.VERIFYING);
+        activeModel.setValueAt(Module.VERIFYING, activeModel.getRow(targetCode),
                 activeModel.getColumnCount() - 1);
+
         fixRunningDriver();
         if (activeDriver == null) {
             App.reportMissingDriver();
@@ -275,6 +284,7 @@ public class SemesterActivity implements Activity {
             }
             return;
         }
+
         if (!Internet.isInternetAvailable()) {
             App.reportNoInternet();
             final int targetRow = activeModel.getRow(targetCode);
@@ -368,14 +378,14 @@ public class SemesterActivity implements Activity {
 //            iteration works upward until the caption is found
             while (!allRows.get(match).getText().equals(Student.getSemester())) {
                 final List<WebElement> instantData = allRows.get(match).findElements(By.tagName("td"));
-                if (instantData.get(0).getText().equals(targetCode)) { // threshold
+                if (instantData.get(0).getText().equals(targetCode)) { // threshold passed
                     final RegisteredCourse foundCourse = new RegisteredCourse(instantData.get(0).getText(),
                             instantData.get(1).getText(), instantData.get(2).getText(), instantData.get(3).getText(),
-                            instantData.get(4).getText(), targetCourse.getDay(), targetCourse.getTime(), true);
+                            instantData.get(4).getText(), "", "", true);
                     final int targetRow = activeModel.getRow(targetCode);
                     if (targetRow >= 0) { // still present?
-                        targetCourse.refract(foundCourse);
-                        updateTable(targetCode, targetCourse);
+                        foundCourse.merge(targetCourse);
+                        replace(targetCourse, foundCourse);
                     } else { // deleted?
 //                        Todo: An option to add it (again), or dismiss
                         ACTIVE_COURSES.add(foundCourse);
@@ -393,8 +403,10 @@ public class SemesterActivity implements Activity {
                 App.reportError("Checkout Unsuccessful",
                         "Attempt to check-out '"+targetCourse.getAbsoluteName()+"' was unsuccessful.\n" +
                                 "It seems like you haven't register it this semester.");
-                activeModel.setValueAt(initialStatus, activeModel.getRow(targetCode),
-                        activeModel.getColumnCount() - 1);
+                final int targetRow = activeModel.getRow(targetCode);
+                if (targetRow >= 0){
+                    activeModel.setValueAt(initialStatus, targetRow, activeModel.getColumnCount() - 1);
+                }
                 targetCourse.setConfirmed(false);
                 targetCourse.setStatus(Globals.UNKNOWN);
             }
@@ -513,10 +525,9 @@ public class SemesterActivity implements Activity {
                         if (present == null) { // does not exist at all
                             ACTIVE_COURSES.add(incoming);
                             matchBuilder.append(incoming.getAbsoluteName()).append(" was found registered.\n");
-                        } else { //existed? override, but merge first
-                            final String presentId = present.getCode();
-                            present.refract(incoming);
-                            updateTable(presentId, present);
+                        } else { // existed? override, but merge first
+                            incoming.merge(present);
+                            replace(present, incoming);
                             matchBuilder.append(incoming.getName()).append(" was found registered - now merged, and confirmed set.\n");
                         }
                         foundCodes.add(incoming.getCode());
@@ -551,6 +562,25 @@ public class SemesterActivity implements Activity {
                 }
             }).start();
         }
+    }
+
+    /**
+     * Where necessary, {@code merge()} must have been invoked on the
+     * {@code newCourse} prior to this call.
+     * 
+     * @param oldCourse
+     * @param newCourse
+     */
+    private static void replace(RegisteredCourse oldCourse, RegisteredCourse newCourse) {
+        ACTIVE_COURSES.set(ACTIVE_COURSES.indexOf(oldCourse), newCourse);
+        final int row = activeModel.getRow(oldCourse.getCode());
+        SwingUtilities.invokeLater(()-> {
+            activeModel.setValueAt(newCourse.getCode(), row, 0);
+            activeModel.setValueAt(newCourse.getName(), row, 1);
+            activeModel.setValueAt(newCourse.getLecturer(), row, 2);
+            activeModel.setValueAt(newCourse.getSchedule(), row, 3);
+            activeModel.setValueAt(newCourse.getStatus(), row, 4);
+        });
     }
 
     private static String generateNotificationWarning(String moduleName) {
@@ -600,20 +630,20 @@ public class SemesterActivity implements Activity {
             codeField = KTextField.rangeControlField(10);
             codeField.setPreferredSize(new Dimension(150, 30));
             final KPanel codeLayer = new KPanel(new BorderLayout());
-            codeLayer.add(new KPanel(newHintLabel("*Course Code:")), BorderLayout.WEST);
+            codeLayer.add(new KPanel(newHintLabel("Course Code:")), BorderLayout.WEST);
             codeLayer.add(new KPanel(codeField), BorderLayout.CENTER);
 
             nameField = new KTextField(new Dimension(325,30));
             final KPanel nameLayer = new KPanel(new BorderLayout());
-            nameLayer.add(new KPanel(newHintLabel("*Name:")), BorderLayout.WEST);
+            nameLayer.add(new KPanel(newHintLabel("Name:")), BorderLayout.WEST);
             nameLayer.add(new KPanel(nameField), BorderLayout.CENTER);
 
             lecturerField = new KTextField(new Dimension(325,30));
             final KPanel lecturerLayer = new KPanel(new BorderLayout());
-            lecturerLayer.add(new KPanel(newHintLabel("*Lecturer:")), BorderLayout.WEST);
+            lecturerLayer.add(new KPanel(newHintLabel("Lecturer:")), BorderLayout.WEST);
             lecturerLayer.add(new KPanel(lecturerField), BorderLayout.CENTER);
 
-            campusBox = new KComboBox<>(Course.campuses(), -1);
+            campusBox = new KComboBox<>(Module.campuses(), -1);
             campusBox.addMask(Globals.UNKNOWN, "");
             final KPanel campusLayer = new KPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
             campusLayer.add(new KPanel(newHintLabel("Campus:")), BorderLayout.WEST);
@@ -624,9 +654,9 @@ public class SemesterActivity implements Activity {
             roomLayer.add(new KPanel(newHintLabel("Lecture Room:")), BorderLayout.WEST);
             roomLayer.add(new KPanel(roomField), BorderLayout.CENTER);
 
-            daysBox = new KComboBox<>(Course.weekDays(), -1);
+            daysBox = new KComboBox<>(Module.weekDays(), -1);
             daysBox.addMask(Globals.UNKNOWN, "");
-            hoursBox = new KComboBox<>(Course.periods(), -1);
+            hoursBox = new KComboBox<>(Module.periods(), -1);
             hoursBox.addMask(Globals.UNKNOWN, "");
             final KPanel scheduleLayer = new KPanel();
             scheduleLayer.addAll(newHintLabel("Day:"), daysBox,
@@ -695,24 +725,24 @@ public class SemesterActivity implements Activity {
 
     private static class RegisteredCourseEditor extends RegisteredCourseAdder {
 
-        public RegisteredCourseEditor(RegisteredCourse original) {
+        public RegisteredCourseEditor(RegisteredCourse course) {
             super();
-            setTitle(original.getName());
+            setTitle(course.getName());
 
-            final String origCode = original.getCode();
-            codeField.setText(origCode);
-            nameField.setText(original.getName());
-            lecturerField.setText(original.getLecturer());
-            campusBox.setSelectedItem(original.getCampus()); // remember, selection is not affected if it has no such item in its model
-            roomField.setText(original.getRoom());
-            daysBox.setSelectedItem(original.getDay());
-            hoursBox.setSelectedItem(original.getTime());
+            codeField.setText(course.getCode());
+            nameField.setText(course.getName());
+            lecturerField.setText(course.getLecturer());
+            campusBox.setSelectedItem(course.getCampus()); // Remember, selection is not affected if it has no such item in its model
+            roomField.setText(course.getRoom());
+            daysBox.setSelectedItem(course.getDay());
+            hoursBox.setSelectedItem(course.getTime());
 
-            if (original.isConfirmed()) {
+            if (course.isConfirmed()) {
                 codeField.setEditable(false);
                 nameField.setEditable(false);
                 lecturerField.setEditable(false);
             }
+            
             contentPanel.remove(checkPanel);
             doneButton.removeActionListener(doneButton.getActionListeners()[0]);
             doneButton.addActionListener(e-> {
@@ -739,31 +769,20 @@ public class SemesterActivity implements Activity {
                         }
                     }
 
-                    original.refract(refCode.toUpperCase(), nameField.getText(), lecturerField.getText(),
-                            campusBox.getSelectionText(), roomField.getText(), daysBox.getSelectionText(),
-                            hoursBox.getSelectionText(), original.isConfirmed());
+                    final RegisteredCourse refracted = new RegisteredCourse(refCode.toUpperCase(), nameField.getText(),
+                        lecturerField.getText(), campusBox.getSelectionText(), roomField.getText(), daysBox.getSelectionText(),
+                        hoursBox.getSelectionText(), course.isConfirmed());
                     dispose();
-                    updateTable(origCode, original);
+                    replace(course, refracted);
                 }
             });
-        }
-    }
-
-    private static void updateTable(String rowId, RegisteredCourse course) {
-        final int targetRow = activeModel.getRow(rowId);
-        if (targetRow >= 0) {
-            activeModel.setValueAt(course.getCode(), targetRow, 0);
-            activeModel.setValueAt(course.getName(), targetRow, 1);
-            activeModel.setValueAt(course.getLecturer(), targetRow, 2);
-            activeModel.setValueAt(course.getSchedule(), targetRow, 3);
-            activeModel.setValueAt(course.getStatus(), targetRow, 4);
         }
     }
 
     public static void serialize(){
         final String[] data = new String[ACTIVE_COURSES.size()];
         for (int i = 0; i < data.length; i++) {
-            data[i] = ACTIVE_COURSES.get(i).exportContent();
+            data[i] = ACTIVE_COURSES.get(i).export();
         }
         Serializer.toDisk(data, Serializer.inPath("modules", "registered.ser"));
     }
@@ -775,7 +794,11 @@ public class SemesterActivity implements Activity {
         } else {
             final String[] data = (String[]) obj;
             for (String entry : data) {
-                ACTIVE_COURSES.add(RegisteredCourse.create(entry));
+                try {
+                    ACTIVE_COURSES.add(RegisteredCourse.create(entry));
+                } catch (Exception e) {
+                    App.silenceException(e);
+                }
             }
         }
     }

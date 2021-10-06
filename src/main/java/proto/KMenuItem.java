@@ -19,7 +19,7 @@ public class KMenuItem extends JMenuItem implements Preference {
 
     @Override
     public void setPreferences() {
-        setFont(FontFactory.createPlainFont(15));
+        setFont(FontFactory.createPlainFont(15));  // Todo: Refer
     }
 
 }

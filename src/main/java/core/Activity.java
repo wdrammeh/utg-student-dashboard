@@ -10,7 +10,7 @@ public interface Activity {
     /**
      * Whenever this method is invoked, the calling-class should own the bodyLayer
      * in its own way, with possible pre- and, or post-tasks.
-     * E.g: the {@link core.module.Analysis} type answers by making pre-tasks;
+     * E.g: the {@link core.module.ModuleAnalysis} type answers by making pre-tasks;
      * while the {@link core.transcript.TranscriptActivity}, post-tasks.
      *
      * The consequence of this must not only be the result of a home-panel click,

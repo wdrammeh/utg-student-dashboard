@@ -1,29 +1,29 @@
 package core.first;
 
-import core.Portal;
-import core.driver.MDriver;
-import core.module.Course;
-import core.module.ModuleHandler;
-import core.module.RegisteredCourse;
-import core.module.SemesterActivity;
-import core.user.Student;
-import core.utils.App;
-import core.utils.Globals;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringJoiner;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import core.Portal;
+import core.driver.MDriver;
+import core.module.Course;
+import core.module.RegisteredCourse;
+import core.user.Student;
+import core.utils.App;
+import core.utils.Globals;
+
 /**
- * Todo: to save time, setting-up of the driver should begin (separately) since {@link utg.Dashboard}.
- *  And this type is to wait on that process, if not completed already.
+ * Todo: To save time, setting-up of the driver should begin (separately)
+ * since {@link utg.Dashboard}.
+ * And this type is to wait on that process, if not completed already.
  *
  * Also, Dashboard is to support multiple drivers in a future release.
  * @see MDriver
@@ -294,7 +294,7 @@ public class PrePortal {
 
         final List<WebElement> tabs = loadWaiter.until(
                 ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
-//        Firstly, code, name, year, semester, and credit hours at transcript tab
+//        Firstly, code, name, year, semester, and credit-hours at transcript tab
 //        Addition to startupCourses is only here; all the following loops only updates the details. this eradicates the possibility of adding running courses at tab-4
         final WebElement transcriptTap = Portal.getTabElement("Transcript", tabs);
         if (transcriptTap == null) {
@@ -363,16 +363,16 @@ public class PrePortal {
         final WebElement allRegisteredTable = driver.findElementByCssSelector(".table-warning");
         final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
         final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
-        int t = 0;
-        while (t < allRows.size()) {
-            final List<WebElement> instantRow = allRows.get(t).findElements(By.tagName("td"));
+        int r = 0;
+        while (r < allRows.size()) {
+            final List<WebElement> instantRow = allRows.get(r).findElements(By.tagName("td"));
             for (Course c : STARTUP_COURSES) {
                 if (c.getCode().equals(instantRow.get(0).getText())) {
                     c.setLecturer(instantRow.get(2).getText());
-                    c.setLecturerNameEditable(false);
+                    c.setLecturerEditable(false);
                 }
             }
-            t++;
+            r++;
         }
 
 //        Available running courses? Add
@@ -383,9 +383,8 @@ public class PrePortal {
             int match = allRows.size() - 1;
             while (!allRows.get(match).getText().equalsIgnoreCase(ongoingSemester)){
                 final List<WebElement> data = allRows.get(match).findElements(By.tagName("td"));
-                STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(),
-                        data.get(1).getText(), data.get(2).getText(), data.get(3).getText(), data.get(4).getText(),
-                        "", "", true));
+                STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(), data.get(1).getText(),
+                        data.get(2).getText(), data.get(3).getText(), data.get(4).getText(), "", "", true));
                 match--;
                 runningCount++;
             }
@@ -402,7 +401,6 @@ public class PrePortal {
             Login.appendToStatus("Plus "+runningCount+" registered courses this semester");
         }
 
-        new Thread(()-> driver.quit()).start();
         Portal.setLastLogin(new Date());
         Login.appendToStatus("#####");
         Login.notifyCompletion();

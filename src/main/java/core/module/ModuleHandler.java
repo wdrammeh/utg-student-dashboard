@@ -28,11 +28,15 @@ import java.util.List;
 
 /**
  * Handles all module related activities.
- * Even the {@link Memory} has its root from here.
+ * Even the {@link ModuleMemory} has its root from here.
  * @see #modulesMonitor
  * Todo: keep track of all venues, rooms, lecturer-names the user gives and recommend them on appropriate dialogs.
  */
 public class ModuleHandler {
+    private ModuleYear yearOne;
+    private ModuleYear yearTwo;
+    private ModuleYear yearThree;
+    private ModuleYear yearFour;
     private static String semesterName;
     private static FirefoxDriver modulesDriver;
     /**
@@ -42,10 +46,6 @@ public class ModuleHandler {
      * All of the tables, models, the transcript counts on this.
      */
     private static ArrayList<Course> modulesMonitor;
-    private ModuleYear yearOne;
-    private ModuleYear yearTwo;
-    private ModuleYear yearThree;
-    private ModuleYear yearFour;
     public static final ArrayList<KTableModel> ALL_MODELS = new ArrayList<>();
     private static final String[] COLUMNS = new String[] { "CODE", "NAME", "LECTURER", "GRADE" };
     public static final String DETAILS = "Show Details";
@@ -65,9 +65,9 @@ public class ModuleHandler {
             @Override
             public boolean add(Course course) {
                 if (course.isMisc()) {
-                    MiscModule.add(course);
+                    MiscHandler.add(course);
                 } else if (course.isSummerSemester()) {
-                    SummerModule.add(course);
+                    SummerHandler.add(course);
                 } else if (course.getYear().equals(Student.firstAcademicYear())) {
                     yearOne.add(course);
                 } else if (course.getYear().equals(Student.secondAcademicYear())) {
@@ -77,7 +77,7 @@ public class ModuleHandler {
                 } else if (course.getYear().equals(Student.fourthAcademicYear())) {
                     yearFour.add(course);
                 }
-                Memory.add(course);
+                ModuleMemory.add(course);
                 return super.add(course);
             }
 
@@ -90,7 +90,7 @@ public class ModuleHandler {
                     return false;
                 }
 
-                if (course.isVerified()) {
+                if (course.isConfirmed()) {
                     final int vInt = App.verifyUser("Enter your Mat. Number to effect this changes:");
                     if (vInt == App.VERIFICATION_FALSE) {
                         App.reportMatError();
@@ -101,9 +101,9 @@ public class ModuleHandler {
                 }
 
                 if (course.isMisc()) {
-                    MiscModule.remove(course);
+                    MiscHandler.remove(course);
                 } else if (course.isSummerSemester()) {
-                    SummerModule.remove(course);
+                    SummerHandler.remove(course);
                 } else if (course.isFirstYear()) {
                     yearOne.remove(course);
                 } else if (course.isSecondYear()) {
@@ -113,7 +113,7 @@ public class ModuleHandler {
                 } else if (course.isFourthYear()) {
                     yearFour.remove(course);
                 }
-                Memory.remove(course);
+                ModuleMemory.remove(course);
                 return super.remove(course);
             }
         };
@@ -184,11 +184,11 @@ public class ModuleHandler {
      */
     public static void substitute(Course old, Course recent){
         if (exists(old.getCode())) {
-            // typically for editing. or if it's from a sync / verification,
-            // the details should be merged prior to this call
-            modulesMonitor.set(old.getListIndex(), recent);
+            // Typically for editing, or if it's from a sync / verification,
+            // The details should be merged prior to this call
+            modulesMonitor.set(modulesMonitor.indexOf(old), recent);
         } else {
-            // may be an issue, after verification - as the user might have removed it during the process
+            // May be an issue, after verification - as the user might have removed it during the process
             modulesMonitor.add(recent);
             return;
         }
@@ -200,14 +200,14 @@ public class ModuleHandler {
                 defaultTableModel.setValueAt(recent.getName(), targetRow, 1);
                 defaultTableModel.setValueAt(recent.getLecturer(), targetRow, 2);
                 defaultTableModel.setValueAt(recent.getGrade(), targetRow, 3);
-                if (defaultTableModel == SummerModule.summerModel || defaultTableModel == MiscModule.miscModel) {
+                if (defaultTableModel == SummerHandler.summerModel || defaultTableModel == MiscHandler.miscModel) {
                     defaultTableModel.setValueAt(recent.getYear(), targetRow, 4);
                 }
                 break;
             }
         }
 
-        Memory.replace(old, recent);
+        ModuleMemory.replace(old, recent);
     }
 
     public static void reportCodeDuplication(String dCode){
@@ -324,7 +324,7 @@ public class ModuleHandler {
                         "The process to verify "+target.getAbsoluteName()+" was unsuccessful.\n" +
                                 "Dashboard could not locate any trace of it on your portal.\n" +
                                 "If you've done this course, then contact the lecturer, or the department.");
-                target.setVerified(false);
+                target.setConfirmed(false);
                 target.setStatus(Globals.UNKNOWN);
                 return;
             }
@@ -373,7 +373,7 @@ public class ModuleHandler {
                 final List<WebElement> instantRow = allRows.get(i).findElements(By.tagName("td"));
                 if (foundOne.getCode().equals(instantRow.get(0).getText())) {
                     foundOne.setLecturer(instantRow.get(2).getText());
-                    foundOne.setLecturerNameEditable(false);
+                    foundOne.setLecturerEditable(false);
                     break;
                 }
                 i++;
@@ -383,7 +383,7 @@ public class ModuleHandler {
             if (existed == null) { // removed?
                 modulesMonitor.add(foundOne);
             } else { // merge and replace (substitute) then
-                Course.merge(foundOne, existed);
+                foundOne.merge(existed);
                 substitute(existed, foundOne);
             }
 
@@ -542,7 +542,7 @@ public class ModuleHandler {
                     for (Course c : foundCourses) {
                         if (c.getCode().equals(instantRow.get(0).getText())) {
                             c.setLecturer(instantRow.get(2).getText());
-                            c.setLecturerNameEditable(false);
+                            c.setLecturerEditable(false);
                         }
                     }
                     l++;
@@ -553,7 +553,7 @@ public class ModuleHandler {
                     if (existed == null) {//does not exist?
                         modulesMonitor.add(found);
                     } else {//merge and replace
-                        Course.merge(found, existed);
+                        found.merge(existed);
                         substitute(existed, found);
                     }
                 }
@@ -595,7 +595,7 @@ public class ModuleHandler {
             try {
                 final String courseCode = course.getCode().substring(0, 3);
                 if (courseCode.equalsIgnoreCase(from) && course.isMajorObligatory()) {
-                    course.setRequirement(Course.NONE);
+                    course.setRequirement(Module.NONE);
                 }
             } catch (StringIndexOutOfBoundsException ignored) {
             }
@@ -946,7 +946,7 @@ public class ModuleHandler {
 
             final Font hintFont = FontFactory.createBoldFont(16);
 
-            if (this instanceof MiscModule.MiscModuleAdder) {
+            if (this instanceof MiscHandler.MiscModuleAdder) {
                 yearField = KTextField.rangeControlField(9);
             } else {
                 yearField = new KTextField();
@@ -1105,7 +1105,7 @@ public class ModuleHandler {
             codeField.setText(course.getCode());
             nameField.setText(course.getName());
             lecturerField.setText(course.getLecturer());
-            lecturerField.setEditable(course.isLecturerNameEditable());
+            lecturerField.setEditable(course.isLecturerEditable());
             dayBox.setSelectedItem(course.getDay());
             timeBox.setSelectedItem(course.getTime());
             campusBox.setSelectedItem(course.getCampus());
@@ -1114,7 +1114,7 @@ public class ModuleHandler {
             creditBox.setSelectedItem(String.valueOf(course.getCreditHours()));
             scoreField.setText(String.valueOf(course.getScore()));
 
-            if (course.isVerified()) {
+            if (course.isConfirmed()) {
                 codeField.setEditable(false);
                 nameField.setEditable(false);
                 scoreField.setEditable(false);
@@ -1174,9 +1174,9 @@ public class ModuleHandler {
                             codeField.getText().toUpperCase(), nameField.getText(), lecturerField.getText(),
                             campusBox.getSelectionText(), roomField.getText(), dayBox.getSelectionText(),
                             timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            requirementBox.getSelectionText(), target.isVerified());
+                            requirementBox.getSelectionText(), target.isConfirmed());
                     course.setStatus(target.getStatus());
-                    course.setLecturerNameEditable(target.isLecturerNameEditable());
+                    course.setLecturerEditable(target.isLecturerEditable());
                     substitute(target, course);
                     dispose();
                 }
@@ -1188,7 +1188,7 @@ public class ModuleHandler {
     public static void serialize(){
         final String[] data = new String[modulesMonitor.size()];
         for (int i = 0; i < data.length; i++) {
-            data[i] = modulesMonitor.get(i).exportContent();
+            data[i] = modulesMonitor.get(i).export();
         }
         Serializer.toDisk(data, Serializer.inPath("modules", "courses.ser"));
     }
@@ -1200,7 +1200,11 @@ public class ModuleHandler {
         } else {
             final String[] data = (String[]) obj;
             for (String entry : data) {
-                modulesMonitor.add(Course.create(entry));
+                try {
+                    modulesMonitor.add(Course.create(entry));
+                } catch (Exception e) {
+                    App.silenceException(e);
+                }
             }
         }
     }

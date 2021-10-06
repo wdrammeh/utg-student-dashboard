@@ -23,6 +23,7 @@ public class KCheckBox extends JCheckBox implements Preference {
 
     @Override
     public void setPreferences() {
+        setOpaque(false);
     }
 
 }

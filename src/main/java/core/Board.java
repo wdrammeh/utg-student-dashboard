@@ -3,7 +3,7 @@ package core;
 import core.alert.NotificationActivity;
 import core.driver.MDriver;
 import core.first.FirstLaunch;
-import core.module.Analysis;
+import core.module.ModuleAnalysis;
 import core.module.ModuleActivity;
 import core.module.ModuleHandler;
 import core.module.SemesterActivity;
@@ -74,7 +74,7 @@ public final class Board extends KFrame {
     private ModuleActivity moduleActivity;
     private SettingsUI settingsUI;
     private TranscriptActivity transcriptActivity;
-    private Analysis analysisActivity;
+    private ModuleAnalysis analysisActivity;
     private Help helpActivity;
     private About about;
     private TaskActivity taskActivity;
@@ -146,7 +146,7 @@ public final class Board extends KFrame {
         moduleActivity = new ModuleActivity();
         settingsUI = new SettingsUI();
         transcriptActivity = new TranscriptActivity();
-        analysisActivity = new Analysis();
+        analysisActivity = new ModuleAnalysis();
         helpActivity = new Help();
         about = new About();
 //        outlined / big buttons

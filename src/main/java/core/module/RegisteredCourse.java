@@ -1,7 +1,13 @@
 package core.module;
 
-import core.Board;
-import core.utils.App;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+
+import javax.swing.BoxLayout;
+import javax.swing.SwingUtilities;
+
 import core.utils.FontFactory;
 import core.utils.Globals;
 import core.utils.MComponent;
@@ -10,167 +16,53 @@ import proto.KDialog;
 import proto.KLabel;
 import proto.KPanel;
 
-import javax.swing.*;
-import java.awt.*;
-
 /**
- * A model for registered (running) courses.
- * Todo: Add requirement field
+ * RegisteredCourse in general refer to modules the student
+ * has registered for any given semester. In other words,
+ * the courses student is doing in a semester.
+ *
+ * <ul>
+ *    <li> Does not use <code> creditHours </code> </li>
+ *    <li> Schedule and venue may be readable,
+ *    but it's recommended for user to be setting them as required </li>
+ *    <li> Lecturer names are generally never editable
+ * </ul>
+ *
  */
-public class RegisteredCourse {
-    private String code;
-    private String name;
-    private String lecturer;
-    private String campus;
-    private String room;
-    private String day;
-    private String time;
-    private boolean isConfirmed;
-    private String status;
-    public static final String REGISTERED = "Registered";
-
+public class RegisteredCourse extends Module {
 
     public RegisteredCourse(String code, String name, String lecturer, String campus,
-                            String room, String day, String time, boolean confirmed){
-        this.code = code;
-        this.name = name;
-        this.lecturer = lecturer;
-        this.campus = campus;
-        this.room = room;
-        this.day = day;
-        this. time = time;
-        this.isConfirmed = confirmed;
-        this.status = confirmed ? REGISTERED : Globals.UNKNOWN;
+                            String room, String day, String time, boolean confirmed) {
+        // Todo: Refer to missing/indeterminate params - year, semester, requirement
+        super(code, name, "", "", lecturer, campus, room, day, time, "", -1, confirmed);
     }
 
-    public void refract(String code, String name, String lecturer, String campus,
-                        String room, String day, String time, boolean confirmed){
-        this.code = code;
-        this.name = name;
-        this.lecturer = lecturer;
-        this.campus = campus;
-        this.room = room;
-        this.day = day;
-        this. time = time;
-        this.isConfirmed = confirmed;
+    @Override
+    public void merge(Module old) {
+        this.day = old.day;
+        this.time = old.time;
+        this.requirement = old.requirement;
+        if (this.isLecturerEditable) {
+            this.lecturer = old.lecturer;
+        }
     }
 
-    public void refract(RegisteredCourse c){
-        refract(c.code, c.name, c.lecturer, c.campus, c.room, c.day, c.time, c.isConfirmed);
-    }
-
-    public String getCode(){
-        return code;
-    }
-
-    public void setCode(String newCode){
-        this.code = newCode;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public void setName(String newName){
-        this.name = newName;
-    }
-
-    public String getLecturer(){
-        return lecturer;
-    }
-
-    public void setLecturer(String newLecturer){
-        this.lecturer = newLecturer;
-    }
-
-    public String getCampus(){
-        return campus;
-    }
-
-    public void setCampus(String newVenue){
-        this.campus = newVenue;
-    }
-
-    public String getRoom() {
-        return room;
-    }
-
-    public void setRoom(String room) {
-        this.room = room;
-    }
-
-    public String getDay(){
-        return day;
-    }
-
-    public void setDay(String newDay){
-        this.day = newDay;
-    }
-
-    public String getTime(){
-        return time;
-    }
-
-    public void setTime(String newTime){
-        this.time = newTime;
-    }
-
-    public boolean isConfirmed(){
-        return isConfirmed;
-    }
-
-    public void setConfirmed(boolean confirmed){
-        this.isConfirmed = confirmed;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getAbsoluteName(){
-        return code+" - "+name;
-    }
-
-    public String getSchedule(){
-        return Course.schedule(day, time);
-    }
-
-    public String getVenue() {
-        return Course.venueOf(campus, room);
-    }
-
-    /**
-     * @see Course#exportContent()
-     */
-    public String exportContent(){
+    @Override
+    public String export() {
         return Globals.joinLines(new Object[]{code, name, lecturer, campus, room, day, time, isConfirmed});
     }
 
-    /**
-     * @see Course#create(String)
-     */
-    public static RegisteredCourse create(String data){
+    public static RegisteredCourse create(String data) {
         final String[] lines = Globals.splitLines(data);
-        boolean validity = false;
-        try {
-            validity = Boolean.parseBoolean(lines[7]);
-        } catch (Exception e) {
-            App.silenceException(String.format("Cannot determine status of registered course '%s'.", lines[3]));
-        }
-        return new RegisteredCourse(lines[0], lines[1], lines[2], lines[3], lines[4], lines[5], lines[6], validity);
+        return new RegisteredCourse(lines[0], lines[1], lines[2], lines[3], lines[4], lines[5],
+            lines[6], Boolean.parseBoolean(lines[7]));
     }
 
-    /**
-     * @see Course#exhibit(Component)
-     */
+    @Override
     public void exhibit(Component base) {
-        final KDialog exhibitor = new KDialog(name);
-        exhibitor.setResizable(true);
-        exhibitor.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
+        final KDialog dialog = new KDialog(name);
+        dialog.setResizable(true);
+        dialog.setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
 
         final Font hintFont = FontFactory.createBoldFont(15);
         final Font valueFont = FontFactory.createPlainFont(15);
@@ -195,29 +87,25 @@ public class RegisteredCourse {
         schedulePanel.add(new KPanel(new KLabel("Schedule:", hintFont)), BorderLayout.WEST);
         schedulePanel.add(new KPanel(new KLabel(this.getSchedule(), valueFont)), BorderLayout.CENTER);
 
-        final KLabel statusLabel = new KLabel(this.status, valueFont, this.status.equals(Course.CONFIRMED) ? Color.BLUE :
+        final KLabel statusLabel = new KLabel(this.status, valueFont, this.status.equals(Module.CONFIRMED) ? Color.BLUE :
                 this.status.equals(Globals.UNKNOWN) ? Color.RED : Color.GRAY);
         final KPanel statusPanel = new KPanel(new BorderLayout());
         statusPanel.add(new KPanel(new KLabel("Status:", hintFont)), BorderLayout.WEST);
         statusPanel.add(new KPanel(statusLabel), BorderLayout.CENTER);
 
         final KButton closeButton = new KButton("Close");
-        closeButton.addActionListener(e-> exhibitor.dispose());
+        closeButton.addActionListener(e-> dialog.dispose());
 
         final KPanel contentPanel = new KPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.addAll(codePanel, namePanel, lectPanel, venuePanel, schedulePanel, statusPanel,
                 MComponent.contentBottomGap(), new KPanel(closeButton));
 
-        exhibitor.getRootPane().setDefaultButton(closeButton);
-        exhibitor.setContentPane(contentPanel);
-        exhibitor.pack();
-        exhibitor.setLocationRelativeTo(base);
-        SwingUtilities.invokeLater(()-> exhibitor.setVisible(true));
-    }
-
-    public void exhibit() {
-        exhibit(Board.getRoot());
+        dialog.getRootPane().setDefaultButton(closeButton);
+        dialog.setContentPane(contentPanel);
+        dialog.pack();
+        dialog.setLocationRelativeTo(base);
+        SwingUtilities.invokeLater(()-> dialog.setVisible(true));
     }
 
 }

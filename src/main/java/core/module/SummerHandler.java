@@ -11,14 +11,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class SummerModule {
+/**
+ * Handles operations relating to summer courses, and semesters.
+ */
+public class SummerHandler {
     private KMenuItem detailsItem, editItem, removeItem, confirmItem, newItem;
     private JPopupMenu popupMenu;
     private static KTable summerTable;
     public static KTableModel summerModel;
 
 
-    public SummerModule(){
+    public SummerHandler(){
         setupTable();
         configurePopup();
     }
@@ -229,12 +232,12 @@ public class SummerModule {
             this.target = summerCourse;
 
             availableYearsBox.setSelectedItem(target.getYear());
-            availableYearsBox.setEnabled(!target.isVerified());
+            availableYearsBox.setEnabled(!target.isConfirmed());
 
             codeField.setText(target.getCode());
             nameField.setText(target.getName());
             lecturerField.setText(target.getLecturer());
-            lecturerField.setEditable(target.isLecturerNameEditable());
+            lecturerField.setEditable(target.isLecturerEditable());
             dayBox.setSelectedItem(target.getDay());
             timeBox.setSelectedItem(target.getTime());
             campusBox.setSelectedItem(target.getCampus());
@@ -243,7 +246,7 @@ public class SummerModule {
             creditBox.setSelectedItem(target.getCreditHours());
             scoreField.setText(Double.toString(target.getScore()));
 
-            if (summerCourse.isVerified()) {
+            if (summerCourse.isConfirmed()) {
                 codeField.setEditable(false);
                 nameField.setEditable(false);
                 scoreField.setEditable(false);
@@ -302,9 +305,9 @@ public class SummerModule {
                             codeField.getText().toUpperCase(), nameField.getText(), lecturerField.getText(),
                             campusBox.getSelectionText(), roomField.getText(), dayBox.getSelectionText(),
                             timeBox.getSelectionText(), score, Integer.parseInt(String.valueOf(creditBox.getSelectedItem())),
-                            requirementBox.getSelectionText(), target.isVerified());
+                            requirementBox.getSelectionText(), target.isConfirmed());
                     course.setStatus(target.getStatus());
-                    course.setLecturerNameEditable(target.isLecturerNameEditable());
+                    course.setLecturerEditable(target.isLecturerEditable());
                     ModuleHandler.substitute(target, course);
                     dispose();
                 }

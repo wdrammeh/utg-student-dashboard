@@ -6,13 +6,16 @@ import java.math.RoundingMode;
 import java.util.StringJoiner;
 
 public class Globals {
+    // 
     public static final int SECOND = 1_000;
     public static final int MINUTE = 60 * SECOND;
     public static final int HOUR = 60 * MINUTE;
     public static final int DAY = 24 * HOUR;
-    public static final String NONE = "None";
+    // 
     public static final String UNKNOWN = "Unknown";
+    public static final String NONE = "None";
     public static final String NEVER = "Never";
+    public static final String OTHER = "Other";
     public static final String PROJECT_NAME = "UTG Student Dashboard";
 
 

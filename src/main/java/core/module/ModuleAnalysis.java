@@ -21,7 +21,7 @@ import java.util.StringJoiner;
  * The Analysis type is stand-alone: it does the analysis, presents the analysis.
  * By that, it subclasses its collaborators like the performance-sketch and present-dialogues.
  */
-public class Analysis implements Activity {
+public class ModuleAnalysis implements Activity {
     private KLabel APlusLabel, ANeutralLabel, AMinusLabel, BPlusLabel, BNeutralLabel, BMinusLabel,
             CPlusLabel, CNeutralLabel, CMinusLabel, DLabel, FLabel;
 
@@ -52,7 +52,7 @@ public class Analysis implements Activity {
     private static final Cursor FOCUS_CURSOR = MComponent.HAND_CURSOR;
 
 
-    public Analysis(){
+    public ModuleAnalysis(){
         final KPanel analysisActivity = new KPanel(new BorderLayout());
         if (Student.isGuest()) {
             analysisActivity.add(MComponent.createUnavailableActivity("Analysis"), BorderLayout.CENTER);
@@ -212,7 +212,7 @@ public class Analysis implements Activity {
         allModulesLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                final GlassPrompt modulesPrompt = new GlassPrompt("My Modules", Memory.getList());
+                final GlassPrompt modulesPrompt = new GlassPrompt("My Modules", ModuleMemory.getList());
                 SwingUtilities.invokeLater(()-> modulesPrompt.setVisible(true));
             }
         });
@@ -289,7 +289,7 @@ public class Analysis implements Activity {
      */
     private void completeModulesBasement(){
         MComponent.clear(modulesBasement);
-        if (Memory.getList().isEmpty()) {
+        if (ModuleMemory.getList().isEmpty()) {
             modulesBasement.addAll(createNoAnalysisPanel());
         } else {
             modulesBasement.addAll(newAnalysisHeader("By Grade"),
@@ -322,7 +322,7 @@ public class Analysis implements Activity {
                     newAnalysisPlate("GERs", GERsLabel),
                     newAnalysisPlate("Unclassified", unclassifiedListLabel),
                     newAnalysisPlate("All together", allModulesLabel));
-            final String totalCheck = Globals.checkPlurality(Memory.getList().size(),"Courses");
+            final String totalCheck = Globals.checkPlurality(ModuleMemory.getList().size(),"Courses");
             final String majorsCheck = Globals.checkPlurality(majorsList.size(),"Majors");
             final String minorsCheck = Globals.checkPlurality(minorsList.size(), "Minors");
             final String DERsCheck = Globals.checkPlurality(DERList.size(),"DERs");
@@ -356,7 +356,7 @@ public class Analysis implements Activity {
             semestersBasement.addAll(createNoAnalysisPanel());
         } else {
             for (String semTex : semestersList) {
-                final ArrayList<Course> fractionalSem = Memory.getFractionBySemester(semTex);
+                final ArrayList<Course> fractionalSem = ModuleMemory.getFractionBySemester(semTex);
                 final KLabel promptLabel = new KLabel("", VALUE_FONT, Color.BLUE);
                 promptLabel.setCursor(FOCUS_CURSOR);
                 promptLabel.addMouseListener(new MouseAdapter() {
@@ -371,16 +371,16 @@ public class Analysis implements Activity {
                 } else {
                     final int i = fractionalSem.size();
                     final StringJoiner joiner = new StringJoiner(" : ", "[", "]");
-                    joiner.add(Globals.checkPlurality(Memory.getMajorsBySemester(semTex).size(),"Majors"));
-                    joiner.add(Globals.checkPlurality(Memory.getMinorsBySemester(semTex).size(),"Minors"));
-                    joiner.add(Globals.checkPlurality(Memory.getDERsBySemester(semTex).size(),"DERs"));
-                    joiner.add(Globals.checkPlurality(Memory.getGERsBySemester(semTex).size(),"GERs"));
-                    joiner.add(Globals.checkPlurality(Memory.getUnknownsBySemester(semTex).size(),"Un-classifications"));
+                    joiner.add(Globals.checkPlurality(ModuleMemory.getMajorsBySemester(semTex).size(),"Majors"));
+                    joiner.add(Globals.checkPlurality(ModuleMemory.getMinorsBySemester(semTex).size(),"Minors"));
+                    joiner.add(Globals.checkPlurality(ModuleMemory.getDERsBySemester(semTex).size(),"DERs"));
+                    joiner.add(Globals.checkPlurality(ModuleMemory.getGERsBySemester(semTex).size(),"GERs"));
+                    joiner.add(Globals.checkPlurality(ModuleMemory.getUnknownsBySemester(semTex).size(),"Un-classifications"));
                     promptLabel.setText(Globals.checkPlurality(i, "Courses")+" "+joiner);
                 }
                 attachActiveOnFocus(promptLabel, null);
 
-                final KLabel CGLabel = new KLabel(toFourth(Memory.getCGPABySemester(semTex)),
+                final KLabel CGLabel = new KLabel(toFourth(ModuleMemory.getCGPABySemester(semTex)),
                         VALUE_FONT, Color.BLUE);
                 semesterScores.add(Double.valueOf(CGLabel.getText()));
 
@@ -393,9 +393,9 @@ public class Analysis implements Activity {
             totalLabel.underline(true);
             semestersBasement.addAll(newAnalysisHeader("Overall"),
                     newAnalysisPlate("All together", totalLabel),
-                    newAnalysisPlate("Best Semester", new KLabel(Memory.getBestSemester(),
+                    newAnalysisPlate("Best Semester", new KLabel(ModuleMemory.getBestSemester(),
                             VALUE_FONT, Color.BLUE)),
-                    newAnalysisPlate("Worst Semester", new KLabel(Memory.getWorstSemester(),
+                    newAnalysisPlate("Worst Semester", new KLabel(ModuleMemory.getWorstSemester(),
                             VALUE_FONT, Color.BLUE)),
                     newAnalysisHeader("Performance Sketch"), new Sketch());
         }
@@ -424,7 +424,7 @@ public class Analysis implements Activity {
             yearsBasement.addAll(createNoAnalysisPanel());
         } else {
             for (String yearTex : yearsList) {
-                final ArrayList<Course> fractionalYear = Memory.getFractionByYear(yearTex);
+                final ArrayList<Course> fractionalYear = ModuleMemory.getFractionByYear(yearTex);
                 final KLabel allRegisteredLabel = new KLabel("", VALUE_FONT, Color.BLUE);
                 allRegisteredLabel.setCursor(FOCUS_CURSOR);
                 allRegisteredLabel.addMouseListener(new MouseAdapter() {
@@ -433,11 +433,11 @@ public class Analysis implements Activity {
                         SwingUtilities.invokeLater(()-> new GlassPrompt(yearTex, fractionalYear).setVisible(true));
                     }
                 });
-                final ArrayList<Course> yMajors = Memory.getMajorsByYear(yearTex);
-                final ArrayList<Course> yMinors = Memory.getMinorsByYear(yearTex);
-                final ArrayList<Course> yDERs = Memory.getDERsByYear(yearTex);
-                final ArrayList<Course> yGERs = Memory.getGERsByYear(yearTex);
-                final ArrayList<Course> yNons = Memory.getUnknownsByYear(yearTex);
+                final ArrayList<Course> yMajors = ModuleMemory.getMajorsByYear(yearTex);
+                final ArrayList<Course> yMinors = ModuleMemory.getMinorsByYear(yearTex);
+                final ArrayList<Course> yDERs = ModuleMemory.getDERsByYear(yearTex);
+                final ArrayList<Course> yGERs = ModuleMemory.getGERsByYear(yearTex);
+                final ArrayList<Course> yNons = ModuleMemory.getUnknownsByYear(yearTex);
                 if (fractionalYear.size() == 1) {
                     final Course onlyCourse = fractionalYear.get(0);
                     allRegisteredLabel.setText(onlyCourse.getAbsoluteName()+" ["+onlyCourse.getSemester()+"]");
@@ -453,7 +453,7 @@ public class Analysis implements Activity {
                 }
                 attachActiveOnFocus(allRegisteredLabel, null);
 
-                final ArrayList<String> yLects = Memory.getLecturersByYear(yearTex);
+                final ArrayList<String> yLects = ModuleMemory.getLecturersByYear(yearTex);
                 final KLabel tutorsLabel = new KLabel(Globals.checkPlurality(yLects.size(),"Lecturers"),
                         VALUE_FONT, Color.BLUE);
                 tutorsLabel.setCursor(tutorsLabel.getText().equals("No Lecturers") ? null : FOCUS_CURSOR);
@@ -475,11 +475,11 @@ public class Analysis implements Activity {
                         newAnalysisPlate("GERs", specificYearLabel("GERs", yGERs, yearTex)),
                         newAnalysisPlate("Unclassified", specificYearLabel("Unknowns", yNons, yearTex)),
                         newAnalysisPlate("Lecturers", tutorsLabel),
-                        newAnalysisPlate("CGPA Earned", new KLabel(toFourth(Memory.getCGPAByYear(yearTex)),
+                        newAnalysisPlate("CGPA Earned", new KLabel(toFourth(ModuleMemory.getCGPAByYear(yearTex)),
                                 VALUE_FONT, Color.BLUE)));
             }
 
-            final ArrayList<String> tutorsList = Memory.getLecturers();
+            final ArrayList<String> tutorsList = ModuleMemory.getLecturers();
             final KLabel totalTutorsLabel = new KLabel(Globals.checkPlurality(tutorsList.size(),
                     "distinguished lecturers"), VALUE_FONT, Color.BLUE);
             totalTutorsLabel.setCursor(totalTutorsLabel.getText().equals("No distinguished lecturers") ? null :
@@ -500,9 +500,9 @@ public class Analysis implements Activity {
             yearsBasement.addAll(newAnalysisHeader("Overall"),
                     newAnalysisPlate("All together", totalLabel),
                     newAnalysisPlate("My Tutors", totalTutorsLabel),
-                    newAnalysisPlate("Best Year", new KLabel(Memory.getBestYear(),
+                    newAnalysisPlate("Best Year", new KLabel(ModuleMemory.getBestYear(),
                             VALUE_FONT, Color.BLUE)),
-                    newAnalysisPlate("Worst Year", new KLabel(Memory.getWorstYear(),
+                    newAnalysisPlate("Worst Year", new KLabel(ModuleMemory.getWorstYear(),
                             VALUE_FONT, Color.BLUE)),
                     newAnalysisPlate("Current CGPA", new KLabel(Student.getCGPA() +
                             "    ["+Student.upperClassDivision()+"]", VALUE_FONT, Color.BLUE)));
@@ -605,53 +605,53 @@ public class Analysis implements Activity {
     /**
      * Invoked during answering activity to
      * reset the lists in order to ensure atomicity in data,
-     * and points to the latest {@link Memory} updates.
+     * and points to the latest {@link ModuleMemory} updates.
      */
     private void resetLists(){
-        APlusList =  Memory.getFractionByGrade("A+");
-        ANeutralList = Memory.getFractionByGrade("A");
-        AMinusList = Memory.getFractionByGrade("A-");
-        BPlusList = Memory.getFractionByGrade("B+");
-        BNeutralList = Memory.getFractionByGrade("B");
-        BMinusList = Memory.getFractionByGrade("B-");
-        CPlusList = Memory.getFractionByGrade("C+");
-        CNeutralList = Memory.getFractionByGrade("C");
-        CMinusList = Memory.getFractionByGrade("C-");
-        DList = Memory.getFractionByGrade("D");
-        FList = Memory.getFractionByGrade("F");
+        APlusList =  ModuleMemory.getFractionByGrade("A+");
+        ANeutralList = ModuleMemory.getFractionByGrade("A");
+        AMinusList = ModuleMemory.getFractionByGrade("A-");
+        BPlusList = ModuleMemory.getFractionByGrade("B+");
+        BNeutralList = ModuleMemory.getFractionByGrade("B");
+        BMinusList = ModuleMemory.getFractionByGrade("B-");
+        CPlusList = ModuleMemory.getFractionByGrade("C+");
+        CNeutralList = ModuleMemory.getFractionByGrade("C");
+        CMinusList = ModuleMemory.getFractionByGrade("C-");
+        DList = ModuleMemory.getFractionByGrade("D");
+        FList = ModuleMemory.getFractionByGrade("F");
 
-        majorsList = Memory.getMajors();
-        minorsList = Memory.getMinors();
-        DERList = Memory.getDERs();
-        GERList = Memory.getGERs();
-        unclassifiedList = Memory.getUnknowns();
+        majorsList = ModuleMemory.getMajors();
+        minorsList = ModuleMemory.getMinors();
+        DERList = ModuleMemory.getDERs();
+        GERList = ModuleMemory.getGERs();
+        unclassifiedList = ModuleMemory.getUnknowns();
 
-        semestersList = Memory.getSemesters();
-        yearsList = Memory.getAcademicYears();
+        semestersList = ModuleMemory.getSemesters();
+        yearsList = ModuleMemory.getAcademicYears();
     }
 
     /**
      * Resets the course fields of this class to be pointing
-     * to the latest {@link Memory} values.
+     * to the latest {@link ModuleMemory} values.
      * Call this on answering activity.
      */
     private void resetCourses(){
-        highestScoreCourse = Memory.getHighestScore();
-        lowestScoreCourse = Memory.getLowestScore();
-        highestMajorScoreCourse = Memory.getHighestMajorScore();
-        lowestMajorScoreCourse = Memory.getLowestMajorScore();
-        highestMinorScoreCourse = Memory.getHighestMinorScore();
-        lowestMinorScoreCourse = Memory.getLowestMinorScore();
-        highestDERScoreCourse = Memory.getHighestDERScore();
-        lowestDERScoreCourse = Memory.getLowestDERScore();
-        highestGERScoreCourse = Memory.getHighestGERScore();
-        lowestGERScoreCourse = Memory.getLowestGERScore();
+        highestScoreCourse = ModuleMemory.getHighestScore();
+        lowestScoreCourse = ModuleMemory.getLowestScore();
+        highestMajorScoreCourse = ModuleMemory.getHighestMajorScore();
+        lowestMajorScoreCourse = ModuleMemory.getLowestMajorScore();
+        highestMinorScoreCourse = ModuleMemory.getHighestMinorScore();
+        lowestMinorScoreCourse = ModuleMemory.getLowestMinorScore();
+        highestDERScoreCourse = ModuleMemory.getHighestDERScore();
+        lowestDERScoreCourse = ModuleMemory.getLowestDERScore();
+        highestGERScoreCourse = ModuleMemory.getHighestGERScore();
+        lowestGERScoreCourse = ModuleMemory.getLowestGERScore();
     }
 
     /**
      * Resets the label fields to their latest values.
      * Call this on answering activity.
-     * @see Memory
+     * @see ModuleMemory
      */
     private void resetLabels(){
         APlusLabel.setText(getProperValueText(APlusList));
@@ -834,7 +834,7 @@ public class Analysis implements Activity {
             nameLabel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    final ArrayList<Course> list = Memory.getFractionByLecturer(tutorName,year);
+                    final ArrayList<Course> list = ModuleMemory.getFractionByLecturer(tutorName,year);
                     final String title = tutorName+" ["+ year +": "+list.size()+"]";
                     final GlassPrompt prompt = new GlassPrompt(title, list, getRootPane());
                     prompt.setVisible(true);
@@ -858,7 +858,7 @@ public class Analysis implements Activity {
             nameLabel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    final ArrayList<Course> list = Memory.getFractionByLecturer(tutorName);
+                    final ArrayList<Course> list = ModuleMemory.getFractionByLecturer(tutorName);
                     final String title = tutorName+" ["+ Globals.checkPlurality(list.size(),"Courses")+"]";
                     new GlassPrompt(title, list, getRootPane()).setVisible(true);
                 }

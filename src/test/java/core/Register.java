@@ -76,6 +76,17 @@ public class Register {
                     nameJoiner.add(nameExt[i]);
                 }
                 final String[] dayTime = data.get(7).getText().split("[\s]");
+                final String day;
+                final String time;
+                if (dayTime.length == 2) {
+                    day = dayTime[0];
+                    time = dayTime[1].split("[-]")[0];
+                } else if (dayTime.length == 1){
+                    // Summer semester?
+                    time = dayTime[0].split("[-]")[0];
+                } else {
+                    day = time = "";
+                }
                 final String action = data.get(data.size() - 1).getText();
                 final boolean registered = Globals.hasText(action) && !action.equalsIgnoreCase("Register");
                 foundRunningModules.add(new RunningCourse(data.get(1).getText(), nameJoiner.toString(), numbRegistered,
