@@ -87,6 +87,7 @@ public class KTable extends JTable implements Preference {
     @Override
     public void setPreferences(){
         getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        setFocusable(false);
     }
 
 }

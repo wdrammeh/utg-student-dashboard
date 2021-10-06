@@ -46,7 +46,7 @@ public class Notification {
                 SwingUtilities.invokeLater(()-> new Exhibitor(Notification.this).setVisible(true));
                 if (!isRead) {
                     setRead(true);
-                    NotificationActivity.effectCount(-1);
+                    LocalAlertHandler.effectCount(-1);
                 }
             }
 
@@ -64,7 +64,7 @@ public class Notification {
      */
     public static void create(String heading, String summary, String information) {
         final Notification incoming = new Notification(heading, summary, information, new Date());
-        NotificationActivity.receive(incoming);
+        LocalAlertHandler.receive(incoming);
         NOTIFICATIONS.add(incoming);
     }
 
@@ -72,7 +72,7 @@ public class Notification {
         return isRead;
     }
 
-    private void setRead(boolean isRead){
+    public void setRead(boolean isRead){
         this.isRead = isRead;
         innerLabel.setForeground(isRead ? null : Color.RED);
     }
@@ -81,10 +81,11 @@ public class Notification {
         return layer;
     }
 
-    private String export(){
+    public String export(){
         return Globals.joinLines(new Object[]{heading, summary, information,
                 MDate.toSerial(date), isRead});
     }
+
 
     private static class Exhibitor extends KDialog {
 
@@ -102,7 +103,7 @@ public class Notification {
 
             final KButton deleteButton = new KButton("Remove");
             deleteButton.addActionListener(e-> dispose());
-            deleteButton.addActionListener(e-> NotificationActivity.delete(alert));
+            deleteButton.addActionListener(e-> LocalAlertHandler.delete(alert));
 
             final KButton disposeButton = new KButton("Close");
             disposeButton.addActionListener(e-> dispose());
@@ -122,6 +123,7 @@ public class Notification {
         }
     }
 
+
     public static void serialize() {
         final String[] alerts = new String[NOTIFICATIONS.size()];
         for(int i = 0; i < NOTIFICATIONS.size(); i++){
@@ -130,7 +132,7 @@ public class Notification {
         Serializer.toDisk(alerts, Serializer.inPath("alerts.ser"));
     }
 
-    public static void deserialize(){
+    public static void deserialize() {
         final Object alertsObj = Serializer.fromDisk(Serializer.inPath("alerts.ser"));
         if (alertsObj == null) {
             App.silenceException("Failed to read Notifications.");
@@ -141,7 +143,7 @@ public class Notification {
                 final Notification alert = new Notification(content[0], content[1], content[2],
                         MDate.fromSerial(content[3]));
                 alert.setRead(Boolean.parseBoolean(content[4]));
-                NotificationActivity.receive(alert);
+                LocalAlertHandler.receive(alert);
                 NOTIFICATIONS.add(alert);
             }
         }

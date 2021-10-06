@@ -4,6 +4,8 @@ import core.Activity;
 import core.Board;
 import core.Portal;
 import core.alert.Notification;
+import core.alert.NotificationActivity;
+import core.alert.RemoteAlertHandler;
 import core.driver.MDriver;
 import core.first.PrePortal;
 import core.utils.Serializer;
@@ -68,8 +70,7 @@ public class SemesterActivity implements Activity {
             semesterBigLabel.setHorizontalAlignment(SwingConstants.CENTER);
             semesterBigLabel.underline(Color.GRAY, true);
 
-            noticeLabel = new KLabel(Portal.getRegistrationNotice(), FontFactory.createPlainFont(16), Color.RED);
-            noticeLabel.setToolTipText("Registration Notice");
+            noticeLabel = new KLabel(Portal.getRegistrationNotice(), FontFactory.createPlainFont(15), Color.RED);
 
             matchItem = new KMenuItem("Match Portal", e-> startMatching(true));
 
@@ -81,14 +82,14 @@ public class SemesterActivity implements Activity {
                 }).start();
             });
 
-            final KMenuItem updateItem = new KMenuItem("Update Registration Notice",
-                    e-> App.reportInfo("Registration Alert",
-                            "To update the Registration Notice, go to "+ Globals.reference("Notifications", "Portal Alerts", "Update Alerts") +"."));
+            final KMenuItem updateItem = new KMenuItem("Registration Notice",
+                e-> new RemoteAlertHandler.NoticeExhibition(
+                    RemoteAlertHandler.NoticeExhibition.REGISTRATION_NOTICE).setVisible(true));
 
             final JPopupMenu popupMenu = new JPopupMenu();
             popupMenu.add(matchItem);
-            popupMenu.add(updateItem);
             popupMenu.add(visitItem);
+            popupMenu.add(updateItem);
 
             optionsButton = KButton.createIconifiedButton("options.png",25,25);
             optionsButton.setCursor(MComponent.HAND_CURSOR);
@@ -248,7 +249,7 @@ public class SemesterActivity implements Activity {
                 ACTIVE_COURSES.add(c);
             }
         } else {
-            deserializeModules();
+            deserialize();
         }
     }
 
@@ -615,6 +616,7 @@ public class SemesterActivity implements Activity {
         return codes;
     }
 
+
     private static class RegisteredCourseAdder extends KDialog {
         KTextField codeField, nameField, lecturerField, roomField;
         KComboBox<String> daysBox, hoursBox, campusBox;
@@ -723,6 +725,7 @@ public class SemesterActivity implements Activity {
         }
     }
 
+
     private static class RegisteredCourseEditor extends RegisteredCourseAdder {
 
         public RegisteredCourseEditor(RegisteredCourse course) {
@@ -779,6 +782,7 @@ public class SemesterActivity implements Activity {
         }
     }
 
+
     public static void serialize(){
         final String[] data = new String[ACTIVE_COURSES.size()];
         for (int i = 0; i < data.length; i++) {
@@ -787,7 +791,7 @@ public class SemesterActivity implements Activity {
         Serializer.toDisk(data, Serializer.inPath("modules", "registered.ser"));
     }
 
-    public static void deserializeModules(){
+    public static void deserialize(){
         final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "registered.ser"));
         if (obj == null) {
             App.silenceException("Failed to read Running Courses.");

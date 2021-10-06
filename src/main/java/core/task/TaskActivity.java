@@ -150,7 +150,6 @@ public class TaskActivity implements Activity {
         };
         lookButton.setPreferredSize(new Dimension(175, 150));
         lookButton.setLayout(new BorderLayout(0, 0));
-        lookButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         lookButton.add((lText), BorderLayout.NORTH);
         lookButton.add(numberLabel, BorderLayout.CENTER);
         return lookButton;

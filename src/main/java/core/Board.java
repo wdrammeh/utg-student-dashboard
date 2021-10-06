@@ -1,6 +1,7 @@
 package core;
 
 import core.alert.NotificationActivity;
+import core.alert.RemoteAlertHandler;
 import core.driver.MDriver;
 import core.first.FirstLaunch;
 import core.module.ModuleAnalysis;
@@ -598,7 +599,7 @@ public final class Board extends KFrame {
     private static void syncAll() {
         SemesterActivity.startMatching(false);
         ModuleHandler.launchThoroughSync(false, null);
-        NotificationActivity.updateNotices(false);
+        RemoteAlertHandler.updateNotices(false);
         instance.newsPresent.packAll(false);
     }
 

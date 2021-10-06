@@ -143,7 +143,7 @@ public class ModuleHandler {
                 modulesMonitor.add(c);
             }
         } else {
-            deserializeData();
+            deserialize();
         }
     }
 
@@ -1193,7 +1193,7 @@ public class ModuleHandler {
         Serializer.toDisk(data, Serializer.inPath("modules", "courses.ser"));
     }
 
-    public static void deserializeData() {
+    public static void deserialize() {
         final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "courses.ser"));
         if (obj == null) {
             App.silenceException("Failed to read Modules.");

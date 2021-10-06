@@ -1,5 +1,6 @@
 - Stop using getters on hosts
 - Rename serializable paths/files
+- Minimize inner-classes
 - Reindex resources completely without signing out (or re-signing in)
 - Transcript export customization
 - Student auditing tool
