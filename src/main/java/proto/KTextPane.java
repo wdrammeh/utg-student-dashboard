@@ -32,14 +32,14 @@ public class KTextPane extends JTextPane implements Preference {
     }
 
     public static void effectBackgroundChanges(){
-        final Color color = Settings.currentBackground();
+        final Color color = Settings.getBackground();
         for (KTextPane textPane : TEXT_PANES) {
             textPane.setBackground(color);
         }
     }
 
     public void setPreferences(){
-        setBackground(Settings.currentBackground());
+        setBackground(Settings.getBackground());
         setEditable(false);
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         TEXT_PANES.add(this);

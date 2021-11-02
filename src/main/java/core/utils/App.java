@@ -36,13 +36,13 @@ public class App {
      * A centralized point for user verification.
      * Note that some operations, however, do no necessarily delegate to this.
      * This function gives access if the current user is trial,
-     * or {@link Settings#noVerifyNeeded} is true.
+     * or {@link Settings#isVerifyNeeded} is true.
      * Operations like logging out must always ask for user-confirmation.
      * The given text will be shown to the user as a hint.
      * And the operation will be performed on the parent component.
      */
     public static int verifyUser(Component parent, String text){
-        if (Settings.noVerifyNeeded || Student.isGuest()) {
+        if (!Settings.isVerifyNeeded() || Student.isGuest()) {
             return VERIFICATION_TRUE;
         } else {
             final String input = requestInput(parent, "Confirm", text);

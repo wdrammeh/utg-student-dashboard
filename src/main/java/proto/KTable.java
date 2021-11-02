@@ -13,7 +13,7 @@ import java.awt.*;
  */
 public class KTable extends JTable implements Preference {
 
-    public KTable(KTableModel kTableModel){
+    public KTable(KTableModel kTableModel) {
         super();
         setModel(kTableModel);
         kTableModel.setTable(this);
@@ -87,7 +87,6 @@ public class KTable extends JTable implements Preference {
     @Override
     public void setPreferences(){
         getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setFocusable(false);
     }
 
 }

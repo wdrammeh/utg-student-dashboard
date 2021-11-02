@@ -93,7 +93,7 @@ public class MComponent {
      * And it's intended to be the space between the contents and the bottom.
      */
     public static Component contentBottomGap(){
-        return Box.createVerticalStrut(20);
+        return Box.createVerticalStrut(15);
     }
 
     /**

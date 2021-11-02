@@ -38,7 +38,7 @@ public class NotificationActivity implements Activity {
             final int selectedIndex = alertBox.getSelectedIndex();
             if (selectedIndex == 0) {
                 cardLayout.show(centerPanel,"Dashboard");
-                hintLabel.setText("(Showing Local Dashboard Alerts)");
+                hintLabel.setText("(Showing Local Alerts)");
             } else if (selectedIndex == 1) {
                 cardLayout.show(centerPanel, "Portal");
                 hintLabel.setText("(Showing Portal Alerts)");

@@ -19,7 +19,7 @@ public class Preview extends KDialog {
      * The Preview is also intended for extended operations: for example,
      * during "preparing grounds" on a version update.
      */
-    public Preview(Component root){
+    public Preview(Component root) {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setUndecorated(true);
 

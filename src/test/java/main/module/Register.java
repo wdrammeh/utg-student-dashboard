@@ -1,5 +1,6 @@
-package core;
+package main.module;
 
+import core.Portal;
 import core.driver.MDriver;
 import core.module.RegisteredCourse;
 import core.utils.App;

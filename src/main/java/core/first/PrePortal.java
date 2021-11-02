@@ -83,12 +83,12 @@ public class PrePortal {
             return;
         }
         if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
-            Login.replaceLastUpdate("Now contacting utg....... Ok");
+            Login.replaceLastUpdate("Now contacting utg.gm....... Ok");
             temporaryName = driver.findElement(By.className("media-heading")).getText();
             Login.appendToStatus("Login successfully : " + temporaryName);
             launchReading();
         } else if (loginAttempt == MDriver.ATTEMPT_FAILED) {
-            Login.replaceLastUpdate("Now contacting utg....... Done");
+            Login.replaceLastUpdate("Now contacting utg.gm....... Done");
             Login.appendToStatus("Verification failed : No such student");
             App.reportError(Login.getRoot(), "Invalid Credentials",
                     "The information you provided do not match any student.\n" +

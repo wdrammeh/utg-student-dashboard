@@ -10,7 +10,7 @@ import core.module.ModuleHandler;
 import core.module.SemesterActivity;
 import core.utils.Serializer;
 import core.setting.Settings;
-import core.setting.SettingsUI;
+import core.setting.SettingsActivity;
 import core.task.TaskActivity;
 import core.transcript.TranscriptActivity;
 import core.user.Student;
@@ -73,7 +73,7 @@ public final class Board extends KFrame {
 //    Collaborators declaration. The order in which these will be initialized does matter!
     private SemesterActivity semesterActivity;
     private ModuleActivity moduleActivity;
-    private SettingsUI settingsUI;
+    private SettingsActivity settingsUI;
     private TranscriptActivity transcriptActivity;
     private ModuleAnalysis analysisActivity;
     private Help helpActivity;
@@ -107,18 +107,17 @@ public final class Board extends KFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (!Settings.confirmExit || App.showYesNoCancelDialog("Confirm Exit",
+                if (!Settings.isConfirmExit() || App.showYesNoCancelDialog("Confirm Exit",
                         "Do you want to close the Dashboard?")) {
                     setVisible(false);
                 }
             }
         });
 
-        Settings.allLooksInfo = UIManager.getInstalledLookAndFeels();
+        Settings.init();
         if (!Dashboard.isFirst()) {
-            Settings.deserialize();
-            for (UIManager.LookAndFeelInfo lookAndFeelInfo : Settings.allLooksInfo) {
-                if (lookAndFeelInfo.getName().equals(Settings.lookName)) {
+            for (UIManager.LookAndFeelInfo lookAndFeelInfo : Settings.getLooksInfo()) {
+                if (lookAndFeelInfo.getName().equals(Settings.getLookName())) {
                     try {
                         UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
                     } catch (Exception e) {
@@ -145,7 +144,7 @@ public final class Board extends KFrame {
         }
         semesterActivity = new SemesterActivity();
         moduleActivity = new ModuleActivity();
-        settingsUI = new SettingsUI();
+        settingsUI = new SettingsActivity();
         transcriptActivity = new TranscriptActivity();
         analysisActivity = new ModuleAnalysis();
         helpActivity = new Help();
@@ -173,12 +172,13 @@ public final class Board extends KFrame {
     private void setUpThorax() {
         final KMenuItem resetOption = new KMenuItem("Set Default", e-> Student.fireIconReset());
 
-        final JPopupMenu imageOptionsPop = new JPopupMenu();
+        final KPanel imagePart = new KPanel(new BorderLayout(), new Dimension(275,200));
+        
+        final KPopupMenu imageOptionsPop = new KPopupMenu();
         imageOptionsPop.add(new KMenuItem("Select", e-> Student.startSettingImage()));
         imageOptionsPop.add(resetOption);
 
         imageLabel = new KLabel(Student.getIcon());
-        final KPanel imagePart = new KPanel(new BorderLayout(), new Dimension(275,200));
         imagePart.add(imageLabel);
         imagePart.addMouseListener(new MouseAdapter(){
             @Override
@@ -420,7 +420,7 @@ public final class Board extends KFrame {
      */
     private void completeBuild() {
         if (Dashboard.isFirst()) {
-            SettingsUI.loadDefaults();
+            SettingsActivity.loadDefaults();
         }
         Runtime.getRuntime().addShutdownHook(SHUT_DOWN_HOOK);
         isReady = true;

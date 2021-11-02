@@ -6,6 +6,7 @@
 - Removed 'greetings' on local alerts
 - Fixed restart-required Look & Feel changes
 - Standardized time utility
+- Fixed sign in problem
 
 `2021.6`
 

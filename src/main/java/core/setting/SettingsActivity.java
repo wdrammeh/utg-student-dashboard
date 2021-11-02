@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
-public class SettingsUI implements Activity {
+public class SettingsActivity implements Activity {
     private static KPanel aboutComponent;
     private static KLabel msLabel;
     private static KLabel pobLabel;
@@ -42,7 +42,7 @@ public class SettingsUI implements Activity {
     public static final KTextArea descriptionArea = KTextArea.getLimitedEntryArea(1_000);
 
 
-    public SettingsUI(){
+    public SettingsActivity(){
         final JTabbedPane settingsTab = new JTabbedPane();
         settingsTab.setFocusable(false);
         settingsTab.add(aboutComponent());
@@ -664,13 +664,13 @@ public class SettingsUI implements Activity {
         final Cursor handCursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
         final int hereGap = 10;
 
-        userChecking = new KCheckBox("Verify Changes", !Settings.noVerifyNeeded);
+        userChecking = new KCheckBox("Verify Changes", Settings.isVerifyNeeded());
         userChecking.setIconTextGap(hereGap);
         userChecking.setFont(H_FONT);
         userChecking.setCursor(handCursor);
         userChecking.addActionListener(e-> {
             if (userChecking.isSelected()) {
-                Settings.noVerifyNeeded = false;
+                Settings.setVerifyNeeded(true);
             } else {
                 final String matString = App.requestInput("Confirm",
                         "Dashboard will not ask for your verification in making sensitive changes.\n" +
@@ -681,7 +681,7 @@ public class SettingsUI implements Activity {
                 }
 
                 if (Objects.equals(matString, Student.getMatNumber())) {
-                    Settings.noVerifyNeeded = true;
+                    Settings.setVerifyNeeded(false);
                 } else {
                     App.reportMatError();
                     userChecking.setSelected(true);
@@ -690,11 +690,11 @@ public class SettingsUI implements Activity {
         });
         userChecking.setEnabled(!Student.isGuest());
 
-        exitChecking = new KCheckBox("Confirm Exit", Settings.confirmExit);
+        exitChecking = new KCheckBox("Confirm Exit", Settings.isConfirmExit());
         exitChecking.setIconTextGap(hereGap);
         exitChecking.setFont(H_FONT);
         exitChecking.setCursor(handCursor);
-        exitChecking.addItemListener(e-> Settings.confirmExit = (e.getStateChange() == ItemEvent.SELECTED));
+        exitChecking.addItemListener(e-> Settings.setConfirmExit(e.getStateChange() == ItemEvent.SELECTED));
 
         instantToolTip = new KCheckBox("Instantly Show Tooltips",
                 ToolTipManager.sharedInstance().getInitialDelay() == 0);
@@ -722,7 +722,7 @@ public class SettingsUI implements Activity {
             }
         });
 
-        syncChecking = new KCheckBox("Automatically sync Portal Resources", Portal.isAutoSynced());
+        syncChecking = new KCheckBox("Auto-sync Portal Resources", Portal.isAutoSynced());
         syncChecking.setIconTextGap(hereGap);
         syncChecking.setFont(H_FONT);
         syncChecking.setCursor(handCursor);
@@ -753,32 +753,30 @@ public class SettingsUI implements Activity {
         };
         looksBox.setFont(FontFactory.createPlainFont(15));
         looksBox.setFocusable(false);
-        looksBox.setSelectedItem(Settings.currentLookName());
+        looksBox.setSelectedItem(Settings.getLookName());
         looksBox.setCursor(handCursor);
         looksBox.addActionListener(e -> SwingUtilities.invokeLater(()-> {
             looksBox.setEnabled(false);
             final String selectedName = String.valueOf(looksBox.getSelectedItem());
-            setLookTo(selectedName);
-            Settings.lookName = selectedName;
+            Settings.setLookName(selectedName);
             looksBox.setEnabled(true);
         }));
         final KPanel lafPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
         lafPanel.addAll(new KLabel("Look & Feel:", H_FONT),
                 Box.createRigidArea(new Dimension(30,25)), looksBox);
 
-        bgBox = new JComboBox<String>(Settings.backgroundNames()) {
+        bgBox = new JComboBox<String>(Settings.getBackgroundNames()) {
             @Override
             public JToolTip createToolTip() {
                 return MComponent.preferredTip();
             }
         };
         bgBox.setFont(FontFactory.createPlainFont(15));
-        bgBox.setSelectedItem(Settings.currentBackgroundName());
+        bgBox.setSelectedItem(Settings.getBackgroundName());
         bgBox.setCursor(handCursor);
         bgBox.addActionListener(e-> SwingUtilities.invokeLater(()-> {
             bgBox.setEnabled(false);
-            Settings.backgroundName = String.valueOf(bgBox.getSelectedItem());
-            effectBackgroundChanges();
+            Settings.setBackgroundName(String.valueOf(bgBox.getSelectedItem()));
             bgBox.setEnabled(true);
         }));
         final KPanel bgPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
@@ -849,7 +847,7 @@ public class SettingsUI implements Activity {
                 new KPanel(new FlowLayout(FlowLayout.LEFT), syncChecking),
                 nameFormatPanel, lafPanel, bgPanel, layoutPanel);
 
-        final KButton resetButton = new KButton("Reset Settings");
+        final KButton resetButton = new KButton("Reset");
         resetButton.setFont(FontFactory.createPlainFont(15));
         resetButton.setCursor(handCursor);
         resetButton.addActionListener(e-> {
@@ -872,41 +870,14 @@ public class SettingsUI implements Activity {
         return label;
     }
 
-    public static void setLookTo(String lookName) {
-        for (UIManager.LookAndFeelInfo lookAndFeelInfo : Settings.allLooksInfo) {
-            if (lookAndFeelInfo.getName().equals(lookName)) {
-                try {
-                    UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                    final KFrame instance = Board.getInstance();
-                    SwingUtilities.updateComponentTreeUI(instance);
-                    instance.pack();
-                    SwingUtilities.invokeLater(()-> {
-                        for (KDialog dialog : KDialog.ALL_DIALOGS) {
-                            SwingUtilities.updateComponentTreeUI(dialog);
-                            dialog.pack();
-                        }
-                    });
-                } catch (Exception e1) {
-                    App.reportError(e1);
-                }
-                break;
-            }
-        }
-    }
-
-    private static void effectBackgroundChanges() {
-        KPanel.effectBackgroundChanges();
-        KTextPane.effectBackgroundChanges();
-    }
-
     /**
      * Loads up default, developer, settings.
      */
     public static void loadDefaults() {
         userChecking.setSelected(true);
-        Settings.noVerifyNeeded = false;
+        Settings.setVerifyNeeded(true);
         exitChecking.setSelected(true);
-        Settings.confirmExit = true;
+        Settings.setConfirmExit(true);
         instantToolTip.setSelected(false);
         ToolTipManager.sharedInstance().setInitialDelay(750);
         tipDismissible.setSelected(true);

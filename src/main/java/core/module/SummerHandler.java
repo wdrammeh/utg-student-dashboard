@@ -16,7 +16,7 @@ import java.awt.event.MouseEvent;
  */
 public class SummerHandler {
     private KMenuItem detailsItem, editItem, removeItem, confirmItem, newItem;
-    private JPopupMenu popupMenu;
+    private KPopupMenu popupMenu;
     private static KTable summerTable;
     public static KTableModel summerModel;
 
@@ -125,7 +125,7 @@ public class SummerHandler {
             SwingUtilities.invokeLater(()-> adder.setVisible(true));
         });
 
-        popupMenu = new JPopupMenu();
+        popupMenu = new KPopupMenu();
         popupMenu.add(detailsItem);
         popupMenu.add(editItem);
         popupMenu.add(confirmItem);
@@ -169,7 +169,6 @@ public class SummerHandler {
             setTitle("New Summer Course");
             availableYearsBox = new KComboBox<>(new String[] {Student.firstAcademicYear(),
                     Student.secondAcademicYear(), Student.thirdAcademicYear(), Student.fourthAcademicYear()});
-            availableYearsBox.setFont(FontFactory.createPlainFont(15));
             yearPanel.removeLast();
             yearPanel.add(new KPanel(availableYearsBox), BorderLayout.CENTER);
 

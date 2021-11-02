@@ -1,19 +1,22 @@
-package core;
+package main;
 
+import core.Board;
 import core.utils.App;
 import core.utils.Globals;
 import core.utils.MDate;
 import utg.Dashboard;
 
-public class Tester {
+public class Main {
+    private static final String TEST_PATH = Globals.joinPaths(Globals.userHome(), "dashboard");
+
 
     public static void main(String[] args) {
         System.out.println(MDate.formatNow());
-        launch(Globals.joinPaths(Globals.userHome(), "dashboard"), true);
+        launch(TEST_PATH, true);
     }
 
-    private static void launch(String path, boolean ser){
-        App.silenceInfo("Dashboard running on test mode; where path = '"+path+"'.");
+    private static void launch(String path, boolean ser) {
+        App.silenceInfo("Dashboard running on test mode; where path := '"+path+"'.");
         Dashboard.main(new String[]{path});
         if (!ser) {
             Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);

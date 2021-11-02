@@ -1,3 +1,4 @@
+- LAF not immediately effective on all sub-components - like Popups
 - Stop using getters on hosts
 - Rename serializable paths/files
 - Minimize inner-classes

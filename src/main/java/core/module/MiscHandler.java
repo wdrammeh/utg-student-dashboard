@@ -25,7 +25,7 @@ public class MiscHandler {
     private KMenuItem removeItem;
     private KMenuItem confirmItem;
     private KMenuItem newItem;
-    private JPopupMenu popupMenu;
+    private KPopupMenu popupMenu;
     private static KTable miscTable;
     public static KTableModel miscModel;
 
@@ -144,7 +144,7 @@ public class MiscHandler {
             SwingUtilities.invokeLater(()-> adder.setVisible(true));
         });
 
-        popupMenu = new JPopupMenu();
+        popupMenu = new KPopupMenu();
         popupMenu.add(detailsItem);
         popupMenu.add(editItem);
         popupMenu.add(confirmItem);

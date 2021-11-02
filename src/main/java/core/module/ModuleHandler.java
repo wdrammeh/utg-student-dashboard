@@ -10,6 +10,8 @@ import core.utils.App;
 import core.utils.FontFactory;
 import core.utils.Globals;
 import core.utils.Internet;
+import core.utils.MComponent;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -29,8 +31,8 @@ import java.util.List;
 /**
  * Handles all module related activities.
  * Even the {@link ModuleMemory} has its root from here.
- * @see #modulesMonitor
  * Todo: keep track of all venues, rooms, lecturer-names the user gives and recommend them on appropriate dialogs.
+ * @see #modulesMonitor
  */
 public class ModuleHandler {
     private ModuleYear yearOne;
@@ -52,7 +54,7 @@ public class ModuleHandler {
     public static final String EDIT = "Edit";
     public static final String CONFIRM = "Verify";
     public static final String DELETE = "Remove";
-    public static final String ADD = "Add Course";
+    public static final String ADD = "Add New";
 
 
     public ModuleHandler() {
@@ -671,7 +673,7 @@ public class ModuleHandler {
         private KTableModel model1, model2;
         private KTableModel focusModel;
         private KMenuItem detailsItem, editItem, removeItem, confirmItem, newItem;
-        private JPopupMenu popupMenu;
+        private KPopupMenu popupMenu;
 
         public ModuleYear(String yearName) {
             this.yearName = yearName;
@@ -722,7 +724,7 @@ public class ModuleHandler {
                 SwingUtilities.invokeLater(()-> adder.setVisible(true));
             });
 
-            popupMenu = new JPopupMenu();
+            popupMenu = new KPopupMenu();
             popupMenu.add(detailsItem);
             popupMenu.add(editItem);
             popupMenu.add(confirmItem);
@@ -922,7 +924,7 @@ public class ModuleHandler {
 
 
     /**
-     * Provides the dialog for locally addition of courses.
+     * Provides the dialog for local addition of courses.
      */
     public static class ModuleAdder extends KDialog {
         KTextField yearField, semesterField, codeField, nameField, roomField, lecturerField, scoreField;
@@ -955,25 +957,25 @@ public class ModuleHandler {
             yearField.setText(yearName);
             yearField.setEditable(Globals.hasNoText(yearName));
             yearPanel = new KPanel(new BorderLayout());
-            yearPanel.add(new KPanel(new KLabel("*Year:", hintFont)),  BorderLayout.WEST);
+            yearPanel.add(new KPanel(new KLabel("Year:", hintFont)),  BorderLayout.WEST);
             yearPanel.add(new KPanel(yearField),BorderLayout.CENTER);
 
             semesterField = new KTextField(new Dimension(200,30));
             semesterField.setText(semesterName);
             semesterField.setEditable(semesterName == null);
             semesterPanel = new KPanel(new BorderLayout());
-            semesterPanel.add(new KPanel(new KLabel("*Semester:", hintFont)), BorderLayout.WEST);
+            semesterPanel.add(new KPanel(new KLabel("Semester:", hintFont)), BorderLayout.WEST);
             semesterPanel.add(new KPanel(semesterField), BorderLayout.CENTER);
 
             codeField = KTextField.rangeControlField(10);
             codeField.setPreferredSize(new Dimension(125,30));
             final KPanel codePanel = new KPanel(new BorderLayout());
-            codePanel.add(new KPanel(new KLabel("*Code:", hintFont)), BorderLayout.WEST);
+            codePanel.add(new KPanel(new KLabel("Code:", hintFont)), BorderLayout.WEST);
             codePanel.add(new KPanel(codeField), BorderLayout.CENTER);
 
             nameField = new KTextField(new Dimension(300,30));
             final KPanel namePanel = new KPanel(new BorderLayout());
-            namePanel.add(new KPanel(new KLabel("*Name:", hintFont)), BorderLayout.WEST);
+            namePanel.add(new KPanel(new KLabel("Name:", hintFont)), BorderLayout.WEST);
             namePanel.add(new KPanel(nameField), BorderLayout.CENTER);
 
             lecturerField = new KTextField(new Dimension(300,30));
@@ -1013,7 +1015,7 @@ public class ModuleHandler {
             scoreField = KTextField.rangeControlField(7);
             scoreField.setPreferredSize(new Dimension(125,30));
             final KPanel scorePanel = new KPanel(new BorderLayout());
-            scorePanel.add(new KPanel(new KLabel("*Score:", hintFont)), BorderLayout.WEST);
+            scorePanel.add(new KPanel(new KLabel("Score:", hintFont)), BorderLayout.WEST);
             scorePanel.add(new KPanel(scoreField), BorderLayout.CENTER);
 
             final KButton cancelButton = new KButton("Cancel");
@@ -1027,12 +1029,11 @@ public class ModuleHandler {
             getRootPane().setDefaultButton(actionButton);
             final KPanel contentPanel = new KPanel();
             contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-            contentPanel.addAll(Box.createVerticalStrut(10), yearPanel, semesterPanel, codePanel, namePanel,
+            contentPanel.addAll(yearPanel, semesterPanel, codePanel, namePanel,
                     lecturerPanel, schedulePanel, venuePanel, requirementPanel, creditPanel, scorePanel,
-                    Box.createVerticalStrut(30), buttonsPanel);
+                    MComponent.contentBottomGap(), buttonsPanel);
             setContentPane(contentPanel);
             pack();
-            setMinimumSize(getPreferredSize());
             setLocationRelativeTo(Board.getRoot());
         }
 

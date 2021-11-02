@@ -34,7 +34,7 @@ public class Login extends JDialog {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setUndecorated(true);
 
-        final KLabel bigText = new KLabel("LOGIN TO GET THE MOST OUT OF YOUR STUDENT-HOOD",
+        final KLabel bigText = new KLabel("LOG IN TO GET THE MOST OUT OF YOUR STUDENTHOOD",
                 FontFactory.createPlainFont(18), Color.WHITE);
         bigText.setBounds(15, 10, 625, 30);
         bigText.setOpaque(false);

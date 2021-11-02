@@ -5,7 +5,7 @@ import core.first.Login;
 import core.first.PrePortal;
 import core.module.ModuleHandler;
 import core.utils.Serializer;
-import core.setting.SettingsUI;
+import core.setting.SettingsActivity;
 import core.utils.App;
 import core.utils.Globals;
 import core.utils.MComponent;
@@ -140,8 +140,8 @@ public class Student {
      */
     public static void setMinor(String minor){
         Student.minor = minor;
-        SettingsUI.minorLabel.setText(minor);
-        SettingsUI.minorField.setText(minor);
+        SettingsActivity.minorLabel.setText(minor);
+        SettingsActivity.minorField.setText(minor);
         if (Globals.hasNoText(minor)) {
             setMinorCode("");
         }
@@ -313,7 +313,7 @@ public class Student {
     }
 
     public static void setMajorCode(String majorCode) {
-        SettingsUI.majorCodeField.setText(majorCode);
+        SettingsActivity.majorCodeField.setText(majorCode);
         ModuleHandler.effectMajorCodeChanges(Student.majorCode, majorCode);
         Student.majorCode = majorCode;
     }
@@ -323,7 +323,7 @@ public class Student {
     }
 
     public static void setMinorCode(String minorCode){
-        SettingsUI.minorCodeField.setText(minorCode);
+        SettingsActivity.minorCodeField.setText(minorCode);
         ModuleHandler.effectMinorCodeChanges(Student.minorCode, minorCode);
         Student.minorCode = minorCode;
     }
@@ -341,7 +341,7 @@ public class Student {
      * The semester says a lot about the student,
      * including his/her level.
      * Never call this before setting the yearOfAdmission.
-     * 
+     *
      * At every login, level is set first, state, then semester.
      */
     public static void setSemester(String semester) {
@@ -355,7 +355,7 @@ public class Student {
             Student.semester = String.join(" ", academicYear, SUMMER_SEMESTER);
         }
         Board.effectSemesterUpgrade();
-        final int current = Integer.parseInt(semester.split("/")[0]) + 1;
+        final int current = Integer.parseInt(semester.substring(0, 4));
         levelNumber = (current - yearOfAdmission)  * 100;
     }
 

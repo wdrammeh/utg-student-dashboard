@@ -29,17 +29,6 @@ public class ModuleActivity implements Activity {
         } else {
             indicator = new KLabel("First Year: "+Student.firstAcademicYear(), FontFactory.BODY_HEAD_FONT);
 
-            final KButton tipButton = KButton.createIconifiedButton("warn.png", 30, 30);
-            tipButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            tipButton.addActionListener(e-> App.reportInfo("Module Collection", "For more options, simply right-click on the tables.\n" +
-                    "To Edit, Remove, Verify, or Show the Details of a course, just right-click on it and choose the corresponding\n" +
-                    "option from the Popup Menu.\n \n" +
-                    "You can navigate through your collection by using the buttons outlined in the left-most panel.\n" +
-                    "If Dashboard cannot determine the academic year & semester of a course relative to your level,\n" +
-                    "it will be pushed to the Miscellaneous Table.\n \n" +
-                    "It should be noted that only the courses that are Confirmed will be included in your Analysis and Transcript.\n \n" +
-                    "For more information about this activity, refer to the Tips."));
-
             refreshButton = new KButton("Sync");
             refreshButton.setFont(FontFactory.createPlainFont(15));
             refreshButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -48,7 +37,6 @@ public class ModuleActivity implements Activity {
 
             final KPanel headerPanel = new KPanel(new BorderLayout());
             headerPanel.add(new KPanel(indicator), BorderLayout.WEST);
-            headerPanel.add(new KPanel(tipButton), BorderLayout.CENTER);
             headerPanel.add(new KPanel(refreshButton), BorderLayout.EAST);
 
             final SummerHandler summerHandler = new SummerHandler();

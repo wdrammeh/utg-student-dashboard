@@ -19,7 +19,7 @@ public class KPanel extends JPanel implements Preference {
      * If not, then this panel has a permanent background color.
      */
     private boolean reflectTheme = true;
-    private static final List<KPanel> ALL_PANELS = new ArrayList<>();
+    public static final List<KPanel> ALL_PANELS = new ArrayList<>();
 
 
     public KPanel(){
@@ -133,7 +133,7 @@ public class KPanel extends JPanel implements Preference {
     }
 
     public static void effectBackgroundChanges(){
-        final Color color = Settings.currentBackground();
+        final Color color = Settings.getBackground();
         for (KPanel panel : ALL_PANELS) {
             if (panel.isReflectTheme()) {
                 panel.setBackground(color);
@@ -142,7 +142,7 @@ public class KPanel extends JPanel implements Preference {
     }
 
     public void setPreferences(){
-        setBackground(Settings.currentBackground());
+        setBackground(Settings.getBackground());
         ALL_PANELS.add(this);
     }
 

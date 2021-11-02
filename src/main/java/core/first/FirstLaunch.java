@@ -3,7 +3,7 @@ package core.first;
 import core.Board;
 import core.alert.Notification;
 import core.utils.Serializer;
-import core.setting.SettingsUI;
+import core.setting.SettingsActivity;
 import core.user.Student;
 import core.utils.*;
 import proto.*;
@@ -189,9 +189,9 @@ public class FirstLaunch extends KDialog {
             }
 
             Student.setStudentMail(emailField.getText());
-            SettingsUI.studentMailField.setText(Student.getVisibleStudentMail());
+            SettingsActivity.studentMailField.setText(Student.getVisibleStudentMail());
             Student.setStudentPassword(psswdField.getText());
-            SettingsUI.studentPsswdField.setText(psswdField.getText());
+            SettingsActivity.studentPsswdField.setText(psswdField.getText());
             layout.show(contentPanel, "Image icon");
         });
 
@@ -209,9 +209,9 @@ public class FirstLaunch extends KDialog {
         skipButton.setStyle(FontFactory.createPlainFont(15), Color.RED);
         skipButton.addActionListener(e-> {
             Student.setStudentMail("");
-            SettingsUI.studentMailField.setText(Student.getVisibleStudentMail());
+            SettingsActivity.studentMailField.setText(Student.getVisibleStudentMail());
             Student.setStudentPassword("");
-            SettingsUI.studentPsswdField.setText("");
+            SettingsActivity.studentPsswdField.setText("");
             layout.show(contentPanel, "Image icon");
         });
 
@@ -273,7 +273,7 @@ public class FirstLaunch extends KDialog {
                 Student.getMajor()+" Program\n" +
                 Student.getYearOfAdmission()+" - "+Student.getExpectedYearOfGraduation();
         Student.setAbout(aboutMe);
-        SettingsUI.descriptionArea.setText(aboutMe);
+        SettingsActivity.descriptionArea.setText(aboutMe);
         Serializer.mountUserData();
 
         // create a welcome message notification

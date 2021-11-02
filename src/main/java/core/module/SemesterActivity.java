@@ -37,7 +37,7 @@ public class SemesterActivity implements Activity {
     public static KLabel noticeLabel;
     private static KMenuItem matchItem;
     private static KButton optionsButton;
-    private static JPopupMenu modulePopupMenu;
+    private static KPopupMenu modulePopupMenu;
     private static KLabel hintLabel;
     private static final String REGISTERED_HINT = "Right-click a row (or a course) on the table for more actions.";
     private static final String UNREGISTERED_HINT = "Courses you register this semester will be shown here.";
@@ -86,7 +86,7 @@ public class SemesterActivity implements Activity {
                 e-> new RemoteAlertHandler.NoticeExhibition(
                     RemoteAlertHandler.NoticeExhibition.REGISTRATION_NOTICE).setVisible(true));
 
-            final JPopupMenu popupMenu = new JPopupMenu();
+            final KPopupMenu popupMenu = new KPopupMenu();
             popupMenu.add(matchItem);
             popupMenu.add(visitItem);
             popupMenu.add(updateItem);
@@ -138,7 +138,7 @@ public class SemesterActivity implements Activity {
             }
         });
 
-        final KMenuItem checkItem = new KMenuItem("Checkout");
+        final KMenuItem checkItem = new KMenuItem("Verify");
         checkItem.addActionListener(e-> new Thread(()-> {
             final String targetCode = String.valueOf(activeModel.getValueAt(activeTable.getSelectedRow(),0));
             final RegisteredCourse targetCourse = getByCode(targetCode);
@@ -167,7 +167,7 @@ public class SemesterActivity implements Activity {
             }
         });
 
-        modulePopupMenu = new JPopupMenu();
+        modulePopupMenu = new KPopupMenu();
         modulePopupMenu.add(detailsItem);
         modulePopupMenu.add(editItem);
         modulePopupMenu.add(checkItem);
@@ -243,6 +243,7 @@ public class SemesterActivity implements Activity {
         return substancePanel;
     }
 
+    // Todo: Improve
     private static void uploadModules(){
         if (Dashboard.isFirst()) {
             for (RegisteredCourse c : PrePortal.STARTUP_REGISTRATIONS) {
@@ -260,7 +261,7 @@ public class SemesterActivity implements Activity {
     }
 
     /**
-     * Checks out this course for the currently running semester using its code.
+     * Verifies this course for the currently running semester using its code.
      * If it's found, it shall be replaced; otherwise, unsuccessful.
      */
     private static void startCheckout(RegisteredCourse targetCourse) {
@@ -360,8 +361,8 @@ public class SemesterActivity implements Activity {
             final List<WebElement> captions = tableBody.findElements(By.cssSelector("b, strong"));
             final boolean registered = captions.get(captions.size() - 1).getText().equals(Student.getSemester());
             if (!registered) {
-                App.reportWarning("Checkout Failed",
-                        "The attempt to checkout '"+targetCourse.getName()+"' was unsuccessful.\n" +
+                App.reportWarning("Verification Failed",
+                        "The attempt to verify '"+targetCourse.getName()+"' was unsuccessful.\n" +
                         "It seems like you have no registration for this semester yet.");
                 final int targetRow = activeModel.getRow(targetCode);
                 if (targetRow >= 0) {
@@ -391,7 +392,7 @@ public class SemesterActivity implements Activity {
 //                        Todo: An option to add it (again), or dismiss
                         ACTIVE_COURSES.add(foundCourse);
                     }
-                    App.reportInfo("Checkout Successful",
+                    App.reportInfo("Verification Successful",
                             "Registered course '"+targetCourse.getAbsoluteName()+"' checked-out successful.\n" +
                             "It is available on your Portal as a registered course for this semester.");
                     found = true;
@@ -401,7 +402,7 @@ public class SemesterActivity implements Activity {
             }
 
             if (!found) {
-                App.reportError("Checkout Unsuccessful",
+                App.reportError("Verification Unsuccessful",
                         "Attempt to check-out '"+targetCourse.getAbsoluteName()+"' was unsuccessful.\n" +
                                 "It seems like you haven't register it this semester.");
                 final int targetRow = activeModel.getRow(targetCode);
@@ -665,7 +666,7 @@ public class SemesterActivity implements Activity {
                     Box.createRigidArea(new Dimension(50, 30)),
                     newHintLabel("Time:"), hoursBox);
 
-            final KCheckBox instantCheck = new KCheckBox("Checkout now", true);
+            final KCheckBox instantCheck = new KCheckBox("Verify now", true);
             instantCheck.setFont(FontFactory.createPlainFont(15));
             instantCheck.setCursor(MComponent.HAND_CURSOR);
             checkPanel = new KPanel(instantCheck);
@@ -716,7 +717,6 @@ public class SemesterActivity implements Activity {
                     MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT), cancelButton, doneButton));
             setContentPane(contentPanel);
             pack();
-            setMinimumSize(getPreferredSize());
             setLocationRelativeTo(Board.getRoot());
         }
 

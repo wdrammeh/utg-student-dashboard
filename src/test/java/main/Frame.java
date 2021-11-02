@@ -1,10 +1,10 @@
-package core;
+package main;
 
 import proto.KFrame;
 
 import java.awt.*;
 
-public class Display {
+public class Frame {
 
     public static void main(String[] args) {
 

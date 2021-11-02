@@ -206,16 +206,39 @@ public abstract class Module {
 
     @Override
     public boolean equals(Object obj) {
-        return code.equalsIgnoreCase(((Module) obj).code);
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }            
+
+        final Module other = (Module) obj;
+        if (code == null) {
+            if (other.code != null) {
+                return false;
+            }
+        } else if (!code.equals(other.code)) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        final StringBuilder builder = new StringBuilder();
-        for (char c : code.toCharArray()) {
-            builder.append((int) Math.abs(Character.getNumericValue(c)));
-        }
-        return Integer.parseInt(builder.toString());
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Module (Code=%s Name=%s Year=%s Semester=%s Lecturer=%s Requirement=%s "+
+                "Confirmed=%s )", code, name, year, semester, lecturer, requirement, isConfirmed);
     }
 
     // Field assistants...
@@ -345,17 +368,21 @@ public abstract class Module {
      * @param module
      * @return
      */
-    public static String schedule(Module module){
+    public static String schedule(Module module) {
         final String day = module.day;
         final String time = module.time;
-        if (Globals.hasText(day) && Globals.hasText(time)) {
-            return day+" "+time;
-        } else if (Globals.hasText(day) && Globals.hasNoText(time)) {
-            return day+" - Unknown time";
-        } else if (Globals.hasNoText(day) && Globals.hasText(time)) {
-            return time+" - Unknown day";
+        if (day.equals(UNKNOWN)) {
+            if (time.equals(UNKNOWN)) {
+                return "";
+            } else {
+                return time+" - Unknown Day";
+            }
         } else {
-            return "";
+            if (time.equals(UNKNOWN)) {
+                return day+" - Unknown Time";
+            } else {
+                return day+" - "+time;
+            }
         }
     }
 
@@ -365,17 +392,21 @@ public abstract class Module {
      * @param module
      * @return
      */
-    public static String venue(Module module){
+    public static String venue(Module module) {
         final String campus = module.campus;
         final String room = module.room;
-        if (Globals.hasText(campus) && Globals.hasText(room)) {
-            return campus+" ("+room+")";
-        } else if (Globals.hasText(campus) && Globals.hasNoText(room)) {
-            return campus+" (Unknown room)";
-        } else if (Globals.hasNoText(campus) && Globals.hasText(room)) {
-            return room;
+        if (campus.equals(OTHER)) {
+            if (Globals.hasText(room)) {
+                return room;
+            } else {
+                return "";
+            }
         } else {
-            return "";
+            if (Globals.hasText(room)) {
+                return campus+" - "+room;
+            } else {
+                return campus+" - Unknown Room";
+            }
         }
     }
 

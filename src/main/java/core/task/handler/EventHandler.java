@@ -85,7 +85,7 @@ public class EventHandler {
             new EventCreator(EventCreator.OTHER).setVisible(true);
         });
 
-        final JPopupMenu jPopup = new JPopupMenu();
+        final KPopupMenu jPopup = new KPopupMenu();
         jPopup.add(testItem);
         jPopup.add(examItem);
         jPopup.add(otherItem);
