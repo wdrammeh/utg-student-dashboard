@@ -92,7 +92,7 @@ public class TranscriptActivity implements Activity {
         Board.showCard("Transcript");
         if (!Student.isGuest()) {
             minorLabel.setText(Student.isDoingMinor() ? Student.getMinor().toUpperCase() : "NONE");
-            CGPALabel.setText(Double.toString(Student.getCGPA()));
+            CGPALabel.setText(Student.getCGPA());
             classificationLabel.setText(Student.upperClassDivision());
             if (classificationLabel.getText().equals("None")) {
                 classificationLabel.getParent().setVisible(false);

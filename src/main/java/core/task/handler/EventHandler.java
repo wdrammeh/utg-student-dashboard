@@ -8,6 +8,7 @@ import core.utils.Globals;
 import core.utils.MComponent;
 import core.utils.MDate;
 import proto.*;
+import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,7 +41,9 @@ public class EventHandler {
             }
         };
         eventsReside.setLayout(new FlowLayout(CONTENTS_POSITION, 10, 10));
-        deserialize();
+        if (!Dashboard.isFirst()) {
+            deserialize();
+        }
     }
 
     public static void deleteEvent(EventSelf event){

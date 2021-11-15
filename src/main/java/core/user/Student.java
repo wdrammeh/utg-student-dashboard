@@ -76,10 +76,11 @@ public class Student {
      * so on and so forth. The same way 300 implies 3rd year, 2nd semester.
      */
     private static int levelNumber;
-    private static double CGPA;
+    private static String CGPA;
     private static ImageIcon userIcon;
     private static final LinkedHashMap<String, String> additionalData = new LinkedHashMap<>();
     private static boolean isGuest;
+    private static String nameFormat = "First Name first";
     private static final int ICON_WIDTH = 275;
     private static final int ICON_HEIGHT = 200;
     private static final ImageIcon DEFAULT_ICON = MComponent.scaleIcon(App.getIconURL("default-icon.png"),
@@ -88,11 +89,11 @@ public class Student {
     public static final String FIRST_SEMESTER = "First Semester";
     public static final String SECOND_SEMESTER = "Second Semester";
     public static final String SUMMER_SEMESTER = "Summer Semester";
+    // Upper-class divisions
     public static final String UNCLASSIFIED = "None";
-    public static final String THIRD_CLASS = "\"Cum Laude\" - With Praise!";
-    public static final String SECOND_CLASS = "\"Magna Cum Laude\" - With Great Honor!";
-    public static final String FIRST_CLASS = "\"Summa Cum Laude\" - With Greatest Honor!";
-    private static String nameFormat = "First Name first";
+    public static final String THIRD_CLASS = "\"Cum Laude\" (With Praise!)";
+    public static final String SECOND_CLASS = "\"Magna Cum Laude\" (With Great Honor!)";
+    public static final String FIRST_CLASS = "\"Summa Cum Laude\" (With Greatest Honor!)";
 
 
     public static String getFirstName(){
@@ -304,11 +305,11 @@ public class Student {
      * Returns the CGPA of the student.
      * Dashboard does not compute the student's GPA.
      */
-    public static double getCGPA() {
+    public static String getCGPA() {
         return CGPA;
     }
 
-    public static void setCGPA(double CGPA) {
+    public static void setCGPA(String CGPA) {
         Student.CGPA = CGPA;
     }
 
@@ -445,11 +446,7 @@ public class Student {
             addTelephone((String) initials[13]);
             portalMail = (String) initials[14];
             portalPassword = (String) initials[15];
-            try {
-                CGPA = Double.parseDouble((String) initials[19]);
-            } catch (Exception e){
-                reportCriticalInfoMissing(Login.getRoot(), "CGPA");
-            }
+            CGPA = (String) initials[19];
             Board.effectNameFormatChanges();
             setLevel((String)(initials[17]));
             setStatus((String)(initials[18]));
@@ -495,14 +492,19 @@ public class Student {
     }
 
     public static String upperClassDivision() {
-        if (CGPA >= 4) {
-            return FIRST_CLASS;
-        } else if (getCGPA() >= 3.8) {
-            return SECOND_CLASS;
-        } else if (getCGPA() >= 3.5) {
-            return THIRD_CLASS;
-        } else {
-            return UNCLASSIFIED;
+        try {
+            final Double cgpa = Double.parseDouble(CGPA);
+            if (cgpa >= 4) {
+                return FIRST_CLASS;
+            } else if (cgpa >= 3.8) {
+                return SECOND_CLASS;
+            } else if (cgpa >= 3.5) {
+                return THIRD_CLASS;
+            } else {
+                return UNCLASSIFIED;
+            }
+        } catch (Exception e) {
+            return Globals.UNKNOWN;
         }
     }
 
@@ -615,7 +617,12 @@ public class Student {
         final Component actualParent = parent == null ? Board.getRoot() : parent;
         final String homeDir = System.getProperty("user.home");
         final String picturesDir = Globals.joinPaths(homeDir, "Pictures");
-        final JFileChooser fileChooser = new JFileChooser(new File(picturesDir).exists() ? picturesDir : homeDir);
+        final JFileChooser fileChooser = new JFileChooser(new File(picturesDir).exists() ? picturesDir : homeDir){
+            @Override
+            public JToolTip createToolTip() {
+                return MComponent.preferredTip();
+            }
+        };
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setDialogTitle("Select Image");
         fileChooser.setMultiSelectionEnabled(false);
@@ -760,7 +767,7 @@ public class Student {
             studentPassword = core[23];
             setLevel(core[24]);
             setStatus(core[25]);
-            CGPA = Double.parseDouble(core[26]);
+            CGPA = core[26];
         }
 
         try {

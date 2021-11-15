@@ -4,15 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>UTG Student Dashboard</name>
+    <groupId>utg.edu.gm</groupId>
+    <artifactId>utg-student-dashboard</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>utg-student-dashboard</name>
     <description>A flexible and elegant student management system for the University of The Gambia ("UTG")</description>
-    <groupId>utg.edu</groupId>
-    <artifactId>dashboard</artifactId>
-    <version>?</version>
 
     <properties>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

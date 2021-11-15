@@ -270,7 +270,7 @@ public class PrePortal {
         enlistDetail("Level", level);
         enlistDetail("Status", status);
 
-        Login.appendToStatus("#####");
+        Login.appendGapToStatus();
         Login.appendToStatus("Collecting up all your courses....... This may take a while");
 //        Back to the contents to generate modules
         if (isTerminated) {
@@ -402,7 +402,7 @@ public class PrePortal {
         }
 
         Portal.setLastLogin(new Date());
-        Login.appendToStatus("#####");
+        Login.appendGapToStatus();
         Login.notifyCompletion();
     }
 

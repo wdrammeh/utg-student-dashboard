@@ -1,5 +1,16 @@
 package core.utils;
 
+import static core.utils.Globals.joinPaths;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
+import org.apache.commons.io.FileUtils;
+
 import core.News;
 import core.Portal;
 import core.alert.Notification;
@@ -9,13 +20,7 @@ import core.module.SemesterActivity;
 import core.setting.Settings;
 import core.task.TaskActivity;
 import core.user.Student;
-import core.utils.App;
-import org.apache.commons.io.FileUtils;
 import utg.Dashboard;
-
-import java.io.*;
-
-import static core.utils.Globals.joinPaths;
 
 public class Serializer {
 

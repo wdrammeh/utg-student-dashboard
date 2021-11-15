@@ -12,10 +12,10 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println(MDate.formatNow());
-        launch(TEST_PATH, true);
+        run(TEST_PATH, true);
     }
 
-    private static void launch(String path, boolean ser) {
+    private static void run(String path, boolean ser) {
         App.silenceInfo("Dashboard running on test mode; where path := '"+path+"'.");
         Dashboard.main(new String[]{path});
         if (!ser) {

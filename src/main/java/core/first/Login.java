@@ -125,6 +125,10 @@ public class Login extends JDialog {
         }
     }
 
+    public static void appendGapToStatus(){
+        appendToStatus("_______");
+    }
+
     public static void replaceLastUpdate(String update){
         statusPanel.removeLast();
         appendToStatus(update);
@@ -229,7 +233,7 @@ public class Login extends JDialog {
         appendToStatus("Your Dashboard is ready : Press \"Enter\" to launch now");
         appendToStatus("------------------------------------------------------------------------------------------------------------------------------------------");
         appendToStatus("                                                <<<<------- Enter ------>>>>");
-        appendToStatus("-");
+        appendGapToStatus();
         statusHolder.stopAutoScrolling();
     }
 

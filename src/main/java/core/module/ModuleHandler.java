@@ -499,7 +499,7 @@ public class ModuleHandler {
                     }
                 }
                 final String CGPA = modulesDriver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
-                Student.setCGPA(Double.parseDouble(CGPA));
+                Student.setCGPA(CGPA);
 
                 // Secondly, add scores at grades tab
                 final WebElement gradesTab = Portal.getTabElement("Grades", tabs);

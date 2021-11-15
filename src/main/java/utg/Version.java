@@ -6,6 +6,8 @@ public class Version {
     /**
      * The literal of a version is what defines the version
      * relative to the time (academic-semester) of release as `year.month`
+     * 
+     * Todo: replace field with year (int) and month (int), redefining usage, comparison of this type
      */
     private final String literal;
     /**

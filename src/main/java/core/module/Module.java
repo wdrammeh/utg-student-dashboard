@@ -67,6 +67,7 @@ public abstract class Module {
         this.year = year;
         this.semester = semester;
         this.lecturer = lecturer;
+        this.isLecturerEditable = true;
         this.campus = Globals.hasText(campus) ? campus : OTHER;
         this.room = room;
         this.day = Globals.hasText(day) ? day : UNKNOWN;

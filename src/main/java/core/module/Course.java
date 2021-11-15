@@ -17,7 +17,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * The Course type models a those courses the student has already done
+ * The Course type models courses the student has already done
  * and therefore obtained a {@code score}.
  * 
  * <p> A course may be verified in two ways:
