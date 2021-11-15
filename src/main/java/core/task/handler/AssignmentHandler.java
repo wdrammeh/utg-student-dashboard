@@ -1,6 +1,5 @@
 package core.task.handler;
 
-import core.utils.Serializer;
 import core.task.creator.AssignmentCreator;
 import core.task.exhibition.AssignmentExhibition;
 import core.task.self.AssignmentSelf;
@@ -208,8 +207,8 @@ public class AssignmentHandler {
 
     private static void deserialize(){
         final Object assignObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments.ser"));
-        final Object groupsMembersObj = Serializer.fromDisk(Serializer.inPath("tasks", "groups.members.ser"));
-        final Object questionsObj = Serializer.fromDisk(Serializer.inPath("tasks", "questions.ser"));
+        final Object groupsMembersObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments.groups.members.ser"));
+        final Object questionsObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments.questions.ser"));
         if (assignObj == null || groupsMembersObj == null || questionsObj == null) {
             App.silenceException("Failed to read assignments.");
         } else {

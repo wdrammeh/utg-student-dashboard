@@ -2,7 +2,6 @@ package core.task;
 
 import core.Activity;
 import core.Board;
-import core.utils.Serializer;
 import core.task.handler.AssignmentHandler;
 import core.task.handler.EventHandler;
 import core.task.handler.ProjectHandler;
@@ -14,6 +13,7 @@ import core.task.self.TodoSelf;
 import core.utils.App;
 import core.utils.FontFactory;
 import core.utils.Globals;
+import core.utils.Serializer;
 import proto.KButton;
 import proto.KLabel;
 import proto.KPanel;
@@ -192,7 +192,7 @@ public class TaskActivity implements Activity {
                 }
             }
             Serializer.toDisk(assignments, Serializer.inPath("tasks", "assignments.ser"));
-            Serializer.toDisk(questions, Serializer.inPath("tasks", "questions.ser"));
+            Serializer.toDisk(questions, Serializer.inPath("tasks", "assignments.questions.ser"));
             final String[] groupsMembers = new String[groupIndexes.size()];
             int j = 0;
             for (int index : groupIndexes) {
@@ -200,7 +200,7 @@ public class TaskActivity implements Activity {
                 groupsMembers[j] = Globals.joinLines(assignment.members.toArray());
                 j++;
             }
-            Serializer.toDisk(groupsMembers, Serializer.inPath("tasks", "groups.members.ser"));
+            Serializer.toDisk(groupsMembers, Serializer.inPath("tasks", "assignments.groups.members.ser"));
         } catch (Exception e) {
             App.silenceException(e);
         }

@@ -59,7 +59,7 @@ public class Internet {
         try {
             final Document document = Jsoup.connect(REPO_URL).get();
             verElement = document.selectFirst(".markdown-body > p:nth-child(2) > code:nth-child(1)");
-        } catch (HttpStatusException httpStatusError) {
+        } catch (HttpStatusException e) {
             Dashboard.setAuthentic(false);
             Dashboard.reportAuthenticationError();
         } catch (Exception e) {

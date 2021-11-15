@@ -1,7 +1,6 @@
 package core.alert;
 
 import core.Board;
-import core.utils.Serializer;
 import core.utils.*;
 import proto.*;
 
@@ -82,8 +81,7 @@ public class Notification {
     }
 
     public String export(){
-        return Globals.joinLines(new Object[]{heading, summary, information,
-                MDate.toSerial(date), isRead});
+        return Globals.joinLines(new Object[]{heading, summary, information, MDate.toSerial(date), isRead});
     }
 
 
@@ -91,15 +89,14 @@ public class Notification {
 
         private  Exhibitor(Notification alert) {
             super(alert.heading+" - Notification");
-            setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
+            setModalityType(DEFAULT_MODALITY_TYPE);
             setResizable(true);
 
-            final String decidedText = alert.information == null ? alert.summary :
-                    alert.information;
+            final String decidedText = alert.information == null ? alert.summary : alert.information;
             final KTextPane noticePane = KTextPane.htmlFormattedPane(decidedText);
 
             final KScrollPane textScroll = new KScrollPane(noticePane);
-            textScroll.setPreferredSize(new Dimension(575,225));
+            textScroll.setPreferredSize(new Dimension(600,250));
 
             final KButton deleteButton = new KButton("Remove");
             deleteButton.addActionListener(e-> dispose());
@@ -109,13 +106,13 @@ public class Notification {
             disposeButton.addActionListener(e-> dispose());
 
             final KPanel lowerPart = new KPanel(new BorderLayout());
-            lowerPart.add(new KPanel(new KLabel(MDate.formatDayTime(alert.date),
-                    FontFactory.createPlainFont(15))), BorderLayout.WEST);
-            lowerPart.add(new KPanel(deleteButton, disposeButton), BorderLayout.EAST);
+            lowerPart.add(new KLabel(MDate.formatDayTime(alert.date), FontFactory.createPlainFont(15)),
+                    BorderLayout.WEST);
+            lowerPart.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 10), deleteButton, disposeButton), BorderLayout.EAST);
 
-            final KPanel contentPanel = new KPanel();
-            contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-            contentPanel.addAll(textScroll, MComponent.contentBottomGap(), lowerPart);
+            final KPanel contentPanel = new KPanel(new BorderLayout());
+            contentPanel.add(textScroll, BorderLayout.CENTER);
+            contentPanel.add(lowerPart, BorderLayout.SOUTH);
             setContentPane(contentPanel);
             getRootPane().setDefaultButton(disposeButton);
             pack();

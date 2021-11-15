@@ -4,11 +4,9 @@ import core.Activity;
 import core.Board;
 import core.Portal;
 import core.alert.Notification;
-import core.alert.NotificationActivity;
 import core.alert.RemoteAlertHandler;
 import core.driver.MDriver;
 import core.first.PrePortal;
-import core.utils.Serializer;
 import core.user.Student;
 import core.utils.*;
 import org.openqa.selenium.By;
@@ -569,7 +567,7 @@ public class SemesterActivity implements Activity {
     /**
      * Where necessary, {@code merge()} must have been invoked on the
      * {@code newCourse} prior to this call.
-     * 
+     *
      * @param oldCourse
      * @param newCourse
      */
@@ -745,7 +743,7 @@ public class SemesterActivity implements Activity {
                 nameField.setEditable(false);
                 lecturerField.setEditable(false);
             }
-            
+
             contentPanel.remove(checkPanel);
             doneButton.removeActionListener(doneButton.getActionListeners()[0]);
             doneButton.addActionListener(e-> {
@@ -788,11 +786,11 @@ public class SemesterActivity implements Activity {
         for (int i = 0; i < data.length; i++) {
             data[i] = ACTIVE_COURSES.get(i).export();
         }
-        Serializer.toDisk(data, Serializer.inPath("modules", "registered.ser"));
+        Serializer.toDisk(data, Serializer.inPath("modules", "doing.ser"));
     }
 
     public static void deserialize(){
-        final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "registered.ser"));
+        final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "doing.ser"));
         if (obj == null) {
             App.silenceException("Failed to read Running Courses.");
         } else {

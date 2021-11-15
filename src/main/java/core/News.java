@@ -1,6 +1,5 @@
 package core;
 
-import core.utils.Serializer;
 import core.utils.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,7 +9,6 @@ import utg.Dashboard;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,7 +173,6 @@ public class News implements Activity {
             KScrollPane newsScrollPane = new KScrollPane(textPane);
 
             final KButton visitButton = new KButton("Visit site");
-            visitButton.setMnemonic(KeyEvent.VK_V);
             visitButton.addActionListener(e-> new Thread(()-> {
                 visitButton.setEnabled(false);
                 dispose();
@@ -190,10 +187,10 @@ public class News implements Activity {
             final KButton closeButton = new KButton("Close");
             closeButton.addActionListener(e-> dispose());
 
-            final KPanel contentPanel = new KPanel();
-            contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-            contentPanel.addAll(newsScrollPane,
-                    new KPanel(new FlowLayout(FlowLayout.RIGHT, 5, 10), visitButton, closeButton));
+            final KPanel contentPanel = new KPanel(new BorderLayout());
+            contentPanel.add(newsScrollPane, BorderLayout.CENTER);
+            contentPanel.add(new KPanel(new FlowLayout(FlowLayout.RIGHT, 5, 10), visitButton, closeButton),
+                    BorderLayout.SOUTH);
             setContentPane(contentPanel);
             getRootPane().setDefaultButton(closeButton);
             pack();
@@ -278,7 +275,7 @@ public class News implements Activity {
         Serializer.toDisk(bodies, Serializer.inPath("news", "bodies.ser"));
         Serializer.toDisk(links, Serializer.inPath("news", "links.ser"));
         Serializer.toDisk(contents, Serializer.inPath("news", "contents.ser"));
-        Serializer.toDisk(accessTime, Serializer.inPath("news", "accessTime.ser"));
+        Serializer.toDisk(accessTime, Serializer.inPath("news", "access.time.ser"));
     }
 
     private void deserialize() {
@@ -303,7 +300,7 @@ public class News implements Activity {
             }
             present.add(accessResident);
             MComponent.ready(present);
-            final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "accessTime.ser"));
+            final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "access.time.ser"));
             accessTime = String.valueOf(accessObj);
             accessLabel.setText(accessTime);
         }

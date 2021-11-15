@@ -4,14 +4,8 @@ import core.Board;
 import core.Portal;
 import core.driver.MDriver;
 import core.first.PrePortal;
-import core.utils.Serializer;
 import core.user.Student;
-import core.utils.App;
-import core.utils.FontFactory;
-import core.utils.Globals;
-import core.utils.Internet;
-import core.utils.MComponent;
-
+import core.utils.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -218,13 +212,13 @@ public class ModuleHandler {
     }
 
     /**
-     * Returns the first course, in the list, with the given ccode.
+     * Returns the first course, in the list, with the given code.
      * This method is useful. Especially, since indexing of the monitor and the
      * many models do not coincide, call this - never want to retrieve a course from the list
      * by using get(int) as such an index might be matching a different course
      * according to the monitor's index.
      * This function compares only the code, and it's case-insensitive.
-     * Null value shall implies no such course in the entire list.
+     * Null value shall imply no such course in the entire list.
      */
     public static Course getModuleByCode(String code){
         for (Course course : modulesMonitor) {
@@ -1191,11 +1185,11 @@ public class ModuleHandler {
         for (int i = 0; i < data.length; i++) {
             data[i] = modulesMonitor.get(i).export();
         }
-        Serializer.toDisk(data, Serializer.inPath("modules", "courses.ser"));
+        Serializer.toDisk(data, Serializer.inPath("modules", "done.ser"));
     }
 
     public static void deserialize() {
-        final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "courses.ser"));
+        final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "done.ser"));
         if (obj == null) {
             App.silenceException("Failed to read Modules.");
         } else {
