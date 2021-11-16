@@ -19,8 +19,6 @@ Get the standalone installation file for your operating system:
 | ----- | ----- |
 | Microsoft Windows `(msi package)` | . |
 | Linux `(debian package)` | . |
-| Mac iOS `(?)` | . |
-| Any `(jar)` | . |
 
 More download options (including jar builds) are available on the [release page](https://github.com/w-drammeh/utg-student-dashboard/releases).
 
