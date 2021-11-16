@@ -1,15 +1,12 @@
 package utg;
 
+import core.utils.App;
+
 import java.util.Date;
 
 public class Version {
-    /**
-     * The literal of a version is what defines the version
-     * relative to the time (academic-semester) of release as `year.month`
-     * 
-     * Todo: replace field with year (int) and month (int), redefining usage, comparison of this type
-     */
-    private final String literal;
+    private int year;
+    private int month;
     /**
      * The depreciation date of this version.
      * deprecateTime and upcoming goes hand-in-hand -
@@ -26,12 +23,19 @@ public class Version {
     public static final int GREATER = 1;
 
 
-    public Version(String literal) {
-        this.literal = literal;
+    public Version(int year, int month) {
+        this.year = year;
+        this.month = month;
     }
 
-    public String getLiteral() {
-        return literal;
+    public static Version parse(String literal){
+        try {
+            final String[] a = literal.strip().split("[.]");
+            return new Version(Integer.parseInt(a[0]), Integer.parseInt(a[1]));
+        } catch (Exception e) {
+            App.silenceInfo("Cannot parse version literal '%s'".formatted(literal));
+            return null;
+        }
     }
 
     public Date getDeprecateTime() {
@@ -44,25 +48,23 @@ public class Version {
 
     @Override
     public String toString() {
-        return literal;
+        return year+"."+month;
     }
 
-    public int compare(Version other) {
-        if (toString().equals(other.toString())) {
+    public int compare(Version v) {
+        if (v == null) {
+            return GREATER;
+        }
+
+        if (toString().equals(v.toString())) {
             return EQUAL;
         } else {
-            final String[] parts = literal.split("[.]");
-            final String[] otherParts = other.literal.split("[.]");
-            final int a1 = Integer.parseInt(parts[0]);
-            final int a2 = Integer.parseInt(parts[1]);
-            final int b1 = Integer.parseInt(otherParts[0]);
-            final int b2 = Integer.parseInt(otherParts[1]);
-            if (a1 > b1) {
+            if (year > v.year) {
                 return GREATER;
-            } else if (b1 > a1) {
+            } else if (year < v.year) {
                 return LESS;
-            } else { // a1 == b1
-                return a2 > b2 ? GREATER : LESS;
+            } else { // year == v.year
+                return month > v.month ? GREATER : LESS;
             }
         }
     }

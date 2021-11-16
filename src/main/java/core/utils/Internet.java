@@ -74,8 +74,10 @@ public class Internet {
         if (verElement == null) {
             return;
         }
-
-        final Version latestVersion = new Version(verElement.text());
+        final Version latestVersion = Version.parse(verElement.text());
+        if (latestVersion == null) {
+            return;
+        }
         final int comparison = Dashboard.VERSION.compare(latestVersion);
         if (comparison == Version.LESS) {
             final Date lastDeprecateTime = Dashboard.VERSION.getDeprecateTime();

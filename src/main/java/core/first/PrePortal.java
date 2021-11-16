@@ -1,17 +1,5 @@
 package core.first;
 
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.StringJoiner;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import core.Portal;
 import core.driver.MDriver;
 import core.module.Course;
@@ -19,6 +7,17 @@ import core.module.RegisteredCourse;
 import core.user.Student;
 import core.utils.App;
 import core.utils.Globals;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Todo: To save time, setting-up of the driver should begin (separately)
@@ -36,7 +35,6 @@ public class PrePortal {
     public static final ArrayList<String> USER_DATA = new ArrayList<>();
     public static final ArrayList<RegisteredCourse> STARTUP_REGISTRATIONS = new ArrayList<>();
     public static final ArrayList<Course> STARTUP_COURSES = new ArrayList<>();
-
     public static final ActionListener CANCEL_ACTION = e-> {
         if (App.showYesNoCancelDialog(Login.getRoot(), "Confirm", "Do you really want to terminate the process?")) {
             isTerminated = true;
@@ -85,7 +83,7 @@ public class PrePortal {
         if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
             Login.replaceLastUpdate("Now contacting utg.gm....... Ok");
             temporaryName = driver.findElement(By.className("media-heading")).getText();
-            Login.appendToStatus("Login successfully : " + temporaryName);
+            Login.appendToStatus("Logged in successfully as " + temporaryName);
             launchReading();
         } else if (loginAttempt == MDriver.ATTEMPT_FAILED) {
             Login.replaceLastUpdate("Now contacting utg.gm....... Done");
@@ -158,12 +156,12 @@ public class PrePortal {
         }
 
         final String[] fullName = temporaryName.split(" ");
-        firstName = fullName[fullName.length - 1];
+        lastName = fullName[fullName.length - 1];
         final StringJoiner nameJoiner = new StringJoiner(" ");
         for (int i = 0; i < fullName.length - 1; i++) {
             nameJoiner.add(fullName[i]);
         }
-        lastName = nameJoiner.toString();
+        firstName = nameJoiner.toString();
 
         try {
             program = driver.findElementByXPath(

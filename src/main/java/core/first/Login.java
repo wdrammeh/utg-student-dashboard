@@ -1,7 +1,6 @@
 package core.first;
 
 import core.Board;
-import core.utils.Serializer;
 import core.user.Student;
 import core.utils.*;
 import proto.*;
@@ -126,7 +125,7 @@ public class Login extends JDialog {
     }
 
     public static void appendGapToStatus(){
-        appendToStatus("_______");
+        appendToStatus("#");
     }
 
     public static void replaceLastUpdate(String update){

@@ -24,7 +24,6 @@ import core.Board;
 import core.Preview;
 import core.alert.Notification;
 import core.first.Welcome;
-import core.utils.Serializer;
 import core.user.Student;
 import core.utils.*;
 
@@ -51,7 +50,7 @@ public class Dashboard {
     private static boolean isFirst;
     private static boolean isAuthentic = true;
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version("2021.6");
+    public static final Version VERSION = new Version(2021, 6);
 
 
     public static void main(String[] args) {
@@ -76,7 +75,7 @@ public class Dashboard {
                         PREVIEW.dispose();
                         reportAuthenticationError();
                     }
-                    final Version recentVersion = new Version(lastConfigs.get("version"));
+                    final Version recentVersion = Version.parse(lastConfigs.get("version"));
                     final int comparison = VERSION.compare(recentVersion);
                     if (comparison == Version.LESS) {
                         PREVIEW.dispose();

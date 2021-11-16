@@ -2,7 +2,6 @@ package core.first;
 
 import core.Board;
 import core.alert.Notification;
-import core.utils.Serializer;
 import core.setting.SettingsActivity;
 import core.user.Student;
 import core.utils.*;
@@ -277,15 +276,16 @@ public class FirstLaunch extends KDialog {
         Serializer.mountUserData();
 
         // create a welcome message notification
-        String welcomeMessage = "Dear "+Student.getLastName()+"," +
-                "<p>You're highly welcome to <b>UTG Student Dashboard</b> - your personal management " +
-                "tool for all academic-related stuff at the UTG.</p>" +
-                "<p>Dashboard is a 'FOSS' (Free and Open-Source Software). This means, " +
-                "everyone can contribute to its development, including you!</p>" +
-                "If you are interested, visit this link: <i>"+ Internet.REPO_URL +"</i>.</p>" +
+        final String welcomeMessage = "Dear "+Student.getFirstName()+"," +
+                "<p>Regards from the <b>Dashboard Team</b>. This is a personal management " +
+                "tool for all your academic-related stuff at the UTG.</p>" +
+                "<p>Dashboard is a '<b>FOSS</b>' (Free and Open-Source Software). This means " +
+                "that everyone can contribute to its development, including you!</p>" +
                 "<p>Yes, even if you are not a programmer, you can provide an answer to a " +
-                "Frequently Asked Question (<b>FAQ</b>), and help your brothers and " +
-                "sisters learn from you.</p>";
+                "Frequently Asked Question (<b>FAQ</b>), and solve problems of your brothers and sisters.</p>" +
+                "<p>If you are interested in improving this project, we can't wait to receive your contributions! " +
+                "Simply follow the following link to get get started:</p>" +
+                "<a href='"+Internet.REPO_URL+"'><i style='text-align: center;'>"+ Internet.REPO_URL +"</i></a>";
         Notification.create("Welcome",
                 "Welcome to Dashboard, "+Student.getFullNamePostOrder(), welcomeMessage);
     }

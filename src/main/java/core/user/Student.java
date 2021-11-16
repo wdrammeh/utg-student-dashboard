@@ -4,12 +4,8 @@ import core.Board;
 import core.first.Login;
 import core.first.PrePortal;
 import core.module.ModuleHandler;
-import core.utils.Serializer;
 import core.setting.SettingsActivity;
-import core.utils.App;
-import core.utils.Globals;
-import core.utils.MComponent;
-import core.utils.MDate;
+import core.utils.*;
 import utg.Dashboard;
 
 import javax.swing.*;
@@ -91,9 +87,9 @@ public class Student {
     public static final String SUMMER_SEMESTER = "Summer Semester";
     // Upper-class divisions
     public static final String UNCLASSIFIED = "None";
-    public static final String THIRD_CLASS = "\"Cum Laude\" (With Praise!)";
-    public static final String SECOND_CLASS = "\"Magna Cum Laude\" (With Great Honor!)";
-    public static final String FIRST_CLASS = "\"Summa Cum Laude\" (With Greatest Honor!)";
+    public static final String THIRD_CLASS = "Cum Laude (With Praise)!";
+    public static final String SECOND_CLASS = "Magna Cum Laude (With Great Honor)!";
+    public static final String FIRST_CLASS = "Summa Cum Laude (With Greatest Honor)!";
 
 
     public static String getFirstName(){
@@ -480,7 +476,7 @@ public class Student {
     }
 
     public static String getAcronym(){
-        return (lastName.charAt(0)+""+firstName.charAt(0)).toLowerCase();
+        return (firstName.charAt(0)+""+lastName.charAt(0)).toLowerCase();
     }
 
     public static String predictedStudentMailAddress(){
