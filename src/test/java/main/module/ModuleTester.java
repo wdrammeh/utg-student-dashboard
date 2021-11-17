@@ -11,7 +11,7 @@ import core.module.ModuleHandler;
 import core.module.RegisteredCourse;
 
 public class ModuleTester {
-    
+
     public static void main(String[] args) {
         final HashMap<String, Course> monitor = new LinkedHashMap<>();
 
@@ -46,8 +46,6 @@ public class ModuleTester {
 
         final Course c2 = new Course("year", "semester", "mth002", "name", "lecturer",
                 "campus", "room", "day", "time", 100, 3, "requirement", true);
-
-        
     }
 
 }

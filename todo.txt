@@ -18,3 +18,4 @@
 - Add backup functionality
 - More analysis
 - Sort tasks in descending order of creation-time
+- Use simple outlined-icons
