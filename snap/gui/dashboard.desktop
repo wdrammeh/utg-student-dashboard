@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=UTG Student Dashboard
+Version=1.0
+Terminal=false
+Exec=utg-student-dashboard
+Icon=${SNAP}/meta/gui/dashboard.png
+Type=Application
+Categories=Office;
+GenericName=UTG Student Dashboard
+Comment=A student management system for the University of The Gambia
+Keywords=Management; Organization; Information; Education;

@@ -1,0 +1,39 @@
+name: utg-student-dashboard
+title: UTG Student Dashboard
+version: '1.0'
+summary: A student management system for the University of The Gambia
+description: |
+  Dashboard is a student management tool (built by the students for the students).
+  This project is focus on bringing to the palms of the students (of UTG) solutions to problems they’ve long anticipated.
+  
+  A student-specific desktop application, with dedicated student-related care wizards,
+  that functions independently of the ERP System, and communicates with it at the student's will.
+
+license: GPL-3.0
+base: core18
+confinement: devmode
+grade: devel
+
+apps:
+  utg-student-dashboard:
+    extensions:
+      - gnome-3-28
+    command: ${SNAP}/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}/bin/java -jar $SNAP/jar/utg-student-dashboard-1.0.jar
+    plugs:
+      - home
+      - network
+      - desktop
+      - browser-support
+    environment:
+      JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}
+      PATH: $JAVA_HOME/jre/bin:$PATH
+
+parts:
+  utg-student-dashboard:
+    plugin: maven
+    source: .
+    source-type: local
+    source-tag: snap
+    stage-packages:
+      - openjdk-11-jdk
+      
