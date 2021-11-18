@@ -32,6 +32,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collector;
 
 /**
  * @author Muhammed W. Drammeh <md21712494@utg.edu.gm>
@@ -128,9 +129,10 @@ public class Dashboard {
      * or prevent it somehow.
      */
     private static void parallelCheck(){
-        final List<ProcessHandle> handles = ProcessHandle.allProcesses().toList();
+        final Object[] handleObjs = ProcessHandle.allProcesses().toArray();
         int found = 0;
-        for (ProcessHandle handle : handles) {
+        for (Object obj : handleObjs) {
+            final ProcessHandle handle = (ProcessHandle) obj;
             final String command = handle.info().command().map(String::toString).orElse("");
             if (command.contains(Globals.PROJECT_NAME)) {
                 found++;

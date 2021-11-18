@@ -70,13 +70,13 @@ public class Register {
             final ArrayList<RunningCourse> foundRunningModules = new ArrayList<>();
             for (WebElement row : rows) {
                 final List<WebElement> data = row.findElements(By.tagName("td"));
-                final String[] nameExt = data.get(2).getText().split("[\s]");
+                final String[] nameExt = data.get(2).getText().split("[ ]");
                 final int numbRegistered = Integer.parseInt(nameExt[nameExt.length - 1]);
                 final StringJoiner nameJoiner = new StringJoiner(" ");
                 for (int i = 0; i < nameExt.length - 2; i++) {
                     nameJoiner.add(nameExt[i]);
                 }
-                final String[] dayTime = data.get(7).getText().split("[\s]");
+                final String[] dayTime = data.get(7).getText().split("[ ]");
                 final String day;
                 final String time;
                 if (dayTime.length == 2) {
@@ -186,7 +186,7 @@ public class Register {
 
     private static String normalizeCode(String code){
         String text = code.strip().toLowerCase();
-        final String regex = "[a-z]{3,4}\s*[0-9]{3}";
+        final String regex = "[a-z]{3,4}[ ]*[0-9]{3}";
         if (Pattern.matches(regex, text)) {
             final int length = text.length();
             final int midIndex = length - 3;
