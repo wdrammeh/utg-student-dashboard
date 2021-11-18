@@ -33,7 +33,7 @@ public class Version {
             final String[] a = literal.strip().split("[.]");
             return new Version(Integer.parseInt(a[0]), Integer.parseInt(a[1]));
         } catch (Exception e) {
-            App.silenceInfo("Cannot parse version literal '%s'".formatted(literal));
+            App.silenceInfo(String.format("Cannot parse version literal '%s'", literal));
             return null;
         }
     }

@@ -482,7 +482,7 @@ public class ModuleHandler {
                 String vSemester = null;
                 for (WebElement transRow : transRows) {
                     if (transRow.getText().contains("Semester")) {
-                        final String[] hintParts = transRow.getText().split("\s");
+                        final String[] hintParts = transRow.getText().split("[ ]");
                         vYear = hintParts[0];
                         vSemester = hintParts[1]+" Semester";
                     } else {
