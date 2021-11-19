@@ -11,32 +11,45 @@ description: |
 
 license: GPL-3.0+
 base: core18
-confinement: classic
+confinement: strict
 grade: stable
 
 apps:
   utg-student-dashboard:
+    extensions:
+      [ gnome-3-28 ]
     plugs:
-      [ desktop, desktop-legacy, gsettings, opengl, wayland, x11 ]
+      [ home, desktop, personal-files, desktop-launch, desktop-legacy, gsettings, opengl, wayland, unity7, x11, network, browser, browser-support, network-bind, cups-control ]
+    slots:
+      [ dashboard-svc ]
     environment:
       JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}
       PATH: $JAVA_HOME/jre/bin:$PATH
+      XDG_DATA_HOME: ${SNAP}/usr/share
+      FONTCONFIG_PATH: ${SNAP}/etc/fonts/config.d
+      FONTCONFIG_FILE: ${SNAP}/etc/fonts/fonts.conf
     command: java -jar $SNAP/jar/utg-student-dashboard-$SNAP_VERSION.jar
 
 parts:
   utg-student-dashboard:
     plugin: maven
     maven-openjdk-version: '11'
-    source: https://github.com/w-drammeh/utg-student-dashboard
+    source: .
     source-type: git
     source-tag: snap
     maven-options:
       [ --batch-mode, --show-version, --errors ]
     override-build: |
-      snapcraftctl build
+      mvn clean package --show-version --errors --batch-mode
       mkdir -p $SNAPCRAFT_PART_INSTALL/jar/libs
       cp target/libs/*.jar $SNAPCRAFT_PART_INSTALL/jar/libs
     build-packages:
-      [ openjdk-11-jdk, maven ]
+      [ openjdk-11-jdk, maven, unzip ]
     stage-packages:
       [openjdk-11-jre]
+
+slots:
+  dashboard-svc:
+    interface: dbus
+    bus: session
+    name: utg.edu.gm.Dashboard
