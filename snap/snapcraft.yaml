@@ -27,8 +27,8 @@ parts:
   utg-student-dashboard:
     plugin: maven
     maven-openjdk-version: '11'
-    source: .
-    source-type: local
+    source: https://github.com/w-drammeh/utg-student-dashboard
+    source-type: git
     source-tag: snap
     maven-options:
       [ --batch-mode, --show-version, --errors ]
