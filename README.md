@@ -41,7 +41,7 @@ If you wish, you may check out [what's new](ChangeLog.md) about this release.
 
 ## System Requirements
 
-- Firefox Web Browser
+- [Firefox Web Browser](https://www.mozilla.org/en-US/firefox/new/)
 
 ## Contribution
 

@@ -27,4 +27,5 @@ build/
 .project
 
 # Other
-temp*
+ex*
+*.snap

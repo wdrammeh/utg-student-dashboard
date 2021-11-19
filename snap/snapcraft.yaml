@@ -9,31 +9,34 @@ description: |
   A student-specific desktop application, with dedicated student-related care wizards,
   that functions independently of the ERP System, and communicates with it at the student's will.
 
-license: GPL-3.0
+license: GPL-3.0+
 base: core18
-confinement: devmode
-grade: devel
+confinement: classic
+grade: stable
 
 apps:
   utg-student-dashboard:
-    extensions:
-      - gnome-3-28
-    command: ${SNAP}/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}/bin/java -jar $SNAP/jar/utg-student-dashboard-1.0.jar
     plugs:
-      - home
-      - network
-      - desktop
-      - browser-support
+      [ desktop, desktop-legacy, gsettings, opengl, wayland, x11 ]
     environment:
       JAVA_HOME: $SNAP/usr/lib/jvm/java-11-openjdk-${SNAP_ARCH}
       PATH: $JAVA_HOME/jre/bin:$PATH
+    command: java -jar $SNAP/jar/utg-student-dashboard-$SNAP_VERSION.jar
 
 parts:
   utg-student-dashboard:
     plugin: maven
+    maven-openjdk-version: '11'
     source: .
     source-type: local
     source-tag: snap
+    maven-options:
+      [ --batch-mode, --show-version, --errors ]
+    override-build: |
+      snapcraftctl build
+      mkdir -p $SNAPCRAFT_PART_INSTALL/jar/libs
+      cp target/libs/*.jar $SNAPCRAFT_PART_INSTALL/jar/libs
+    build-packages:
+      [ openjdk-11-jdk, maven ]
     stage-packages:
-      - openjdk-11-jdk
-      
+      [openjdk-11-jre]
