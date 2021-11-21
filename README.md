@@ -2,7 +2,7 @@
 
 `v1.1.1`
 
-A **flexible** and **elegant** student management system for the University of The Gambia ("UTG").
+A **Flexible** and **Elegant** student management system for the University of The Gambia ("UTG").
 
 Dashboard is a **student management tool** (built by the students for the students).
 This project brings to the palms of the students (of UTG) solutions to problems they’ve long anticipated. So, use it to organize your course-work!
