@@ -1,6 +1,6 @@
 # UTG Student Dashboard
 
-`2021.11`
+`v1.1.1`
 
 A **flexible** and **elegant** student management system for the University of The Gambia ("UTG").
 

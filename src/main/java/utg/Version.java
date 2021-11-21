@@ -1,17 +1,28 @@
 package utg;
 
 import core.utils.App;
+import core.utils.Globals;
 
 import java.util.Date;
 
+/**
+ * Adheres to semantic versioning 2 convention
+ * 
+ * Given a version number MAJOR.MINOR.PATCH, increment the:
+ * 
+ * MAJOR version when you make incompatible API changes, MINOR version when you
+ * add functionality in a backwards compatible manner, and PATCH version when
+ * you make backwards compatible bug fixes.
+ * 
+ * Additional labels for pre-release and build metadata are available as
+ * extensions to the MAJOR.MINOR.PATCH format as MAJOR.MINOR.PATCH-label.
+ * 
+ * See https://semver.org/
+ */
 public class Version {
-    private int year;
-    private int month;
-    /**
-     * The depreciation date of this version.
-     * deprecateTime and upcoming goes hand-in-hand -
-     * either both are available or none is.
-     */
+    private final int major;
+    private final int minor;
+    private final int patch;
     private Date deprecateTime;
     /**
      * The maximum period, in days, a user is allowed
@@ -23,17 +34,26 @@ public class Version {
     public static final int GREATER = 1;
 
 
-    public Version(int year, int month) {
-        this.year = year;
-        this.month = month;
+    public Version(int major, int minor, int patch) {
+        this.major = major;
+        this.minor = minor;
+        this.patch = patch;
     }
 
+    /**
+     * Literal is a string representation of a version such that the
+     * version is period separated with a leading letter 'v'.
+     * 
+     * E.g: For a version 1.2.3, its literal will be v1.2.3
+     * 
+     * @see #toLiteral()
+     */
     public static Version parse(String literal){
         try {
-            final String[] a = literal.strip().split("[.]");
-            return new Version(Integer.parseInt(a[0]), Integer.parseInt(a[1]));
+            final String[] a = literal.strip().replace("v", "").split("[.]");
+            return new Version(Integer.parseInt(a[0]), Integer.parseInt(a[1]), Integer.parseInt(a[2]));
         } catch (Exception e) {
-            App.silenceInfo(String.format("Cannot parse version literal '%s'", literal));
+            App.silenceInfo(String.format("Parse failed. Invalid version literal '%s'", literal));
             return null;
         }
     }
@@ -46,25 +66,32 @@ public class Version {
         this.deprecateTime = deprecateTime;
     }
 
+    public String toLiteral() {
+        return "v" + Globals.join(".", new Object[]{major, minor, patch});
+    }
+
     @Override
     public String toString() {
-        return year+"."+month;
+        return toLiteral();
     }
 
     public int compare(Version v) {
         if (v == null) {
             return GREATER;
         }
-
         if (toString().equals(v.toString())) {
             return EQUAL;
         } else {
-            if (year > v.year) {
+            if (major > v.major) {
                 return GREATER;
-            } else if (year < v.year) {
+            } else if (major < v.major) {
                 return LESS;
-            } else { // year == v.year
-                return month > v.month ? GREATER : LESS;
+            } else if (minor > v.minor) {
+                return GREATER;
+            } else if (minor < v.minor) {
+                return LESS;
+            } else {
+                return patch > v.patch ? GREATER : LESS;
             }
         }
     }

@@ -43,24 +43,39 @@ public class Globals {
         return bd.doubleValue();
     }
 
-    public static String joinPaths(String... paths){
+    public static String joinPaths(String... paths) {
         return String.join(File.separator, paths);
     }
-
-    public static String joinLines(String nullValue, Object[] objs){
-        final StringJoiner joiner = new StringJoiner(App.LINE_SEPARATOR);
+    
+    public static String join(String sep, String nullVal, Object[] objs) {
+        final StringJoiner joiner = new StringJoiner(sep);
         for (Object obj : objs) {
-            joiner.add(obj == null ? nullValue : String.valueOf(obj));
+            joiner.add(obj == null ? nullVal : String.valueOf(obj));
         }
         return joiner.toString();
     }
 
-    public static String joinLines(Object[] objs){
+    public static String join(String sep, Object[] objs) {
+        return join(sep, null, objs);
+    }
+
+    public static String[] split(String regex, String text) {
+        if (text == null) {
+            return null;
+        }
+        return text.split(regex);
+    }
+
+    public static String joinLines(String nullVal, Object[] objs) {
+        return join(App.LINE_SEPARATOR, nullVal, objs);
+    }
+
+    public static String joinLines(Object[] objs) {
         return joinLines(" ", objs);
     }
 
-    public static String[] splitLines(String text){
-        return text.split(App.LINE_SEPARATOR);
+    public static String[] splitLines(String text) {
+        return split(App.LINE_SEPARATOR, text);
     }
 
     public static String userName(){

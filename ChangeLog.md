@@ -1,6 +1,6 @@
 # Changelog
 
-`2021.11`
+`v1.1.1`
 
 - Improved [Tasks](src/main/java/core/task) UI
 - Removed 'greetings' on local alerts
@@ -8,7 +8,3 @@
 - Standardized time utility
 - Fixed sign in problem
 - Other bug fixes
-
-`2021.6`
-
-Initial release

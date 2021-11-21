@@ -52,7 +52,7 @@ public class Dashboard {
     private static boolean isFirst;
     private static boolean isAuthentic = true;
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version(2021, 11);
+    public static final Version VERSION = new Version(1, 1, 1);
 
 
     public static void main(String[] args) {
