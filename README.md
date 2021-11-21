@@ -81,6 +81,8 @@ If you are interested in making this project better, firstly, read our [Develope
 
 Dashboard uses the **UTG ERP System** ("Portal") as the center of verification for users. By using Dashboard, the student (user) is agreeing that Dashboard collects any Portal-related data and use it for, but not limited to, **verification**, **analysis**, and **presentation**.
 
+> This project is not endorsed by the University of The Gambia. Under no condition shall the UTG be held responsible for the content (including the source code, logos, ideas, and not even the End User License Agreement) presented herein. This project is a sole work of independent developers.
+
 It is however important to note that inconsistent data from the Portal can induce misbehavior of your Dashboard. Thus, it is strongly advisable for students victim of wrong, or incomplete details on their Portals to refer to their respective departments for help before, or anytime soon after, launching Dashboard.
 
 It however handles, gracefully, the common issue of missing-grades, but cannot afford to lose core details like student's name, or matriculation number. Dashboard may halt build, if such details are missing, or not readable somehow.
