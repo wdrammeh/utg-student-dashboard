@@ -16,7 +16,7 @@ public class Frame {
     }
 
     private static void display(Component c){
-        final KFrame frame = new KFrame(Globals.PROJECT_NAME);
+        final KFrame frame = new KFrame(Globals.PROJECT_TITLE);
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(c);
         frame.pack();

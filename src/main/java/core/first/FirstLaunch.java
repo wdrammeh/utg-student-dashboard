@@ -284,7 +284,7 @@ public class FirstLaunch extends KDialog {
                 "<p>Yes, even if you are not a programmer, you can provide an answer to a " +
                 "Frequently Asked Question (<b>FAQ</b>), and solve problems of your brothers and sisters.</p>" +
                 "<p>If you are interested in improving this project, we can't wait to receive your contributions! " +
-                "Simply follow the following link to get get started:</p>" +
+                "Simply follow the following link to get started:</p>" +
                 "<a href='"+Internet.REPO_URL+"'><i style='text-align: center;'>"+ Internet.REPO_URL +"</i></a>";
         Notification.create("Welcome",
                 "Welcome to Dashboard, "+Student.getFullNamePostOrder(), welcomeMessage);

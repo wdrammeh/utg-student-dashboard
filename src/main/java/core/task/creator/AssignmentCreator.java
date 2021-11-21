@@ -12,6 +12,9 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 
 import static core.task.creator.TodoCreator.DESCRIPTION_LIMIT;
@@ -33,7 +36,7 @@ public class AssignmentCreator extends KDialog {
         final Font hintsFont = FontFactory.createPlainFont(16);
 
         final KPanel importPanel = new KPanel();
-        final String[] activeNames = SemesterActivity.getNames();
+        final String[] activeNames = SemesterActivity.getDisplayNames();
         if (activeNames.length >= 1) {
             final KComboBox<String> importBox = new KComboBox<>(activeNames);
             importBox.setFont(FontFactory.createPlainFont(15));
@@ -41,8 +44,9 @@ public class AssignmentCreator extends KDialog {
             importBox.setFocusable(false);
             importBox.setToolTipText("Import");
             importBox.addActionListener(e-> {
-                nameField.setText(String.valueOf(importBox.getSelectedItem()));
-                dField.requestFocusInWindow();
+                if (importBox.getSelectedIndex() != 0) {
+                    nameField.setText(String.valueOf(importBox.getSelectedItem()));
+                }
             });
             importPanel.add(importBox);
         }

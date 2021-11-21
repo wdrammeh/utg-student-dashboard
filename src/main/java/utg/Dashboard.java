@@ -29,6 +29,7 @@ import core.utils.*;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,7 @@ public class Dashboard {
     private static boolean isFirst;
     private static boolean isAuthentic = true;
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version(2021, 6);
+    public static final Version VERSION = new Version(2021, 11);
 
 
     public static void main(String[] args) {
@@ -127,17 +128,21 @@ public class Dashboard {
      * Programmatically deployed to prevent Dashboard from running multiple
      * instances in parallel, this function may simply let this launch to proceed,
      * or prevent it somehow.
+     * 
+     * Note: This is a platform-sensitive operation
      */
     private static void parallelCheck(){
         final Object[] handleObjs = ProcessHandle.allProcesses().toArray();
         int found = 0;
         for (Object obj : handleObjs) {
             final ProcessHandle handle = (ProcessHandle) obj;
-            final String command = handle.info().command().map(String::toString).orElse("");
-            if (command.contains(Globals.PROJECT_NAME)) {
+            final ProcessHandle.Info handleInfo = handle.info();
+            final String command = handleInfo.command().map(String::toString).orElse("");
+            final String commandLine = handleInfo.commandLine().map(String::toString).orElse("");
+            if (command.contains(Globals.PROJECT_TITLE) || commandLine.contains(Globals.PROJECT_NAME)) {
                 found++;
                 if (found >= 2) {
-                    App.silenceInfo("Dashboard is already running. Exiting this instance...");
+                    App.silenceException("Dashboard is already running. Exiting this instance...");
                     System.exit(0);
                     // Todo: Give options to:
                     //  - Terminate the existing process (which is possibly hung) and continue with this.

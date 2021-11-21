@@ -16,7 +16,9 @@ public class Globals {
     public static final String NONE = "None";
     public static final String NEVER = "Never";
     public static final String OTHER = "Other";
-    public static final String PROJECT_NAME = "UTG Student Dashboard";
+    public static final String PROJECT_TITLE = "UTG Student Dashboard";
+    public static final String PROJECT_NAME = PROJECT_TITLE.replace(" ", "-").toLowerCase();
+    
 
 
     /**

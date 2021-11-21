@@ -34,7 +34,7 @@ public class EventCreator extends KDialog {
         dateLabel.setFont(FontFactory.createBoldFont(16));
 
         final KPanel importPanel = new KPanel();
-        final String[] activeNames = SemesterActivity.getNames();
+        final String[] activeNames = SemesterActivity.getDisplayNames();
         if (activeNames.length >= 1) {
             final KComboBox<String> importBox = new KComboBox<>(activeNames);
             importBox.setFont(FontFactory.createPlainFont(15));
@@ -42,8 +42,9 @@ public class EventCreator extends KDialog {
             importBox.setFocusable(false);
             importBox.setToolTipText("Import");
             importBox.addActionListener(e -> {
-                descriptionField.setText(String.valueOf(importBox.getSelectedItem()));
-                dayField.requestFocusInWindow();
+                if (importBox.getSelectedIndex() != 0) {
+                    descriptionField.setText(String.valueOf(importBox.getSelectedItem()));
+                }
             });
             importPanel.add(importBox);
         }

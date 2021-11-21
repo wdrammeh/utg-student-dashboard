@@ -191,8 +191,8 @@ public class TaskActivity implements Activity {
                     groupIndexes.add(i);
                 }
             }
-            Serializer.toDisk(assignments, Serializer.inPath("tasks", "assignments.ser"));
-            Serializer.toDisk(questions, Serializer.inPath("tasks", "assignments.questions.ser"));
+            Serializer.toDisk(assignments, Serializer.inPath("tasks", "assignments", "assignments.ser"));
+            Serializer.toDisk(questions, Serializer.inPath("tasks", "assignments", "questions.ser"));
             final String[] groupsMembers = new String[groupIndexes.size()];
             int j = 0;
             for (int index : groupIndexes) {
@@ -200,7 +200,7 @@ public class TaskActivity implements Activity {
                 groupsMembers[j] = Globals.joinLines(assignment.members.toArray());
                 j++;
             }
-            Serializer.toDisk(groupsMembers, Serializer.inPath("tasks", "assignments.groups.members.ser"));
+            Serializer.toDisk(groupsMembers, Serializer.inPath("tasks", "assignments", "groups.members.ser"));
         } catch (Exception e) {
             App.silenceException(e);
         }

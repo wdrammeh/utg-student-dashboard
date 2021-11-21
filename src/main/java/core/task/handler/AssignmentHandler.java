@@ -206,9 +206,9 @@ public class AssignmentHandler {
     }
 
     private static void deserialize(){
-        final Object assignObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments.ser"));
-        final Object groupsMembersObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments.groups.members.ser"));
-        final Object questionsObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments.questions.ser"));
+        final Object assignObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments",  "assignments.ser"));
+        final Object groupsMembersObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments", "groups.members.ser"));
+        final Object questionsObj = Serializer.fromDisk(Serializer.inPath("tasks", "assignments", "questions.ser"));
         if (assignObj == null || groupsMembersObj == null || questionsObj == null) {
             App.silenceException("Failed to read assignments.");
         } else {

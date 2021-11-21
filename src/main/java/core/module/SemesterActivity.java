@@ -599,20 +599,24 @@ public class SemesterActivity implements Activity {
         return null;
     }
 
-    public static String[] getNames() {
-        final String[] names = new String[ACTIVE_COURSES.size()];
-        for (int i = 0; i < ACTIVE_COURSES.size(); i++) {
-            names[i] = ACTIVE_COURSES.get(i).getName();
-        }
-        return names;
-    }
-
-    public static String[] getCodes() {
+    private static String[] getCodes() {
         final String[] codes = new String[ACTIVE_COURSES.size()];
         for (int i = 0; i < ACTIVE_COURSES.size(); i++) {
             codes[i] = ACTIVE_COURSES.get(i).getCode();
         }
         return codes;
+    }
+
+    /**
+     * This is only intended by presentation of combo-boxes!
+     */
+    public static String[] getDisplayNames() {
+        final String[] names = new String[ACTIVE_COURSES.size() + 1];
+        names[0] = "";
+        for (int i = 1; i < names.length; i++) {
+            names[i] = ACTIVE_COURSES.get(i-1).getName();
+        }
+        return names;
     }
 
 

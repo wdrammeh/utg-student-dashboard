@@ -42,7 +42,7 @@ public class KTextPane extends JTextPane implements Preference {
         setBackground(Settings.getBackground());
         setEditable(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Todo reconsider
+        setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         TEXT_PANES.add(this);
     }
 

@@ -101,7 +101,7 @@ public final class Board extends KFrame {
 
 
     public Board() {
-        super(Globals.PROJECT_NAME);
+        super(Globals.PROJECT_TITLE);
         instance = Board.this;
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
