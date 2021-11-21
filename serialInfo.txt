@@ -1,9 +1,10 @@
->> In-depth sight of the serials directory tree. [In conformity with serialDir.txt]
+> In-depth sight of the serials directory tree. [In conformity with serialDir.txt]
     May be valid for this version only.
 
+> Note
 - Every serializable file is either an array of Strings, or simply a String.
 - Where every string (or every entry of the array where implemented so) must be a
-    line-separated value -> Every line must represent a separate value, or property
+    line-separated value such that Every line must represent a separate value, or property
     unless otherwise implemented, as with the News type.
 - If a field, or property, by itself has the potential to cause problems
     over having the delimiter (i.e the line-separator), then it should be
@@ -12,10 +13,11 @@
     or even question of an Assignment.
 - Leave primitive types as they are.
 - A null Date instance is represented by -1. All Date objects must be serialized
-    by the Date.getTime() <long> value.
+    by the Date.getTime value.
+- All the files elaborated below are relative to Dashboard.getPath
 
 
->> Configurations (configs.ser) | String
+> Configurations (configs.ser) | String
 Contains the Dashboard's configuration data.
     0: isAuthentic <boolean>
     1: userName <String>
@@ -23,7 +25,7 @@ Contains the Dashboard's configuration data.
     4: deprecateTime <long>
 
 
->> Settings (settings.ser) | String
+> Settings (settings.ser) | String
 Contains all the settings at collapse.
     0: noVerifyNeeded <boolean>
     1: confirmExit <boolean>
@@ -33,7 +35,7 @@ Contains all the settings at collapse.
     5: backgroundColorName <String>
 
 
->> Portal (portal.ser) | String
+> Portal (portal.ser) | String
 Contains all portal related data.
     0: registrationNotice <String>
     1: lastRegistrationNoticeUpdate <long>
@@ -43,7 +45,16 @@ Contains all portal related data.
     5: lastLogin <long>
 
 
->> Modules (modules/ )
+> Notifications (alerts.ser) | String[]
+Stores notifications and information on their read-state.
+    0: heading <String>
+    1: text <String>
+    2: information <String>
+    3: time <long>
+    4: isRead <boolean>
+
+
+> Modules (modules/ )
 Courses are serialized to an array of Strings where every
 entry of the array is further split by the host platform's
 specific line-separator, as elaborated above.
@@ -51,7 +62,7 @@ Every entry represents a course, and every
 line therein represents a property of the course,
 such that virtually the same course could be reconstructed
 during build.
---> RegisteredCourses (registered.ser) | String[]
+>>  RegisteredCourses (doing.ser) | String[]
     0: code <String>
     1: name <String>
     2: lecturer <String>
@@ -61,7 +72,7 @@ during build.
     6: time <String>
     7: isConfirmed <boolean>
 
---> Courses (courses.ser) | String[]
+>>  Courses (done.ser) | String[]
     0: year <String>
     1: semester <String>
     2: code <String>
@@ -77,50 +88,51 @@ during build.
     12: isVerified <boolean>
     13: lecturerNameChangeability <boolean>
 
->> User (user/ )
-It's specifically more difficult to deal with the user's data.
---> Fundamentals (core.ser) | String
-     Refers to the fundamental user details.
-     0: firstName <String>
-     1: lastName <String>
-     2: nationality <String>
-     3: address <String>
-     4: maritalStatue <String>
-     5: dateOfBirth <String>
-     6: placeOfBirth <String>
-     7: nameFormat <String>
-     8: isGuest <boolean>
-     ...Student only details...
-     9: monthOfAdmission <int>
-     10: yearOfAdmission <int>
-     11: semester <String>
-     12: matNumber <String>
-     13: major <String>
-     14: majorCode <String>
-     15: minor <String>
-     16: minorCode <String>
-     17: program <String>
-     18: school <String>
-     19: division <String>
-     20: portalMail <String>
-     21: portalPassword <String>
-     22: studentMail <String>
-     23: studentPassword <String>
-     24: level <String>
-     25: status <String>
-     26: CGPA <double>
 
---> Telephones (dials.ser) | String[]
---> About (about.ser) | String (non-line separated)
---> Extra / Additional
+> User (user/ )
+It's seemingly more difficult to deal with the user's data.
+>>  Fundamentals (core.ser) | String
+    Refers to the fundamental user details.
+    0: firstName <String>
+    1: lastName <String>
+    2: nationality <String>
+    3: address <String>
+    4: maritalStatue <String>
+    5: dateOfBirth <String>
+    6: placeOfBirth <String>
+    7: nameFormat <String>
+    8: isGuest <boolean>
+    ...Student only details...
+    9: monthOfAdmission <int>
+    10: yearOfAdmission <int>
+    11: semester <String>
+    12: matNumber <String>
+    13: major <String>
+    14: majorCode <String>
+    15: minor <String>
+    16: minorCode <String>
+    17: program <String>
+    18: school <String>
+    19: division <String>
+    20: portalMail <String>
+    21: portalPassword <String>
+    22: studentMail <String>
+    23: studentPassword <String>
+    24: level <String>
+    25: status <String>
+    26: CGPA <double>
+
+>>  Telephones (dials.ser) | String[]
+>>  About (about.ser) | String (nont line separated)
+>>  Extra / Additional
     Keys (extra.keys.ser) | String[]
     Values (extra.values.ser) | String[]
 
 
->> Tasks (tasks/ )
+> Tasks (tasks/ )
 The tasks folder stores data regarding all the 4 main task types,
 each in a separate file therein. Every file is an array of String.
---> Todo type (todos.ser) | String[]
+>>  Todo type (todos.ser) | String[]
     0: description <String>
     1: startDate <long>
     2: specifiedDuration <int>
@@ -130,7 +142,7 @@ each in a separate file therein. Every file is an array of String.
     6: eveIsAlerted <boolean>
     7: doneIsAlerted <boolean>
 
---> Project type (projects.ser) | String[]
+>>  Project type (projects.ser) | String[]
     0: projectName <String>
     1: type <String>
     2: startDate <long>
@@ -141,8 +153,8 @@ each in a separate file therein. Every file is an array of String.
     7: eveIsAlerted <boolean>
     8: completionIsAlerted <boolean>
 
---> Assignment type
-    --> Assignments (assignments) | String[]
+>>  Assignment type (assignments/ )
+    >>> Assignments self (assignments.ser) | String[]
         An array of all the assignments.
         Every entry is such that a line-separated value, excluding the members field.
         0: courseName <String>
@@ -155,31 +167,22 @@ each in a separate file therein. Every file is an array of String.
         7: eveIsAlerted <boolean>
         8: submissionIsAlerted <boolean>
 
-    --> Questions (questions.ser) | String[]
+    >>> Questions (questions.ser) | String[]
         An array of all the questions.
         A question may span multiple lines, hence this separation is a must.
         The size of this array := the size of the assignments (as above).
 
-    --> Members (groups.members.ser) | String[]
+    >>> Members (groups.members.ser) | String[]
         An array of all the members of all the group-assignments.
         Every entry is such that a line-separated value.
         The size of this array is equals the number of group assignments.
 
-    --> Event type (events.ser) | String[]
+    >>> Event type (events.ser) | String[]
         0: title <String>
         1: dateDue <long>
         2: isPending <boolean>
         3: eveIsAlerted <boolean>
         4: timeupIsAlerted <boolean>
-
-
->> Notifications (alerts.ser) | String[]
-Stores notifications and information on their read-state.
-    0: heading <String>
-    1: text <String>
-    2: information <String>
-    3: time <long>
-    4: isRead <boolean>
 
 
 >> News (news/ )

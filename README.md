@@ -1,6 +1,6 @@
 # UTG Student Dashboard
 
-`?`
+`2021.11`
 
 A **flexible** and **elegant** student management system for the University of The Gambia ("UTG").
 
@@ -13,12 +13,13 @@ that functions independently of the ERP System, and communicates with it at the 
 
 ## Install
 
-Get the standalone installation file for your operating system:
+Get the standalone installation file for your operating system from the table below:
 
-| Platform | Download Dashboard |
-| ----- | ----- |
-| Microsoft Windows `(msi package)` | . |
-| Linux `(debian package)` | . |
+| Platform (OS) | Get Dashboard | Type | Requirement |
+| ----- | ----- | ----- | ----- |
+| Microsoft Windows |  | exe |  |
+| Linux |  | deb |  |
+| All/Any |  | jar | [Java 11+](https://www.oracle.com/java/technologies/downloads/) |
 
 More download options (including jar builds) are available on the [release page](https://github.com/w-drammeh/utg-student-dashboard/releases).
 

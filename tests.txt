@@ -1,0 +1,4 @@
+Snap issues:
+    - Opening (default) browser
+    - Setting system theme
+    - Both builds should not be included in the snap's prime

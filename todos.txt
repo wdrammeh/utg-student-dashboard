@@ -19,3 +19,4 @@
 - More analysis
 - Sort tasks in descending order of creation-time
 - Use simple outlined-icons
+- OAuth2 for feedbacks using Gmail

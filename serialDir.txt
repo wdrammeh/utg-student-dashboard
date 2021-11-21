@@ -14,12 +14,15 @@ user/
     extra.keys.ser -
     extra.values.ser -
 modules/
-    registered.ser -
-    modules.ser -
+    doing.ser -
+    done.ser -
 tasks/
     todos.ser -
     projects.ser -
-    assignments.ser -
+    assignments/
+        assignments.ser -
+        questions.ser -
+        groups.members.ser -
     events.ser -
 news/
     heads.ser -
@@ -27,4 +30,3 @@ news/
     links.ser -
     contents.ser -
     accessTime.ser -
-status.ser -
