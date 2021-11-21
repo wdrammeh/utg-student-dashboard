@@ -131,17 +131,19 @@ public class Notification {
 
     public static void deserialize() {
         final Object alertsObj = Serializer.fromDisk(Serializer.inPath("alerts.ser"));
-        if (alertsObj == null) {
-            App.silenceException("Failed to read Notifications.");
-        } else {
-            final String[] alerts = (String[]) alertsObj;
-            for (String data : alerts) {
-                final String[] content = Globals.splitLines(data);
-                final Notification alert = new Notification(content[0], content[1], content[2],
-                        MDate.fromSerial(content[3]));
-                alert.setRead(Boolean.parseBoolean(content[4]));
-                LocalAlertHandler.receive(alert);
-                NOTIFICATIONS.add(alert);
+        if (alertsObj != null) {
+            try {
+                final String[] alerts = (String[]) alertsObj;
+                for (String data : alerts) {
+                    final String[] content = Globals.splitLines(data);
+                    final Notification alert = new Notification(content[0], content[1], content[2],
+                            MDate.fromSerial(content[3]));
+                    alert.setRead(Boolean.parseBoolean(content[4]));
+                    LocalAlertHandler.receive(alert);
+                    NOTIFICATIONS.add(alert);
+                }
+            } catch (Exception e) {
+                App.silenceException(e);
             }
         }
     }

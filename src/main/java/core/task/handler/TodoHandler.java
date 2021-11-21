@@ -205,27 +205,29 @@ public class TodoHandler {
 
     private static void deserialize(){
         final Object todoObj = Serializer.fromDisk(Serializer.inPath("tasks", "todos.ser"));
-        if (todoObj == null) {
-            App.silenceException("Failed to read TODO Tasks.");
-        } else {
-            final String[] todos = (String[]) todoObj;
-            for (String data : todos) {
-                final String[] lines = Globals.splitLines(data);
-                final TodoSelf todoSelf = new TodoSelf(lines[0], Integer.parseInt(lines[2]),
-                        MDate.formatDayTime(MDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[4]));
-                todoSelf.setTotalTimeConsumed(Integer.parseInt(lines[3]));
-                todoSelf.setDateCompleted(MDate.formatDayTime(MDate.fromSerial(lines[5])));
-                todoSelf.eveIsAlerted = Boolean.parseBoolean(lines[6]);
-                todoSelf.doneIsAlerted = Boolean.parseBoolean(lines[7]);
-                if (todoSelf.isActive()) { // This only means it slept alive - we're to check then if it's to wake alive or not
-                    if (new Date().before(MDate.parseDayTime(todoSelf.getDateExpectedToComplete()))) {
-                        todoSelf.wakeAlive();
-                    } else {
-                        todoSelf.wakeDead();
+        if (todoObj != null) {
+            try {
+                final String[] todos = (String[]) todoObj;
+                for (String data : todos) {
+                    final String[] lines = Globals.splitLines(data);
+                    final TodoSelf todoSelf = new TodoSelf(lines[0], Integer.parseInt(lines[2]),
+                            MDate.formatDayTime(MDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[4]));
+                    todoSelf.setTotalTimeConsumed(Integer.parseInt(lines[3]));
+                    todoSelf.setDateCompleted(MDate.formatDayTime(MDate.fromSerial(lines[5])));
+                    todoSelf.eveIsAlerted = Boolean.parseBoolean(lines[6]);
+                    todoSelf.doneIsAlerted = Boolean.parseBoolean(lines[7]);
+                    if (todoSelf.isActive()) { // This only means it slept alive - we're to check then if it's to wake alive or not
+                        if (new Date().before(MDate.parseDayTime(todoSelf.getDateExpectedToComplete()))) {
+                            todoSelf.wakeAlive();
+                        } else {
+                            todoSelf.wakeDead();
+                        }
                     }
+                    todoSelf.setUpUI();
+                    receiveFromSerials(todoSelf);
                 }
-                todoSelf.setUpUI();
-                receiveFromSerials(todoSelf);
+            } catch (Exception e) {
+                App.silenceException(e);
             }
         }
     }

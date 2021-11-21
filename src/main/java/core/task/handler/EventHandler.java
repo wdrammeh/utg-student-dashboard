@@ -116,26 +116,28 @@ public class EventHandler {
 
     private static void deserialize(){
         final Object eventsObj = Serializer.fromDisk(Serializer.inPath("tasks", "events.ser"));
-        if (eventsObj == null) {
-            App.silenceException("Failed to read Events.");
-        } else {
-            final String[] events = (String[]) eventsObj;
-            for (String data : events){
-                final String[] lines = Globals.splitLines(data);
-                final EventSelf eventSelf = new EventSelf(lines[0],
-                        MDate.formatDay(MDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[2]));
-                eventSelf.eveIsAlerted = Boolean.parseBoolean(lines[3]);
-                eventSelf.timeupIsAlerted = Boolean.parseBoolean(lines[4]);
-                eventSelf.setUpUI(); // Todo consider recall
-                if (eventSelf.isPending()) {
-                    if (MDate.isDeadlinePast(MDate.parseDay(eventSelf.getDateDue()))) {
-                        eventSelf.endState();
-                    } else {
-                        eventSelf.wakeAlive();
+        if (eventsObj != null) {
+            try {
+                final String[] events = (String[]) eventsObj;
+                for (String data : events){
+                    final String[] lines = Globals.splitLines(data);
+                    final EventSelf eventSelf = new EventSelf(lines[0],
+                            MDate.formatDay(MDate.fromSerial(lines[1])), Boolean.parseBoolean(lines[2]));
+                    eventSelf.eveIsAlerted = Boolean.parseBoolean(lines[3]);
+                    eventSelf.timeupIsAlerted = Boolean.parseBoolean(lines[4]);
+                    eventSelf.setUpUI(); // Todo consider recall
+                    if (eventSelf.isPending()) {
+                        if (MDate.isDeadlinePast(MDate.parseDay(eventSelf.getDateDue()))) {
+                            eventSelf.endState();
+                        } else {
+                            eventSelf.wakeAlive();
+                        }
                     }
+                    eventSelf.setUpUI();
+                    receiveFromSerials(eventSelf);
                 }
-                eventSelf.setUpUI();
-                receiveFromSerials(eventSelf);
+            } catch (Exception e) {
+                App.silenceException(e);
             }
         }
     }

@@ -289,16 +289,18 @@ public class Portal {
 
     public static void deSerialize(){
         final Object obj = Serializer.fromDisk(Serializer.inPath("portal.ser"));
-        if (obj == null) {
-            App.silenceException("Failed to read Portal Data.");
-        } else {
-            final String[] data = Globals.splitLines((String) obj);
-            registrationNotice = data[0];
-            lastRegistrationNoticeUpdate = MDate.fromSerial(data[1]);
-            admissionNotice = data[2];
-            lastAdmissionNoticeUpdate = MDate.fromSerial(data[3]);
-            autoSync = Boolean.parseBoolean(data[4]);
-            lastLogin = MDate.fromSerial(data[5]);
+        if (obj != null) {
+            try {
+                final String[] data = Globals.splitLines((String) obj);
+                registrationNotice = data[0];
+                lastRegistrationNoticeUpdate = MDate.fromSerial(data[1]);
+                admissionNotice = data[2];
+                lastAdmissionNoticeUpdate = MDate.fromSerial(data[3]);
+                autoSync = Boolean.parseBoolean(data[4]);
+                lastLogin = MDate.fromSerial(data[5]);
+            } catch (Exception e) {
+                App.silenceException(e);
+            }
         }
     }
 

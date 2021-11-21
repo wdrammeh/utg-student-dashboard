@@ -147,16 +147,18 @@ public class Settings {
 
     public static void deserialize() {
         final Object obj = Serializer.fromDisk(Serializer.inPath("settings.ser"));
-        if (obj == null) {
-            App.silenceException("Failed to read Settings.");
-        } else {
-            final String[] settings = Globals.splitLines(((String) obj));
-            isVerifyNeeded = Boolean.parseBoolean(settings[0]);
-            confirmExit = Boolean.parseBoolean(settings[1]);
-            ToolTipManager.sharedInstance().setInitialDelay(Integer.parseInt(settings[2]));
-            ToolTipManager.sharedInstance().setDismissDelay(Integer.parseInt(settings[3]));
-            lookName = settings[4];
-            backgroundName = settings[5];
+        if (obj != null) {
+            try {
+                final String[] settings = Globals.splitLines(((String) obj));
+                isVerifyNeeded = Boolean.parseBoolean(settings[0]);
+                confirmExit = Boolean.parseBoolean(settings[1]);
+                ToolTipManager.sharedInstance().setInitialDelay(Integer.parseInt(settings[2]));
+                ToolTipManager.sharedInstance().setDismissDelay(Integer.parseInt(settings[3]));
+                lookName = settings[4];
+                backgroundName = settings[5];
+            } catch (Exception e) {
+                App.silenceException(e);
+            }
         }
     }
 

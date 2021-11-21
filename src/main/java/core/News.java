@@ -283,26 +283,28 @@ public class News implements Activity {
         final Object bodiesObj = Serializer.fromDisk(Serializer.inPath("news", "bodies.ser"));
         final Object linksObj = Serializer.fromDisk(Serializer.inPath("news", "links.ser"));
         final Object contentsObj = Serializer.fromDisk(Serializer.inPath("news", "contents.ser"));
-        if (headsObj == null || bodiesObj == null || linksObj == null || contentsObj == null) {
-            App.silenceException("Failed to read News.");
-        } else {
-            final String[] heads = (String[]) headsObj;
-            final String[] bodies = (String[]) bodiesObj;
-            final String[] links = (String[]) linksObj;
-            final String[] contents = (String[]) contentsObj;
-            final int length = heads.length;
-            for (int i = 0; i < length; i++){
-                final NewsSavior savior = new NewsSavior(heads[i], bodies[i], links[i], contents[i]);
-                NEWS_DATA.add(savior);
+        if (headsObj != null && bodiesObj != null && linksObj != null && contentsObj != null) {
+            try {
+                final String[] heads = (String[]) headsObj;
+                final String[] bodies = (String[]) bodiesObj;
+                final String[] links = (String[]) linksObj;
+                final String[] contents = (String[]) contentsObj;
+                final int length = heads.length;
+                for (int i = 0; i < length; i++){
+                    final NewsSavior savior = new NewsSavior(heads[i], bodies[i], links[i], contents[i]);
+                    NEWS_DATA.add(savior);
+                }
+                for (final NewsSavior news : NEWS_DATA) {
+                    present.add(packNews(news.heading, news.body, news.link, news.content));
+                }
+                present.add(accessResident);
+                MComponent.ready(present);
+                final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "access.time.ser"));
+                accessTime = String.valueOf(accessObj);
+                accessLabel.setText(accessTime);
+            } catch (Exception e) {
+                App.silenceException(e);
             }
-            for (final NewsSavior news : NEWS_DATA) {
-                present.add(packNews(news.heading, news.body, news.link, news.content));
-            }
-            present.add(accessResident);
-            MComponent.ready(present);
-            final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "access.time.ser"));
-            accessTime = String.valueOf(accessObj);
-            accessLabel.setText(accessTime);
         }
     }
 

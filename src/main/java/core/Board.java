@@ -126,6 +126,9 @@ public final class Board extends KFrame {
                     break;
                 }
             }
+            if (!Student.isGuest()) {
+                Portal.deSerialize();
+            }
             POST_PROCESSES.add(()-> {
                 if (Internet.isInternetAvailable()) {
                     MDriver.setup();
@@ -139,9 +142,6 @@ public final class Board extends KFrame {
         setUpThorax();
         setUpBody();
 
-        if (!(Dashboard.isFirst() || Student.isGuest())) {
-            Portal.deSerialize();
-        }
         semesterActivity = new SemesterActivity();
         moduleActivity = new ModuleActivity();
         settingsUI = new SettingsActivity();

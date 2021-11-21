@@ -1190,16 +1190,18 @@ public class ModuleHandler {
 
     public static void deserialize() {
         final Object obj = Serializer.fromDisk(Serializer.inPath("modules", "done.ser"));
-        if (obj == null) {
-            App.silenceException("Failed to read Modules.");
-        } else {
-            final String[] data = (String[]) obj;
-            for (String entry : data) {
-                try {
-                    modulesMonitor.add(Course.create(entry));
-                } catch (Exception e) {
-                    App.silenceException(e);
+        if (obj != null) {
+            try {
+                final String[] data = (String[]) obj;
+                for (String entry : data) {
+                    try {
+                        modulesMonitor.add(Course.create(entry));
+                    } catch (Exception e) {
+                        App.silenceException(e);
+                    }
                 }
+            } catch (Exception e) {
+                App.silenceException(e);
             }
         }
     }

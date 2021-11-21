@@ -146,31 +146,33 @@ public class ProjectHandler {
 
     private static void deserialize(){
         final Object projectObj = Serializer.fromDisk(Serializer.inPath("tasks", "projects.ser"));
-        if (projectObj == null) {
-            App.silenceException("Failed to read Projects.");
-        } else {
-            final String[] projects = (String[]) projectObj;
-            for (String data : projects) {
-                final String[] lines = Globals.splitLines(data);
-                final ProjectSelf projectSelf = new ProjectSelf(lines[0], lines[1],
-                        MDate.formatDayTime(MDate.fromSerial(lines[2])), Integer.parseInt(lines[3]),
-                        Boolean.parseBoolean(lines[5]));
-                projectSelf.setTotalTimeConsumed(Integer.parseInt(lines[4]));
-                projectSelf.setDateCompleted(MDate.formatDayTime(MDate.fromSerial(lines[6])));
-                projectSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
-                projectSelf.completionIsAlerted = Boolean.parseBoolean(lines[8]);
-                if (projectSelf.isLive()) {
-                    if (new Date().before(MDate.parseDayTime(projectSelf.getDateExpectedToComplete()))) {
-                        projectSelf.wakeLive();
-                        projectSelf.initializeUI();
+        if (projectObj != null) {
+            try {
+                final String[] projects = (String[]) projectObj;
+                for (String data : projects) {
+                    final String[] lines = Globals.splitLines(data);
+                    final ProjectSelf projectSelf = new ProjectSelf(lines[0], lines[1],
+                            MDate.formatDayTime(MDate.fromSerial(lines[2])), Integer.parseInt(lines[3]),
+                            Boolean.parseBoolean(lines[5]));
+                    projectSelf.setTotalTimeConsumed(Integer.parseInt(lines[4]));
+                    projectSelf.setDateCompleted(MDate.formatDayTime(MDate.fromSerial(lines[6])));
+                    projectSelf.eveIsAlerted = Boolean.parseBoolean(lines[7]);
+                    projectSelf.completionIsAlerted = Boolean.parseBoolean(lines[8]);
+                    if (projectSelf.isLive()) {
+                        if (new Date().before(MDate.parseDayTime(projectSelf.getDateExpectedToComplete()))) {
+                            projectSelf.wakeLive();
+                            projectSelf.initializeUI();
+                        } else {
+                            projectSelf.wakeDead();
+                            projectSelf.setUpDoneUI();
+                        }
                     } else {
-                        projectSelf.wakeDead();
                         projectSelf.setUpDoneUI();
                     }
-                } else {
-                    projectSelf.setUpDoneUI();
+                    receiveFromSerials(projectSelf);
                 }
-                receiveFromSerials(projectSelf);
+            } catch (Exception e) {
+                App.silenceException(e);
             }
         }
     }
