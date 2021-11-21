@@ -247,29 +247,7 @@ public class PrePortal {
             MOA = admissionDate[1].split("-")[1];
         } catch (Exception ignored) {
         }
-//        Adding in predefined order... CGPA will be added with transcript later on
-        enlistDetail("First Name", firstName);
-        enlistDetail("Last Name", lastName);
-        enlistDetail("Program", program);
-        enlistDetail("Mat#", matNumber);
-        enlistDetail("Major", major);
-        enlistDetail("School", school);
-        enlistDetail("Division", division);
-        enlistDetail("Nationality", nationality);
-        enlistDetail("Month of Admission", MOA);
-        enlistDetail("Year of Admission", YOA);
-        enlistDetail("Address", address);
-        enlistDetail("Marital status", mStatus);
-        enlistDetail("Birth Day", DOB);
-        enlistDetail("Telephone", tel);
-        enlistDetail("Email", email);
-        enlistDetail("psswd", password);
-        enlistDetail("Current Semester", ongoingSemester);
-        enlistDetail("Level", level);
-        enlistDetail("Status", status);
 
-        Login.appendGapToStatus();
-        Login.appendToStatus("Collecting up all your courses....... This may take a while");
 //        Back to the contents to generate modules
         if (isTerminated) {
             return;
@@ -288,8 +266,32 @@ public class PrePortal {
 
         if (isTerminated) {
             return;
+        } else {
+            // Adding in predefined order... CGPA will be added with transcript later on
+            enlistDetail("First Name", firstName);
+            enlistDetail("Last Name", lastName);
+            enlistDetail("Program", program);
+            enlistDetail("Mat#", matNumber);
+            enlistDetail("Major", major);
+            enlistDetail("School", school);
+            enlistDetail("Division", division);
+            enlistDetail("Nationality", nationality);
+            enlistDetail("Month of Admission", MOA);
+            enlistDetail("Year of Admission", YOA);
+            enlistDetail("Address", address);
+            enlistDetail("Marital status", mStatus);
+            enlistDetail("Birth Day", DOB);
+            enlistDetail("Telephone", tel);
+            enlistDetail("Email", email);
+            enlistDetail("psswd", password);
+            enlistDetail("Current Semester", ongoingSemester);
+            enlistDetail("Level", level);
+            enlistDetail("Status", status);
         }
 
+        Login.appendGapToStatus();
+        Login.appendToStatus("Collecting up all your courses....... This may take a while");
+        
         final List<WebElement> tabs = loadWaiter.until(
                 ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
 //        Firstly, code, name, year, semester, and credit-hours at transcript tab
@@ -298,6 +300,7 @@ public class PrePortal {
         if (transcriptTap == null) {
             App.reportConnectionLost(Login.getRoot());
             Login.setInputState(true);
+            USER_DATA.clear();
             return;
         } else {
             transcriptTap.click();
