@@ -31,7 +31,7 @@ Once you go through the setup (login) process, a window similar to the one below
 
 ![Home](docs/screen/home.png)
 
-### 2. **Unlimited** Transcript Exportation in Portable Document Format (PDF)
+### 2. **Unlimited** Transcript Exportation
 
 Your transcript is always ready for printing! Save it to your file system, share it with the world!
 
@@ -61,7 +61,7 @@ See how you're doing.
 
 ![](docs/screen/semester-to-semester-performsnce-sketch.png)
 
-### 7. TODO, Tasks, and Projects management
+### 7. TODO
 
 Do more with Dashboard using its Tasks+ extension. You can keep track of your projects, assignments, upcoming events with timely reminders. Additional support is provided for the assignment type. Check it out!
 

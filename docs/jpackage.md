@@ -32,10 +32,10 @@ Create a folder named _mypackage_. Do not put this folder in the project root. P
 
 Locate and copy the following files into the _mypackage_ folder:
 
-1. [dashboard icon](../../src/main/resources/icons/dashboard.png)
+1. A [dashboard icon](../../src/main/resources/icons/dashboard.png)
     > If you're on a Windows system, you need to use a .ico file instead; .png is not supported.
 2. The [LICENSE file](../../LICENSE)
-3. Create a subdirectory called _target_ and copy the standalone jar file you built in [step 1](#build-the-jars) into it.
+3. Create a subdirectory called _target_ and copy the standalone jar file you built in [step 1](#1-build-the-jars) into it.
 
 Finally, the _mypackage_ directory should look like the following:
 
@@ -49,7 +49,7 @@ Finally, the _mypackage_ directory should look like the following:
 
 ## 3. Build the package
 
-At this point, we're ready to invoke jpackage. Open a terminal in the _mypackage_ dir you created in [step 2](prepare-grounds), and run the following command:
+At this point, we're ready to invoke jpackage. Open a terminal in the _mypackage_ dir you created in [step 2](2-prepare-grounds), and run the following command:
 
 **Linux**:
 
