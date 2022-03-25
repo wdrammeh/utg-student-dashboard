@@ -75,7 +75,7 @@ public class Dashboard {
                     final boolean isAuthentic = Boolean.parseBoolean(lastConfigs.get("isAuthentic"));
                     if (!isAuthentic) {
                         PREVIEW.dispose();
-                        reportAuthenticationError();
+                        ErrorMessage.reportAuthenticationError();
                     }
                     final Version recentVersion = Version.parse(lastConfigs.get("version"));
                     final int comparison = VERSION.compare(recentVersion);
@@ -281,11 +281,11 @@ public class Dashboard {
         return Globals.joinPaths(System.getProperty("user.home"), ".dashboard");
     }
 
-    public static void reportAuthenticationError() {
-        App.reportWarning(null, "Authentication Error",
-                "This program is either not verified, or no longer supported.\n" +
-                        "Contact the developers: '"+ Mailer.DEVELOPER_MAIL +"'.");
-        System.exit(0);
-    }
+//    public static void reportAuthenticationError() {
+//        App.reportWarning(null, "Authentication Error",
+//                "This program is either not verified, or no longer supported.\n" +
+//                        "Contact the developers: '"+ Mailer.DEVELOPER_MAIL +"'.");
+//        System.exit(0);
+//    }
 
 }

@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import utg.Dashboard;
+import utg.ErrorMessage;
 import utg.Version;
 
 import java.awt.*;
@@ -61,7 +62,7 @@ public class Internet {
             verElement = document.selectFirst(".markdown-body > p:nth-child(2) > code:nth-child(1)");
         } catch (HttpStatusException e) {
             Dashboard.setAuthentic(false);
-            Dashboard.reportAuthenticationError();
+            ErrorMessage.reportAuthenticationError();
         } catch (Exception e) {
             if (requested) {
                 App.reportError(e);
