@@ -62,12 +62,12 @@ public class TodoCreator extends KDialog {
 
     private ActionListener listener(){
         return e -> {
-            final String name = descriptionField.getText();
+            final String toDoFieldName = descriptionField.getText();
             int givenDays = 0;
-            if (Globals.hasNoText(name)) {
+            if (Globals.hasNoText(toDoFieldName)) {
                 App.reportError(getRootPane(), "No Name", "Please specify a name for the task.");
                 descriptionField.requestFocusInWindow();
-            } else if (name.length() > DESCRIPTION_LIMIT) {
+            } else if (toDoFieldName.length() > DESCRIPTION_LIMIT) {
                 App.reportError("Error", "Sorry, description of a task must be at most "+
                         DESCRIPTION_LIMIT +" characters.");
             } else {
@@ -83,7 +83,7 @@ public class TodoCreator extends KDialog {
                 } else if (Objects.equals(span, "One Month")) {
                     givenDays = 30;
                 }
-                TodoHandler.newIncoming(new TodoSelf(name, givenDays));
+                TodoHandler.newIncoming(new TodoSelf(toDoFieldName, givenDays));
                 dispose();
             }
         };
