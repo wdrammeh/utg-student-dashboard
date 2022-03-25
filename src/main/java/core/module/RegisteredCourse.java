@@ -37,15 +37,15 @@ public class RegisteredCourse extends Module {
         super(code, name, "", "", lecturer, campus, room, day, time, "", -1, confirmed);
     }
 
-    @Override
-    public void merge(Module old) {
-        this.day = old.day;
-        this.time = old.time;
-        this.requirement = old.requirement;
-        if (this.isLecturerEditable) {
-            this.lecturer = old.lecturer;
-        }
-    }
+//    @Override
+//    public void merge(Module old) {
+//        this.day = old.day;
+//        this.time = old.time;
+//        this.requirement = old.requirement;
+//        if (this.isLecturerEditable) {
+//            this.lecturer = old.lecturer;
+//        }
+//    }
 
     @Override
     public String export() {

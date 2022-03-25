@@ -380,6 +380,7 @@ public class ModuleHandler {
                 modulesMonitor.add(foundOne);
             } else { // merge and replace (substitute) then
                 foundOne.merge(existed);
+                foundOne.residence(existed);
                 substitute(existed, foundOne);
             }
 
@@ -550,6 +551,7 @@ public class ModuleHandler {
                         modulesMonitor.add(found);
                     } else {//merge and replace
                         found.merge(existed);
+                        found.residence(existed);
                         substitute(existed, found);
                     }
                 }
