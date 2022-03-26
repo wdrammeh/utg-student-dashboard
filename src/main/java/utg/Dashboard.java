@@ -228,16 +228,6 @@ public class Dashboard {
         }
     }
 
-//    private static String requestPassword(){
-//        final String studentName = Student.getFullNamePostOrder();
-//        final String input = App.requestInput(null, "Dashboard",
-//                "This Dashboard belongs to '"+studentName+"'.\n" +
-//                "Please enter your Matriculation Number to confirm:");
-//        if (input == null) {
-//            System.exit(0);
-//        }
-//        return Globals.hasText(input) ? input : requestPassword();
-//    }
 
     /**
      * Builds the Dashboard from a serializable state.
