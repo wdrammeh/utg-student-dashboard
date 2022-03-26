@@ -533,16 +533,15 @@ public abstract class Module {
 
     public abstract String export();
 
-    /**
-     * Merges this module with the given module - old.
-     * By the time this method returns, the invoking-module must have
-     * the user-defined values of the its old counterpart.
-     * <p> The purpose of {@code merging} is to preserve the user-defined values
-     * as much as possible. </p>
-     * 
-     * @param old
-     */
-    public abstract void merge(Module old);
+    public void merge(Module old){
+        this.day = old.day;
+        this.time = old.time;
+        this.requirement = old.requirement;
+        if (this.isLecturerEditable) {
+            this.lecturer = old.lecturer;
+        }
+    }
+
 
     /**
      * Exhibits the contents of this Module on a dialog,

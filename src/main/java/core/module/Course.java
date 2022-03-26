@@ -73,18 +73,12 @@ public class Course extends Module {
      * Merges this course with the outgoing, old course.
      * This ensures that the user's given details,
      * prior to editing or verification are not lost.
-     * By the time this method returns, it's safe to substitute old with this.
+     * By the time this method returns, it's safe to substitute old with this. (Only residence)
      */
-    @Override
-    public void merge(Module old) {
-        this.day = old.day;
-        this.time = old.time;
+
+    public void residence(Module old) {
         this.campus = old.campus;
         this.room = old.room;
-        this.requirement = old.requirement;
-        if (this.isLecturerEditable) {
-            this.lecturer = old.lecturer;
-        }
     }
 
     /**

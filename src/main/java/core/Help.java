@@ -62,7 +62,8 @@ public class Help implements Activity {
         }
     }
 
-    private Component getTips(){
+
+    public String getTipText(){
         final String tipText = heading("Running Courses") +
                 "Dashboard provides a mechanism for you to effectively keep track of the courses you " +
                 "register for every semester. Go to <i>"+reference("Home", "This Semester")+"</i>. " +
@@ -167,8 +168,11 @@ public class Help implements Activity {
                 subHeading("About UTG") +
                 "You can visit the UTG official site to learn more about the University of the Gambia. " +
                 "Click the <i>About UTG</i> Button appearing at the top-right of your Dashboard. <br/>";
+        return tipText;
+    }
 
-        final KTextPane textPane = KTextPane.htmlFormattedPane(tipText);
+    private Component getTips(){
+        final KTextPane textPane = KTextPane.htmlFormattedPane(getTipText());
         tipPane = new KScrollPane(textPane);
         tipPane.setBorder(null);
         return tipPane;

@@ -23,6 +23,7 @@ package utg;
 import core.Board;
 import core.Preview;
 import core.alert.Notification;
+import core.first.Login;
 import core.first.Welcome;
 import core.user.Student;
 import core.utils.*;
@@ -75,7 +76,7 @@ public class Dashboard {
                     final boolean isAuthentic = Boolean.parseBoolean(lastConfigs.get("isAuthentic"));
                     if (!isAuthentic) {
                         PREVIEW.dispose();
-                        reportAuthenticationError();
+                        ErrorMessage.reportAuthenticationError();
                     }
                     final Version recentVersion = Version.parse(lastConfigs.get("version"));
                     final int comparison = VERSION.compare(recentVersion);
@@ -215,7 +216,7 @@ public class Dashboard {
         }
 
         PREVIEW.setVisible(false);
-        final String matNumber = requestPassword();
+        final String matNumber = Login.requestPassword();
         if (matNumber.equals(Student.getMatNumber())) {
             PREVIEW.setVisible(true);
             rebuildNow(false);
@@ -227,16 +228,6 @@ public class Dashboard {
         }
     }
 
-    private static String requestPassword(){
-        final String studentName = Student.getFullNamePostOrder();
-        final String input = App.requestInput(null, "Dashboard",
-                "This Dashboard belongs to '"+studentName+"'.\n" +
-                "Please enter your Matriculation Number to confirm:");
-        if (input == null) {
-            System.exit(0);
-        }
-        return Globals.hasText(input) ? input : requestPassword();
-    }
 
     /**
      * Builds the Dashboard from a serializable state.
@@ -281,11 +272,5 @@ public class Dashboard {
         return Globals.joinPaths(System.getProperty("user.home"), ".dashboard");
     }
 
-    public static void reportAuthenticationError() {
-        App.reportWarning(null, "Authentication Error",
-                "This program is either not verified, or no longer supported.\n" +
-                        "Contact the developers: '"+ Mailer.DEVELOPER_MAIL +"'.");
-        System.exit(0);
-    }
 
 }
