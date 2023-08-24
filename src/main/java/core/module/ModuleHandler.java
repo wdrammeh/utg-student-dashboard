@@ -19,6 +19,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -263,7 +264,7 @@ public class ModuleHandler {
         }
 
         synchronized (modulesDriver){
-            final WebDriverWait loadWaiter = new WebDriverWait(modulesDriver, Portal.MAXIMUM_WAIT_TIME);
+            final WebDriverWait loadWaiter = new WebDriverWait(modulesDriver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME));
             final int loginAttempt = MDriver.attemptLogin(modulesDriver);
             if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
                 if (Portal.isEvaluationNeeded(modulesDriver)) {
@@ -302,7 +303,8 @@ public class ModuleHandler {
             } else {
                 gradesTap.click();
             }
-            final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
+//            final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
+            final WebElement gradesTable = modulesDriver.findElements(By.cssSelector(".table-warning")).get(1);
             final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
             final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
             for(WebElement row : rows){
@@ -334,7 +336,8 @@ public class ModuleHandler {
             } else {
                 transcriptTap.click();
             }
-            final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
+//            final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
+            final WebElement transcriptTable = modulesDriver.findElement(By.cssSelector(".table-bordered"));
             final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
             final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
             String vYear = null;
@@ -361,7 +364,8 @@ public class ModuleHandler {
             } else {
                 registeredTab.click();
             }
-            final WebElement allCourseTable = modulesDriver.findElementByCssSelector(".table-warning");
+//            final WebElement allCourseTable = modulesDriver.findElementByCssSelector(".table-warning");
+            final WebElement allCourseTable = modulesDriver.findElement(By.cssSelector(".table-warning"));
             final WebElement tableBody = allCourseTable.findElement(By.tagName("tbody"));
             final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
             int i = 0;
@@ -423,7 +427,7 @@ public class ModuleHandler {
             }
 
             synchronized (modulesDriver){
-                final WebDriverWait loadWaiter = new WebDriverWait(modulesDriver, 30);
+                final WebDriverWait loadWaiter = new WebDriverWait(modulesDriver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME));
                 final int loginAttempt = MDriver.attemptLogin(modulesDriver);
                 if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
                     if (Portal.isEvaluationNeeded(modulesDriver)) {
@@ -474,7 +478,8 @@ public class ModuleHandler {
                 } else {
                     transcriptTab.click();
                 }
-                final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
+//                final WebElement transcriptTable = modulesDriver.findElementByCssSelector(".table-bordered");
+                final WebElement transcriptTable = modulesDriver.findElement(By.cssSelector(".table-bordered"));
                 final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
                 final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
                 final List<WebElement> semCaptions = transBody.findElements(By.className("warning"));
@@ -492,7 +497,8 @@ public class ModuleHandler {
                                 "", true));
                     }
                 }
-                final String CGPA = modulesDriver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+//                final String CGPA = modulesDriver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+                final String CGPA = modulesDriver.findElement(By.xpath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]")).getText();
                 Student.setCGPA(CGPA);
 
                 // Secondly, add scores at grades tab
@@ -506,7 +512,8 @@ public class ModuleHandler {
                 } else {
                     gradesTab.click();
                 }
-                final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
+//                final WebElement gradesTable = modulesDriver.findElementsByCssSelector(".table-warning").get(1);
+                final WebElement gradesTable = modulesDriver.findElements(By.cssSelector(".table-warning")).get(1);
                 final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
                 final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
                 for(WebElement t : rows){
@@ -529,7 +536,8 @@ public class ModuleHandler {
                 } else {
                     registeredTab.click();
                 }
-                final WebElement allRegisteredTable = modulesDriver.findElementByCssSelector(".table-warning");
+//                final WebElement allRegisteredTable = modulesDriver.findElementByCssSelector(".table-warning");
+                final WebElement allRegisteredTable = modulesDriver.findElement(By.cssSelector(".table-warning"));
                 final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
                 final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
                 int l = 0;

@@ -7,7 +7,8 @@ import core.utils.MDate;
 import utg.Dashboard;
 
 public class Main {
-    private static final String TEST_PATH = Globals.joinPaths(Globals.userHome(), "dashboard");
+    // Should never equal Dashboard.getDefaultPath
+    private static final String TEST_PATH = Globals.joinPaths(Globals.userHome(), "utgsd-test");
 
 
     public static void main(String[] args) {
@@ -16,7 +17,7 @@ public class Main {
     }
 
     private static void run(String path, boolean ser) {
-        App.silenceInfo("Dashboard running on test mode; where path := '"+path+"'.");
+        App.silenceInfo("Dashboard running on test mode; where path = '"+path+"'.");
         Dashboard.main(new String[]{path});
         if (!ser) {
             Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);

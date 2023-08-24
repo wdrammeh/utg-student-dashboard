@@ -21,6 +21,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -296,7 +297,7 @@ public class SemesterActivity implements Activity {
         }
 
         synchronized (activeDriver){
-            final WebDriverWait loadWaiter = new WebDriverWait(activeDriver, Portal.MAXIMUM_WAIT_TIME);
+            final WebDriverWait loadWaiter = new WebDriverWait(activeDriver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME));
             final int loginAttempt = MDriver.attemptLogin(activeDriver);
             if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
                 if (Portal.isEvaluationNeeded(activeDriver)) {
@@ -354,7 +355,8 @@ public class SemesterActivity implements Activity {
             } else {
                 registeredTab.click();
             }
-            final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
+//            final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
+            final WebElement registrationTable = activeDriver.findElement(By.cssSelector(".table-warning"));
             final WebElement tableBody = registrationTable.findElement(By.tagName("tbody"));
             final List<WebElement> captions = tableBody.findElements(By.cssSelector("b, strong"));
             final boolean registered = captions.get(captions.size() - 1).getText().equals(Student.getSemester());
@@ -450,7 +452,7 @@ public class SemesterActivity implements Activity {
                 }
 
                 synchronized (activeDriver){
-                    final WebDriverWait loadWaiter = new WebDriverWait(activeDriver, Portal.MAXIMUM_WAIT_TIME);
+                    final WebDriverWait loadWaiter = new WebDriverWait(activeDriver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME));
                     final int loginAttempt = MDriver.attemptLogin(activeDriver);
                     if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
                         if (Portal.isEvaluationNeeded(activeDriver)) {
@@ -498,7 +500,8 @@ public class SemesterActivity implements Activity {
                     } else {
                         registeredTab.click();
                     }
-                    final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
+//                    final WebElement registrationTable = activeDriver.findElementByCssSelector(".table-warning");
+                    final WebElement registrationTable = activeDriver.findElement(By.cssSelector(".table-warning"));
                     final WebElement tableBody = registrationTable.findElement(By.tagName("tbody"));
                     final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
                     final List<WebElement> captions = tableBody.findElements(By.cssSelector("b, strong"));

@@ -13,6 +13,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -38,18 +39,19 @@ public class MDriver {
      * @see #setup()
      */
     public static synchronized FirefoxDriver forgeNew(boolean headless) {
+        FirefoxDriver driver = null;
         setup();
         try {
             final FirefoxOptions options = new FirefoxOptions();
             options.setHeadless(headless);
-            options.setLogLevel(FirefoxDriverLogLevel.fromLevel(Level.OFF));
-            final FirefoxDriver driver = new FirefoxDriver(options);
+//            options.setLogLevel(FirefoxDriverLogLevel.fromLevel(Level.OFF));
+            options.setLogLevel(FirefoxDriverLogLevel.fromLevel(Level.ALL));
+            driver = new FirefoxDriver(options);
             DRIVERS.add(driver);
-            return driver;
         } catch (Exception e) {
             App.silenceException(e);
-            return null;
         }
+        return driver;
     }
 
     /**
@@ -96,14 +98,14 @@ public class MDriver {
         }
 
         try {
-            new WebDriverWait(driver, Portal.MINIMUM_WAIT_TIME).until(
+            new WebDriverWait(driver, Duration.ofSeconds(Portal.MINIMUM_WAIT_TIME)).until(
                     ExpectedConditions.presenceOfElementLocated(By.cssSelector(".alert-danger")));
             return ATTEMPT_FAILED;
         } catch (TimeoutException ignored) {
         }
 
         try {
-            new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME).until(
+            new WebDriverWait(driver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME)).until(
                     ExpectedConditions.presenceOfElementLocated(By.className("media-heading")));
             return ATTEMPT_SUCCEEDED;
         } catch (TimeoutException e) {
@@ -152,7 +154,7 @@ public class MDriver {
     }
 
     public static WebDriverWait newDefaultWait(FirefoxDriver driver){
-        return new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME);
+        return new WebDriverWait(driver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME));
     }
 
     /**
@@ -161,7 +163,7 @@ public class MDriver {
      * Note, also, that most classes do not explicitly quit drivers
      * within runtime, as they reuse them over and over.
      */
-    public static void stopAll(){
+    public static void stopAll() {
         for (FirefoxDriver driver : DRIVERS) {
             try {
                 driver.quit();

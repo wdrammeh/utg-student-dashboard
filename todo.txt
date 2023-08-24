@@ -1,22 +1,30 @@
-- LAF not immediately effective on all sub-components - like Popups
+@Test
+[Snap issues]:
+    - Opening (default) browser
+    - Setting system theme
+    - Both builds should not be included in the snap's prime
+
+@Todo
 - Stop using getters on hosts
-- Rename, replace serializable paths/files
 - Minimize inner-classes
 - Reindex resources completely without signing out (or re-signing in)
 - Transcript export customization
 - Student auditing tool
-- Improve the design for "Guest" users
-- Custom OptionPane dialogs... (Do not ask me again)
-- Custom user password; as defaults to the Mat. Number (Option to Lock Dashboard at startup)
+- Improve design for "Guest" users
+- Customize OptionPane dialogs... (Do not ask me again)
+- Customize user password; as defaults to the Mat. Number (Option to Lock Dashboard at startup)
 - Flexible driver choices functionality
 - Minimize Portal wait time - remove unnecessary waiting
 - Registration functionality
-- Student Forum
-- Student voting system
 - Use customized time-labels
 - Re-consider serialization mechanisms and implementations
 - Add backup functionality
 - More analysis
 - Sort tasks in descending order of creation-time
 - Use simple outlined-icons
-- OAuth2 for feedbacks using Gmail
+
+- Remove student mail (and password)
+- @Transcript 'Export' -> 'Print'
+
+- Student Forum
+- Student voting system

@@ -15,6 +15,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.*;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class Portal {
     // do not call the contentsPage or profilePage on a driver that has not yet entered...
     public static final String CONTENTS_PAGE = "https://utg.gm/course-registrations";
     public static final String PROFILE_PAGE = "https://utg.gm/profile";
-    public static final int MAXIMUM_WAIT_TIME = 30;//intended in seconds
-    public static final int MINIMUM_WAIT_TIME = 5;
+    public static final int MAXIMUM_WAIT_TIME = 30; // intended in seconds
+    public static final int MINIMUM_WAIT_TIME = 3;
     /**
      * Note that the HOME_PAGE seems to be pointing
      * to the LOGIN_PAGE when there's no session.
@@ -101,9 +102,9 @@ public class Portal {
 
         try {
             noticeDriver.navigate().to(HOME_PAGE);
-            new WebDriverWait(noticeDriver, 50).until(
+            new WebDriverWait(noticeDriver, Duration.ofSeconds(50)).until(
                     ExpectedConditions.presenceOfElementLocated(By.className("media-heading")));
-            final WebElement admissionElement = new WebDriverWait(noticeDriver, 59).until(
+            final WebElement admissionElement = new WebDriverWait(noticeDriver, Duration.ofSeconds(59)).until(
                     ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             setAdmissionNotice(admissionElement.getText());
         } catch (Exception e) {
@@ -115,7 +116,7 @@ public class Portal {
 
         try {
             noticeDriver.navigate().to(CONTENTS_PAGE);
-            WebElement registrationElement = new WebDriverWait(noticeDriver,59).until(
+            WebElement registrationElement = new WebDriverWait(noticeDriver,Duration.ofSeconds(59)).until(
                     ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             Portal.setRegistrationNotice(registrationElement.getText());
             return true;
@@ -229,7 +230,8 @@ public class Portal {
         if (driver.getCurrentUrl().equals(CONTENTS_PAGE)) {
             List<WebElement> iGroup = null;
             try {
-                iGroup = driver.findElementsByClassName("info-group");
+//                iGroup = driver.findElementsByClassName("info-group");
+                iGroup = driver.findElements(By.className("info-group"));
                 Student.setLevel(iGroup.get(2).getText().split("\n")[1]);
                 Student.setStatus(iGroup.get(3).getText().split("\n")[1]);
             } catch (Exception ignored) {
@@ -254,7 +256,8 @@ public class Portal {
      */
     public static boolean isEvaluationNeeded(FirefoxDriver driver){
         try {
-            driver.findElementByCssSelector("div.gritter-item-wrapper:nth-child(4)");
+//            driver.findElementByCssSelector("div.gritter-item-wrapper:nth-child(4)");
+            driver.findElement(By.cssSelector("div.gritter-item-wrapper:nth-child(4)"));
             return true;
         } catch (Exception e){
             return false;

@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.awt.event.ActionListener;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +63,7 @@ public class PrePortal {
         }
         Login.replaceLastUpdate("Setting up the driver....... Successful");
         Login.appendToStatus("Now contacting utg.gm.......");
-        loadWaiter = new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME);
+        loadWaiter = new WebDriverWait(driver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME));
 //        Make sure we are at the login page
         if (MDriver.isOnPortal(driver)) {
             final int logoutAttempt = MDriver.attemptLogout(driver);
@@ -135,8 +136,8 @@ public class PrePortal {
         }
 
         Login.appendToStatus("Now processing details.......");
-        Login.appendToStatus("Operation may take longer based on your internet signal or " +
-                "temporary server issues");
+//        Login.appendToStatus("Operation may take longer based on your internet signal or " +
+//                "temporary server issues");
 //        Going to the contents page
         try {
             driver.navigate().to(Portal.CONTENTS_PAGE);
@@ -164,8 +165,8 @@ public class PrePortal {
         firstName = nameJoiner.toString();
 
         try {
-            program = driver.findElementByXPath(
-                    "/html/body/section/div[2]/div/div[1]/div/div[2]/div[2]/div[1]/div/h4").getText();
+//            program = driver.findElementByXPath("/html/body/section/div[2]/div/div[1]/div/div[2]/div[2]/div[1]/div/h4").getText();
+            program = driver.findElement(By.xpath("/html/body/section/div[2]/div/div[1]/div/div[2]/div[2]/div[1]/div/h4")).getText();
             major = program.contains("Unknown") ? "Unknown" : program.split(" ")[4];
         } catch (Exception e) {
             App.silenceException(e);
@@ -173,7 +174,8 @@ public class PrePortal {
 
         List<WebElement> iGroup = null;
         try {
-            iGroup = driver.findElementsByClassName("info-group");
+//            iGroup = driver.findElementsByClassName("info-group");
+            iGroup = driver.findElements(By.className("info-group"));
             level = iGroup.get(2).getText().split("\n")[1];
             status = iGroup.get(3).getText().split("\n")[1];
             school = iGroup.get(1).getText().split("\n")[1];
@@ -213,10 +215,12 @@ public class PrePortal {
             return;
         }
         try {
-            matNumber = driver.findElementByCssSelector("initialModules, strong").getText().split(" ")[1];
+//            matNumber = driver.findElementByCssSelector("initialModules, strong").getText().split(" ")[1];
+            matNumber = driver.findElement(By.cssSelector("initialModules, strong")).getText().split(" ")[1];
         } catch (Exception ignored) {
         }
-        final List<WebElement> detail = driver.findElementsByClassName("info-group");
+//        final List<WebElement> detail = driver.findElementsByClassName("info-group");
+        final List<WebElement> detail = driver.findElements(By.className("info-group"));
         try {
             address = detail.get(0).getText().split("\n")[1];
         } catch (Exception ignored) {
@@ -305,7 +309,8 @@ public class PrePortal {
         } else {
             transcriptTap.click();
         }
-        final WebElement transcriptTable = driver.findElementByCssSelector(".table-bordered");
+//        final WebElement transcriptTable = driver.findElementByCssSelector(".table-bordered");
+        final WebElement transcriptTable = driver.findElement(By.cssSelector(".table-bordered"));
         final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
         final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
         final List<WebElement> semCaptions = transBody.findElements(By.className("warning"));
@@ -324,8 +329,8 @@ public class PrePortal {
             }
         }
         try {
-            final String CGPA = driver.findElementByXPath(
-                    "//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+//            final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+            final String CGPA = driver.findElement(By.xpath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]")).getText();
             enlistDetail("cgpa", CGPA);
         } catch (Exception e) {
             enlistDetail("cgpa", "-1");
@@ -340,7 +345,8 @@ public class PrePortal {
         } else {
             gradesTap.click();
         }
-        final WebElement gradesTable = driver.findElementsByCssSelector(".table-warning").get(1);
+//        final WebElement gradesTable = driver.findElementsByCssSelector(".table-warning").get(1);
+        final WebElement gradesTable = driver.findElements(By.cssSelector(".table-warning")).get(1);
         final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
         final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
         for(WebElement t : rows){
@@ -361,7 +367,8 @@ public class PrePortal {
         } else {
             registeredTap.click();
         }
-        final WebElement allRegisteredTable = driver.findElementByCssSelector(".table-warning");
+//        final WebElement allRegisteredTable = driver.findElementByCssSelector(".table-warning");
+        final WebElement allRegisteredTable = driver.findElement(By.cssSelector(".table-warning"));
         final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
         final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
         int r = 0;

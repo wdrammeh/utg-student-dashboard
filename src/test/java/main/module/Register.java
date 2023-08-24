@@ -14,6 +14,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -42,7 +43,7 @@ public class Register {
         if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
             String name = driver.findElement(By.className("media-heading")).getText();
             System.out.println("Login successfully: "+name);
-            final WebDriverWait loadWaiter = new WebDriverWait(driver, Portal.MAXIMUM_WAIT_TIME);
+            final WebDriverWait loadWaiter = new WebDriverWait(driver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME));
             driver.navigate().to(Portal.CONTENTS_PAGE);
             loadWaiter.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName("table")));
             final List<WebElement> tabs = loadWaiter.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
@@ -53,10 +54,13 @@ public class Register {
             }
             runningElement.click();
 //            Todo maximize the drop-down list here
-            driver.findElementByCssSelector("#semester-table_filter > label > input").sendKeys(key);
-            WebElement processElement = driver.findElementById("semester-table_processing");
+//            driver.findElementByCssSelector("#semester-table_filter > label > input").sendKeys(key);
+            driver.findElement(By.cssSelector("#semester-table_filter > label > input")).sendKeys(key);
+//            WebElement processElement = driver.findElementById("semester-table_processing");
+            WebElement processElement = driver.findElement(By.id("semester-table_processing"));
             loadWaiter.until(ExpectedConditions.invisibilityOf(processElement));
-            final WebElement semesterTable = driver.findElementById("semester-table");
+//            final WebElement semesterTable = driver.findElementById("semester-table");
+            final WebElement semesterTable = driver.findElement(By.id("semester-table"));
             final WebElement body = semesterTable.findElement(By.tagName("tbody"));
             final List<WebElement> rows = body.findElements(By.tagName("tr"));
 
@@ -160,10 +164,13 @@ public class Register {
                 okButton.click();
 
                 WebElement respDialog = loadWaiter.until(ExpectedConditions.presenceOfElementLocated(By.xpath("/html/body/div[1]/div/div/div[1]")));
-                WebElement respondMsg = driver.findElementByCssSelector(".bootbox-body > h3:nth-child(1)");
+//                WebElement respondMsg = driver.findElementByCssSelector(".bootbox-body > h3:nth-child(1)");
+//                WebElement respondMsg = driver.findElementByCssSelector(".bootbox-body > h3:nth-child(1)");
+                WebElement respondMsg = driver.findElement(By.cssSelector(".bootbox-body > h3:nth-child(1)"));
                 final String respondText = respondMsg.getText().strip();
                 System.out.println("[INFO] "+respondText);
-                WebElement okBtn = driver.findElementByCssSelector(".btn-primary");
+//                WebElement okBtn = driver.findElementByCssSelector(".btn-primary");
+                WebElement okBtn = driver.findElement(By.cssSelector(".btn-primary"));
                 okBtn.click();
 
                 if (respondText.startsWith("Course Registered Successfully...")) {

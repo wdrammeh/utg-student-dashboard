@@ -15,7 +15,7 @@ import static core.utils.Globals.reference;
 
 public class Help implements Activity {
     private boolean isFirstView = true;
-    private KScrollPane tipPane, faqPane;
+    private KScrollPane tipPane, faqPane; // Todo read from online
 
 
     public Help(){
@@ -183,7 +183,9 @@ public class Help implements Activity {
     }
 
     private Component getFAQs(){
-        final Yaml faqsYaml = new Yaml(new Constructor(ArrayList.class));
+        // Todo refer
+//        final Yaml faqsYaml = new Yaml(new Constructor(ArrayList.class));
+        final Yaml faqsYaml = new Yaml();
         final ArrayList<HashMap<String, String>> faqs;
         faqs = faqsYaml.load(getClass().getResourceAsStream("/faqs.yml"));
         final StringBuilder faqsBuilder = new StringBuilder();
