@@ -39,7 +39,7 @@ public class SemesterActivity implements Activity {
     private static KPopupMenu modulePopupMenu;
     private static KLabel hintLabel;
     private static final String REGISTERED_HINT = "Right-click a row (or a course) on the table for more actions.";
-    private static final String UNREGISTERED_HINT = "Courses you register this semester will be shown here.";
+    private static final String UNREGISTERED_HINT = "Courses you register this semester will show here";
     private static final ArrayList<RegisteredCourse> ACTIVE_COURSES = new ArrayList<>() {
         @Override
         public boolean add(RegisteredCourse course) {
@@ -428,10 +428,9 @@ public class SemesterActivity implements Activity {
             return;
         }
 
-        if (!userRequested || App.showYesNoCancelDialog("Match Table",
-                "Do you want to match this table with your Portal?\n" +
-                        "Dashboard will contact the Portal and bring all the courses\n" +
-                "(if there is any) you have registered this semester.")) {
+        if (!userRequested || App.showOkCancelDialog("Match Table",
+                "Dashboard will contact the Portal and bring all the courses\n" +
+                "(if there is any) you registered for this semester.")) {
             new Thread(()-> {
                 matchItem.setEnabled(false);
                 fixRunningDriver();

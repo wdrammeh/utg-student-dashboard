@@ -107,24 +107,22 @@ public class TranscriptActivity implements Activity {
         detailsCheck.setFocusable(false);
         detailsCheck.addItemListener(itemEvent -> detailPanel.setVisible(itemEvent.getStateChange() == ItemEvent.SELECTED));
 
-        final KLabel exportLabel = new KLabel("Export", FontFactory.createBoldFont(16), Color.BLUE);
-        exportLabel.underline(false);
-        exportLabel.setCursor(MComponent.HAND_CURSOR);
-        exportLabel.setToolTipText("Export Transcript");
-        exportLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                try {
-                    new TranscriptExporter().exportNow();
-                } catch (IOException | DocumentException ex) {
-                    App.reportError(ex);
-                }
+        final KButton exportButton = KButton.createIconifiedButton("Print", "file-download.png", 25, 20);
+        exportButton.setStyle(FontFactory.createPlainFont(15), null);
+        exportButton.setBorderPainted(true);
+        // exportButton.setToolTipText("Export Transcript");
+        exportButton.setCursor(MComponent.HAND_CURSOR);
+        exportButton.addActionListener(e -> {
+            try {
+                new TranscriptExporter().exportNow();
+            } catch (IOException | DocumentException ex) {
+                App.reportError(ex);
             }
         });
 
         final KPanel topPanel = new KPanel(new BorderLayout());
         topPanel.add(new KPanel(new KLabel("My Transcript", FontFactory.BODY_HEAD_FONT)), BorderLayout.WEST);
-        topPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 20, 5), detailsCheck, exportLabel),
+        topPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 20, 5), detailsCheck, exportButton),
                 BorderLayout.EAST);
         return topPanel;
     }

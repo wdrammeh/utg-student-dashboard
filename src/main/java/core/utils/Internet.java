@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.Date;
 
 public class Internet {
-    public static final String REPO_URL = "https://github.com/w-drammeh/utg-student-dashboard";
+    public static final String REPO_URL = "https://github.com/wdrammeh/utg-student-dashboard";
     public static final String DOWNLOAD_URL = REPO_URL+"#install"; // Todo check these out
 
 

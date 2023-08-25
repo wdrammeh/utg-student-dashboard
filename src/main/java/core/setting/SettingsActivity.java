@@ -185,7 +185,8 @@ public class SettingsActivity implements Activity {
                 return;
             }
             final String incomingDial = App.requestInput("New Telephone", "Enter the new contact number:");
-            if (incomingDial == null) {
+            // if (incomingDial == null) {
+            if (Globals.hasNoText(incomingDial)) {
                 return;
             }
             if (dialList.contains(incomingDial)) {
@@ -734,13 +735,13 @@ public class SettingsActivity implements Activity {
         bgPanel.addAll(new KLabel("Background Colour:", H_FONT),
                 Box.createRigidArea(new Dimension(30,25)), bgBox);
 
-        final KLabel unmountLabel = newSignLabel("Remove Account", Color.RED);
+        final KLabel unmountLabel = newSignLabel("Sign out", Color.RED);
         unmountLabel.setForeground(Color.RED);
         unmountLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) { // Todo: Provide option for keep data in device
                 if (App.showYesNoCancelDialog("Remove Account",
-                        "Are are sure you want to remove your account?")) {
+                        "Are are sure you want to sign out?\nYour data will be removed from this device.")) {
                     final String matNo = App.requestInput("Confirm",
                             "Enter your matriculation number to continue:");
                     if (Globals.hasText(matNo)) {

@@ -389,7 +389,7 @@ public class ModuleHandler {
 
             App.reportInfo("Verification Successful",
                     "'"+target.getAbsoluteName()+"' has been verified successfully.\n" +
-                    "Dashboard will included it in your Analysis and Transcript.");
+                    "Dashboard will include it in your Analysis and Transcript.");
         }
     }
 
@@ -400,7 +400,6 @@ public class ModuleHandler {
      */
     public static void launchThoroughSync(boolean userRequested, KButton triggerButton){
         if (userRequested && !App.showYesNoCancelDialog("Synchronize Modules",
-                "Do you want to synchronize your courses with the Portal?\n" +
                         "Dashboard will perform a thorough 're-indexing' of your courses.\n \n" +
                         "For more info about this action, refer to the Tips.")) {
             return;

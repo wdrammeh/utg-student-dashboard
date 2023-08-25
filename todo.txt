@@ -1,9 +1,9 @@
 @Todo
 [Urgent]:
-- @Transcript 'Export' -> 'Print'
-- Remove all sensitive data
-- Minimize dialog hints
+- Fix News
 
+- Hide all sensitive data
+- Minimize dialog hints
 - Stop using getters on hosts
 - Minimize inner-classes
 - Reindex resources completely without signing out (or re-signing in)

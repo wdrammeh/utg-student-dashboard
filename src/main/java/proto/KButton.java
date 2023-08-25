@@ -54,10 +54,15 @@ public class KButton extends JButton implements Preference {
      * @see MComponent#scaleIcon(URL, int, int)
      * @see App#getIconURL(String)
      */
-    public static KButton createIconifiedButton(String name, int width, int height){
-        final KButton button = new KButton(MComponent.scaleIcon(App.getIconURL(name), width, height));
+    public static KButton createIconifiedButton(String text, String name, int width, int height){
+        final KButton button = new KButton(text);
+        button.setIcon(MComponent.scaleIcon(App.getIconURL(name), width, height));
         button.undress();
         return button;
+    }
+
+    public static KButton createIconifiedButton(String name, int width, int height){
+        return createIconifiedButton("", name, width, height);
     }
 
     public static KButton createRootPaneButton(int mnemonic, ActionListener a){
