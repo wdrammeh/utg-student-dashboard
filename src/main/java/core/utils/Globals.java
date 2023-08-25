@@ -58,19 +58,19 @@ public class Globals {
         return join(sep, null, objs);
     }
 
-    public static String[] split(String regex, String text) {
-        if (text == null) {
-            return null;
-        }
-        return text.split(regex);
-    }
-
     public static String joinLines(String nullVal, Object[] objs) {
         return join(App.LINE_SEPARATOR, nullVal, objs);
     }
 
     public static String joinLines(Object[] objs) {
-        return joinLines(" ", objs);
+        return joinLines("null", objs);
+    }
+
+    public static String[] split(String regex, String text) {
+        if (text == null) {
+            return null;
+        }
+        return text.split(regex);
     }
 
     public static String[] splitLines(String text) {
@@ -103,7 +103,7 @@ public class Globals {
         return t == null || t.isBlank();
     }
 
-    public static String reference(String... parts){
+    public static String reference(String... parts) {
         return "'"+String.join(" > ", parts)+"'";
     }
 

@@ -107,7 +107,7 @@ public class TranscriptActivity implements Activity {
         detailsCheck.setFocusable(false);
         detailsCheck.addItemListener(itemEvent -> detailPanel.setVisible(itemEvent.getStateChange() == ItemEvent.SELECTED));
 
-        final KButton exportButton = KButton.createIconifiedButton("Print", "file-download.png", 25, 20);
+        final KButton exportButton = KButton.createIconifiedButton("Print", "file-download.png", 25, 25);
         exportButton.setStyle(FontFactory.createPlainFont(15), null);
         exportButton.setBorderPainted(true);
         // exportButton.setToolTipText("Export Transcript");

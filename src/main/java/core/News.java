@@ -46,7 +46,7 @@ public class News implements Activity {
         northPanel.add(new KPanel(new KLabel("News Feeds", FontFactory.BODY_HEAD_FONT)), BorderLayout.WEST);
         northPanel.add(new KPanel(refreshButton), BorderLayout.EAST);
 
-        accessTime = "News Feeds will be shown here... Refresh now to get updates.";
+        accessTime = "News Feeds will show here... Refresh now to get updates.";
         accessLabel = new KLabel(accessTime, FontFactory.createPlainFont(14), Color.GRAY);
 
         accessResident = new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 20), accessLabel);
@@ -65,7 +65,7 @@ public class News implements Activity {
         Board.addCard(activityPanel, "News");
 
         if (Dashboard.isFirst()) {
-            NEWS_DATA.clear(); // somewhat necessary... e.g. from "trial" to login
+            NEWS_DATA.clear(); // Somewhat necessary... e.g. from "trial" to login
             new Thread(()-> packAll(false)).start();
         } else {
             Board.POST_PROCESSES.add(this::deserialize);
@@ -105,7 +105,7 @@ public class News implements Activity {
             }
             accessTime = "Accessed: "+ MDate.formatNow();
             accessLabel.setText(accessTime);
-            present.add(accessResident); // will be sent to the bottom while trying to change its parent
+            present.add(accessResident); // Will be sent to the bottom while trying to change its parent
             if (userRequest) {
                 App.reportInfo("News", "News feeds refreshed successfully.");
             }
@@ -146,7 +146,7 @@ public class News implements Activity {
 
         final KPanel niceBox = new KPanel(new BorderLayout());
         niceBox.setBackground(Color.WHITE);
-        niceBox.setPreferredSize(new Dimension(975, 160));
+        niceBox.setPreferredSize(new Dimension(970, 160));
         niceBox.add(new KPanel(new FlowLayout(FlowLayout.LEFT), hLabel), BorderLayout.NORTH);
         niceBox.add(textPane, BorderLayout.CENTER);
         niceBox.add(readerWrap, BorderLayout.SOUTH);

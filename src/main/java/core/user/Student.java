@@ -677,8 +677,8 @@ public class Student {
                 maritalStatue, dateOfBirth, placeOfBirth, nameFormat, isGuest});
         if (!isGuest) {
             core = Globals.joinLines(new Object[]{core, monthOfAdmission, yearOfAdmission, semester, matNumber,
-                    major, majorCode, minor, minorCode, program, school, division, portalMail,
-                    portalPassword, level, status, CGPA});
+                    major, majorCode, minor, minorCode, program, school, division, portalMail, portalPassword,
+                    "null", "null", level, status, CGPA});
         }
         Serializer.toDisk(core, Serializer.inPath("user", "core.ser"));
         Serializer.toDisk(telephones.toArray(new String[0]), Serializer.inPath("user", "dials.ser"));
@@ -735,9 +735,11 @@ public class Student {
             division = core[19];
             portalMail = core[20];
             portalPassword = core[21];
-            setLevel(core[22]);
-            setStatus(core[23]);
-            CGPA = core[24];
+            // studentMail = core[22];
+            // studentPassword = core[23];
+            setLevel(core[24]);
+            setStatus(core[25]);
+            CGPA = core[26];
         }
 
         try {
