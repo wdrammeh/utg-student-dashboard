@@ -13,11 +13,10 @@ Get the standalone installation file for your operating system from the table be
 
 | Platform (OS) | Download                                                                                                                                                            | Type | Requirement |
 | ----- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------|------| ----- |
-| Microsoft Windows | [utg-student-dashboard-1.1.1.exe](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard-1.1.1.exe)                       | exe  |  |
-| Linux | [utg-student-dashboard_1.1.1-1_amd64.deb](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard_1.1.1-1_amd64.deb)       | deb  |  |
-| All / Any | [utg-student-dashboard-1.1.1-standalone.jar](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard-1.1.1-standalone.jar) | jar  | [Java 11+](https://www.oracle.com/java/technologies/downloads/) |
+| Microsoft Windows | [utg-student-dashboard-1.1.2.exe](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.2/utg-student-dashboard-1.1.2.exe)                       | exe  |  |
+| All / Any | [utg-student-dashboard-1.1.1-standalone.jar](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.2/utg-student-dashboard-1.1.2-standalone.jar) | jar  | [Java 11+](https://www.oracle.com/java/technologies/downloads/) |
 
-Not seeing a build for you OS? Refer to the [release page](https://github.com/wdrammeh/utg-student-dashboard/releases) for more download options (including jar builds).
+Not seeing a build for your OS? Please refer to the [release page](https://github.com/wdrammeh/utg-student-dashboard/releases) for more download options (including jar builds).
 
 If you wish, you may check out [what's new](ChangeLog.md) about this release.
 
