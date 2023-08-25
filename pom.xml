@@ -7,7 +7,7 @@
     <groupId>utg.edu.gm</groupId>
     <artifactId>utg-student-dashboard</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <name>utg-student-dashboard</name>
     <description>A Flexible and Elegant student management system for the University of The Gambia</description>
 

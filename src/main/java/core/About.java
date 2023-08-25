@@ -151,8 +151,8 @@ public class About extends KDialog {
         final KScrollPane reviewTextAreaScroll = reviewTextArea.outerScrollPane(new Dimension(500, 100));
         reviewTextAreaScroll.setBorder(spaceBorder);
 
-        final String reviewString = "If you have any review, you can send write it to the developers in the text-area below. " +
-                "The review must exclude any kind of greetings, or introductions.";
+        final String reviewString = "If you have any review, you can write it to the developers in the text-area below. " +
+                "The review should exclude any kind of greetings, introductions, or personal info.";
 
         final KButton reviewSender = newReviewSender();
         reviewSender.addActionListener(e-> new Thread(()-> {
@@ -285,7 +285,7 @@ public class About extends KDialog {
         final JScrollPane bugTextAreaScroll = bugTextArea.outerScrollPane(new Dimension(500,100));
         bugTextAreaScroll.setBorder(spaceBorder);
         final String bugString = "In no more than 500 characters, " +
-                "kindly describe a problem (if there is any) you encountered while using Dashboard.";
+                "kindly describe a problem you encountered while using Dashboard.";
 
         final KButton bugSender = newReviewSender();
         bugSender.addActionListener(e-> new Thread(()-> {
@@ -419,7 +419,7 @@ public class About extends KDialog {
 
             final KPanel emailPanel = new KPanel(new BorderLayout());
             emailPanel.add(new KPanel(new KLabel("Email Address:", hintFont)), BorderLayout.WEST);
-            emailPanel.add(new KPanel(new KLabel("wakadrammeh@gmail.com", valueFont)), BorderLayout.CENTER);
+            emailPanel.add(new KPanel(new KLabel("md21712494@utg.edu.com", valueFont)), BorderLayout.CENTER);
 
             final KPanel nationalityPanel = new KPanel(new BorderLayout());
             nationalityPanel.add(new KPanel(new KLabel("Nationality:", hintFont)), BorderLayout.WEST);

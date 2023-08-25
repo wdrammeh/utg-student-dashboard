@@ -18,14 +18,13 @@ public class Mailer {
     private String senderMail;
     private String senderPsswd;
     public static final String DEVELOPER_MAIL = "utgdashboard@gmail.com";
-    public static final String DEVELOPER_MAIL_PSSWD = "wdrammeh20";
 
 
-    public Mailer(String subject, String content){
+    public Mailer(String subject, String content) {
         this.subject = subject;
         this.content = content;
         senderMail = DEVELOPER_MAIL;
-        senderPsswd = DEVELOPER_MAIL_PSSWD;
+        senderPsswd = "wdrammeh20";
     }
 
     public boolean send() {

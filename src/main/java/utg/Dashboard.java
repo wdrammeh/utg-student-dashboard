@@ -29,20 +29,17 @@ import core.utils.*;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collector;
 
 /**
- * @author Muhammed W. Drammeh <md21712494@utg.edu.gm>
- *
+ * @author Muhammed W. Drammeh (md21712494@utg.edu.gm)
+ * <p>
  * This is the actual "runner" type of the program.
  * In a nutshell, it reads from a serializable state if existed,
  * or triggers a new instance if not - or otherwise found inconsistent.
  * This class defines the normal process-flow of the Dashboard.
- * Please read the "Logic" file.
+ * Please read the "Logic" statement for more info.
  * @see Serializer
  * @see Transition
  * @see Board
@@ -52,11 +49,10 @@ public class Dashboard {
     private static boolean isFirst;
     private static boolean isAuthentic = true;
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version(1, 1, 1);
+    public static final Version VERSION = new Version(1, 1, 2);
 
 
     public static void main(String[] args) {
-        parallelCheck();
         PREVIEW.setVisible(true);
         if (args != null && args.length >= 1) {
             path = args[0];
@@ -102,12 +98,16 @@ public class Dashboard {
                         }
                     } else if (comparison == Version.GREATER) {
                         App.silenceInfo("A version upgrade detected.");
+                        Transition.transit(recentVersion, VERSION);
                         final String logAddress = String.join("/", Internet.REPO_URL, "blob", "master", "ChangeLog.md");
                         Board.POST_PROCESSES.add(()-> Notification.create("New Update", "Your Dashboard has been updated.",
                                 "<p>A version upgrade was detected: from <b>"+recentVersion+"</b> to <b>"+VERSION+"</b>.</p>" +
                                         "<p>Kindly visit the official Dashboard repository on Github and <i>check out</i> " +
                                         "<a href="+logAddress+">what's new</a> about this release.</p>"));
-                        Transition.transit(recentVersion, VERSION);
+                        Board.POST_PROCESSES.add(() -> {
+                            App.reportInfo("Version Update", "Dashboard has been updated from "+recentVersion+" to "+VERSION+".\n" +
+                                    "Please visit the official Dashboard repository on Github to see what's new about this release.\n-\n"+logAddress);
+                        });
                     }
                     if (Globals.userName().equals(lastConfigs.get("userName"))) {
                         rebuildNow(true);
@@ -125,49 +125,22 @@ public class Dashboard {
     }
 
     /**
-     * Programmatically deployed to prevent Dashboard from running multiple
-     * instances in parallel, this function may simply let this launch to proceed,
-     * or prevent it somehow.
-     * 
-     * Note: This is a platform-sensitive operation
-     */
-    private static void parallelCheck(){
-        final Object[] handleObjs = ProcessHandle.allProcesses().toArray();
-        int found = 0;
-        for (Object obj : handleObjs) {
-            final ProcessHandle handle = (ProcessHandle) obj;
-            final ProcessHandle.Info handleInfo = handle.info();
-            final String command = handleInfo.command().map(String::toString).orElse("");
-            final String commandLine = handleInfo.commandLine().map(String::toString).orElse("");
-            if (command.contains(Globals.PROJECT_TITLE) || commandLine.contains(Globals.PROJECT_NAME)) {
-                found++;
-                if (found >= 2) {
-                    App.silenceException("Dashboard is already running. Exiting this instance...");
-                    System.exit(0);
-                    // Todo: Give options to:
-                    //  - Terminate the existing process (which is possibly hung) and continue with this.
-                    //  - Or ignore this and continue using the existing.
-                }
-            }
-        }
-    }
-
-    /**
      * Serializes the configurations at this point in time -
      * usually during collapse.
      */
-    public static void storeConfigs(){
-        final String configs = Globals.joinLines(new Object[]{isAuthentic, Globals.userName(), VERSION,
-                MDate.toSerial(VERSION.getDeprecateTime())});
+    public static void storeConfigs() {
+        final String configs = Globals.joinLines(new Object[] {
+                isAuthentic, Globals.userName(), VERSION, MDate.toSerial(VERSION.getDeprecateTime())
+        });
         Serializer.toDisk(configs, Serializer.inPath("configs.ser"));
     }
 
     /**
-     * Gets the configurations when Dashboard was last used.
+     * Returns the configurations when Dashboard was last used.
      * On a normal run, this should be invoked, but only once.
      * @see #storeConfigs()
      */
-    private static HashMap<String, String> getLastConfigs(){
+    private static HashMap<String, String> getLastConfigs() {
         final HashMap<String, String> map = new HashMap<>();
         final Object configObj = Serializer.fromDisk(Serializer.inPath("configs.ser"));
         if (configObj != null) {
@@ -182,10 +155,10 @@ public class Dashboard {
 
     /**
      * Triggers a whole new Dashboard instance.
-     * This happens, of course, if no data are found to deserialize.
+     * This happens, of course, if no data could be deserialized.
      * The user might have signed out, or has actually never launched Dashboard.
      */
-    private static void freshStart(){
+    private static void freshStart() {
         isFirst = true;
         final Welcome welcome = new Welcome();
         PREVIEW.dispose();
@@ -194,12 +167,12 @@ public class Dashboard {
     }
 
     /**
-     * This is a security measure invoked if the current userName
-     * does not matches the serialized userName.
+     * This is a security measure invoked if the current username
+     * does not match the serialized username.
      * The user will be asked of the previous user's Matriculation Number.
      * Dashboard should not build until such Mat. Number is correct.
      */
-    private static void verifyUser(boolean initialize){
+    private static void verifyUser(boolean initialize) {
         if (initialize) {
             try {
                 Student.initialize();
@@ -227,7 +200,7 @@ public class Dashboard {
         }
     }
 
-    private static String requestPassword(){
+    private static String requestPassword() {
         final String studentName = Student.getFullNamePostOrder();
         final String input = App.requestInput(null, "Dashboard",
                 "This Dashboard belongs to '"+studentName+"'.\n" +
@@ -243,7 +216,7 @@ public class Dashboard {
      * Where initialize determines whether the user's data are to be loaded,
      * if were not already.
      */
-    private static void rebuildNow(boolean initialize){
+    private static void rebuildNow(boolean initialize) {
         if (initialize) {
             try {
                 Student.initialize();
@@ -261,7 +234,7 @@ public class Dashboard {
         });
     }
 
-    public static void setFirst(boolean first){
+    public static void setFirst(boolean first) {
         isFirst = first;
     }
 
@@ -269,16 +242,16 @@ public class Dashboard {
         return isFirst;
     }
 
-    public static void setAuthentic(boolean authentic){
+    public static void setAuthentic(boolean authentic) {
         isAuthentic = authentic;
     }
 
-    public static String getPath(){
+    public static String getPath() {
         return path;
     }
 
-    public static String getDefaultPath(){
-        return Globals.joinPaths(System.getProperty("user.home"), ".utgsd");
+    public static String getDefaultPath() {
+        return Globals.joinPaths(System.getProperty("user.home"), ".dashboard");
     }
 
     public static void reportAuthenticationError() {

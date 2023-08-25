@@ -11,13 +11,13 @@ This project brings to the palms of the students (of UTG) solutions to problems 
 
 Get the standalone installation file for your operating system from the table below:
 
-| Platform (OS) | Get Dashboard | Type | Requirement |
-| ----- | ----- | ----- | ----- |
-| Microsoft Windows | [utg-student-dashboard-1.1.1.exe](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard-1.1.1.exe) | exe |  |
-| Linux | [utg-student-dashboard_1.1.1-1_amd64.deb](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard_1.1.1-1_amd64.deb) | deb |  |
-| All / Any | [utg-student-dashboard-1.1.1-standalone.jar](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard-1.1.1-standalone.jar) | jar | [Java 11+](https://www.oracle.com/java/technologies/downloads/) |
+| Platform (OS) | Download                                                                                                                                                            | Type | Requirement |
+| ----- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------|------| ----- |
+| Microsoft Windows | [utg-student-dashboard-1.1.1.exe](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard-1.1.1.exe)                       | exe  |  |
+| Linux | [utg-student-dashboard_1.1.1-1_amd64.deb](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard_1.1.1-1_amd64.deb)       | deb  |  |
+| All / Any | [utg-student-dashboard-1.1.1-standalone.jar](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.1/utg-student-dashboard-1.1.1-standalone.jar) | jar  | [Java 11+](https://www.oracle.com/java/technologies/downloads/) |
 
-More download options (including jar builds) are available on the [release page](https://github.com/wdrammeh/utg-student-dashboard/releases).
+Not seeing a build for you OS? Refer to the [release page](https://github.com/wdrammeh/utg-student-dashboard/releases) for more download options (including jar builds).
 
 If you wish, you may check out [what's new](ChangeLog.md) about this release.
 

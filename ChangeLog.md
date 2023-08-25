@@ -1,5 +1,11 @@
 # Changelog
 
+`v1.1.2`
+
+- Fixed driver issues
+- Fixed news updates
+- Some ui updates
+
 `v1.1.1`
 
 - Improved [Tasks](src/main/java/core/task) UI

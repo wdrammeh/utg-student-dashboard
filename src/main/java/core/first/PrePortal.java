@@ -84,7 +84,7 @@ public class PrePortal {
         if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
             Login.replaceLastUpdate("Now contacting utg.gm....... Ok");
             temporaryName = driver.findElement(By.className("media-heading")).getText();
-            Login.appendToStatus("Logged in successfully as " + temporaryName);
+            Login.appendToStatus("Logged in successfully as \"" + temporaryName + "\"");
             launchReading();
         } else if (loginAttempt == MDriver.ATTEMPT_FAILED) {
             Login.replaceLastUpdate("Now contacting utg.gm....... Done");

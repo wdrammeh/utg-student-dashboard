@@ -1,5 +1,6 @@
 @Todo
 [Urgent]:
+- Integrate with google mail for feedback+
 
 - Hide all sensitive data
 - Minimize dialog hints
