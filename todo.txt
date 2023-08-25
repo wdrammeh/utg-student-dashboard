@@ -1,10 +1,9 @@
-@Test
-[Snap issues]:
-    - Opening (default) browser
-    - Setting system theme
-    - Both builds should not be included in the snap's prime
-
 @Todo
+[Urgent]:
+- @Transcript 'Export' -> 'Print'
+- Remove all sensitive data
+- Minimize dialog hints
+
 - Stop using getters on hosts
 - Minimize inner-classes
 - Reindex resources completely without signing out (or re-signing in)
@@ -22,9 +21,13 @@
 - More analysis
 - Sort tasks in descending order of creation-time
 - Use simple outlined-icons
-
-- Remove student mail (and password)
-- @Transcript 'Export' -> 'Print'
-
 - Student Forum
 - Student voting system
+
+@Test
+
+@Fix
+[Snap]:
+- Opening (default) browser
+- Setting system theme
+- Both builds should not be included in the snap's prime

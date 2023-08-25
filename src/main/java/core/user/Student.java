@@ -19,9 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 
-/**
- * Todo: reconsider the {@link #isGraduated()} call
- */
 public class Student {
     private static String firstName;
     private static String lastName;
@@ -58,8 +55,6 @@ public class Student {
     private static String maritalStatue;
     private static String portalMail;
     private static String portalPassword;
-    private static String studentMail;
-    private static String studentPassword;
     private static String majorCode;
     private static String minorCode;
     private static String about;
@@ -220,28 +215,8 @@ public class Student {
         }
     }
 
-    public static String getVisibleStudentMail(){
-        return Globals.hasText(studentMail) ? getVisibleMail(studentMail) : "";
-    }
-
     public static void setPortalMail(String portalMail) {
         Student.portalMail = portalMail;
-    }
-
-    public static String getStudentMail() {
-        return studentMail;
-    }
-
-    public static void setStudentMail(String studentMail) {
-        Student.studentMail = studentMail;
-    }
-
-    public static String getStudentPassword(){
-        return studentPassword;
-    }
-
-    public static void setStudentPassword(String studentPassword) {
-        Student.studentPassword = studentPassword;
     }
 
     public static String getPortalPassword(){
@@ -546,8 +521,9 @@ public class Student {
         return thirdYear() + 1;
     }
 
-//    if this is readable from the portal, then be it.
-    public static boolean isGraduated(){
+    // Todo consider
+    // if this is readable from the portal, then be it.
+    public static boolean isGraduated() {
         return levelNumber > 400;
     }
 
@@ -702,7 +678,7 @@ public class Student {
         if (!isGuest) {
             core = Globals.joinLines(new Object[]{core, monthOfAdmission, yearOfAdmission, semester, matNumber,
                     major, majorCode, minor, minorCode, program, school, division, portalMail,
-                    portalPassword, studentMail, studentPassword, level, status, CGPA});
+                    portalPassword, level, status, CGPA});
         }
         Serializer.toDisk(core, Serializer.inPath("user", "core.ser"));
         Serializer.toDisk(telephones.toArray(new String[0]), Serializer.inPath("user", "dials.ser"));
@@ -759,11 +735,9 @@ public class Student {
             division = core[19];
             portalMail = core[20];
             portalPassword = core[21];
-            studentMail = core[22];
-            studentPassword = core[23];
-            setLevel(core[24]);
-            setStatus(core[25]);
-            CGPA = core[26];
+            setLevel(core[22]);
+            setStatus(core[23]);
+            CGPA = core[24];
         }
 
         try {

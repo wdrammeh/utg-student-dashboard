@@ -116,11 +116,9 @@ It's seemingly more difficult to deal with the user's data.
     19: division <String>
     20: portalMail <String>
     21: portalPassword <String>
-    22: studentMail <String>
-    23: studentPassword <String>
-    24: level <String>
-    25: status <String>
-    26: CGPA <double>
+    22: level <String>
+    23: status <String>
+    24: CGPA <double>
 
 >>  Telephones (dials.ser) | String[]
 >>  About (about.ser) | String (nont line separated)

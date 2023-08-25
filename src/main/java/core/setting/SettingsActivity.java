@@ -37,8 +37,6 @@ public class SettingsActivity implements Activity {
     public static final KLabel minorLabel = new KLabel(Student.getMinor(), V_FONT);
     public static final KTextField majorCodeField = KTextField.rangeControlField(3);
     public static final KTextField minorCodeField = KTextField.rangeControlField(3);
-    public static final KTextField studentMailField = new KTextField(Student.getVisibleStudentMail());
-    public static final JPasswordField studentPsswdField = new JPasswordField(Student.getStudentPassword());
     public static final KTextArea descriptionArea = KTextArea.getLimitedEntryArea(1_000);
 
 
@@ -422,54 +420,8 @@ public class SettingsActivity implements Activity {
                 }
             };
             final KPanel portalPsswdPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
-            portalPsswdPanel.addAll(new KLabel("Portal Password:", H_FONT),
+            portalPsswdPanel.addAll(new KLabel("Portal Psswd:", H_FONT),
                     new KPanel(portalPsswdField, newIconifiedEditButton(portalPsswdEditorListener)));
-
-            studentMailField.setPreferredSize(new Dimension(325, 30));
-            studentMailField.setEditable(false);
-            final ActionListener studentMailEditorListener = e-> {
-                final String newStudentMail = App.requestInput("New Email","Enter your Student Mail Address:");
-                if (newStudentMail == null) {
-                    return;
-                }
-
-                final int vInt = App.verifyUser(changeHint);
-                if (vInt == App.VERIFICATION_TRUE) {
-                    Student.setStudentMail(newStudentMail);
-                    studentMailField.setText(Student.getVisibleStudentMail());
-                    if (Globals.hasNoText(newStudentMail)) {
-                        Student.setStudentPassword("");
-                        studentPsswdField.setText("");
-                    }
-                } else if (vInt == App.VERIFICATION_FALSE) {
-                    App.reportMatError();
-                }
-            };
-            final KPanel studentMailPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
-            studentMailPanel.addAll(new KLabel("Student Mail:", H_FONT),
-                    new KPanel(studentMailField, newIconifiedEditButton(studentMailEditorListener)));
-
-            studentPsswdField.setPreferredSize(new Dimension(325, 30));
-            studentPsswdField.setHorizontalAlignment(SwingConstants.CENTER);
-            studentPsswdField.setEditable(false);
-            final ActionListener studentPsswdEditorListener = e-> {
-                final String newStudentPassword = App.requestInput("New Password",
-                        "Enter your Student Mail Password:");
-                if (newStudentPassword == null) {
-                    return;
-                }
-
-                final int vInt = App.verifyUser(changeHint);
-                if (vInt == App.VERIFICATION_TRUE) {
-                    Student.setStudentPassword(newStudentPassword);
-                    studentPsswdField.setText(newStudentPassword);
-                } else if (vInt == App.VERIFICATION_FALSE) {
-                    App.reportMatError();
-                }
-            };
-            final KPanel studentPsswdPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
-            studentPsswdPanel.addAll(new KLabel("Student Mail Password:", H_FONT),
-                    new KPanel(studentPsswdField, newIconifiedEditButton(studentPsswdEditorListener)));
 
             majorCodeField.setPreferredSize(new Dimension(150, 30));
             majorCodeField.setText(Student.getMajorCode());
@@ -556,8 +508,7 @@ public class SettingsActivity implements Activity {
             minorCodePanel.addAll(new KLabel("Minor Code:", H_FONT),
                     new KPanel(minorCodeField, newIconifiedEditButton(minorCodeEditorListener)));
 
-            profileUI.addAll(portalMailPanel, portalPsswdPanel, studentMailPanel, studentPsswdPanel, majorCodePanel,
-                    minorPanel, minorCodePanel);
+            profileUI.addAll(portalMailPanel, portalPsswdPanel, majorCodePanel, minorPanel, minorCodePanel);
         }
 
         final KTextField msField = new KTextField(Student.getMaritalStatue());
@@ -631,7 +582,7 @@ public class SettingsActivity implements Activity {
         });
         valueField.addActionListener(keyField.getActionListeners()[0]);
         final KPanel craftPanel = new KPanel(new BorderLayout());
-        craftPanel.add(new KPanel(new KLabel("Add a Custom Detail:", H_FONT)), BorderLayout.WEST);
+        craftPanel.add(new KPanel(new KLabel("Add extra details:", H_FONT)), BorderLayout.WEST);
         craftPanel.add(new KPanel(new KLabel("Key:", V_FONT), keyField,
                 Box.createRigidArea(new Dimension(30,25)),
                 new KLabel("Value:", V_FONT), valueField), BorderLayout.CENTER);
@@ -645,7 +596,7 @@ public class SettingsActivity implements Activity {
 
         });
         final KScrollPane descriptionScroll = descriptionArea.outerScrollPane(new Dimension(865,150));
-        final KPanel aboutPanel = new KPanel(new KLabel("About Me:", V_FONT), descriptionScroll);
+        final KPanel aboutPanel = new KPanel(new KLabel("About:", V_FONT), descriptionScroll);
 
         profileUI.addAll(msPanel, pobPanel, craftPanel, aboutPanel, MComponent.contentBottomGap());
         return new KScrollPane(profileUI);

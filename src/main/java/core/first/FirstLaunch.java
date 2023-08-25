@@ -26,16 +26,15 @@ public class FirstLaunch extends KDialog {
     };
 
 
-    public FirstLaunch(){
-        super("Startup Settings - Major code");
+    public FirstLaunch() {
+        super("Startup Settings - Major Code");
         setModalityType(KDialog.DEFAULT_MODALITY_TYPE);
         setDefaultCloseOperation(KDialog.DO_NOTHING_ON_CLOSE);
         contentPanel = new KPanel(layout);
         setContentPane(contentPanel);
-        layout.addLayoutComponent(contentPanel.add(majorCodeComponent()), "Major code");
-        layout.addLayoutComponent(contentPanel.add(minorComponent()), "Minor");
-        layout.addLayoutComponent(contentPanel.add(emailComponent()), "Student mail");
-        layout.addLayoutComponent(contentPanel.add(imageComponent()), "Image icon");
+        layout.addLayoutComponent(contentPanel.add(majorCodeComponent()), "Major Code");
+        layout.addLayoutComponent(contentPanel.add(minorComponent()), "Minor Code");
+        layout.addLayoutComponent(contentPanel.add(imageComponent()), "Image Icon");
         setPreferredSize(new Dimension(600, 500));
         pack();
         setLocationRelativeTo(Board.getRoot());
@@ -64,7 +63,7 @@ public class FirstLaunch extends KDialog {
         nextButton.addActionListener(e-> {
             final String majorCode = majorCodeField.getText().toUpperCase();
             Student.setMajorCode(majorCode);
-            layout.show(contentPanel, "Minor");
+            layout.show(contentPanel, "Minor Code");
         });
 
         final KPanel majorPanel = new KPanel();
@@ -102,14 +101,14 @@ public class FirstLaunch extends KDialog {
             }
         });
 
-        final JRadioButton iDoButton = new JRadioButton("Am doing Minor");
+        final JRadioButton iDoButton = new JRadioButton("Am doing a minor");
         iDoButton.setFont(FontFactory.createPlainFont(15));
         iDoButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         iDoButton.addItemListener(e -> {
             minorNameField.setEditable(e.getStateChange() == ItemEvent.SELECTED);
             minorCodeField.setEditable(e.getStateChange() == ItemEvent.SELECTED);
         });
-        final JRadioButton iDontButton = new JRadioButton("Am not doing a Minor", true);
+        final JRadioButton iDontButton = new JRadioButton("Am not doing a minor", true);
         iDontButton.setFont(FontFactory.createPlainFont(15));
         iDontButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         final ButtonGroup choicesGroup = new ButtonGroup();
@@ -124,7 +123,7 @@ public class FirstLaunch extends KDialog {
 
         final KButton prevButton = new KButton("Back");
         prevButton.setFont(FontFactory.createPlainFont(15));
-        prevButton.addActionListener(e-> layout.show(contentPanel, "Major code"));
+        prevButton.addActionListener(e-> layout.show(contentPanel, "Major Code"));
 
         nextButton.setFont(FontFactory.createPlainFont(15));
         nextButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -144,7 +143,7 @@ public class FirstLaunch extends KDialog {
             } else {
                 Student.setMinor("");
             }
-            layout.show(contentPanel, "Student mail");
+            layout.show(contentPanel, "Image Icon");
         });
 
         final KPanel minorPanel = new KPanel();
@@ -154,78 +153,11 @@ public class FirstLaunch extends KDialog {
         return minorPanel;
     }
 
-    private Component emailComponent(){
-        final String mailText = "Well, every enrolled student is automatically assigned an email address known as the <b>Student mail</b>." +
-                "<p>It is a mean through which UTG reaches out to you. Unfortunately, most students will only came to know about this overdue. " +
-                "So, Dashboard has loaded the predicted credentials in the fields below. It's through this Student mail that " +
-                "you can contact the developers, send reviews, and give feedback.</p>" +
-                "<p>If you've already being using your Student mail, and made changes to either the Email or Password, " +
-                "then make the changes to the fields below, and click <b>Set</b>.</p>" +
-                "<p>If you don't want Dashboard to keep track of your Student mail, <b>skip</b> this dialog.</p>";
-        final KTextPane textPane = KTextPane.htmlFormattedPane(mailText);
-        textPane.setBackground(Color.WHITE);
-
-        final KTextField emailField = new KTextField(new Dimension(325, 30));
-        emailField.setText(Student.predictedStudentMailAddress());
-        emailField.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2, true));
-        final KTextField psswdField = new KTextField(new Dimension(325, 30));
-        psswdField.setText(Student.predictedStudentPassword());
-        psswdField.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2, true));
-
-        final KButton setButton = new KButton("Set");
-        setButton.setStyle(FontFactory.createPlainFont(15), Color.BLUE);
-        setButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        setButton.addActionListener(e-> {
-            if (!emailField.hasText()) {
-                App.reportError(rootPane,"No Email", "To set a student mail, please enter it in the email field.");
-                emailField.requestFocusInWindow();
-                return;
-            }
-            if (!psswdField.hasText()) {
-                App.reportError(rootPane,"No Password", "Please provide the password in the password field.");
-                psswdField.requestFocusInWindow();
-                return;
-            }
-
-            Student.setStudentMail(emailField.getText());
-            SettingsActivity.studentMailField.setText(Student.getVisibleStudentMail());
-            Student.setStudentPassword(psswdField.getText());
-            SettingsActivity.studentPsswdField.setText(psswdField.getText());
-            layout.show(contentPanel, "Image icon");
-        });
-
-        final KPanel kPanel = new KPanel();
-        kPanel.setLayout(new BoxLayout(kPanel, BoxLayout.Y_AXIS));
-        kPanel.addAll(textPane, new KPanel(new KLabel("Email: ", FontFactory.createBoldFont(16)),
-                        emailField), new KPanel(new KLabel("Password: " , FontFactory.createBoldFont(16)),
-                psswdField));
-
-        final KButton prevButton = new KButton("Back");
-        prevButton.setFont(FontFactory.createPlainFont(15));
-        prevButton.addActionListener(e-> layout.show(contentPanel, "Minor"));
-
-        final KButton skipButton = new KButton("Skip");
-        skipButton.setStyle(FontFactory.createPlainFont(15), Color.RED);
-        skipButton.addActionListener(e-> {
-            Student.setStudentMail("");
-            SettingsActivity.studentMailField.setText(Student.getVisibleStudentMail());
-            Student.setStudentPassword("");
-            SettingsActivity.studentPsswdField.setText("");
-            layout.show(contentPanel, "Image icon");
-        });
-
-        final KPanel emailPanel = new KPanel();
-        emailPanel.setLayout(new BoxLayout(emailPanel, BoxLayout.Y_AXIS));
-        emailPanel.addAll(new KPanel(new KLabel("Do you know you had a Student Mail?", bigFont)),
-                kPanel, MComponent.contentBottomGap(), new KPanel(new FlowLayout(FlowLayout.RIGHT),
-                        prevButton, skipButton, setButton));
-        return emailPanel;
-    }
-
     private Component imageComponent(){
         final String imgText = "With such a nice look, you cannot wait to behold your glittering face right at the top-left " +
-                "of your dashboard. Set an optional image icon now to get started with your <b>Personal Dashboard</b>, or anytime later " +
-                "in Settings.<br>You can also change your image by simply right-clicking the image-box at the top-left.";
+                "of your dashboard." +
+                "<p>Set an optional image icon now to get started with your <b>Personal Dashboard</b>, or anytime later " +
+                "in Settings.</p>";
         final KTextPane textPane = KTextPane.htmlFormattedPane(imgText);
         textPane.setBackground(Color.WHITE);
 
@@ -247,7 +179,7 @@ public class FirstLaunch extends KDialog {
 
         final KButton prevButton = new KButton("Back");
         prevButton.setFont(FontFactory.createPlainFont(15));
-        prevButton.addActionListener(e-> layout.show(contentPanel, "Student mail"));
+        prevButton.addActionListener(e-> layout.show(contentPanel, "Minor Code"));
         final KButton finishButton = new KButton("Finish");
         finishButton.setFont(FontFactory.createPlainFont(15));
         finishButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

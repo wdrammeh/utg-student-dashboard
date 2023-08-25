@@ -1,4 +1,4 @@
-# Index of Navigation Tabs (2021-03-22 12:46 PM UTC):
+# Navigation Tabs Index (2021-03-22 12:46 PM UTC):
 {
     0=""
     1=""

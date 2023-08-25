@@ -1,18 +1,17 @@
 package main;
 
+import core.first.FirstLaunch;
 import proto.KFrame;
-import proto.KLabel;
 import proto.KPanel;
 
 import java.awt.*;
 
-import core.utils.FontFactory;
 import core.utils.Globals;
 
-public class Frame {
+public class Min {
 
     public static void main(String[] args) {
-        display(new KPanel(new BorderLayout()));
+        new FirstLaunch().setVisible(true);
     }
 
     private static void display(Component c) {

@@ -85,4 +85,4 @@ Dashboard uses the **UTG ERP System** ("Portal") as the center of verification f
 
 It is however important to note that inconsistent data from the Portal can induce misbehavior of your Dashboard. Thus, it is strongly advisable for students victim of wrong, or incomplete details on their Portals to refer to their respective departments for help before, or anytime soon after, launching Dashboard.
 
-It however handles, gracefully, the common issue of missing-grades, but cannot afford to lose core details like student's name, or matriculation number. Dashboard may halt build, if such details are missing, or not readable somehow.
+We however handle, gracefully, the common issue of missing-grades, but cannot afford to miss core details like student's name, or matriculation number. Dashboard may halt build, if such details are missing, or not readable somehow.
