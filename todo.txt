@@ -1,6 +1,5 @@
 @Todo
 [Urgent]:
-- Fix News
 
 - Hide all sensitive data
 - Minimize dialog hints

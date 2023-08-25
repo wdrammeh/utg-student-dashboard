@@ -239,7 +239,7 @@ public final class Board extends KFrame {
                 new Thread(()-> {
                     aboutUTGLabel.setEnabled(false);
                     try {
-                        Internet.visit(News.HOME_SITE);
+                        Internet.visit(News.UTG_HOME);
                     } catch (Exception ex) {
                         App.reportError(ex);
                     } finally {

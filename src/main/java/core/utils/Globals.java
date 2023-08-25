@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 import java.util.StringJoiner;
 
 public class Globals {
+    public static final String PROJECT_TITLE = "UTG Student Dashboard";
+    public static final String PROJECT_NAME = PROJECT_TITLE.replace(" ", "-").toLowerCase();
     // 
     public static final int SECOND = 1_000;
     public static final int MINUTE = 60 * SECOND;
@@ -16,9 +18,6 @@ public class Globals {
     public static final String NONE = "None";
     public static final String NEVER = "Never";
     public static final String OTHER = "Other";
-    public static final String PROJECT_TITLE = "UTG Student Dashboard";
-    public static final String PROJECT_NAME = PROJECT_TITLE.replace(" ", "-").toLowerCase();
-    
 
 
     /**

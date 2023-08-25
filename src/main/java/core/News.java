@@ -32,8 +32,8 @@ public class News implements Activity {
             return false;
         }
     }; // unlike many of its kind, this does not explicitly delete.
-    public static final String HOME_SITE = "https://www.utg.edu.gm/";
-    public static final String NEWS_SITE = "https://www.utg.edu.gm/category/news/";
+    public static final String UTG_HOME = "https://www.utg.edu.gm";
+    public static final String NEWS_PAGE = "https://www.utg.edu.gm/category/news";
 
 
     public News() {
@@ -84,7 +84,7 @@ public class News implements Activity {
     public void packAll(boolean userRequest) {
         refreshButton.setEnabled(false);
         try {
-            final Document doc = Jsoup.connect(NEWS_SITE).get();
+            final Document doc = Jsoup.connect(NEWS_PAGE).userAgent("Mozilla").get();
             final List<Element> elements = doc.getElementsByTag("article");
             final boolean wasEmpty = NEWS_DATA.isEmpty();
             for (final Element element : elements) {
@@ -115,6 +115,7 @@ public class News implements Activity {
                         "We're unable to access the server at 'utg.edu.gm'.\n" +
                                 "Please try again later.");
             }
+            App.silenceException(e);
         } finally {
             refreshButton.setEnabled(true);
             MComponent.ready(present);
@@ -136,7 +137,7 @@ public class News implements Activity {
             extendedReader.setText("Get full news");
             extendedReader.addActionListener(e-> newsDialog.primaryClick(extendedReader));
         } else {
-            extendedReader.setText("Continue reading");
+            extendedReader.setText("Read more");
             extendedReader.setForeground(Color.BLUE);
             extendedReader.addActionListener(e-> newsDialog.setVisible(true));
         }
@@ -177,7 +178,7 @@ public class News implements Activity {
                 visitButton.setEnabled(false);
                 dispose();
                 try {
-                    Internet.visit(NEWS_SITE);
+                    Internet.visit(NEWS_PAGE);
                 } catch (Exception ex) {
                     App.reportError(ex);
                 }
@@ -201,10 +202,10 @@ public class News implements Activity {
             new Thread(()-> {
                 primaryButton.setEnabled(false);
                 try {
-                    final Document specificDocument = Jsoup.connect(associateLink).get();
+                    final Document specificDocument = Jsoup.connect(associateLink).userAgent("Mozilla").get();
                     allContent = specificDocument.select(".entry-content").outerHtml();
                     textPane.setText(allContent);
-                    primaryButton.setText("Continue reading");
+                    primaryButton.setText("Read more");
                     primaryButton.setForeground(Color.BLUE);
                     primaryButton.removeActionListener(primaryButton.getActionListeners()[0]);
                     primaryButton.addActionListener(e-> setVisible(true));

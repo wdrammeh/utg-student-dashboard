@@ -17,7 +17,7 @@ import java.util.Date;
 
 public class Internet {
     public static final String REPO_URL = "https://github.com/wdrammeh/utg-student-dashboard";
-    public static final String DOWNLOAD_URL = REPO_URL+"#install"; // Todo check these out
+    public static final String DOWNLOAD_URL = REPO_URL+"#install";
 
 
     /**
@@ -48,6 +48,7 @@ public class Internet {
     public static boolean isHostAvailable(String hostName) {
         try (final Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(hostName, 80), 10 * Globals.SECOND);
+            socket.close();
             return true;
         } catch (IOException e) {
             return false;

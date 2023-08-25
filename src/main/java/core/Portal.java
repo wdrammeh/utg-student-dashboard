@@ -25,19 +25,20 @@ import java.util.List;
  * Never forget to use them on a different thread.
  */
 public class Portal {
-    public static final String LOGIN_PAGE = "https://utg.gm/login";
-    public static final String LOGOUT_PAGE = "https://utg.gm/logout";
-    // do not call the contentsPage or profilePage on a driver that has not yet entered...
-    public static final String CONTENTS_PAGE = "https://utg.gm/course-registrations";
-    public static final String PROFILE_PAGE = "https://utg.gm/profile";
-    public static final int MAXIMUM_WAIT_TIME = 30; // intended in seconds
-    public static final int MINIMUM_WAIT_TIME = 3;
+    public static final String ADMISSION_PAGE = "https://utg.gm";
     /**
-     * Note that the HOME_PAGE seems to be pointing
-     * to the LOGIN_PAGE when there's no session.
+     * Note: HOME_PAGE points to LOGIN_PAGE when there's no session.
      */
     public static final String HOME_PAGE = "https://utg.gm/home";
-    public static final String ADMISSION_PAGE = "https://utg.gm";
+    public static final String LOGIN_PAGE = "https://utg.gm/login";
+    public static final String LOGOUT_PAGE = "https://utg.gm/logout";
+    // Do not call the PROFILE_PAGE, CONTENTS_PAGE on a driver that has not entered...
+    public static final String PROFILE_PAGE = "https://utg.gm/profile";
+    public static final String CONTENTS_PAGE = "https://utg.gm/course-registrations";
+
+    public static final int MINIMUM_WAIT_TIME = 3;
+    public static final int MAXIMUM_WAIT_TIME = 30; // All intended in seconds
+
     private static String admissionNotice;
     private static String registrationNotice;
     private static Date lastAdmissionNoticeUpdate, lastRegistrationNoticeUpdate;
