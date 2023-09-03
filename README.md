@@ -1,6 +1,6 @@
 # UTG Student Dashboard
 
-`v1.1.1`
+`v1.1.2`
 
 A **Flexible** and **Elegant** student management system for the University of The Gambia ("UTG").
 
@@ -12,9 +12,9 @@ This project brings to the palms of the students (of UTG) solutions to problems 
 Get the standalone installation file for your operating system from the table below:
 
 | Platform (OS) | Download                                                                                                                                                            | Type | Requirement |
-| ----- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------|------| ----- |
-| Microsoft Windows | [utg-student-dashboard-1.1.2.exe](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.2/utg-student-dashboard-1.1.2.exe)                       | exe  |  |
-| All / Any | [utg-student-dashboard-1.1.2-standalone.jar](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.2/utg-student-dashboard-1.1.2-standalone.jar) | jar  | [Java 11+](https://www.oracle.com/java/technologies/downloads/) |
+|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|------| ----- |
+| MS Windows    | [utg-student-dashboard-1.1.2.exe](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.2/utg-student-dashboard-1.1.2.exe)                       | exe  |  |
+| All / Any     | [utg-student-dashboard-1.1.2-standalone.jar](https://github.com/wdrammeh/utg-student-dashboard/releases/download/v1.1.2/utg-student-dashboard-1.1.2-standalone.jar) | jar  | [Java 11+](https://www.oracle.com/java/technologies/downloads/) |
 
 Not seeing a build for your OS? Please refer to the [release page](https://github.com/wdrammeh/utg-student-dashboard/releases) for more download options (including jar builds).
 

@@ -32,11 +32,12 @@ Major folders in the project and their purpose:
 
 [test/](src/test)
 
-  `Resources under this folder are for testing only. They should not count in building, or running the actual program.`
+  `Maven test folder.`
 
 ## Skills
 
-- Core Java: Object-Oriented Programming, Serialization
+- Core Java: Object-Oriented Programming
+- Serialization
 - Maven
 - HTML
 
