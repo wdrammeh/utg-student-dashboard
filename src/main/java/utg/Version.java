@@ -42,13 +42,13 @@ public class Version {
 
     /**
      * Literal is a string representation of a version such that the
-     * version is period separated with a leading letter 'v'.
+     * version is period separated, leading by the letter 'v'.
      * 
      * E.g: For a version 1.2.3, its literal will be v1.2.3
      * 
      * @see #toLiteral()
      */
-    public static Version parse(String literal){
+    public static Version parse(String literal) {
         try {
             final String[] a = literal.strip().replace("v", "").split("[.]");
             return new Version(Integer.parseInt(a[0]), Integer.parseInt(a[1]), Integer.parseInt(a[2]));
@@ -67,12 +67,17 @@ public class Version {
     }
 
     public String toLiteral() {
-        return "v" + Globals.join(".", new Object[]{major, minor, patch});
+        return "v" + Globals.join(".", new Object[] {major, minor, patch});
     }
 
-    @Override
-    public String toString() {
-        return toLiteral();
+    /**
+     * Returns true if this version's literal equals str
+     */
+    public boolean isVersion(String str) {
+        if (!str.startsWith("v")) {
+            str = "v" + str;
+        }
+        return toLiteral().equals(str);
     }
 
     public int compare(Version v) {
@@ -94,6 +99,11 @@ public class Version {
                 return patch > v.patch ? GREATER : LESS;
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return toLiteral();
     }
 
 }
