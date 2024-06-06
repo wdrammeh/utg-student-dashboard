@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class MaximizeList {
 
     public static void main(String[] args) {
-        final FirefoxDriver driver = MDriver.forgeNew(false);
+        final RemoteWebDriver driver = MDriver.forgeNew(false);
         MDriver.attemptLogin(driver, "<address>@utg.edu.gm", "<passwd>");
         final WebDriverWait waiter = MDriver.newDefaultWait(driver);
         final WebElement admissionAlert = waiter.until(ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));

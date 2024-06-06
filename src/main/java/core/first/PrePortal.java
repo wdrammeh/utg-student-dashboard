@@ -10,6 +10,7 @@ import core.utils.Globals;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -30,7 +31,7 @@ import java.util.StringJoiner;
  */
 public class PrePortal {
     private static String email, password, temporaryName;
-    private static FirefoxDriver driver;
+    private static RemoteWebDriver driver;
     private static WebDriverWait loadWaiter;
     private static boolean isTerminated;
     public static final ArrayList<String> USER_DATA = new ArrayList<>();

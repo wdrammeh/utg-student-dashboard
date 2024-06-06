@@ -34,7 +34,7 @@ public class Welcome extends KDialog {
         setLocationRelativeTo(null);
     }
 
-    private void addWelcomeActivity(){
+    private void addWelcomeActivity() {
         final KPanel topPanel = new KPanel(new KLabel("UTG STUDENT DASHBOARD", FontFactory.createBoldFont(20)));
         topPanel.setBackground(Color.WHITE);
 
@@ -47,28 +47,26 @@ public class Welcome extends KDialog {
 
         final String requirementText = "Dashboard, as a project, is written completely in the Java (<i>platform-independent</i>) Language, allowing it to run gently on virtually all operating systems. " +
                 "The system-dependent compilations are as a result of the <b>Selenium Web Driver Specification</b> across platforms." +
-                "<p>Dashboard uses the traditional <b>Firefox Browser</b> to get the better of your Portal. " +
-                "This is wholly background, and does no way interfere with the normal usage of your browser.</p>" +
-                "<p>For uniformity reasons, Dashboard is not <b>tested compatible</b> with any other browser. " +
-                "So if Firefox is not installed, please make sure it is installed and ready before start.</p>";
+                "<p>Dashboard uses <b>MS Edge Browser</b> on Windows platforms. Dashboard may instead use <b>Firefox</b> or <b>Chrome</b> - whichever is available.</p>" +
+                "<p>This is wholly background, and does no way interfere with the normal usage of your browser.</p>";
 
         final String importantText = "Whatever happens in your Dashboard, stays in your Dashboard. However, keep the following points in mind as long as the ERP System is concerned:<br>" +
                 "The <b>analysis</b> provided to you by Dashboard is entirely <i>Portal-independent</i>. " +
                 "But analysis is based on data, and their is no better source of your data than the Portal. Therefore, unexpected details from therein can induce <i>misbehavior of your Dashboard</i>!" +
                 "<p>We urged every student victim of <b>wrong</b>, or <b>incomplete details</b> from their portals to refer to their respective departments " +
                 "for help before, or anytime soon after, proceeding.</p>" +
-                "<p>We however handle, gracefully, the common issue of <b>missing-grades</b>, but cannot afford to lose core details like your <b>name or matriculation number</b>. " +
-                "Dashboard may halt build, if such details are missing, or not readable somehow.</p>";
+                "<p>By using Dashboard, the student (user) is agreeing that Dashboard collects any Portal-related data and use it for, " +
+                "but not limited to, <b>verification</b>, <b>analysis</b>, and <b>presentation</b>.</p>";
 
         final String nextText = "<br>To continue, acknowledge adherence to these terms by selecting the <b>Checkbox</b> below.";
 
         final KButton exitButton = new KButton("Exit");
         exitButton.setFont(FontFactory.createPlainFont(15));
-        exitButton.addActionListener(e-> System.exit(0));
+        exitButton.addActionListener(e -> System.exit(0));
 
         final KButton nextButton = new KButton("Continue");
         nextButton.setFont(FontFactory.createPlainFont(15));
-        nextButton.addActionListener(e-> cardLayout.show(welcomeActivity, "Choose"));
+        nextButton.addActionListener(e -> cardLayout.show(welcomeActivity, "Choose"));
         nextButton.setEnabled(false);
 
         final KCheckBox nextCheckBox = new KCheckBox("I hereby READ, UNDERSTOOD, and CONSENT to these terms.");
@@ -76,7 +74,7 @@ public class Welcome extends KDialog {
         nextCheckBox.setForeground(Color.DARK_GRAY);
         nextCheckBox.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         nextCheckBox.setFocusable(false);
-        nextCheckBox.addItemListener(e-> nextButton.setEnabled(e.getStateChange() == ItemEvent.SELECTED));
+        nextCheckBox.addItemListener(e -> nextButton.setEnabled(e.getStateChange() == ItemEvent.SELECTED));
 
         final KPanel bottomPanel = new KPanel(new BorderLayout());
         bottomPanel.add(new KPanel(new FlowLayout(FlowLayout.CENTER, 5, 10), nextCheckBox), BorderLayout.WEST);
@@ -91,7 +89,7 @@ public class Welcome extends KDialog {
                 head(String.valueOf(Dashboard.VERSION)),
                 write(broughtString, 70),
                 head("Dedication"), write(dedicationText, 90),
-                head("System Requirement"), write(requirementText, 190),
+                head("System Requirements"), write(requirementText, 170),
                 head("Portal & Privacy"), write(importantText, 225),
                 write(nextText, 65));
         scrollPane = new KScrollPane(textPanel);
@@ -101,25 +99,25 @@ public class Welcome extends KDialog {
         cardLayout.addLayoutComponent(welcomeActivity.add(welcomePanel), "Welcome");
     }
 
-    private KPanel head(String head){
+    private KPanel head(String head) {
         final KPanel headerPanel = new KPanel(new FlowLayout(FlowLayout.LEFT));
         headerPanel.setBackground(Color.WHITE);
         headerPanel.add(new KLabel(head, FontFactory.createBoldFont(17), Color.BLUE));
         return headerPanel;
     }
 
-    private static KTextPane write(String manyText, int tHeight){
+    private static KTextPane write(String manyText, int tHeight) {
         final KTextPane textPane = KTextPane.htmlFormattedPane(manyText);
         textPane.setBackground(Color.WHITE);
         textPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, tHeight));
         return textPane;
     }
 
-    public KScrollPane getScrollPane(){
+    public KScrollPane getScrollPane() {
         return scrollPane;
     }
 
-    private void addSelectionActivity(){
+    private void addSelectionActivity() {
         final KPanel hintPanel = new KPanel();
         hintPanel.setLayout(new BoxLayout(hintPanel, BoxLayout.Y_AXIS));
         hintPanel.add(new KPanel(new KLabel("Select User Type", FontFactory.createBoldFont(25))));
@@ -135,7 +133,7 @@ public class Welcome extends KDialog {
         final JRadioButton studentOption = new JRadioButton("UTG Student", true);
         studentOption.setFont(FontFactory.createPlainFont(17));
         studentOption.setFocusable(false);
-        studentOption.addItemListener(e-> studentOptionPanel.setBorder(e.getStateChange() == ItemEvent.SELECTED ?
+        studentOption.addItemListener(e -> studentOptionPanel.setBorder(e.getStateChange() == ItemEvent.SELECTED ?
                 selectedBorder : unselectedBorder));
 
         studentOptionPanel.setBorder(selectedBorder);
@@ -176,7 +174,7 @@ public class Welcome extends KDialog {
         final JRadioButton trylOption = new JRadioButton("Non-UTG Student");
         trylOption.setFont(FontFactory.createPlainFont(17));
         trylOption.setFocusable(false);
-        trylOption.addItemListener(e-> trialOptionPanel.setBorder(e.getStateChange() == ItemEvent.SELECTED ?
+        trylOption.addItemListener(e -> trialOptionPanel.setBorder(e.getStateChange() == ItemEvent.SELECTED ?
                 selectedBorder : unselectedBorder));
 
         trialOptionPanel.setBorder(unselectedBorder);
@@ -216,18 +214,18 @@ public class Welcome extends KDialog {
         final KButton nextButton = new KButton("Continue");
         nextButton.setFont(FontFactory.createPlainFont(15));
         nextButton.setFocusable(true);
-        nextButton.addActionListener(e-> {
+        nextButton.addActionListener(e -> {
             setVisible(false);
             if (studentOption.isSelected()) {
-                SwingUtilities.invokeLater(()-> new Login(this).setVisible(true));
+                SwingUtilities.invokeLater(() -> new Login(this).setVisible(true));
             } else if (trylOption.isSelected()) {
-                SwingUtilities.invokeLater(()-> new Guest(this).setVisible(true));
+                SwingUtilities.invokeLater(() -> new Guest(this).setVisible(true));
             }
         });
 
         final KButton backButton = new KButton("Back");
         backButton.setFont(FontFactory.createPlainFont(15));
-        backButton.addActionListener(e-> cardLayout.show(welcomeActivity, "Welcome"));
+        backButton.addActionListener(e -> cardLayout.show(welcomeActivity, "Welcome"));
 
         final KPanel choosePanel = new KPanel(new BorderLayout());
         choosePanel.add(hintPanel, BorderLayout.NORTH);

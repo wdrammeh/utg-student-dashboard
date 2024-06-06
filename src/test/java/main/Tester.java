@@ -13,11 +13,11 @@ public class Tester {
 
     public static void main(String[] args) {
         System.out.println(MDate.formatNow());
-        run(TEST_PATH, true);
+        run(TEST_PATH, false);
     }
 
     private static void run(String path, boolean ser) {
-        App.silenceInfo("Dashboard running on test mode; where path = '"+path+"'.");
+        App.silenceInfo("Dashboard is running on test mode; where path = '"+path+"'.");
         Dashboard.main(new String[]{path});
         if (!ser) {
             Runtime.getRuntime().removeShutdownHook(Board.SHUT_DOWN_HOOK);

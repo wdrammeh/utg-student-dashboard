@@ -12,6 +12,7 @@ import core.utils.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import proto.*;
@@ -31,7 +32,7 @@ import java.util.List;
 public class SemesterActivity implements Activity {
     private static KTable activeTable;
     private static KTableModel activeModel;
-    private static FirefoxDriver activeDriver;
+    private static RemoteWebDriver activeDriver;
     public static KLabel semesterBigLabel;
     public static KLabel noticeLabel;
     private static KMenuItem matchItem;

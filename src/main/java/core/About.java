@@ -140,7 +140,7 @@ public class About extends KDialog {
         final String bettermentText = "<b>Help make Dashboard better by giving the developers a Review</b>." +
                 "<p>You may <b>Report a Bug</b> to be fixed, make a <b>Suggestion</b> to be implemented in a future release, " +
                 "or provide an <b>Answer</b> to a Frequently Asked Question. By clicking Send, your review shall be delivered " +
-                "to the developers' mail address: <b>" + Mailer.DEVELOPER_MAIL + "</b>. Your student-mail might be used for this purpose.</p>";
+                "to the developers' mail address: <b>" + Mailer.DEVELOPER_MAIL + "</b>.</p>";
 
         final Border lineBorder = BorderFactory.createLineBorder(Color.BLUE, 1, true);
         final Border spaceBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -150,8 +150,7 @@ public class About extends KDialog {
         final KScrollPane reviewTextAreaScroll = reviewTextArea.outerScrollPane(new Dimension(500, 100));
         reviewTextAreaScroll.setBorder(spaceBorder);
 
-        final String reviewString = "If you have any review, you can write it to the developers in the text-area below. " +
-                "The review should exclude any kind of greetings, introductions, or personal info.";
+        final String reviewString = "If you have any review, you can write it to the developers in the text-area below.";
 
         final KButton reviewSender = newReviewSender();
         reviewSender.addActionListener(e -> new Thread(() -> {

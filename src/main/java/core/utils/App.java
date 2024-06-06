@@ -41,7 +41,7 @@ public class App {
      * The given text will be shown to the user as a hint.
      * And the operation will be performed on the parent component.
      */
-    public static int verifyUser(Component parent, String text){
+    public static int verifyUser(Component parent, String text) {
         if (!Settings.isVerifyNeeded() || Student.isGuest()) {
             return VERIFICATION_TRUE;
         } else {
@@ -194,15 +194,13 @@ public class App {
 
     /**
      * Precedes by an error in building the driver.
-     * It might be that firefox is not installed.
-     * Please note that Dashboard is to be flexible
-     * with its driver specifications in a future release.
+     * It might be that firefox/chrome is not installed.
      * The report will be made on the given parent component.
      */
     public static void reportMissingDriver(Component parent) {
         reportError(parent, "Driver Error",
                 "Sorry, setting up the driver doesn't complete normally.\n" +
-                "Please make sure that \"Firefox\" Browser is installed and try again.");
+                "Please make sure that \"Firefox\" or \"Chrome\" is installed and try again.");
     }
 
     /**

@@ -49,7 +49,7 @@ public class Dashboard {
     private static boolean isFirst;
     private static boolean isAuthentic = true;
     private static final Preview PREVIEW = new Preview(null);
-    public static final Version VERSION = new Version(1, 1, 2);
+    public static final Version VERSION = new Version(1, 1, 5);
 
 
     public static void main(String[] args) {

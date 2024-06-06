@@ -9,6 +9,7 @@ import core.utils.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import proto.*;
@@ -35,7 +36,7 @@ public class ModuleHandler {
     private ModuleYear yearThree;
     private ModuleYear yearFour;
     private static String semesterName;
-    private static FirefoxDriver modulesDriver;
+    private static RemoteWebDriver modulesDriver;
     /**
      * This list has complete dominance over all the add, remove, and edit events
      * of modules from wherever, withing Dashboard.
