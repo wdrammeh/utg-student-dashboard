@@ -13,7 +13,7 @@ public class Tester {
 
     public static void main(String[] args) {
         System.out.println(MDate.formatNow());
-        run(TEST_PATH, false);
+        run(TEST_PATH, true);
     }
 
     private static void run(String path, boolean ser) {
