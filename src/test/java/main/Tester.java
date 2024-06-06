@@ -6,8 +6,8 @@ import core.utils.Globals;
 import core.utils.MDate;
 import utg.Dashboard;
 
-public class Main {
-    // Should never equal Dashboard.getDefaultPath
+public class Tester {
+    // Should not equal Dashboard.getDefaultPath
     private static final String TEST_PATH = Globals.joinPaths(Globals.userHome(), "dashboard-test");
 
 
