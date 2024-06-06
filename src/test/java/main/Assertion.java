@@ -11,8 +11,7 @@ public class Assertion {
 
     @Test
     void checkRootDir(){
-        final String root = Globals.joinPaths(Globals.userHome(), ".dashboard");
-
+        final String root = Globals.joinPaths(Globals.userHome(), ".utgsd");
         Assertions.assertEquals(root, Dashboard.getPath(), "Root directories do not match.");
 
         Assertions.assertEquals(Version.GREATER, Version.parse("v1.5.1").compare(new Version(1, 5, 0)));

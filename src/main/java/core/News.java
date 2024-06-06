@@ -53,7 +53,7 @@ public class News implements Activity {
 
         present = new KPanel();
         present.setLayout(new BoxLayout(present, BoxLayout.Y_AXIS));
-        present.add(accessResident);
+        // present.add(accessResident);
 
         isFirstView = true;
         scrollPane = new KScrollPane(present);
@@ -127,7 +127,12 @@ public class News implements Activity {
      */
     private KPanel packNews(String header, String body, String link, String allContent) {
         final KLabel hLabel = new KLabel(header, FontFactory.createBoldFont(18), Color.BLUE);
-        final KTextPane textPane = KTextPane.htmlFormattedPane(body.substring(0, body.length() - (header.length() + 13)));
+        String summary = body;
+        try {
+            summary = body.substring(0, body.length() - (header.length() + 13));
+        } catch (Exception e) {
+        }
+        final KTextPane textPane = KTextPane.htmlFormattedPane(summary);
         final NewsDialog newsDialog = new NewsDialog(header, body, link, allContent);
 
         final KButton extendedReader = new KButton();
@@ -284,12 +289,14 @@ public class News implements Activity {
         final Object bodiesObj = Serializer.fromDisk(Serializer.inPath("news", "bodies.ser"));
         final Object linksObj = Serializer.fromDisk(Serializer.inPath("news", "links.ser"));
         final Object contentsObj = Serializer.fromDisk(Serializer.inPath("news", "contents.ser"));
+
         if (headsObj != null && bodiesObj != null && linksObj != null && contentsObj != null) {
             try {
                 final String[] heads = (String[]) headsObj;
                 final String[] bodies = (String[]) bodiesObj;
                 final String[] links = (String[]) linksObj;
                 final String[] contents = (String[]) contentsObj;
+
                 final int length = heads.length;
                 for (int i = 0; i < length; i++){
                     final NewsSavior savior = new NewsSavior(heads[i], bodies[i], links[i], contents[i]);
@@ -298,11 +305,13 @@ public class News implements Activity {
                 for (final NewsSavior news : NEWS_DATA) {
                     present.add(packNews(news.heading, news.body, news.link, news.content));
                 }
-                present.add(accessResident);
-                MComponent.ready(present);
+
                 final Object accessObj = Serializer.fromDisk(Serializer.inPath("news", "access.time.ser"));
                 accessTime = String.valueOf(accessObj);
                 accessLabel.setText(accessTime);
+
+                present.add(accessResident);
+                MComponent.ready(present);
             } catch (Exception e) {
                 App.silenceException(e);
             }

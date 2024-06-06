@@ -251,7 +251,7 @@ public class Dashboard {
     }
 
     public static String getDefaultPath() {
-        return Globals.joinPaths(System.getProperty("user.home"), ".dashboard");
+        return Globals.joinPaths(System.getProperty("user.home"), ".utgsd");
     }
 
     public static void reportAuthenticationError() {

@@ -8,7 +8,7 @@ import utg.Dashboard;
 
 public class Tester {
     // Should not equal Dashboard.getDefaultPath
-    private static final String TEST_PATH = Globals.joinPaths(Globals.userHome(), "dashboard-test");
+    private static final String TEST_PATH = Globals.joinPaths(Globals.userHome(), "utgsd-test");
 
 
     public static void main(String[] args) {
