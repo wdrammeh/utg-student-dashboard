@@ -395,11 +395,11 @@ public class About extends KDialog {
 
             final KPanel firstNamePanel = new KPanel(new BorderLayout());
             firstNamePanel.add(new KPanel(new KLabel("First Name:", hintFont)), BorderLayout.WEST);
-            firstNamePanel.add(new KPanel(new KLabel("Drammeh", valueFont)), BorderLayout.CENTER);
+            firstNamePanel.add(new KPanel(new KLabel("Muhammed W.", valueFont)), BorderLayout.CENTER);
 
             final KPanel lastNamePanel = new KPanel(new BorderLayout());
             lastNamePanel.add(new KPanel(new KLabel("Last Name:", hintFont)), BorderLayout.WEST);
-            lastNamePanel.add(new KPanel(new KLabel("Muhammed W.", valueFont)), BorderLayout.CENTER);
+            lastNamePanel.add(new KPanel(new KLabel("Drammeh", valueFont)), BorderLayout.CENTER);
 
             final KPanel dobPanel = new KPanel(new BorderLayout());
             dobPanel.add(new KPanel(new KLabel("Date of Birth:", hintFont)), BorderLayout.WEST);

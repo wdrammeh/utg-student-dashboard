@@ -25,8 +25,9 @@ import java.util.StringJoiner;
  * Todo: To save time, setting-up of the driver should begin (separately)
  * since {@link utg.Dashboard}.
  * And this type is to wait on that process, if not completed already.
- *
+ * <p>
  * Also, Dashboard is to support multiple drivers in a future release.
+ *
  * @see MDriver
  */
 public class PrePortal {
@@ -37,7 +38,7 @@ public class PrePortal {
     public static final ArrayList<String> USER_DATA = new ArrayList<>();
     public static final ArrayList<RegisteredCourse> STARTUP_REGISTRATIONS = new ArrayList<>();
     public static final ArrayList<Course> STARTUP_COURSES = new ArrayList<>();
-    public static final ActionListener CANCEL_ACTION = e-> {
+    public static final ActionListener CANCEL_ACTION = e -> {
         if (App.showYesNoCancelDialog(Login.getRoot(), "Confirm", "Do you really want to terminate the process?")) {
             isTerminated = true;
             Login.getInstance().dispose();
@@ -49,7 +50,7 @@ public class PrePortal {
     };
 
 
-    public static void launchVerification(String email, String password){
+    public static void launchVerification(String email, String password) {
         PrePortal.email = email;
         PrePortal.password = password;
         isTerminated = false;
@@ -63,32 +64,32 @@ public class PrePortal {
             return;
         }
         Login.replaceLastUpdate("Setting up the driver....... Successful");
-        Login.appendToStatus("Now contacting utg.gm.......");
+        Login.appendToStatus("Contacting utg.gm.......");
         loadWaiter = new WebDriverWait(driver, Duration.ofSeconds(Portal.MAXIMUM_WAIT_TIME));
-//        Make sure we are at the login page
+        //        Make sure we are at the login page
         if (MDriver.isOnPortal(driver)) {
             final int logoutAttempt = MDriver.attemptLogout(driver);
             if (logoutAttempt != MDriver.ATTEMPT_SUCCEEDED) {
                 if (!isTerminated) {
-                    Login.replaceLastUpdate("Now contacting utg....... Failed");
+                    Login.replaceLastUpdate("Contacting utg....... Failed");
                     App.reportConnectionLost(Login.getRoot());
                     Login.setInputState(true);
                 }
                 return;
             }
         }
-//        then proceed
+        //        then proceed
         final int loginAttempt = MDriver.attemptLogin(driver, email, password);
         if (isTerminated) {
             return;
         }
         if (loginAttempt == MDriver.ATTEMPT_SUCCEEDED) {
-            Login.replaceLastUpdate("Now contacting utg.gm....... Ok");
-            temporaryName = driver.findElement(By.className("media-heading")).getText();
-            Login.appendToStatus("Logged in successfully as \"" + temporaryName + "\"");
+            Login.replaceLastUpdate("Contacting utg.gm....... Ok");
+            // temporaryName = driver.findElement(By.className("media-heading")).getText(); // Possibly out of view
+            // Login.appendToStatus("Logged in successfully as \"" + temporaryName + "\"");
             launchReading();
         } else if (loginAttempt == MDriver.ATTEMPT_FAILED) {
-            Login.replaceLastUpdate("Now contacting utg.gm....... Done");
+            Login.replaceLastUpdate("Contacting utg.gm....... Done");
             Login.appendToStatus("Verification failed : No such student");
             App.reportError(Login.getRoot(), "Invalid Credentials",
                     "The information you provided do not match any student.\n" +
@@ -101,7 +102,7 @@ public class PrePortal {
         }
     }
 
-    private static void fixingDriver(){
+    private static void fixingDriver() {
         if (driver == null) {
             driver = MDriver.forgeNew(true);
         }
@@ -111,14 +112,15 @@ public class PrePortal {
      * Once verification succeeds, reading follows.
      * Error in reading a specific detail is ignored,
      * and only comes to the user's notice on enlisting.
+     *
      * @see #enlistDetail(String, String)
      */
-    private static void launchReading(){
+    private static void launchReading() {
         String firstName = "", lastName = "", matNumber = "", program = "", major = "",
                 school = "", division = "", nationality = "", MOA = "", YOA = "",
-                address = "", mStatus = "", DOB = "", tel = "", ongoingSemester="", level="", status="";
+                address = "", mStatus = "", DOB = "", tel = "", ongoingSemester = "", level = "", status = "";
 
-//        Checking for busyness of the portal, i.e. is Course Evaluation required?
+        // Checking for busyness of the portal, i.e. is Course Evaluation required?
         if (Portal.isEvaluationNeeded(driver)) {
             if (!isTerminated) {
                 Login.appendToStatus("Busy portal: Course Evaluation needed");
@@ -127,7 +129,8 @@ public class PrePortal {
             }
             return;
         }
-//        Extract the admission notice herein the home-page
+
+        // Extract the admission notice herein the home-page
         try {
             final WebElement admissionAlert = loadWaiter.until(
                     ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
@@ -136,10 +139,71 @@ public class PrePortal {
             App.silenceException("Failed to set 'Admission Notice'");
         }
 
-        Login.appendToStatus("Now processing details.......");
-//        Login.appendToStatus("Operation may take longer based on your internet signal or " +
-//                "temporary server issues");
-//        Going to the contents page
+        Login.appendToStatus("Now processing details....... Please wait");
+
+        // # profile
+        if (isTerminated) {
+            return;
+        }
+
+        try {
+            driver.navigate().to(Portal.PROFILE_PAGE);
+        } catch (Exception e1) {
+            if (!isTerminated) {
+                App.reportConnectionLost(Login.getRoot());
+                Login.setInputState(true);
+            }
+            return;
+        }
+
+        temporaryName = driver.findElement(By.xpath("/html/body/section/div[2]/div/div[1]/div/div[1]/div/div[2]/h4")).getText();
+
+        final String[] fullName = temporaryName.trim().split(" ");
+        lastName = fullName[fullName.length - 1];
+        final StringJoiner nameJoiner = new StringJoiner(" ");
+        for (int i = 0; i < fullName.length - 1; i++) {
+            nameJoiner.add(fullName[i]);
+        }
+        firstName = nameJoiner.toString();
+
+        try {
+            matNumber = driver.findElement(By.cssSelector("initialModules, strong")).getText().split(" ")[1];
+        } catch (Exception ignored) {
+        }
+        //        final List<WebElement> detail = driver.findElementsByClassName("info-group");
+        final List<WebElement> detail = driver.findElements(By.className("info-group"));
+        try {
+            address = detail.get(0).getText().split("\n")[1];
+        } catch (Exception ignored) {
+        }
+        try {
+            tel = detail.get(2).getText().split("\n")[1];
+        } catch (Exception ignored) {
+        }
+        try {
+            mStatus = detail.get(3).getText().split("\n")[1];
+        } catch (Exception ignored) {
+        }
+        try {
+            final String[] DOBParts = detail.get(4).getText().split("\n")[1].split(" ");
+            DOB = DOBParts[0] + " " + DOBParts[1] + " " + DOBParts[2];
+        } catch (Exception ignored) {
+        }
+        try {
+            nationality = detail.get(5).getText().split("\n")[1];
+        } catch (Exception ignored) {
+        }
+        final String[] admissionDate = detail.get(6).getText().split("\n");
+        try {
+            YOA = admissionDate[1].split("-")[0];
+        } catch (Exception ignored) {
+        }
+        try {
+            MOA = admissionDate[1].split("-")[1];
+        } catch (Exception ignored) {
+        }
+
+        // # course-registrations
         try {
             driver.navigate().to(Portal.CONTENTS_PAGE);
         } catch (Exception e1) {
@@ -149,7 +213,9 @@ public class PrePortal {
             }
             return;
         }
-        try { // Extracting the Registration Notice...
+
+        // Extracting the Registration Notice...
+        try {
             final WebElement registrationAlert = loadWaiter.until(
                     ExpectedConditions.presenceOfElementLocated(By.className("gritter-title")));
             Portal.setRegistrationNotice(registrationAlert.getText());
@@ -157,16 +223,7 @@ public class PrePortal {
             App.silenceException("Failed to set 'Registration Notice'");
         }
 
-        final String[] fullName = temporaryName.split(" ");
-        lastName = fullName[fullName.length - 1];
-        final StringJoiner nameJoiner = new StringJoiner(" ");
-        for (int i = 0; i < fullName.length - 1; i++) {
-            nameJoiner.add(fullName[i]);
-        }
-        firstName = nameJoiner.toString();
-
         try {
-//            program = driver.findElementByXPath("/html/body/section/div[2]/div/div[1]/div/div[2]/div[2]/div[1]/div/h4").getText();
             program = driver.findElement(By.xpath("/html/body/section/div[2]/div/div[1]/div/div[2]/div[2]/div[1]/div/h4")).getText();
             major = program.contains("Unknown") ? "Unknown" : program.split(" ")[4];
         } catch (Exception e) {
@@ -175,7 +232,6 @@ public class PrePortal {
 
         List<WebElement> iGroup = null;
         try {
-//            iGroup = driver.findElementsByClassName("info-group");
             iGroup = driver.findElements(By.className("info-group"));
             level = iGroup.get(2).getText().split("\n")[1];
             status = iGroup.get(3).getText().split("\n")[1];
@@ -201,106 +257,38 @@ public class PrePortal {
             }
         }
 
-//        To the profile page
-        if (isTerminated) {
-            return;
-        }
-
-        try {
-            driver.navigate().to(Portal.PROFILE_PAGE);
-        } catch (Exception e1) {
-            if (!isTerminated) {
-                App.reportConnectionLost(Login.getRoot());
-                Login.setInputState(true);
-            }
-            return;
-        }
-        try {
-//            matNumber = driver.findElementByCssSelector("initialModules, strong").getText().split(" ")[1];
-            matNumber = driver.findElement(By.cssSelector("initialModules, strong")).getText().split(" ")[1];
-        } catch (Exception ignored) {
-        }
-//        final List<WebElement> detail = driver.findElementsByClassName("info-group");
-        final List<WebElement> detail = driver.findElements(By.className("info-group"));
-        try {
-            address = detail.get(0).getText().split("\n")[1];
-        } catch (Exception ignored) {
-        }
-        try {
-            tel = detail.get(2).getText().split("\n")[1];
-        } catch (Exception ignored) {
-        }
-        try {
-            mStatus = detail.get(3).getText().split("\n")[1];
-        } catch (Exception ignored) {
-        }
-        try {
-            final String[] DOBParts = detail.get(4).getText().split("\n")[1].split(" ");
-            DOB = DOBParts[0]+" "+DOBParts[1]+" "+DOBParts[2];
-        } catch (Exception ignored) {
-        }
-        try {
-            nationality = detail.get(5).getText().split("\n")[1];
-        } catch (Exception ignored) {
-        }
-        final String[] admissionDate = detail.get(6).getText().split("\n");
-        try {
-            YOA = admissionDate[1].split("-")[0];
-        } catch (Exception ignored) {
-        }
-        try {
-            MOA = admissionDate[1].split("-")[1];
-        } catch (Exception ignored) {
-        }
-
-//        Back to the contents to generate modules
-        if (isTerminated) {
-            return;
-        }
-
-        try {
-            driver.navigate().to(Portal.CONTENTS_PAGE);
-            loadWaiter.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.tagName("table")));
-        } catch (Exception e) {
-            if (!isTerminated) {
-                App.reportConnectionLost(Login.getRoot());
-                Login.setInputState(true);
-            }
-            return;
-        }
+        // Adding in predefined order... CGPA will be added with transcript later on
+        enlistDetail("First Name", firstName);
+        enlistDetail("Last Name", lastName);
+        enlistDetail("Program", program);
+        enlistDetail("Mat#", matNumber);
+        enlistDetail("Major", major);
+        enlistDetail("School", school);
+        enlistDetail("Division", division);
+        enlistDetail("Nationality", nationality);
+        enlistDetail("Month of Admission", MOA);
+        enlistDetail("Year of Admission", YOA);
+        enlistDetail("Address", address);
+        enlistDetail("Marital status", mStatus);
+        enlistDetail("Birth Day", DOB);
+        enlistDetail("Telephone", tel);
+        enlistDetail("Email", email);
+        enlistDetail("psswd", password);
+        enlistDetail("Current Semester", ongoingSemester);
+        enlistDetail("Level", level);
+        enlistDetail("Status", status);
 
         if (isTerminated) {
             return;
-        } else {
-            // Adding in predefined order... CGPA will be added with transcript later on
-            enlistDetail("First Name", firstName);
-            enlistDetail("Last Name", lastName);
-            enlistDetail("Program", program);
-            enlistDetail("Mat#", matNumber);
-            enlistDetail("Major", major);
-            enlistDetail("School", school);
-            enlistDetail("Division", division);
-            enlistDetail("Nationality", nationality);
-            enlistDetail("Month of Admission", MOA);
-            enlistDetail("Year of Admission", YOA);
-            enlistDetail("Address", address);
-            enlistDetail("Marital status", mStatus);
-            enlistDetail("Birth Day", DOB);
-            enlistDetail("Telephone", tel);
-            enlistDetail("Email", email);
-            enlistDetail("psswd", password);
-            enlistDetail("Current Semester", ongoingSemester);
-            enlistDetail("Level", level);
-            enlistDetail("Status", status);
         }
 
         Login.appendGapToStatus();
         Login.appendToStatus("Collecting up all your courses....... This may take a while");
-        
+
         final List<WebElement> tabs = loadWaiter.until(
                 ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".nav-tabs > li")));
-//        Firstly, code, name, year, semester, and credit-hours at transcript tab
-//        Addition to startupCourses is only here; all the following loops only updates the details. this eradicates the possibility of adding running courses at tab-4
+        // Firstly, code, name, year, semester, and credit-hours at transcript tab
+        // Addition to startupCourses is only here; all the following loops only updates the details. this eradicates the possibility of adding running courses at tab-4
         final WebElement transcriptTap = Portal.getTabElement("Transcript", tabs);
         if (transcriptTap == null) {
             App.reportConnectionLost(Login.getRoot());
@@ -310,7 +298,7 @@ public class PrePortal {
         } else {
             transcriptTap.click();
         }
-//        final WebElement transcriptTable = driver.findElementByCssSelector(".table-bordered");
+        //        final WebElement transcriptTable = driver.findElementByCssSelector(".table-bordered");
         final WebElement transcriptTable = driver.findElement(By.cssSelector(".table-bordered"));
         final WebElement transBody = transcriptTable.findElement(By.tagName("tbody"));
         final List<WebElement> transRows = transBody.findElements(By.tagName("tr"));
@@ -321,23 +309,23 @@ public class PrePortal {
             if (transRow.getText().contains("Semester")) {
                 final String[] hintParts = transRow.getText().split("[ ]");
                 vYear = hintParts[0];
-                vSemester = hintParts[1]+" Semester";
+                vSemester = hintParts[1] + " Semester";
             } else {
                 final List<WebElement> data = transRow.findElements(By.tagName("td"));
                 STARTUP_COURSES.add(new Course(vYear, vSemester, data.get(1).getText(),
-                        data.get(2).getText(), "", "", "","", "", 0,
-                        Integer.parseInt(data.get(3).getText()),"",true));
+                        data.get(2).getText(), "", "", "", "", "", 0,
+                        Integer.parseInt(data.get(3).getText()), "", true));
             }
         }
         try {
-//            final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
+            //            final String CGPA = driver.findElementByXPath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]").getText();
             final String CGPA = driver.findElement(By.xpath("//*[@id=\"transacript\"]/div/table/thead/tr/th[2]")).getText();
             enlistDetail("cgpa", CGPA);
         } catch (Exception e) {
             enlistDetail("cgpa", "-1");
         }
 
-//        Secondly, add scores at grades tab
+        //        Secondly, add scores at grades tab
         final WebElement gradesTap = Portal.getTabElement("Grades", tabs);
         if (gradesTap == null) {
             App.reportConnectionLost(Login.getRoot());
@@ -346,11 +334,11 @@ public class PrePortal {
         } else {
             gradesTap.click();
         }
-//        final WebElement gradesTable = driver.findElementsByCssSelector(".table-warning").get(1);
+        //        final WebElement gradesTable = driver.findElementsByCssSelector(".table-warning").get(1);
         final WebElement gradesTable = driver.findElements(By.cssSelector(".table-warning")).get(1);
         final WebElement tBody = gradesTable.findElement(By.tagName("tbody"));
         final List<WebElement> rows = tBody.findElements(By.tagName("tr"));
-        for(WebElement t : rows){
+        for (WebElement t : rows) {
             final List<WebElement> data = t.findElements(By.tagName("td"));
             for (Course c : STARTUP_COURSES) {
                 if (c.getCode().equals(data.get(0).getText())) {
@@ -359,7 +347,7 @@ public class PrePortal {
             }
         }
 
-//        Finally, available lecturer names at all-registered tab
+        //        Finally, available lecturer names at all-registered tab
         final WebElement registeredTap = Portal.getTabElement("All Registered Courses", tabs);
         if (registeredTap == null) {
             App.reportConnectionLost(Login.getRoot());
@@ -368,7 +356,7 @@ public class PrePortal {
         } else {
             registeredTap.click();
         }
-//        final WebElement allRegisteredTable = driver.findElementByCssSelector(".table-warning");
+        //        final WebElement allRegisteredTable = driver.findElementByCssSelector(".table-warning");
         final WebElement allRegisteredTable = driver.findElement(By.cssSelector(".table-warning"));
         final WebElement tableBody = allRegisteredTable.findElement(By.tagName("tbody"));
         final List<WebElement> allRows = tableBody.findElements(By.tagName("tr"));
@@ -384,13 +372,13 @@ public class PrePortal {
             r++;
         }
 
-//        Available running courses? Add
+        //        Available running courses? Add
         final List<WebElement> captions = tableBody.findElements(By.cssSelector("b, strong"));
         final boolean running = captions.get(captions.size() - 1).getText().equalsIgnoreCase(ongoingSemester);
         int runningCount = 0;
         if (running) {
             int match = allRows.size() - 1;
-            while (!allRows.get(match).getText().equalsIgnoreCase(ongoingSemester)){
+            while (!allRows.get(match).getText().equalsIgnoreCase(ongoingSemester)) {
                 final List<WebElement> data = allRows.get(match).findElements(By.tagName("td"));
                 STARTUP_REGISTRATIONS.add(new RegisteredCourse(data.get(0).getText(), data.get(1).getText(),
                         data.get(2).getText(), data.get(3).getText(), data.get(4).getText(), "", "", true));
@@ -401,13 +389,13 @@ public class PrePortal {
 
         final int courseCount = rows.size();
         final int semesterCount = semCaptions.size();
-        Login.appendToStatus("Successfully found "+ Globals.checkPlurality(courseCount, "courses")+" in "+ Globals.checkPlurality(semesterCount, "semesters"));
+        Login.appendToStatus("Successfully found " + Globals.checkPlurality(courseCount, "courses") + " in " + Globals.checkPlurality(semesterCount, "semesters"));
         if (runningCount == 0) {
             Login.appendToStatus("No registration detected this semester");
         } else if (runningCount == 1) {
             Login.appendToStatus("Plus 1 registration this semester");
         } else {
-            Login.appendToStatus("Plus "+runningCount+" registered courses this semester");
+            Login.appendToStatus("Plus " + runningCount + " registered courses this semester");
         }
 
         Portal.setLastLogin(new Date());
@@ -419,9 +407,9 @@ public class PrePortal {
         if (Globals.hasNoText(value) || value.contains("Unknown")) {
             Login.appendToStatus("[Warning] '" + key + "' not found");
         } else if (key.equals("Email")) {
-            Login.appendToStatus("Email Address: "+ Student.getVisibleMail(value));
+            Login.appendToStatus("Email Address: " + Student.getVisibleMail(value));
         } else if (!(key.equals("Mat#") || key.equals("psswd") || key.equals("cgpa"))) {
-            Login.appendToStatus(key+": "+value);
+            Login.appendToStatus(key + ": " + value);
         }
 
         USER_DATA.add(value);

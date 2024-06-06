@@ -231,7 +231,7 @@ public class Login extends JDialog {
         replaceLastUpdate("Now running Pre-Dashboard builds....... Completed");
         appendGapToStatus();
         appendToStatus("Your Dashboard is ready : Press \"Enter\" to launch now");
-        appendToStatus("------------------------------------------------------------------------------------------------------------------------------------------");
+        appendToStatus("-----------------------------------------------------------------------------------------------------------------------------------");
         appendToStatus("                                                     <<<<        Enter       >>>>");
         appendGapToStatus();
         statusHolder.stopAutoScrolling();
