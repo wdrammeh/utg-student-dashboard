@@ -1,6 +1,6 @@
 # UTG Student Dashboard
 
-`v1.1.2`
+`v1.1.5`
 
 A **Flexible** and **Elegant** student management system for the University of The Gambia ("UTG").
 
@@ -70,7 +70,14 @@ Do more with Dashboard using its Tasks+ extension. You can keep track of your pr
 
 ## System Requirements
 
-- [Firefox Web Browser](https://www.mozilla.org/en-US/firefox/new/)
+Dashboard uses a web browser in the background. On a Windows system, Dashboard will try using Edge first.
+If the environment is not Windows, or where Edge is not available on a Windows system, Dashboard will try out Firefox, then Chrome.
+
+So, any of the following browsers must be present:
+
+- Microsoft Edge,
+- [Firefox Web Browser](https://www.mozilla.org/en-US/firefox/new/), or
+- Google Chrome
 
 ## Contribution
 

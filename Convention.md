@@ -8,4 +8,4 @@
 - Developer must use "**clean-code**" approach.
 - **Note** that running the main branch (i.e. from sources) is technically equivalent
   to running an installed version of the software.
-  Hence, developer is advised to modify the launch-path of the program during development and testing (by either supplying a command-line argument, or simply running a [Tester](src/test/java/main/Main.java) to prevent conflict with the normal installation.
+  Hence, developer is advised to modify the launch-path of the program during development and testing (by either supplying a command-line argument, or simply running a [Tester](src/test/java/main/Tester.java) to prevent conflict with the normal installation.

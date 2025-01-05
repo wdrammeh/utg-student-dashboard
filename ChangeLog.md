@@ -1,5 +1,12 @@
 # Changelog
 
+`v1.1.5`
+
+- Change Dashboard path ".dashboard" => ".utgsd"
+- Fix news update time rendering
+- Add Support for Edge and Chrome
+- Fix mail feedback
+
 `v1.1.2`
 
 - Fixed driver issues

@@ -831,7 +831,7 @@ public class SettingsActivity implements Activity {
         exitChecking.setSelected(true);
         Settings.setConfirmExit(true);
         instantToolTip.setSelected(false);
-        ToolTipManager.sharedInstance().setInitialDelay(750);
+        ToolTipManager.sharedInstance().setInitialDelay(0);
         tipDismissible.setSelected(true);
         ToolTipManager.sharedInstance().setDismissDelay(4_000);
         syncChecking.setSelected(false);

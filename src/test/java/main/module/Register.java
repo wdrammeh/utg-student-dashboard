@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -34,7 +35,7 @@ public class Register {
         final String courseName = "Calculus 1"; // to be provided
         final String key = String.join(" ",
                 normalizeCode(courseCode), courseName.toLowerCase());
-        final FirefoxDriver driver = MDriver.forgeNew(false);
+        final RemoteWebDriver driver = MDriver.forgeNew(false);
         if (driver == null) {
             System.err.println("[ERROR] Unable to build the driver");
             return;

@@ -7,16 +7,16 @@ import java.util.Date;
 
 /**
  * Adheres to semantic versioning 2 convention
- * 
+ * <p>
  * Given a version number MAJOR.MINOR.PATCH, increment the:
- * 
+ * <p>
  * MAJOR version when you make incompatible API changes, MINOR version when you
  * add functionality in a backwards compatible manner, and PATCH version when
  * you make backwards compatible bug fixes.
- * 
+ * <p>
  * Additional labels for pre-release and build metadata are available as
  * extensions to the MAJOR.MINOR.PATCH format as MAJOR.MINOR.PATCH-label.
- * 
+ * <p>
  * See https://semver.org/
  */
 public class Version {
@@ -42,10 +42,10 @@ public class Version {
 
     /**
      * Literal is a string representation of a version such that the
-     * version is period separated, leading by the letter 'v'.
-     * 
+     * version is period separated with a leading letter 'v'.
+     * <p>
      * E.g: For a version 1.2.3, its literal will be v1.2.3
-     * 
+     *
      * @see #toLiteral()
      */
     public static Version parse(String literal) {
@@ -67,17 +67,16 @@ public class Version {
     }
 
     public String toLiteral() {
-        return "v" + Globals.join(".", new Object[] {major, minor, patch});
+        return "v" + Globals.join(".", new Object[]{major, minor, patch});
     }
 
-    /**
-     * Returns true if this version's literal equals str
-     */
-    public boolean isVersion(String str) {
-        if (!str.startsWith("v")) {
-            str = "v" + str;
-        }
-        return toLiteral().equals(str);
+    @Override
+    public String toString() {
+        return toLiteral();
+    }
+
+    public boolean equals(String literal) {
+        return compare(parse(literal)) == EQUAL;
     }
 
     public int compare(Version v) {
@@ -99,11 +98,6 @@ public class Version {
                 return patch > v.patch ? GREATER : LESS;
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return toLiteral();
     }
 
 }

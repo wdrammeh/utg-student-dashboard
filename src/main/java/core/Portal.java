@@ -11,6 +11,7 @@ import core.utils.MDate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -44,7 +45,7 @@ public class Portal {
     private static Date lastAdmissionNoticeUpdate, lastRegistrationNoticeUpdate;
     private static boolean autoSync = false;
     private static Date lastLogin;
-    private static FirefoxDriver portalDriver;
+    private static RemoteWebDriver portalDriver;
 
 
     public static void openPortal(Component clickable){
@@ -93,7 +94,7 @@ public class Portal {
     /**
      * Returns true if the two notices were found and renewed successfully.
      */
-    public static boolean startRenewingNotices(FirefoxDriver noticeDriver, boolean userRequested){
+    public static boolean startRenewingNotices(RemoteWebDriver noticeDriver, boolean userRequested){
         if (isEvaluationNeeded(noticeDriver)) {
             if (userRequested) {
                 reportEvaluationNeeded();
@@ -227,7 +228,7 @@ public class Portal {
      * These include setting of semesters, levels, and other dynamic details.
      * Make sure the driver is at the {@link #CONTENTS_PAGE} before this call.
      */
-    public static void onPortal(FirefoxDriver driver){
+    public static void onPortal(RemoteWebDriver driver){
         if (driver.getCurrentUrl().equals(CONTENTS_PAGE)) {
             List<WebElement> iGroup = null;
             try {
@@ -255,7 +256,7 @@ public class Portal {
      * This check is important prior to scrapping, because scrapping of most
      * data are not possible if an evaluation is needed.
      */
-    public static boolean isEvaluationNeeded(FirefoxDriver driver){
+    public static boolean isEvaluationNeeded(RemoteWebDriver driver){
         try {
 //            driver.findElementByCssSelector("div.gritter-item-wrapper:nth-child(4)");
             driver.findElement(By.cssSelector("div.gritter-item-wrapper:nth-child(4)"));
@@ -267,7 +268,7 @@ public class Portal {
 
     /**
      * Reports that the Portal is requesting course evaluations.
-     * This report is as a consequence of {@link #isEvaluationNeeded(FirefoxDriver)}.
+     * This report is as a consequence of {@link #isEvaluationNeeded(RemoteWebDriver)}.
      */
     public static void reportEvaluationNeeded(Component parent){
         App.reportWarning(parent, "Course Evaluation",

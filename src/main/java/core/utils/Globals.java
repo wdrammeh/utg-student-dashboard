@@ -1,5 +1,7 @@
 package core.utils;
 
+import org.apache.commons.lang3.SystemUtils;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,6 +21,18 @@ public class Globals {
     public static final String NEVER = "Never";
     public static final String OTHER = "Other";
 
+
+    public static boolean isWindows() {
+        return SystemUtils.IS_OS_WINDOWS;
+    }
+
+    public static boolean isLinux() {
+        return SystemUtils.IS_OS_LINUX;
+    }
+
+    public static boolean isMac() {
+        return SystemUtils.IS_OS_MAC;
+    }
 
     /**
      * Checks plurality of the given count,

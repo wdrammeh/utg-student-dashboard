@@ -129,11 +129,6 @@ public final class Board extends KFrame {
             if (!Student.isGuest()) {
                 Portal.deSerialize();
             }
-            POST_PROCESSES.add(()-> {
-                if (Internet.isInternetAvailable()) {
-                    MDriver.setup();
-                }
-            });
         }
 
         contentPanel = new KPanel();

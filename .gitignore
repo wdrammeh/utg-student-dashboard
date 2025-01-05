@@ -27,6 +27,5 @@ build/
 .project
 
 # Other
-ex-*
 *.snap
 utg-student-dashboard_amd64*.txt

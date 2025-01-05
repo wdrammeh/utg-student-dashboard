@@ -23,6 +23,7 @@ import core.utils.App;
 import core.utils.FontFactory;
 import core.utils.Internet;
 import core.utils.MComponent;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import proto.KButton;
 import proto.KDialog;
 import proto.KLabel;
@@ -35,7 +36,7 @@ public class RemoteAlertHandler {
     private static KButton refreshButton;
     private static KLabel admissionLabel;
     private static KLabel registrationLabel;
-    private static FirefoxDriver noticeDriver;
+    private static RemoteWebDriver noticeDriver;
     
 
     public static void initHandle() {
