@@ -1,5 +1,9 @@
 # Changelog
 
+`v1.1.6`
+
+- Fixes to reflect changes on Portal
+
 `v1.1.5`
 
 - Change Dashboard path ".dashboard" => ".utgsd"
