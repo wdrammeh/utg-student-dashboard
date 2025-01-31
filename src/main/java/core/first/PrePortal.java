@@ -233,16 +233,16 @@ public class PrePortal {
         List<WebElement> iGroup = null;
         try {
             iGroup = driver.findElements(By.className("info-group"));
-            level = iGroup.get(2).getText().split("\n")[1];
-            status = iGroup.get(3).getText().split("\n")[1];
-            school = iGroup.get(1).getText().split("\n")[1];
+            level = iGroup.get(5).getText().split("\n")[1];
+            status = iGroup.get(6).getText().split("\n")[1];
+            school = iGroup.get(4).getText().split("\n")[1];
             school = school.replace("School of ", ""); // if it's there!
         } catch (Exception ignored) {
         }
 
         if (iGroup != null) {
             try {
-                division = iGroup.get(0).getText().split("\n")[1];
+                division = iGroup.get(3).getText().split("\n")[1];
                 division = division.replace("Division of ", "").
                         replace("Department of", "");
             } catch (Exception ignored) {
@@ -251,7 +251,7 @@ public class PrePortal {
 
         if (iGroup != null) {
             try {
-                final String[] findingSemester = iGroup.get(6).getText().split("\n")[0].split(" ");
+                final String[] findingSemester = iGroup.get(9).getText().split("\n")[0].split(" ");
                 ongoingSemester = String.join(" ", findingSemester[0], findingSemester[1], findingSemester[2]);
             } catch (Exception ignored) {
             }
